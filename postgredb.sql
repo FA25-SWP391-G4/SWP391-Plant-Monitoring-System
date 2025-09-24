@@ -43,7 +43,13 @@ CREATE TABLE Users (
   notification_prefs JSON NULL,
   created_at TIMESTAMP(0) NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (user_id)
+  password_reset_token VARCHAR(255),
+  password_reset_expires TIMESTAMP;
 ) ;
+-- Create index for performance on password reset token lookup
+CREATE INDEX idx_users_password_reset_token ON Users(password_reset_token);
+
+
 
 -- SQLINES DEMO *** ------------------------------------------------
 -- SQLINES DEMO *** or `Plant_Profiles` (General plant species information)
