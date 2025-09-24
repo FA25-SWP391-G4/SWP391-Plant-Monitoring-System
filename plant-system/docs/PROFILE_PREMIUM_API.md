@@ -112,7 +112,8 @@ Content-Type: application/json
 ```json
 {
   "currentPassword": "oldPassword123",
-  "newPassword": "newPassword456"
+  "newPassword": "newPassword456",
+  "confirmPassword": "newPassword456"
 }
 ```
 
@@ -125,7 +126,7 @@ Content-Type: application/json
 ```
 
 **Error Responses**:
-- 400 Bad Request: Missing required fields or password too weak
+- 400 Bad Request: Missing required fields, password too weak, or passwords don't match
 - 401 Unauthorized: Current password is incorrect
 - 404 Not Found: User not found
 - 500 Internal Server Error: Server error

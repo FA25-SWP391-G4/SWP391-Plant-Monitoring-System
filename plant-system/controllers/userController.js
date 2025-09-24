@@ -142,13 +142,21 @@ async function changePassword(req, res) {
         }
 
         // Extract password fields from request
-        const { currentPassword, newPassword } = req.body;
+        const { currentPassword, newPassword, confirmPassword } = req.body;
         
         // Validate inputs
-        if (!currentPassword || !newPassword) {
+        if (!currentPassword || !newPassword || !confirmPassword) {
             return res.status(400).json({ 
                 success: false,
-                error: 'Current password and new password are required' 
+                error: 'Current password, new password, and password confirmation are required' 
+            });
+        }
+        
+        // Check if new password and confirmation match
+        if (newPassword !== confirmPassword) {
+            return res.status(400).json({ 
+                success: false,
+                error: 'New password and confirmation password do not match' 
             });
         }
         

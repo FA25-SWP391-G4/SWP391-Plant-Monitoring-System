@@ -165,7 +165,8 @@ describe('Profile Management', () => {
         .put('/users/change-password')
         .send({ 
           currentPassword: 'oldPassword123', 
-          newPassword: 'newPassword456' 
+          newPassword: 'newPassword456',
+          confirmPassword: 'newPassword456'
         });
       
       expect(response.status).toBe(200);
@@ -183,7 +184,8 @@ describe('Profile Management', () => {
         .put('/users/change-password')
         .send({ 
           currentPassword: 'wrongPassword', 
-          newPassword: 'newPassword456' 
+          newPassword: 'newPassword456',
+          confirmPassword: 'newPassword456'
         });
       
       expect(response.status).toBe(401);
@@ -199,12 +201,30 @@ describe('Profile Management', () => {
         .put('/users/change-password')
         .send({ 
           currentPassword: 'oldPassword123', 
-          newPassword: 'short' 
+          newPassword: 'short',
+          confirmPassword: 'short'
         });
       
       expect(response.status).toBe(400);
       expect(response.body.success).toBe(false);
       expect(response.body.error).toBe('New password must be at least 8 characters long');
+      expect(mockUser.updatePassword).not.toHaveBeenCalled();
+    });
+    
+    it('should reject if passwords don\'t match', async () => {
+      User.findById = jest.fn().mockResolvedValue(mockUser);
+      
+      const response = await request(app)
+        .put('/users/change-password')
+        .send({ 
+          currentPassword: 'oldPassword123', 
+          newPassword: 'newPassword456',
+          confirmPassword: 'differentPassword789'
+        });
+      
+      expect(response.status).toBe(400);
+      expect(response.body.success).toBe(false);
+      expect(response.body.error).toBe('New password and confirmation password do not match');
       expect(mockUser.updatePassword).not.toHaveBeenCalled();
     });
   });

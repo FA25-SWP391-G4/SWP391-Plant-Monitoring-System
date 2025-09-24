@@ -218,7 +218,8 @@ Content-Type: application/json
 ```json
 {
   "currentPassword": "oldPassword123",
-  "newPassword": "newPassword456"
+  "newPassword": "newPassword456",
+  "confirmPassword": "newPassword456"
 }
 ```
 
@@ -972,7 +973,7 @@ curl -X PUT http://localhost:3010/users/profile \
 curl -X PUT http://localhost:3010/users/change-password \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer YOUR_JWT_TOKEN" \
-  -d '{"currentPassword": "oldPassword123", "newPassword": "newPassword456"}'
+  -d '{"currentPassword": "oldPassword123", "newPassword": "newPassword456", "confirmPassword": "newPassword456"}'
 
 # Test premium status (requires authentication)
 curl -X GET http://localhost:3010/users/premium-status \
