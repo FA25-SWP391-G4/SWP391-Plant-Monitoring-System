@@ -1,33 +1,77 @@
 import { Routes, Route } from "react-router-dom";
-import Navbar from "./components/Navbar";
 import ProtectedRoute from "./auth/ProtectedRoute";
+import MainLayout from "./layouts/MainLayout";
 
-import Dashboard from "./pages/Dashboard";         // trang tổng quan (placeholder nếu chưa có)
-import Login from "./pages/Login";                 // trang login bạn đã có
-import Zones from "./pages/Zones";                 // UC13
-import Reports from "./pages/Reports";             // UC14
-import Thresholds from "./pages/Thresholds";       // UC15
-import SearchReports from "./pages/SearchReports"; // UC16
-import CustomizeDashboard from "./pages/CustomizeDashboard"; // UC17
-import Upgrade from "./pages/Upgrade";             // UC18
+import Dashboard from "./pages/Dashboard";
+import Login from "./pages/Login";
+import Zones from "./pages/Zones";
+import Reports from "./pages/Reports";
+import Thresholds from "./pages/Thresholds";
+import SearchReports from "./pages/SearchReports";
+import CustomizeDashboard from "./pages/CustomizeDashboard";
+import Upgrade from "./pages/Upgrade";
 
-export default function App() {
+export default function App(){
   return (
-    <>
-      <Navbar />
-      <div className="py-3">
-        <Routes>
-          <Route path="/login" element={<Login />} />
-          <Route path="/upgrade" element={<ProtectedRoute><Upgrade /></ProtectedRoute>} />
+    <Routes>
+      <Route path="/login" element={<Login />} />
 
-          <Route path="/" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
-          <Route path="/zones" element={<ProtectedRoute roles={["Premium","Admin"]}><Zones /></ProtectedRoute>} />
-          <Route path="/reports" element={<ProtectedRoute roles={["Premium","Admin"]}><Reports /></ProtectedRoute>} />
-          <Route path="/thresholds" element={<ProtectedRoute roles={["Premium","Admin"]}><Thresholds /></ProtectedRoute>} />
-          <Route path="/search-reports" element={<ProtectedRoute roles={["Premium","Admin"]}><SearchReports /></ProtectedRoute>} />
-          <Route path="/customize" element={<ProtectedRoute roles={["Premium","Admin"]}><CustomizeDashboard /></ProtectedRoute>} />
-        </Routes>
-      </div>
-    </>
+      <Route
+        path="/"
+        element={
+          <ProtectedRoute>
+            <MainLayout><Dashboard/></MainLayout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/zones"
+        element={
+          <ProtectedRoute roles={["Premium","Admin"]}>
+            <MainLayout><Zones/></MainLayout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/reports"
+        element={
+          <ProtectedRoute roles={["Premium","Admin"]}>
+            <MainLayout><Reports/></MainLayout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/thresholds"
+        element={
+          <ProtectedRoute roles={["Premium","Admin"]}>
+            <MainLayout><Thresholds/></MainLayout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/search-reports"
+        element={
+          <ProtectedRoute roles={["Premium","Admin"]}>
+            <MainLayout><SearchReports/></MainLayout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/customize"
+        element={
+          <ProtectedRoute roles={["Premium","Admin"]}>
+            <MainLayout><CustomizeDashboard/></MainLayout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/upgrade"
+        element={
+          <ProtectedRoute>
+            <MainLayout><Upgrade/></MainLayout>
+          </ProtectedRoute>
+        }
+      />
+    </Routes>
   );
 }

@@ -27,5 +27,8 @@
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage"
   },
-  "proxy": "http://localhost:3010"
+  "proxy": "http://localhost:3010",
+  "devDependencies": {
+    "nodemon": "^3.1.10"
+  }
 }

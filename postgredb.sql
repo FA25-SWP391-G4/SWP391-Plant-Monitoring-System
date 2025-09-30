@@ -1,3 +1,4 @@
+-- Active: 1759207571568@@127.0.0.1@5432@plant_system
 
 -- SQLINES DEMO *** ------------------------------------------------
 -- SQLINES DEMO *** artGarden IoT Project
@@ -42,10 +43,10 @@ CREATE TABLE Users (
   role VARCHAR(30) CHECK (ROLE IN ('Regular', 'Premium', 'Admin')) NOT NULL DEFAULT 'Regular',
   notification_prefs JSON NULL,
   created_at TIMESTAMP(0) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (user_id)
+  PRIMARY KEY (user_id),
   password_reset_token VARCHAR(255),
-  password_reset_expires TIMESTAMP;
-) ;
+  password_reset_expires TIMESTAMP
+);
 -- Create index for performance on password reset token lookup
 CREATE INDEX idx_users_password_reset_token ON Users(password_reset_token);
 
@@ -58,9 +59,9 @@ CREATE TABLE Plant_Profiles (
   profile_id INT GENERATED ALWAYS AS IDENTITY,
   species_name VARCHAR(100) NOT NULL,
   description TEXT NULL,
-  ideal_moisture INT NULL COMMENT 'Recommended soil moisture percentage',
+  ideal_moisture INT NULL,
   PRIMARY KEY (profile_id)
-) ;
+);
 
 -- SQLINES DEMO *** ------------------------------------------------
 -- SQLINES DEMO *** or `AI_Models`
@@ -71,7 +72,7 @@ CREATE TABLE AI_Models (
   version VARCHAR(20) NULL,
   file_path VARCHAR(255) NOT NULL,
   is_active BOOLEAN NOT NULL DEFAULT FALSE,
-  uploaded_by INT NOT NULL COMMENT 'Admin user_id',
+  uploaded_by INT NOT NULL,
   created_at TIMESTAMP(0) NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (model_id),
   CONSTRAINT fk_ai_models_admin FOREIGN KEY (uploaded_by) REFERENCES Users (user_id) ON DELETE RESTRICT ON UPDATE CASCADE
@@ -83,7 +84,7 @@ CREATE TABLE AI_Models (
 CREATE TABLE Devices (
   device_id INT GENERATED ALWAYS AS IDENTITY,
   user_id INT NOT NULL,
-  device_key CHAR(36) NOT NULL UNIQUE COMMENT 'UUID for secure API communication',
+  device_key CHAR(36) NOT NULL UNIQUE,
   device_name VARCHAR(100) NULL,
   status VARCHAR(30) CHECK (STATUS IN ('online', 'offline', 'error')) NOT NULL DEFAULT 'offline',
   last_seen TIMESTAMP(0) NULL,
@@ -101,7 +102,7 @@ CREATE TABLE Plants (
   device_id INT NOT NULL,
   profile_id INT NULL,
   custom_name VARCHAR(100) NOT NULL,
-  moisture_threshold INT NOT NULL COMMENT 'The specific moisture % to trigger watering',
+  moisture_threshold INT NOT NULL,
   auto_watering_on BOOLEAN NOT NULL DEFAULT TRUE,
   created_at TIMESTAMP(0) NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (plant_id),
@@ -144,7 +145,7 @@ CREATE TABLE Watering_History (
 CREATE TABLE Pump_Schedules (
   schedule_id INT GENERATED ALWAYS AS IDENTITY,
   plant_id INT NOT NULL,
-  cron_expression VARCHAR(50) NOT NULL COMMENT 'e.g., "0 8 * * *" for 8 AM daily',
+  cron_expression VARCHAR(50) NOT NULL,
   is_active BOOLEAN NOT NULL DEFAULT TRUE,
   PRIMARY KEY (schedule_id),
   CONSTRAINT fk_schedules_plant FOREIGN KEY (plant_id) REFERENCES Plants (plant_id) ON DELETE CASCADE ON UPDATE CASCADE
