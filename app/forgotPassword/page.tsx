@@ -1,114 +1,48 @@
-"use client"
-
-import type React from "react"
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Mail, CheckCircle2, ArrowLeft } from "lucide-react"
+import { ForgotPasswordForm } from "@/components/forgot-password-form"
+import { Leaf } from "lucide-react"
 import Link from "next/link"
 
-export function ForgotPasswordForm() {
-  const [isLoading, setIsLoading] = useState(false)
-  const [isSubmitted, setIsSubmitted] = useState(false)
-  const [email, setEmail] = useState("")
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setIsLoading(true)
-
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 2000))
-
-    console.log("Password reset requested for:", email)
-    setIsLoading(false)
-    setIsSubmitted(true)
-  }
-
-  if (isSubmitted) {
-    return (
-      <Card className="border-0 shadow-xl bg-card/80 backdrop-blur-sm">
-        <CardContent className="pt-12 pb-8 text-center">
-          <div className="flex justify-center mb-6">
-            <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center">
-              <CheckCircle2 className="w-8 h-8 text-primary" />
-            </div>
-          </div>
-          <h3 className="text-xl font-semibold text-foreground mb-3">Check Your Email</h3>
-          <p className="text-muted-foreground mb-6 leading-relaxed">
-            We've sent a password reset link to <span className="font-medium text-foreground">{email}</span>. Please
-            check your inbox and follow the instructions.
-          </p>
-          <Link href="/login">
-            <Button variant="outline" className="gap-2 bg-transparent">
-              <ArrowLeft className="w-4 h-4" />
-              Back to Sign In
-            </Button>
-          </Link>
-        </CardContent>
-      </Card>
-    )
-  }
-
+export default function ForgotPasswordPage() {
   return (
-    <Card className="border-0 shadow-xl bg-card/80 backdrop-blur-sm">
-      <CardHeader className="space-y-2 pb-6">
-        <CardTitle className="text-xl">Forgot Password</CardTitle>
-        <CardDescription className="text-muted-foreground">
-          No worries, we'll help you get back to caring for your plants
-        </CardDescription>
-      </CardHeader>
+    <div className="min-h-screen bg-gradient-to-br from-background via-accent/20 to-secondary/30">
+      {/* Header */}
+      <header className="w-full p-6">
+        <Link href="/" className="flex items-center gap-3 w-fit">
+          <div className="flex items-center justify-center w-10 h-10 bg-primary rounded-xl">
+            <Leaf className="w-6 h-6 text-primary-foreground" />
+          </div>
+          <h1 className="text-2xl font-bold text-foreground">PlantSmart</h1>
+        </Link>
+      </header>
 
-      <CardContent>
-        <form onSubmit={handleSubmit} className="space-y-5">
-          {/* Email */}
-          <div className="space-y-2">
-            <Label htmlFor="email" className="text-sm font-medium">
-              Email Address
-            </Label>
-            <div className="relative">
-              <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-              <Input
-                id="email"
-                type="email"
-                placeholder="john@example.com"
-                className="pl-10 h-11"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-              />
-            </div>
+      {/* Main Content */}
+      <main className="flex items-center justify-center px-6 py-12">
+        <div className="w-full max-w-md">
+          {/* Welcome Section */}
+          <div className="text-center mb-8">
+            <h2 className="text-3xl font-bold text-foreground mb-3 text-balance">Reset Your Password</h2>
+            <p className="text-muted-foreground text-lg leading-relaxed">
+              Enter your email address and we'll send you a link to reset your password.
+            </p>
           </div>
 
-          {/* Submit Button */}
-          <Button
-            type="submit"
-            className="w-full h-12 text-base font-medium bg-primary hover:bg-primary/90 transition-colors"
-            disabled={isLoading}
-          >
-            {isLoading ? (
-              <div className="flex items-center gap-2">
-                <div className="w-4 h-4 border-2 border-primary-foreground/30 border-t-primary-foreground rounded-full animate-spin" />
-                Sending Reset Link...
-              </div>
-            ) : (
-              "Send Reset Link"
-            )}
-          </Button>
+          {/* Forgot Password Form */}
+          <ForgotPasswordForm />
 
-          {/* Back to Login */}
-          <div className="text-center pt-2">
-            <Link
-              href="/login"
-              className="text-sm text-muted-foreground hover:text-foreground transition-colors inline-flex items-center gap-1"
-            >
-              <ArrowLeft className="w-3 h-3" />
-              Back to Sign In
-            </Link>
+          {/* Footer */}
+          <div className="text-center mt-8">
+            <p className="text-sm text-muted-foreground">
+              Remember your password?{" "}
+              <Link
+                href="/login"
+                className="text-primary hover:text-primary/80 font-medium transition-colors underline"
+              >
+                Sign in here
+              </Link>
+            </p>
           </div>
-        </form>
-      </CardContent>
-    </Card>
+        </div>
+      </main>
+    </div>
   )
 }

@@ -31,11 +31,6 @@ export default function LoginPage() {
 
         {/* Login Form */}
         <LoginForm />
-        <div>
-          <Link href="/register" className="text-sm text-primary hover:text-primary/80 font-medium underline">
-          Forgot Password?
-          </Link>
-        </div>
 
         {/* Footer Links */}
         <div className="mt-6 text-center space-y-2">
