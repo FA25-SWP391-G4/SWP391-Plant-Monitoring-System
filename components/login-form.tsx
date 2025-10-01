@@ -100,7 +100,7 @@ export function LoginForm() {
               </Label>
             </div>
 
-            <Link href="/forgot-password" className="text-sm text-primary hover:text-primary/80 underline">
+            <Link href="/forgotPassword" className="text-sm text-primary hover:text-primary/80 underline">
               Forgot password?
             </Link>
           </div>
