@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Chatbot Test - Plant Monitoring System</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f7fa;
+            color: #333;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        header {
+            background-color: #4CAF50;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            border-radius: 8px 8px 0 0;
+        }
+        h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+        .chat-container {
+            background-color: white;
+            border-radius: 0 0 8px 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .chat-messages {
+            height: 400px;
+            overflow-y: auto;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .message {
+            margin-bottom: 15px;
+            padding: 10px 15px;
+            border-radius: 18px;
+            max-width: 80%;
+            word-wrap: break-word;
+        }
+        .user-message {
+            background-color: #e3f2fd;
+            margin-left: auto;
+            border-bottom-right-radius: 4px;
+        }
+        .bot-message {
+            background-color: #f1f1f1;
+            margin-right: auto;
+            border-bottom-left-radius: 4px;
+        }
+        .message-input {
+            display: flex;
+            margin-top: 10px;
+        }
+        input {
+            flex: 1;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            margin-left: 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .features {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+        .feature-item {
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+        }
+        .feature-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+        .feature-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #4CAF50;
+        }
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>AI Chatbot Test - Plant Monitoring System</h1>
+            <p>Powered by Mistral 7B via OpenRouter API</p>
+        </header>
+        
+        <div class="chat-container">
+            <div class="chat-messages" id="chatMessages">
+                <div class="message bot-message">
+                    Xin chào! Tôi là trợ lý AI chăm sóc cây trồng. Tôi có thể giúp gì cho bạn hôm nay?
+                </div>
+            </div>
+            
+            <div class="message-input">
+                <input type="text" id="messageInput" placeholder="Nhập câu hỏi về cây trồng của bạn..." />
+                <button id="sendButton">Gửi</button>
+            </div>
+        </div>
+        
+        <div class="features">
+            <h2>Các tính năng AI đã triển khai:</h2>
+            
+            <div class="feature-item">
+                <div class="feature-title">1. Chatbot Chăm sóc Cây trồng (Mistral 7B)</div>
+                <p>Trả lời các câu hỏi về chăm sóc cây trồng, giải quyết vấn đề và đưa ra lời khuyên.</p>
+            </div>
+            
+            <div class="feature-item">
+                <div class="feature-title">2. Dự đoán Nhu cầu Tưới nước</div>
+                <p>Phân tích dữ liệu cảm biến để dự đoán thời gian và lượng nước tưới tối ưu.</p>
+                <button onclick="testPredictWatering()">Kiểm tra Dự đoán</button>
+            </div>
+            
+            <div class="feature-item">
+                <div class="feature-title">3. Phân tích Sức khỏe Cây trồng</div>
+                <p>Phát hiện vấn đề sức khỏe cây trồng dựa trên dữ liệu cảm biến lịch sử.</p>
+                <button onclick="testHealthAnalysis()">Kiểm tra Phân tích</button>
+            </div>
+            
+            <div class="feature-item">
+                <div class="feature-title">4. Tối ưu hóa Lịch tưới nước</div>
+                <p>Tạo lịch tưới nước tối ưu cho nhiều cây trồng dựa trên nhu cầu và điều kiện.</p>
+                <button onclick="testOptimizeSchedules()">Kiểm tra Tối ưu hóa</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const chatMessages = document.getElementById('chatMessages');
+        const messageInput = document.getElementById('messageInput');
+        const sendButton = document.getElementById('sendButton');
+
+        // Add event listeners
+        sendButton.addEventListener('click', sendMessage);
+        messageInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+
+        // Function to send message
+        function sendMessage() {
+            const message = messageInput.value.trim();
+            if (message === '') return;
+
+            // Add user message to chat
+            addMessage(message, 'user');
+            messageInput.value = '';
+
+            // Show loading indicator
+            const loadingDiv = document.createElement('div');
+            loadingDiv.className = 'loading';
+            loadingDiv.id = 'loading';
+            loadingDiv.textContent = 'AI đang suy nghĩ...';
+            chatMessages.appendChild(loadingDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+
+            // Send message to API
+            fetch('/api/ai/chat/message', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ message }),
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                // Remove loading indicator
+                const loadingElement = document.getElementById('loading');
+                if (loadingElement) {
+                    loadingElement.remove();
+                }
+                
+                // Add bot response to chat
+                addMessage(data.response, 'bot');
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                
+                // Remove loading indicator
+                const loadingElement = document.getElementById('loading');
+                if (loadingElement) {
+                    loadingElement.remove();
+                }
+                
+                // Add error message
+                addMessage('Xin lỗi, đã xảy ra lỗi khi xử lý yêu cầu của bạn. Vui lòng thử lại sau.', 'bot');
+            });
+        }
+
+        // Function to add message to chat
+        function addMessage(text, sender) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${sender}-message`;
+            messageDiv.textContent = text;
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        // Test watering prediction
+        function testPredictWatering() {
+            // Normally we would use a real plant ID
+            const plantId = 1; 
+            
+            addMessage('Đang kiểm tra dự đoán nhu cầu tưới nước...', 'user');
+            
+            fetch(`/api/ai/predict-watering/${plantId}`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    const result = `Kết quả dự đoán:
+- Cần tưới nước: ${data.prediction.should_water ? 'Có' : 'Không'}
+- Độ tin cậy: ${data.prediction.confidence * 100}%
+- Lượng nước đề xuất: ${data.prediction.recommended_amount_ml}ml
+- Thời gian tưới tiếp theo: ${data.prediction.next_watering_time}`;
+                    
+                    addMessage(result, 'bot');
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    addMessage('Xin lỗi, đã xảy ra lỗi khi dự đoán nhu cầu tưới nước.', 'bot');
+                });
+        }
+
+        // Test health analysis
+        function testHealthAnalysis() {
+            // Normally we would use a real plant ID
+            const plantId = 1;
+            
+            addMessage('Đang phân tích sức khỏe cây trồng...', 'user');
+            
+            fetch(`/api/ai/analyze-health/${plantId}`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    const result = `Kết quả phân tích sức khỏe:
+- Điểm sức khỏe: ${data.analysis.health_score * 100}/100
+- Trạng thái: ${data.analysis.status}
+- Vấn đề: ${data.analysis.issues.length > 0 ? data.analysis.issues.join(', ') : 'Không có'}
+- Khuyến nghị: ${data.analysis.recommendations.join('\n')}`;
+                    
+                    addMessage(result, 'bot');
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    addMessage('Xin lỗi, đã xảy ra lỗi khi phân tích sức khỏe cây trồng.', 'bot');
+                });
+        }
+
+        // Test schedule optimization
+        function testOptimizeSchedules() {
+            addMessage('Đang tối ưu hóa lịch tưới nước...', 'user');
+            
+            fetch('/api/ai/optimize-watering-schedules')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    let result = 'Lịch tưới nước tối ưu:\n';
+                    
+                    data.schedules.forEach((schedule, index) => {
+                        result += `${index + 1}. ${schedule.plant_name}: ${schedule.watering_time}, ${schedule.duration_seconds}s, ${schedule.estimated_water_ml}ml\n`;
+                    });
+                    
+                    addMessage(result, 'bot');
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    addMessage('Xin lỗi, đã xảy ra lỗi khi tối ưu hóa lịch tưới nước.', 'bot');
+                });
+        }
+    </script>
+</body>
+</html>

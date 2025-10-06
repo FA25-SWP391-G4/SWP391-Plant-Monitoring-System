@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kiểm tra tính năng AI</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #2c7d59;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+        .section h2 {
+            margin-top: 0;
+            color: #2c7d59;
+            border-bottom: 2px solid #2c7d59;
+            padding-bottom: 10px;
+        }
+        .chat-container {
+            height: 300px;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+        }
+        .message {
+            margin-bottom: 10px;
+            padding: 8px 12px;
+            border-radius: 18px;
+            max-width: 80%;
+            word-wrap: break-word;
+        }
+        .user-message {
+            background-color: #dcf8c6;
+            margin-left: auto;
+            border-bottom-right-radius: 5px;
+        }
+        .ai-message {
+            background-color: #f1f0f0;
+            margin-right: auto;
+            border-bottom-left-radius: 5px;
+        }
+        .input-group {
+            display: flex;
+            margin-bottom: 10px;
+        }
+        input, select {
+            flex-grow: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-right: 10px;
+        }
+        button {
+            background-color: #2c7d59;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #1e5c3e;
+        }
+        .result-container {
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 15px;
+            min-height: 100px;
+        }
+        .loading {
+            text-align: center;
+            color: #666;
+            font-style: italic;
+        }
+        .error {
+            color: #d9534f;
+            font-weight: bold;
+        }
+        .success {
+            color: #5cb85c;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Kiểm tra tính năng AI</h1>
+        
+        <!-- Chatbot Section -->
+        <div class="section">
+            <h2>Chatbot với Mistral 7B</h2>
+            <div class="chat-container" id="chatContainer"></div>
+            <div class="input-group">
+                <input type="text" id="chatInput" placeholder="Nhập tin nhắn của bạn...">
+                <button id="sendButton">Gửi</button>
+            </div>
+        </div>
+        
+        <!-- Watering Prediction Section -->
+        <div class="section">
+            <h2>Dự đoán tưới nước</h2>
+            <div class="input-group">
+                <select id="plantSelect">
+                    <option value="1">Cây xương rồng</option>
+                    <option value="2">Cây hoa hồng</option>
+                    <option value="3">Cây húng quế</option>
+                </select>
+                <button id="predictWateringButton">Dự đoán</button>
+            </div>
+            <div class="result-container" id="wateringResult"></div>
+        </div>
+        
+        <!-- Plant Health Analysis Section -->
+        <div class="section">
+            <h2>Phân tích sức khỏe cây trồng</h2>
+            <div class="input-group">
+                <select id="healthPlantSelect">
+                    <option value="1">Cây xương rồng</option>
+                    <option value="2">Cây hoa hồng</option>
+                    <option value="3">Cây húng quế</option>
+                </select>
+                <button id="analyzeHealthButton">Phân tích</button>
+            </div>
+            <div class="result-container" id="healthResult"></div>
+        </div>
+        
+        <!-- Watering Schedule Optimization Section -->
+        <div class="section">
+            <h2>Tối ưu hóa lịch tưới nước</h2>
+            <div class="input-group">
+                <input type="text" id="userIdInput" placeholder="Nhập ID người dùng">
+                <button id="optimizeScheduleButton">Tối ưu hóa</button>
+            </div>
+            <div class="result-container" id="scheduleResult"></div>
+        </div>
+    </div>
+
+    <script>
+        // Fake user ID for testing
+        const testUserId = '12345';
+        
+        // DOM Elements
+        const chatContainer = document.getElementById('chatContainer');
+        const chatInput = document.getElementById('chatInput');
+        const sendButton = document.getElementById('sendButton');
+        const plantSelect = document.getElementById('plantSelect');
+        const predictWateringButton = document.getElementById('predictWateringButton');
+        const wateringResult = document.getElementById('wateringResult');
+        const healthPlantSelect = document.getElementById('healthPlantSelect');
+        const analyzeHealthButton = document.getElementById('analyzeHealthButton');
+        const healthResult = document.getElementById('healthResult');
+        const userIdInput = document.getElementById('userIdInput');
+        const optimizeScheduleButton = document.getElementById('optimizeScheduleButton');
+        const scheduleResult = document.getElementById('scheduleResult');
+        
+        // Set default user ID
+        userIdInput.value = testUserId;
+        
+        // Helper function to add messages to chat
+        function addMessage(message, isUser) {
+            const messageDiv = document.createElement('div');
+            messageDiv.classList.add('message');
+            messageDiv.classList.add(isUser ? 'user-message' : 'ai-message');
+            messageDiv.textContent = message;
+            chatContainer.appendChild(messageDiv);
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+        
+        // Helper function to show loading state
+        function showLoading(element) {
+            element.innerHTML = '<div class="loading">Đang xử lý...</div>';
+        }
+        
+        // Helper function to show error
+        function showError(element, message) {
+            element.innerHTML = `<div class="error">Lỗi: ${message}</div>`;
+        }
+        
+        // Send chat message
+        sendButton.addEventListener('click', async () => {
+            const message = chatInput.value.trim();
+            if (!message) return;
+            
+            // Add user message to chat
+            addMessage(message, true);
+            chatInput.value = '';
+            
+            try {
+                // Show AI is typing
+                addMessage('...', false);
+                
+                // Send message to API
+                const response = await fetch('/api/ai/chat', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        message,
+                        userId: testUserId
+                    })
+                });
+                
+                // Remove typing indicator
+                chatContainer.removeChild(chatContainer.lastChild);
+                
+                if (!response.ok) {
+                    throw new Error('Failed to get response');
+                }
+                
+                const data = await response.json();
+                
+                // Add AI response to chat
+                addMessage(data.response, false);
+                
+            } catch (error) {
+                // Remove typing indicator
+                chatContainer.removeChild(chatContainer.lastChild);
+                
+                // Show error message
+                addMessage('Xin lỗi, đã xảy ra lỗi khi xử lý tin nhắn của bạn.', false);
+                console.error('Chat error:', error);
+            }
+        });
+        
+        // Allow Enter key to send message
+        chatInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                sendButton.click();
+            }
+        });
+        
+        // Predict watering needs
+        predictWateringButton.addEventListener('click', async () => {
+            const plantId = plantSelect.value;
+            showLoading(wateringResult);
+            
+            try {
+                const response = await fetch(`/api/ai/predict-watering/${plantId}`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                if (!response.ok) {
+                    throw new Error('Failed to get prediction');
+                }
+                
+                const data = await response.json();
+                
+                // Format and display result
+                let resultHTML = `
+                    <p><strong>Cây:</strong> ${data.prediction.plantName}</p>
+                    <p><strong>Cần tưới nước:</strong> ${data.prediction.shouldWater ? 'Có' : 'Không'}</p>
+                    <p><strong>Độ tin cậy:</strong> ${Math.round(data.prediction.confidence * 100)}%</p>
+                    <p><strong>Lượng nước đề xuất:</strong> ${data.prediction.recommendedAmount} ml</p>
+                    <p><strong>Thời gian tưới tiếp theo:</strong> ${new Date(data.prediction.nextWateringTime).toLocaleString()}</p>
+                    <p><strong>Độ ẩm đất hiện tại:</strong> ${data.prediction.currentSoilMoisture}%</p>
+                    <p><strong>Nguồn dự đoán:</strong> ${data.prediction.source || 'AI Model'}</p>
+                `;
+                
+                wateringResult.innerHTML = resultHTML;
+                
+            } catch (error) {
+                showError(wateringResult, error.message);
+                console.error('Prediction error:', error);
+            }
+        });
+        
+        // Analyze plant health
+        analyzeHealthButton.addEventListener('click', async () => {
+            const plantId = healthPlantSelect.value;
+            showLoading(healthResult);
+            
+            try {
+                const response = await fetch(`/api/ai/analyze-health/${plantId}`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                if (!response.ok) {
+                    throw new Error('Failed to analyze health');
+                }
+                
+                const data = await response.json();
+                
+                // Format and display result
+                let resultHTML = `
+                    <p><strong>Cây:</strong> ${data.health.plantName}</p>
+                    <p><strong>Điểm sức khỏe:</strong> ${data.health.healthScore}/100</p>
+                    <p><strong>Trạng thái:</strong> ${data.health.status}</p>
+                    <p><strong>Vấn đề:</strong> ${data.health.issues.length > 0 ? data.health.issues.join(', ') : 'Không có vấn đề'}</p>
+                    <p><strong>Khuyến nghị:</strong></p>
+                    <ul>
+                `;
+                
+                data.health.recommendations.forEach(rec => {
+                    resultHTML += `<li>${rec}</li>`;
+                });
+                
+                resultHTML += `
+                    </ul>
+                    <p><strong>Nguồn phân tích:</strong> ${data.health.source || 'AI Model'}</p>
+                `;
+                
+                healthResult.innerHTML = resultHTML;
+                
+            } catch (error) {
+                showError(healthResult, error.message);
+                console.error('Health analysis error:', error);
+            }
+        });
+        
+        // Optimize watering schedule
+        optimizeScheduleButton.addEventListener('click', async () => {
+            const userId = userIdInput.value;
+            showLoading(scheduleResult);
+            
+            try {
+                const response = await fetch(`/api/ai/optimize-schedule/${userId}`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                if (!response.ok) {
+                    throw new Error('Failed to optimize schedule');
+                }
+                
+                const data = await response.json();
+                
+                // Format and display result
+                let resultHTML = `<p><strong>Lịch tưới nước tối ưu:</strong></p><ul>`;
+                
+                data.schedule.forEach(item => {
+                    const wateringTime = new Date(item.watering_time || item.wateringTime);
+                    resultHTML += `
+                        <li>
+                            <strong>${item.plant_name || item.plantName}</strong> - 
+                            Thời gian: ${wateringTime.toLocaleString()}, 
+                            Lượng nước: ${item.estimated_water_ml || item.recommendedAmount} ml
+                        </li>
+                    `;
+                });
+                
+                resultHTML += `</ul><p><strong>Nguồn tối ưu hóa:</strong> ${data.source || 'AI Model'}</p>`;
+                
+                scheduleResult.innerHTML = resultHTML;
+                
+            } catch (error) {
+                showError(scheduleResult, error.message);
+                console.error('Schedule optimization error:', error);
+            }
+        });
+        
+        // Add initial welcome message
+        addMessage('Xin chào! Tôi là trợ lý AI chăm sóc cây trồng. Bạn có câu hỏi gì về việc chăm sóc cây không?', false);
+    </script>
+</body>
+</html>
