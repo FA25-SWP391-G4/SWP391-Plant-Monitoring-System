@@ -167,7 +167,7 @@ var paymentRouter = require('./routes/payment');    // ✅ UC19, UC22: VNPay pay
 // var reportRouter = require('./routes/report');        // 🔄 UC8-9, UC15, UC17: Reports & history
 // var notificationRouter = require('./routes/notification'); // 🔄 UC10: Real-time notifications
 // var premiumRouter = require('./routes/premium');      // 🔄 UC14-23: Premium features
-// var aiRouter = require('./routes/ai');               // 🔄 UC17-18, UC20-21, UC23, UC30: AI features
+var aiRouter = require('./routes/ai');               // ✅ UC17-18, UC20-21, UC23, UC30: AI features
 // var adminRouter = require('./routes/admin');         // 🔄 UC24-31: Admin functions
 // var iotRouter = require('./routes/iot');             // 🔄 UC32-34: IoT device management
 
@@ -201,7 +201,7 @@ app.use('/payment', paymentRouter);                 // ✅ UC19, UC22: VNPay pay
 // app.use('/api/report', reportRouter);            // 🔄 UC8-9, UC15, UC17: Reports API
 // app.use('/api/notification', notificationRouter); // 🔄 UC10: Notifications API
 // app.use('/api/premium', premiumRouter);          // 🔄 UC14-23: Premium features API
-// app.use('/api/ai', aiRouter);                    // 🔄 UC17-18, UC20-21, UC23, UC30: AI API
+app.use('/api/ai', aiRouter);                    // ✅ UC17-18, UC20-21, UC23, UC30: AI API
 // app.use('/api/admin', adminRouter);              // 🔄 UC24-31: Admin API
 // app.use('/api/iot', iotRouter);                  // 🔄 UC32-34: IoT API
 
