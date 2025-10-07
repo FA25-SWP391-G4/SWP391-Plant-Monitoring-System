@@ -201,7 +201,8 @@ app.use('/payment', paymentRouter);                 // ✅ UC19, UC22: VNPay pay
 // app.use('/api/report', reportRouter);            // 🔄 UC8-9, UC15, UC17: Reports API
 // app.use('/api/notification', notificationRouter); // 🔄 UC10: Notifications API
 // app.use('/api/premium', premiumRouter);          // 🔄 UC14-23: Premium features API
-// app.use('/api/ai', aiRouter);                    // 🔄 UC17-18, UC20-21, UC23, UC30: AI API
+const aiRouter = require('./routes/ai');
+app.use('/api/ai', aiRouter);                    // 🔄 UC17-18, UC20-21, UC23, UC30: AI API
 // app.use('/api/admin', adminRouter);              // 🔄 UC24-31: Admin API
 // app.use('/api/iot', iotRouter);                  // 🔄 UC32-34: IoT API
 

@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kiểm tra tính năng AI</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #2c7d59;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+        .section h2 {
+            color: #2c7d59;
+            margin-top: 0;
+        }
+        input, textarea, button, select {
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+        }
+        button {
+            background-color: #2c7d59;
+            color: white;
+            cursor: pointer;
+            border: none;
+        }
+        button:hover {
+            background-color: #1e5c3f;
+        }
+        .chat-container {
+            display: flex;
+            flex-direction: column;
+        }
+        .chat-messages {
+            height: 300px;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+            padding: 10px;
+            margin-bottom: 10px;
+            background-color: #f9f9f9;
+        }
+        .message {
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 8px;
+        }
+        .user-message {
+            background-color: #e1f5fe;
+            align-self: flex-end;
+            margin-left: 20%;
+        }
+        .ai-message {
+            background-color: #f0f4c3;
+            align-self: flex-start;
+            margin-right: 20%;
+        }
+        .input-group {
+            display: flex;
+        }
+        .input-group input {
+            flex-grow: 1;
+            margin-right: 10px;
+        }
+        .result {
+            margin-top: 15px;
+            padding: 15px;
+            background-color: #f0f4c3;
+            border-radius: 8px;
+            display: none;
+        }
+        .plant-card {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            background-color: #f9f9f9;
+        }
+        .plant-card h3 {
+            margin-top: 0;
+            color: #2c7d59;
+        }
+        .status-good {
+            color: green;
+            font-weight: bold;
+        }
+        .status-warning {
+            color: orange;
+            font-weight: bold;
+        }
+        .status-bad {
+            color: red;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Kiểm tra tính năng AI</h1>
+        
+        <!-- Chatbot Section -->
+        <div class="section">
+            <h2>Trò chuyện với AI</h2>
+            <div class="chat-container">
+                <div class="chat-messages" id="chatMessages">
+                    <div class="message ai-message">Xin chào! Tôi là trợ lý AI chăm sóc cây trồng. Tôi có thể giúp gì cho bạn?</div>
+                </div>
+                <div class="input-group">
+                    <input type="text" id="chatInput" placeholder="Nhập tin nhắn của bạn...">
+                    <button onclick="sendChatMessage()">Gửi</button>
+                </div>
+                <button onclick="clearChat()" style="margin-top: 10px;">Xóa lịch sử chat</button>
+            </div>
+        </div>
+        
+        <!-- Plant Watering Prediction Section -->
+        <div class="section">
+            <h2>Dự đoán nhu cầu tưới nước</h2>
+            <div>
+                <label for="plantSelect">Chọn cây:</label>
+                <select id="plantSelect">
+                    <option value="1">Cây xương rồng</option>
+                    <option value="2">Cây hoa hồng</option>
+                    <option value="3">Cây húng quế</option>
+                </select>
+                <button onclick="predictWatering()">Dự đoán</button>
+            </div>
+            <div class="result" id="wateringResult"></div>
+        </div>
+        
+        <!-- Plant Health Analysis Section -->
+        <div class="section">
+            <h2>Phân tích sức khỏe cây trồng</h2>
+            <div>
+                <label for="healthPlantSelect">Chọn cây:</label>
+                <select id="healthPlantSelect">
+                    <option value="1">Cây xương rồng</option>
+                    <option value="2">Cây hoa hồng</option>
+                    <option value="3">Cây húng quế</option>
+                </select>
+                <button onclick="analyzeHealth()">Phân tích</button>
+            </div>
+            <div class="result" id="healthResult"></div>
+        </div>
+        
+        <!-- Watering Schedule Optimization Section -->
+        <div class="section">
+            <h2>Tối ưu hóa lịch tưới nước</h2>
+            <button onclick="optimizeWateringSchedule()">Tạo lịch tưới nước tối ưu</button>
+            <div class="result" id="scheduleResult"></div>
+        </div>
+    </div>
+
+    <script>
+        // Dữ liệu mẫu cho chatbot thông minh hơn
+        const mockData = {
+            chat: {
+                // Các câu hỏi thường gặp và câu trả lời tương ứng
+                faq: {
+                    "xin chào": ["Xin chào! Tôi là trợ lý AI chăm sóc cây trồng. Tôi có thể giúp gì cho bạn hôm nay?", "Chào bạn! Rất vui được gặp bạn. Bạn cần tư vấn về cây trồng nào?"],
+                    "chào": ["Chào bạn! Tôi là trợ lý AI chăm sóc cây trồng. Bạn cần hỗ trợ gì về cây trồng?", "Xin chào! Tôi có thể giúp bạn với các vấn đề về chăm sóc cây trồng. Bạn đang trồng loại cây nào?"],
+                    "cây xương rồng": ["Cây xương rồng cần ít nước, nhiều ánh sáng và đất thoát nước tốt. Bạn nên tưới khoảng 1-2 lần/tháng và đặt ở nơi có nhiều ánh sáng.", "Xương rồng là loại cây dễ chăm sóc, chịu hạn tốt. Chúng cần đất thoát nước tốt và ánh sáng đầy đủ. Tránh tưới quá nhiều nước sẽ gây thối rễ."],
+                    "cây hoa hồng": ["Hoa hồng cần được tưới đều đặn, nhiều ánh sáng và đất giàu dinh dưỡng. Nên tưới vào gốc, tránh làm ướt lá để phòng bệnh. Bạn có thể bón phân 2-3 tháng/lần.", "Hoa hồng là loại cây ưa nắng, cần ít nhất 6 giờ nắng mỗi ngày. Đất trồng cần thoát nước tốt nhưng giữ ẩm. Nên cắt tỉa thường xuyên để kích thích ra hoa."],
+                    "cây húng quế": ["Húng quế cần nhiều nước, ánh sáng vừa phải và đất thoát nước tốt. Nên tưới khi đất khô và đặt ở nơi có ánh sáng nhưng không quá gắt.", "Húng quế là loại thảo mộc dễ trồng, cần nước đều đặn và ánh sáng vừa phải. Bạn có thể thu hoạch lá thường xuyên để kích thích cây phát triển tốt hơn."],
+                    "thiếu nước": ["Dấu hiệu thiếu nước bao gồm lá héo, khô và chuyển màu vàng. Thân cây có thể nhăn nheo, mềm. Bạn nên tăng tần suất tưới nước, đặc biệt trong thời tiết nóng.", "Khi cây thiếu nước, lá sẽ héo rũ, khô cứng hoặc chuyển vàng từ mép vào. Đất sẽ khô và có thể nứt nẻ. Bạn nên điều chỉnh lịch tưới phù hợp với từng loại cây."],
+                    "thừa nước": ["Dấu hiệu thừa nước bao gồm lá vàng, thối rễ và mốc trên đất. Bạn nên giảm tần suất tưới và đảm bảo đất thoát nước tốt.", "Khi cây bị tưới quá nhiều, lá dưới sẽ chuyển vàng, rễ có mùi hôi và có thể xuất hiện nấm mốc trên bề mặt đất. Hãy để đất khô hoàn toàn trước khi tưới lại."],
+                    "phân bón": ["Phân bón giúp cây phát triển khỏe mạnh. Tùy loại cây mà có cách bón phân khác nhau. Thông thường, nên bón phân 2-3 tháng/lần với cây lâu năm và 1 tháng/lần với cây ngắn ngày.", "Có nhiều loại phân bón như phân hữu cơ, phân NPK, phân vi sinh. Bạn nên chọn loại phù hợp với từng giai đoạn phát triển của cây. Không nên bón quá nhiều phân sẽ làm cháy rễ cây."],
+                    "sâu bệnh": ["Để phòng trừ sâu bệnh, bạn nên kiểm tra cây thường xuyên, đảm bảo thông thoáng, tránh tưới nước lên lá. Có thể dùng xà phòng loãng hoặc dầu neem để xử lý sâu bệnh nhẹ.", "Khi phát hiện sâu bệnh, hãy cách ly cây bị nhiễm, cắt bỏ phần bị hại và sử dụng thuốc phòng trừ phù hợp. Nên ưu tiên các biện pháp sinh học trước khi dùng hóa chất."],
+                    "ánh sáng": ["Ánh sáng rất quan trọng đối với cây trồng. Tùy loại cây mà nhu cầu ánh sáng khác nhau. Cây ưa sáng cần ít nhất 6 giờ nắng/ngày, cây ưa bóng râm chỉ cần ánh sáng gián tiếp.", "Thiếu ánh sáng, cây sẽ mọc cao nhưng yếu, lá nhỏ và xanh nhạt. Thừa ánh sáng, lá sẽ bị cháy, chuyển vàng hoặc nâu. Bạn nên điều chỉnh vị trí đặt cây cho phù hợp."]
+                },
+                
+                // Phản hồi thông minh dựa trên ngữ cảnh
+                contextResponses: [
+                    {
+                        keywords: ["tưới", "nước", "khô", "ẩm"],
+                        responses: [
+                            "Việc tưới nước đúng cách rất quan trọng. Mỗi loại cây có nhu cầu nước khác nhau. Bạn nên kiểm tra độ ẩm của đất trước khi tưới.",
+                            "Tưới nước vào buổi sáng sớm hoặc chiều muộn là tốt nhất. Tránh tưới vào lúc nắng gắt để giảm bay hơi và sốc nhiệt cho cây.",
+                            "Thay vì tưới thường xuyên với lượng nước ít, bạn nên tưới sâu và ít thường xuyên hơn để kích thích rễ phát triển sâu."
+                        ]
+                    },
+                    {
+                        keywords: ["phân", "bón", "dinh dưỡng", "chất"],
+                        responses: [
+                            "Bón phân cân đối giúp cây phát triển khỏe mạnh. Nên bón phân khi đất hơi ẩm và tránh bón vào những ngày nắng gắt.",
+                            "Phân hữu cơ là lựa chọn an toàn cho hầu hết các loại cây. Nó cải thiện cấu trúc đất và cung cấp dinh dưỡng từ từ.",
+                            "Nếu lá cây vàng từ gốc lên ngọn, có thể cây đang thiếu đạm. Nếu lá tím hoặc đỏ, có thể thiếu lân. Lá vàng nhưng gân lá vẫn xanh thường do thiếu sắt."
+                        ]
+                    },
+                    {
+                        keywords: ["bệnh", "sâu", "côn trùng", "nấm", "mốc"],
+                        responses: [
+                            "Phòng bệnh hơn chữa bệnh. Đảm bảo thông thoáng, tránh tưới nước lên lá và không để cây quá gần nhau.",
+                            "Nhiều loại côn trùng có lợi như ong, bọ rùa giúp kiểm soát sâu hại. Hãy cân nhắc trước khi sử dụng thuốc trừ sâu.",
+                            "Nếu phát hiện bệnh, hãy cắt bỏ phần bị nhiễm và cách ly cây. Có thể dùng dung dịch xà phòng loãng hoặc dầu neem để xử lý sâu bệnh nhẹ."
+                        ]
+                    },
+                    {
+                        keywords: ["ánh sáng", "nắng", "bóng râm", "bóng mát"],
+                        responses: [
+                            "Ánh sáng ảnh hưởng lớn đến sự phát triển của cây. Cây ưa sáng thường cần ít nhất 6 giờ nắng trực tiếp mỗi ngày.",
+                            "Nếu cây có biểu hiện cao lêu nghêu, lá nhỏ và xanh nhạt, có thể cây đang thiếu ánh sáng.",
+                            "Cây bị cháy lá thường do tiếp xúc với ánh nắng trực tiếp quá mạnh. Bạn có thể dùng lưới che nắng hoặc di chuyển cây vào vị trí có ánh sáng gián tiếp."
+                        ]
+                    },
+                    {
+                        keywords: ["đất", "giá thể", "trồng", "chậu"],
+                        responses: [
+                            "Đất trồng tốt cần thoát nước tốt nhưng vẫn giữ được độ ẩm. Bạn có thể trộn đất vườn với phân trùn quế và cát để cải thiện cấu trúc đất.",
+                            "Khi trồng cây trong chậu, hãy đảm bảo chậu có lỗ thoát nước và lót một lớp sỏi ở đáy chậu để tránh úng nước.",
+                            "Nên thay đất cho cây trồng trong chậu 1-2 năm/lần để bổ sung dinh dưỡng và cải thiện cấu trúc đất."
+                        ]
+                    }
+                ],
+                
+                // Các phản hồi chung khi không tìm thấy câu trả lời phù hợp
+                generalResponses: [
+                    "Cảm ơn câu hỏi của bạn. Để tư vấn chính xác hơn, bạn có thể cho tôi biết thêm về loại cây bạn đang trồng không?",
+                    "Đó là một câu hỏi hay. Tôi đang phân tích thông tin để đưa ra lời khuyên phù hợp nhất cho bạn.",
+                    "Tôi hiểu vấn đề bạn đang gặp phải. Để chăm sóc cây tốt nhất, bạn nên chú ý đến nhu cầu riêng của từng loại cây.",
+                    "Chăm sóc cây trồng đòi hỏi sự kiên nhẫn và quan sát. Bạn có thể chia sẻ thêm về điều kiện môi trường nơi bạn trồng cây không?",
+                    "Mỗi loại cây có nhu cầu chăm sóc khác nhau. Tôi sẽ cố gắng cung cấp thông tin phù hợp nhất với tình huống của bạn."
+                ]
+            },
+            plants: {
+                1: {
+                    name: "Cây xương rồng",
+                    watering: {
+                        shouldWater: false,
+                        confidence: 0.85,
+                        recommendedAmount: 50,
+                        nextWateringTime: new Date(Date.now() + 1000 * 60 * 60 * 24 * 7),
+                        currentSoilMoisture: 45
+                    },
+                    health: {
+                        healthScore: 85,
+                        status: "Tốt",
+                        issues: [],
+                        recommendations: ["Tiếp tục chế độ chăm sóc hiện tại"]
+                    }
+                },
+                2: {
+                    name: "Cây hoa hồng",
+                    watering: {
+                        shouldWater: true,
+                        confidence: 0.9,
+                        recommendedAmount: 200,
+                        nextWateringTime: new Date(Date.now() + 1000 * 60 * 60 * 24 * 2),
+                        currentSoilMoisture: 30
+                    },
+                    health: {
+                        healthScore: 65,
+                        status: "Cần chú ý",
+                        issues: ["Thiếu nước", "Có dấu hiệu sâu bệnh"],
+                        recommendations: ["Tăng lượng nước", "Kiểm tra và xử lý sâu bệnh", "Bổ sung phân bón"]
+                    }
+                },
+                3: {
+                    name: "Cây húng quế",
+                    watering: {
+                        shouldWater: true,
+                        confidence: 0.75,
+                        recommendedAmount: 150,
+                        nextWateringTime: new Date(Date.now() + 1000 * 60 * 60 * 24 * 3),
+                        currentSoilMoisture: 35
+                    },
+                    health: {
+                        healthScore: 75,
+                        status: "Bình thường",
+                        issues: ["Thiếu ánh sáng"],
+                        recommendations: ["Di chuyển cây đến nơi có nhiều ánh sáng hơn", "Tưới nước đều đặn"]
+                    }
+                }
+            },
+            schedule: [
+                {
+                    plantId: 1,
+                    plantName: "Cây xương rồng",
+                    wateringTime: new Date(Date.now() + 1000 * 60 * 60 * 24 * 7),
+                    recommendedAmount: 50
+                },
+                {
+                    plantId: 2,
+                    plantName: "Cây hoa hồng",
+                    wateringTime: new Date(Date.now() + 1000 * 60 * 60 * 24 * 2),
+                    recommendedAmount: 200
+                },
+                {
+                    plantId: 3,
+                    plantName: "Cây húng quế",
+                    wateringTime: new Date(Date.now() + 1000 * 60 * 60 * 24 * 3),
+                    recommendedAmount: 150
+                }
+            ]
+        };
+
+        // Chat functionality with improved logic
+        function sendChatMessage() {
+            const chatInput = document.getElementById('chatInput');
+            const message = chatInput.value.trim();
+            
+            if (message) {
+                // Add user message
+                addMessage(message, 'user-message');
+                
+                // Simulate AI response with intelligent processing
+                setTimeout(() => {
+                    // Find the best response based on message content
+                    const response = findBestResponse(message);
+                    addMessage(response, 'ai-message');
+                }, 1000);
+                
+                chatInput.value = '';
+            }
+        }
+        
+        // Function to find the most appropriate response based on message content
+        function findBestResponse(message) {
+            const messageLower = message.toLowerCase();
+            
+            // Check FAQ for exact matches
+            for (const [key, responses] of Object.entries(mockData.chat.faq)) {
+                if (messageLower.includes(key)) {
+                    // Return a random response for this keyword
+                    return responses[Math.floor(Math.random() * responses.length)];
+                }
+            }
+            
+            // Check context-based responses
+            for (const contextItem of mockData.chat.contextResponses) {
+                for (const keyword of contextItem.keywords) {
+                    if (messageLower.includes(keyword)) {
+                        // Return a random response for this context
+                        return contextItem.responses[Math.floor(Math.random() * contextItem.responses.length)];
+                    }
+                }
+            }
+            
+            // Simple semantic analysis
+            if (messageLower.includes('?') || 
+                messageLower.includes('làm sao') || 
+                messageLower.includes('như thế nào') || 
+                messageLower.includes('tại sao') || 
+                messageLower.includes('vì sao') ||
+                messageLower.includes('giúp') ||
+                messageLower.includes('hỏi')) {
+                // This seems to be a question
+                
+                // Check what topic the question relates to
+                if (messageLower.includes('tưới') || messageLower.includes('nước')) {
+                    return mockData.chat.contextResponses[0].responses[Math.floor(Math.random() * mockData.chat.contextResponses[0].responses.length)];
+                } else if (messageLower.includes('phân') || messageLower.includes('dinh dưỡng')) {
+                    return mockData.chat.contextResponses[1].responses[Math.floor(Math.random() * mockData.chat.contextResponses[1].responses.length)];
+                } else if (messageLower.includes('bệnh') || messageLower.includes('sâu')) {
+                    return mockData.chat.contextResponses[2].responses[Math.floor(Math.random() * mockData.chat.contextResponses[2].responses.length)];
+                } else if (messageLower.includes('ánh sáng') || messageLower.includes('nắng')) {
+                    return mockData.chat.contextResponses[3].responses[Math.floor(Math.random() * mockData.chat.contextResponses[3].responses.length)];
+                } else if (messageLower.includes('đất') || messageLower.includes('trồng')) {
+                    return mockData.chat.contextResponses[4].responses[Math.floor(Math.random() * mockData.chat.contextResponses[4].responses.length)];
+                }
+            }
+            
+            // Emotion detection
+            if (messageLower.includes('cảm ơn') || messageLower.includes('thank')) {
+                return "Rất vui khi được giúp bạn! Bạn có câu hỏi nào khác về chăm sóc cây trồng không?";
+            } else if (messageLower.includes('không hiểu') || messageLower.includes('khó hiểu')) {
+                return "Tôi xin lỗi nếu câu trả lời chưa rõ ràng. Bạn có thể nêu cụ thể hơn về vấn đề bạn đang gặp phải với cây trồng không?";
+            }
+            
+            // If no suitable response is found, return a general response
+            return mockData.chat.generalResponses[Math.floor(Math.random() * mockData.chat.generalResponses.length)];
+        }
+
+        function addMessage(message, className) {
+            const chatMessages = document.getElementById('chatMessages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${className}`;
+            messageDiv.textContent = message;
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function clearChat() {
+            const chatMessages = document.getElementById('chatMessages');
+            chatMessages.innerHTML = '<div class="message ai-message">Lịch sử chat đã được xóa. Tôi có thể giúp gì cho bạn?</div>';
+        }
+
+        // Watering prediction
+        function predictWatering() {
+            const plantId = document.getElementById('plantSelect').value;
+            const plant = mockData.plants[plantId];
+            const result = document.getElementById('wateringResult');
+            
+            result.innerHTML = `
+                <h3>${plant.name}</h3>
+                <p><strong>Cần tưới nước:</strong> ${plant.watering.shouldWater ? 'Có' : 'Không'}</p>
+                <p><strong>Độ tin cậy:</strong> ${plant.watering.confidence * 100}%</p>
+                <p><strong>Lượng nước đề xuất:</strong> ${plant.watering.recommendedAmount}ml</p>
+                <p><strong>Thời gian tưới tiếp theo:</strong> ${plant.watering.nextWateringTime.toLocaleString()}</p>
+                <p><strong>Độ ẩm đất hiện tại:</strong> ${plant.watering.currentSoilMoisture}%</p>
+            `;
+            
+            result.style.display = 'block';
+        }
+
+        // Health analysis
+        function analyzeHealth() {
+            const plantId = document.getElementById('healthPlantSelect').value;
+            const plant = mockData.plants[plantId];
+            const result = document.getElementById('healthResult');
+            
+            let statusClass = '';
+            if (plant.health.status === 'Tốt') {
+                statusClass = 'status-good';
+            } else if (plant.health.status === 'Cần chú ý') {
+                statusClass = 'status-warning';
+            } else {
+                statusClass = 'status-bad';
+            }
+            
+            let issuesHtml = '<p><strong>Vấn đề:</strong> ';
+            if (plant.health.issues.length === 0) {
+                issuesHtml += 'Không có vấn đề';
+            } else {
+                issuesHtml += plant.health.issues.join(', ');
+            }
+            issuesHtml += '</p>';
+            
+            let recommendationsHtml = '<p><strong>Đề xuất:</strong></p><ul>';
+            plant.health.recommendations.forEach(rec => {
+                recommendationsHtml += `<li>${rec}</li>`;
+            });
+            recommendationsHtml += '</ul>';
+            
+            result.innerHTML = `
+                <h3>${plant.name}</h3>
+                <p><strong>Điểm sức khỏe:</strong> ${plant.health.healthScore}/100</p>
+                <p><strong>Trạng thái:</strong> <span class="${statusClass}">${plant.health.status}</span></p>
+                ${issuesHtml}
+                ${recommendationsHtml}
+            `;
+            
+            result.style.display = 'block';
+        }
+
+        // Watering schedule optimization
+        function optimizeWateringSchedule() {
+            const result = document.getElementById('scheduleResult');
+            
+            let scheduleHtml = '';
+            mockData.schedule.forEach(item => {
+                scheduleHtml += `
+                    <div class="plant-card">
+                        <h3>${item.plantName}</h3>
+                        <p><strong>Thời gian tưới:</strong> ${item.wateringTime.toLocaleString()}</p>
+                        <p><strong>Lượng nước đề xuất:</strong> ${item.recommendedAmount}ml</p>
+                    </div>
+                `;
+            });
+            
+            result.innerHTML = `
+                <h3>Lịch tưới nước tối ưu</h3>
+                ${scheduleHtml}
+            `;
+            
+            result.style.display = 'block';
+        }
+
+        // Add event listener for Enter key in chat input
+        document.getElementById('chatInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                sendChatMessage();
+            }
+        });
+    </script>
+</body>
+</html>
