@@ -1,88 +1,134 @@
 # Hướng dẫn triển khai và kiểm thử local
 
-## Cài đặt và chạy microservice AI
+## Yêu cầu hệ thống
 
-### Cài đặt thủ công
+- Node.js (phiên bản 14.x hoặc cao hơn)
+- Python 3.8+ (cho AI service)
+- MongoDB (cho lưu trữ dữ liệu)
+- PostgreSQL (cho một số tính năng nâng cao)
 
-1. Di chuyển vào thư mục AI service:
+## Cài đặt và chạy Backend
+
+1. **Cài đặt dependencies**
+
+```bash
+npm install
+```
+
+2. **Cấu hình môi trường**
+
+Tạo file `.env` tại thư mục gốc với nội dung sau:
+
+```
+PORT=3010
+MONGODB_URI=mongodb://localhost:27017/plant_monitoring
+JWT_SECRET=your_jwt_secret_key
+EMAIL_USER=your_email@gmail.com
+EMAIL_PASS=your_email_password
+```
+
+3. **Khởi động server**
+
+```bash
+node ./bin/www
+```
+
+Sau khi khởi động thành công, server sẽ chạy tại địa chỉ: http://localhost:3010
+
+## Cài đặt và chạy Frontend
+
+1. **Di chuyển vào thư mục client**
+
+```bash
+cd client
+```
+
+2. **Cài đặt dependencies**
+
+```bash
+npm install
+```
+
+3. **Khởi động ứng dụng React**
+
+```bash
+npm start
+```
+
+Sau khi khởi động thành công, ứng dụng sẽ chạy tại địa chỉ: http://localhost:3000
+
+## Cài đặt và chạy AI Service
+
+1. **Tạo và kích hoạt môi trường ảo Python**
+
+```bash
+# Windows
+python -m venv .venv
+.venv\Scripts\activate
+
+# Linux/Mac
+python3 -m venv .venv
+source .venv/bin/activate
+```
+
+2. **Cài đặt dependencies**
+
+```bash
+pip install fastapi uvicorn pandas numpy scikit-learn joblib
+```
+
+3. **Khởi động AI service**
+
 ```bash
 cd ai_service
+uvicorn main:app --reload --port 8000
 ```
 
-2. Cài đặt các thư viện Python cần thiết:
+Sau khi khởi động thành công, AI service sẽ chạy tại địa chỉ: http://localhost:8000
+
+## Chạy toàn bộ hệ thống
+
+Để chạy đồng thời cả backend và frontend, bạn có thể sử dụng lệnh sau tại thư mục gốc:
+
 ```bash
-pip install -r requirements.txt
+npm run start:dev
 ```
 
-3. Chạy FastAPI server:
+## Kiểm thử
+
+### Kiểm thử Backend
+
 ```bash
-uvicorn main:app --reload --host 0.0.0.0 --port 8000
+npm test
 ```
 
-### Sử dụng Docker
+### Kiểm thử Frontend
 
-1. Xây dựng và chạy container bằng Docker Compose:
 ```bash
-docker-compose up --build
+cd client
+npm test
 ```
 
-## Kiểm thử các tính năng AI
+## Xử lý sự cố
 
-Sau khi triển khai, bạn có thể kiểm thử các tính năng AI thông qua:
+### Lỗi kết nối MongoDB
 
-### 1. Swagger UI của FastAPI
+Nếu gặp lỗi kết nối MongoDB, hãy đảm bảo:
+- MongoDB đã được cài đặt và đang chạy
+- URI kết nối trong file .env là chính xác
 
-- Truy cập: http://localhost:8000/docs
-- Thử nghiệm trực tiếp các API endpoints
+### Lỗi port đã được sử dụng
 
-### 2. Kiểm thử thông qua backend
+Nếu gặp lỗi "port already in use", hãy thay đổi cổng trong file .env hoặc dừng ứng dụng đang sử dụng cổng đó.
 
-- Đảm bảo backend đang chạy (mặc định ở cổng 3000)
-- Gửi request đến các endpoints `/api/ai/*`
+### Lỗi AI service
 
-### 3. Kiểm thử thông qua frontend
+Nếu AI service không hoạt động:
+- Kiểm tra xem Python và các thư viện cần thiết đã được cài đặt
+- Đảm bảo các file model trong thư mục `ai_service/trained_models` tồn tại
 
-- Truy cập các trang có tích hợp tính năng AI
-- Thử nghiệm các chức năng như chatbot, phân tích hình ảnh, dự báo tưới cây, v.v.
+## Tài liệu tham khảo
 
-## Các endpoints AI chính
-
-1. **Dự báo nhu cầu tưới cây thông minh**
-   - Endpoint: `/api/ai/watering-prediction`
-   - Method: POST
-
-2. **Phân tích và cảnh báo sớm tình trạng cây trồng**
-   - Endpoint: `/api/ai/plant-analysis`
-   - Method: POST
-
-3. **Tối ưu lịch tưới tự động**
-   - Endpoint: `/api/ai/watering-schedule`
-   - Method: POST
-
-4. **Phân tích dữ liệu lịch sử và đề xuất chăm sóc**
-   - Endpoint: `/api/ai/historical-analysis`
-   - Method: POST
-
-5. **Nhận diện tình trạng cây qua ảnh**
-   - Endpoint: `/api/ai/image-recognition`
-   - Method: POST (multipart/form-data)
-
-6. **Chatbot hỗ trợ người dùng**
-   - Endpoint: `/api/ai/chatbot`
-   - Method: POST
-
-## Xử lý lỗi phổ biến
-
-1. **Lỗi kết nối đến AI service**
-   - Kiểm tra AI service đã chạy chưa
-   - Kiểm tra biến môi trường `AI_SERVICE_URL` trong backend
-
-2. **Lỗi thiếu thư viện Python**
-   - Chạy lại `pip install -r requirements.txt`
-
-3. **Lỗi CORS**
-   - Kiểm tra cấu hình CORS trong FastAPI và backend
-
-4. **Lỗi Docker**
-   - Kiểm tra Docker và Docker Compose đã được cài đặt
-   - Kiểm tra các cổng 8000 và 3000 không bị chiếm dụng
+- [Tài liệu API](./docs/API_DOCUMENTATION.md)
+- [Hướng dẫn tích hợp Frontend](./FRONTEND_INTEGRATION_GUIDE.md)
+- [Tổng quan về xác thực NestJS](./NESTJS-AUTH-IMPLEMENTATION.md)
