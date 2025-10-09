@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trợ lý Vườn Thông Minh</title>
+    <style>
+        :root {
+            --primary-color: #2e7d32;
+            --secondary-color: #1b5e20;
+            --light-color: #e8f5e9;
+            --warning-color: #ff9800;
+            --danger-color: #f44336;
+            --text-color: #333;
+            --border-radius: 8px;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f8fa;
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1100px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: var(--border-radius);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        h1 {
+            color: var(--primary-color);
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+            color: var(--primary-color);
+        }
+        
+        .dashboard {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .chat-section {
+            flex: 1;
+        }
+        
+        .sensor-section {
+            flex: 0 0 300px;
+            padding: 15px;
+            background-color: #f1f8e9;
+            border-radius: var(--border-radius);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+        
+        .sensor-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: var(--primary-color);
+            text-align: center;
+        }
+        
+        .sensor-data {
+            margin-bottom: 15px;
+        }
+        
+        .sensor-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            padding-bottom: 8px;
+            border-bottom: 1px dashed #ddd;
+        }
+        
+        .sensor-label {
+            font-weight: 500;
+        }
+        
+        .sensor-value {
+            font-weight: bold;
+        }
+        
+        .optimal {
+            color: var(--primary-color);
+        }
+        
+        .warning {
+            color: var(--warning-color);
+        }
+        
+        .danger {
+            color: var(--danger-color);
+        }
+        
+        .chat-container {
+            height: 350px;
+            overflow-y: auto;
+            padding: 15px;
+            background-color: #f9f9f9;
+            border-radius: var(--border-radius);
+            margin-bottom: 15px;
+            border: 1px solid #e0e0e0;
+        }
+        
+        .message {
+            margin-bottom: 15px;
+            padding: 10px 15px;
+            border-radius: 18px;
+            max-width: 70%;
+            word-wrap: break-word;
+        }
+        
+        .user-message {
+            background-color: var(--light-color);
+            color: var(--primary-color);
+            margin-left: auto;
+            border-bottom-right-radius: 5px;
+            text-align: right;
+        }
+        
+        .bot-message {
+            background-color: #fff;
+            color: var(--text-color);
+            margin-right: auto;
+            border-bottom-left-radius: 5px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+        
+        .error-message {
+            background-color: #ffebee;
+            color: #c62828;
+            border-left: 4px solid #f44336;
+            padding: 10px 15px;
+            margin-bottom: 15px;
+            border-radius: var(--border-radius);
+        }
+        
+        .warning-message {
+            background-color: #fff8e1;
+            color: #ff8f00;
+            border-left: 4px solid #ffa000;
+            padding: 10px 15px;
+            margin-bottom: 15px;
+            border-radius: var(--border-radius);
+        }
+        
+        .info-message {
+            background-color: #e3f2fd;
+            color: #1565c0;
+            border-left: 4px solid #2196f3;
+            padding: 10px 15px;
+            margin-bottom: 15px;
+            border-radius: var(--border-radius);
+        }
+        
+        .input-container {
+            display: flex;
+            gap: 10px;
+        }
+        
+        #message-input {
+            flex: 1;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 25px;
+            font-size: 16px;
+            outline: none;
+        }
+        
+        #send-button {
+            padding: 12px 20px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+        
+        #send-button:hover {
+            background-color: var(--secondary-color);
+        }
+        
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(0, 0, 0, 0.1);
+            border-radius: 50%;
+            border-top-color: #4caf50;
+            animation: spin 1s ease-in-out infinite;
+            margin-right: 10px;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .status {
+            text-align: center;
+            margin-top: 10px;
+            font-size: 14px;
+            color: #666;
+        }
+        
+        .plant-selector {
+            margin-bottom: 20px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: var(--border-radius);
+            background-color: #f9f9f9;
+        }
+        
+        .plant-selector select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+            outline: none;
+        }
+        
+        .typing-indicator {
+            display: none;
+            padding: 10px 15px;
+            background-color: #f1f1f1;
+            border-radius: 18px;
+            margin-bottom: 15px;
+            width: fit-content;
+            color: #666;
+        }
+        
+        .typing-indicator span {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            background-color: #666;
+            border-radius: 50%;
+            margin-right: 5px;
+            animation: typing 1s infinite;
+        }
+        
+        .typing-indicator span:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+        
+        .typing-indicator span:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+        
+        @keyframes typing {
+            0% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+            100% { transform: translateY(0); }
+        }
+        
+        .test-scenarios {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f5f5f5;
+            border-radius: var(--border-radius);
+        }
+        
+        .test-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: var(--primary-color);
+        }
+        
+        .test-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .test-button {
+            background-color: #e0e0e0;
+            color: var(--text-color);
+            padding: 8px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            border: none;
+            transition: background-color 0.2s, transform 0.1s;
+        }
+        
+        .test-button:hover {
+            background-color: #d0d0d0;
+            transform: translateY(-2px);
+        }
+        
+        .test-button.active {
+            background-color: var(--light-color);
+            border: 1px solid var(--primary-color);
+        }
+        
+        .plant-info {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: var(--light-color);
+            border-radius: 5px;
+        }
+        
+        .watering-history {
+            margin-top: 15px;
+            font-size: 14px;
+        }
+        
+        .watering-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: var(--primary-color);
+        }
+        
+        .watering-item {
+            padding: 5px 0;
+            border-bottom: 1px dotted #ddd;
+        }
+        
+        .performance-stats {
+            font-size: 0.8rem;
+            color: #666;
+            text-align: right;
+            margin-top: 5px;
+        }
+        
+        .scenario-container {
+            margin-top: 15px;
+            border: 1px solid #ddd;
+            border-radius: var(--border-radius);
+            padding: 10px;
+        }
+        
+        .scenario-item {
+            background-color: var(--light-color);
+            padding: 10px;
+            margin-bottom: 8px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        
+        .scenario-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .scenario-title {
+            font-weight: bold;
+            color: var(--primary-color);
+            margin-bottom: 5px;
+        }
+        
+        .scenario-description {
+            font-size: 0.9rem;
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Trợ lý Vườn Thông Minh</h1>
+            <p>Hỏi đáp về chăm sóc cây trồng dựa trên dữ liệu thời gian thực</p>
+        </div>
+        
+        <div class="plant-selector">
+            <label for="plant-select">Chọn cây của bạn:</label>
+            <select id="plant-select">
+                <option value="1">Cây xương rồng</option>
+                <option value="2">Cây lưỡi hổ</option>
+                <option value="3">Cây trầu bà</option>
+                <option value="4">Cây hoa hồng</option>
+            </select>
+            <button id="refresh-data">Làm mới dữ liệu</button>
+        </div>
+        
+        <div class="dashboard">
+            <div class="chat-section">
+                <div class="chat-container" id="chat-container">
+                    <div class="message bot-message">
+                        Xin chào! Tôi là trợ lý vườn thông minh sử dụng Mistral 7B. Tôi có thể giúp bạn chăm sóc cây trồng dựa trên dữ liệu cảm biến thời gian thực. Hãy chọn cây của bạn và đặt câu hỏi!
+                    </div>
+                    <div class="typing-indicator" id="typing-indicator">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+                </div>
+                
+                <div class="input-container">
+                    <input type="text" id="message-input" placeholder="Nhập tin nhắn của bạn..." autocomplete="off">
+                    <button id="send-button">Gửi</button>
+                </div>
+                <div class="status" id="status"><div class="status-indicator">Sẵn sàng</div></div>
+                
+                <div class="test-scenarios">
+                    <div class="test-title">Các câu hỏi mẫu:</div>
+                    <div class="test-buttons">
+                        <button class="test-button">Cây của tôi cần tưới nước không?</button>
+                        <button class="test-button">Nhiệt độ hiện tại có phù hợp không?</button>
+                        <button class="test-button">Cây của tôi cần ánh sáng thế nào?</button>
+                        <button class="test-button">Lần cuối tưới nước là khi nào?</button>
+                        <button class="test-button">Có vấn đề gì với cây của tôi không?</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="sensor-section">
+                <div class="sensor-title">Dữ liệu cảm biến</div>
+                <div class="sensor-data" id="sensor-data">
+                    <div class="sensor-item">
+                        <span class="sensor-label">Độ ẩm đất:</span>
+                        <span class="sensor-value">Đang tải...</span>
+                    </div>
+                    <div class="sensor-item">
+                        <span class="sensor-label">Nhiệt độ:</span>
+                        <span class="sensor-value">Đang tải...</span>
+                    </div>
+                    <div class="sensor-item">
+                        <span class="sensor-label">Ánh sáng:</span>
+                        <span class="sensor-value">Đang tải...</span>
+                    </div>
+                    <div class="sensor-item">
+                        <span class="sensor-label">Độ ẩm không khí:</span>
+                        <span class="sensor-value">Đang tải...</span>
+                    </div>
+                </div>
+                
+                <div class="plant-info" id="plant-info">
+                    <div class="sensor-title">Thông tin cây trồng</div>
+                    <div class="sensor-item">
+                        <span class="sensor-label">Tên cây:</span>
+                        <span class="sensor-value" id="plant-name">Đang tải...</span>
+                    </div>
+                    <div class="sensor-item">
+                        <span class="sensor-label">Loại cây:</span>
+                        <span class="sensor-value" id="plant-type">Đang tải...</span>
+                    </div>
+                    <div class="sensor-item">
+                        <span class="sensor-label">Mô tả:</span>
+                        <span class="sensor-value" id="plant-description">Đang tải...</span>
+                    </div>
+                </div>
+                
+                <div class="watering-history" id="watering-history">
+                    <div class="watering-title">Lịch sử tưới nước</div>
+                    <div id="watering-list">Đang tải...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const chatContainer = document.getElementById('chat-container');
+        const messageInput = document.getElementById('message-input');
+        const sendButton = document.getElementById('send-button');
+        const statusElement = document.getElementById('status');
+        const plantSelect = document.getElementById('plant-select');
+        const refreshButton = document.getElementById('refresh-data');
+        const typingIndicator = document.getElementById('typing-indicator');
+        const testButtons = document.querySelectorAll('.test-button');
+        
+        // Tạo ID người dùng ngẫu nhiên nếu chưa có
+        let userId = localStorage.getItem('chatbot_user_id');
+        if (!userId) {
+            userId = 'user_' + Math.random().toString(36).substring(2, 15);
+            localStorage.setItem('chatbot_user_id', userId);
+        }
+        
+        // Lưu trữ lịch sử chat
+        let chatHistory = [];
+        
+        // Tải dữ liệu cảm biến khi trang được tải
+        loadSensorData();
+        
+        // Xử lý khi người dùng thay đổi cây trồng
+        plantSelect.addEventListener('change', loadSensorData);
+        
+        // Xử lý khi người dùng nhấn nút làm mới
+        refreshButton.addEventListener('click', loadSensorData);
+        
+        // Xử lý khi nhấn nút gửi
+        sendButton.addEventListener('click', sendMessage);
+        
+        // Xử lý khi nhấn Enter
+        messageInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+        
+        // Xử lý khi người dùng nhấn các nút câu hỏi mẫu
+        testButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                messageInput.value = this.textContent;
+                sendMessage();
+            });
+        });
+        
+        function loadSensorData() {
+            const plantId = plantSelect.value;
+            
+            // Hiển thị "Đang tải..." cho tất cả các trường dữ liệu
+            document.querySelectorAll('.sensor-value').forEach(el => {
+                el.textContent = 'Đang tải...';
+                el.className = 'sensor-value';
+            });
+            
+            document.getElementById('watering-list').textContent = 'Đang tải...';
+            
+            // Tải dữ liệu cảm biến
+            fetch(`/api/sensor-data?plantId=${plantId}`)
+                .then(response => response.json())
+                .then(data => {
+                    updateSensorDisplay(data);
+                })
+                .catch(error => {
+                    console.error('Error loading sensor data:', error);
+                    // Sử dụng dữ liệu mẫu nếu API thất bại
+                    simulateSensorData(plantId);
+                });
+        }
+        
+        function simulateSensorData(plantId) {
+            // Giả lập dữ liệu cảm biến từ phía client
+            // Trong thực tế, dữ liệu này sẽ được lấy từ server
+            
+            // Giả lập gọi API để lấy dữ liệu cảm biến
+            fetch(`/api/chatbot/simulate-data?plantId=${plantId}`)
+                .then(response => response.json())
+                .then(data => {
+                    updateSensorDisplay(data);
+                })
+                .catch(error => {
+                    console.error('Error simulating data:', error);
+                    // Nếu cả API giả lập cũng thất bại, hiển thị thông báo lỗi
+                    document.querySelectorAll('.sensor-value').forEach(el => {
+                        el.textContent = 'Không thể tải dữ liệu';
+                    });
+                    // Hiển thị thông báo lỗi trong khung chat
+                    addMessage('Không thể tải dữ liệu cảm biến. Vui lòng thử lại sau.', 'bot', 'warning');
+                });
+        }
+        
+        function updateSensorDisplay(data) {
+            if (!data) return;
+            
+            // Cập nhật thông tin cây trồng
+            if (data.plantInfo) {
+                document.getElementById('plant-name').textContent = data.plantInfo.name || 'Không có thông tin';
+                document.getElementById('plant-type').textContent = data.plantInfo.plant_type || 'Không có thông tin';
+                document.getElementById('plant-description').textContent = data.plantInfo.description || 'Không có mô tả';
+                
+                // Lưu thông tin tối ưu để so sánh
+                window.optimalValues = {
+                    moisture: data.plantInfo.optimal_moisture,
+                    temperature: data.plantInfo.optimal_temperature,
+                    light: data.plantInfo.optimal_light
+                };
+            }
+            
+            // Cập nhật dữ liệu cảm biến
+            if (data.sensorData) {
+                const sensorData = data.sensorData;
+                
+                // Cập nhật độ ẩm đất
+                const moistureEl = document.querySelector('.sensor-item:nth-child(1) .sensor-value');
+                moistureEl.textContent = `${sensorData.moisture}%`;
+                setStatusClass(moistureEl, sensorData.moisture, window.optimalValues.moisture, 15);
+                
+                // Cập nhật nhiệt độ
+                const tempEl = document.querySelector('.sensor-item:nth-child(2) .sensor-value');
+                tempEl.textContent = `${sensorData.temperature}°C`;
+                setStatusClass(tempEl, sensorData.temperature, window.optimalValues.temperature, 5);
+                
+                // Cập nhật ánh sáng
+                const lightEl = document.querySelector('.sensor-item:nth-child(3) .sensor-value');
+                lightEl.textContent = `${sensorData.light} lux`;
+                setStatusClass(lightEl, sensorData.light, window.optimalValues.light, 1000);
+                
+                // Cập nhật độ ẩm không khí
+                const humidityEl = document.querySelector('.sensor-item:nth-child(4) .sensor-value');
+                humidityEl.textContent = `${sensorData.humidity}%`;
+                // Độ ẩm không khí thường ở mức 40-70% là tốt
+                if (sensorData.humidity >= 40 && sensorData.humidity <= 70) {
+                    humidityEl.className = 'sensor-value optimal';
+                } else if (sensorData.humidity >= 30 && sensorData.humidity <= 80) {
+                    humidityEl.className = 'sensor-value warning';
+                } else {
+                    humidityEl.className = 'sensor-value danger';
+                }
+            }
+            
+            // Cập nhật lịch sử tưới nước
+            if (data.wateringHistory && data.wateringHistory.length > 0) {
+                const wateringList = document.getElementById('watering-list');
+                wateringList.innerHTML = '';
+                
+                data.wateringHistory.forEach(item => {
+                    const date = new Date(item.timestamp);
+                    const formattedDate = `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
+                    
+                    const wateringItem = document.createElement('div');
+                    wateringItem.className = 'watering-item';
+                    wateringItem.textContent = `${formattedDate}: ${item.amount}ml (${item.method === 'manual' ? 'Thủ công' : 'Tự động'})`;
+                    
+                    wateringList.appendChild(wateringItem);
+                });
+            } else {
+                document.getElementById('watering-list').textContent = 'Không có dữ liệu';
+            }
+        }
+        
+        function setStatusClass(element, value, optimalValue, threshold) {
+            if (Math.abs(value - optimalValue) <= threshold * 0.5) {
+                element.className = 'sensor-value optimal';
+            } else if (Math.abs(value - optimalValue) <= threshold) {
+                element.className = 'sensor-value warning';
+            } else {
+                element.className = 'sensor-value danger';
+            }
+        }
+        
+        // Hàm gửi tin nhắn
+        async function sendMessage() {
+            const message = messageInput.value.trim();
+            if (!message) return;
+            
+            // Hiển thị tin nhắn của người dùng
+            addMessage(message, 'user');
+            
+            // Xóa nội dung input
+            messageInput.value = '';
+            
+            // Hiển thị trạng thái đang xử lý
+            statusElement.innerHTML = '<div class="loading"></div> Đang xử lý...';
+            typingIndicator.style.display = 'block';
+            
+            try {
+                // Gửi tin nhắn đến API
+                const response = await fetch('/api/chatbot', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        message: message,
+                        userId: userId,
+                        plantId: plantSelect.value,
+                        language: 'vi',
+                        context: chatHistory.slice(-3) // Gửi 3 tin nhắn gần nhất làm context
+                    })
+                });
+                
+                const data = await response.json();
+                
+                // Ẩn typing indicator
+                typingIndicator.style.display = 'none';
+                
+                if (data.success) {
+                    // Hiển thị phản hồi từ chatbot
+                    addMessage(data.response, 'bot');
+                    
+                    // Hiển thị thông tin về hiệu suất nếu có
+                    if (data.responseTime) {
+                        statusElement.innerHTML = `<div class="performance-stats">Thời gian phản hồi: ${data.responseTime}ms</div>`;
+                    }
+                    
+                    // Lưu vào lịch sử chat
+                    chatHistory.push({
+                        message: message,
+                        response: data.response
+                    });
+                    
+                    // Nếu có dữ liệu cảm biến mới, cập nhật hiển thị
+                    if (data.sensorData) {
+                        updateSensorDisplay({
+                            sensorData: data.sensorData,
+                            plantInfo: data.plantInfo
+                        });
+                    }
+                } else {
+                    // Hiển thị lỗi với định dạng error-message
+                    addMessage('Xin lỗi, đã xảy ra lỗi: ' + (data.message || 'Không xác định'), 'bot', 'error');
+                }
+            } catch (error) {
+                console.error('Lỗi khi gửi tin nhắn:', error);
+                typingIndicator.style.display = 'none';
+                statusElement.textContent = 'Lỗi khi gửi tin nhắn';
+                statusElement.className = 'status-error';
+                addMessage('Xin lỗi, đã xảy ra lỗi kết nối. Vui lòng thử lại sau.', 'bot', 'error');
+            } finally {
+                // Xóa trạng thái loading
+                document.querySelector('.loading')?.remove();
+            }
+        }
+        
+        // Hàm thêm tin nhắn vào khung chat
+        function addMessage(text, sender, type = 'normal') {
+            const messageElement = document.createElement('div');
+            
+            if (type === 'error') {
+                messageElement.classList.add('error-message');
+            } else if (type === 'warning') {
+                messageElement.classList.add('warning-message');
+            } else if (type === 'info') {
+                messageElement.classList.add('info-message');
+            } else {
+                messageElement.classList.add('message');
+                messageElement.classList.add(sender === 'user' ? 'user-message' : 'bot-message');
+            }
+            
+            messageElement.textContent = text;
+            chatContainer.appendChild(messageElement);
+            
+            // Cuộn xuống tin nhắn mới nhất
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+    </script>
+</body>
+</html>
