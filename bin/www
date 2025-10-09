@@ -22,6 +22,18 @@ app.set('port', port);
 var server = http.createServer(app);
 
 /**
+ * Initialize WebSocket for real-time notifications (UC9)
+ */
+try {
+  const notificationService = require('../services/notificationService');
+  notificationService.init(server);
+  console.log('WebSocket notification service initialized');
+} catch (error) {
+  console.error('Failed to initialize notification service:', error);
+  // Continue server startup even if WebSocket initialization fails
+}
+
+/**
  * Listen on provided port, on all network interfaces.
  */
 

@@ -18,6 +18,20 @@ const NPXX_PATH = 'C:\\Program Files\\nodejs\\npx';
 // Results file
 const TEST_RESULTS_FILE = path.join(ROOT_DIR, 'test-results.md');
 
+// Test files to prioritize (key system components)
+const PRIORITY_TEST_FILES = [
+  'auth-controller.test.js',
+  'user-controller.test.js',
+  'plant-controller.test.js',
+  'sensor-controller.test.js',
+  'payment-controller.test.js',
+  'notification-controller.test.js',
+  'ai-controller.test.js',
+  'admin-controller.test.js',
+  'vnpay.test.js',
+  'language-controller.test.js'
+];
+
 // Helper function to run a command and capture output
 function runCommand(command, cwd = ROOT_DIR) {
   try {
@@ -66,14 +80,45 @@ console.log('\n=== Running Backend Tests ===');
 testResults += `## Backend Tests\n\n`;
 
 // Get list of test files
-const testFiles = fs.readdirSync(TEST_DIR)
-  .filter(file => file.endsWith('.test.js'))
+let testFiles = fs.readdirSync(TEST_DIR)
+  .filter(file => file.endsWith('.test.js') && !fs.statSync(path.join(TEST_DIR, file)).isDirectory())
   .map(file => path.join(TEST_DIR, file));
+
+// Exclude tests from the archive directory
+testFiles = testFiles.filter(file => {
+  const relativePath = path.relative(TEST_DIR, file);
+  return !relativePath.startsWith('archive');
+});
+
+// Reorder test files to prioritize key system components
+testFiles.sort((a, b) => {
+  const fileA = path.basename(a);
+  const fileB = path.basename(b);
+  
+  const indexA = PRIORITY_TEST_FILES.findIndex(f => fileA === f);
+  const indexB = PRIORITY_TEST_FILES.findIndex(f => fileB === f);
+  
+  // If both files are in priority list, sort by priority order
+  if (indexA !== -1 && indexB !== -1) {
+    return indexA - indexB;
+  }
+  
+  // If only fileA is in priority list, it comes first
+  if (indexA !== -1) return -1;
+  
+  // If only fileB is in priority list, it comes first
+  if (indexB !== -1) return 1;
+  
+  // Otherwise, sort alphabetically
+  return fileA.localeCompare(fileB);
+});
 
 console.log(`Found ${testFiles.length} test files in ${TEST_DIR}`);
 testResults += `Found ${testFiles.length} test files:\n\n`;
 testFiles.forEach(file => {
-  testResults += `- ${path.basename(file)}\n`;
+  const basename = path.basename(file);
+  const isPriority = PRIORITY_TEST_FILES.includes(basename);
+  testResults += `- ${basename}${isPriority ? ' (priority)' : ''}\n`;
 });
 testResults += '\n';
 

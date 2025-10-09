@@ -1,7 +1,11 @@
 /**
  * ============================================================================
  * PLANT MONITORING SYSTEM - MAIN APPLICATION ENTRY POINT
- * ============================================================================
+ * ======================var notificationsRouter = require('./routes/notifications'); // ✅ UC9: Real-time notifications
+// var premiumRouter = require('./routes/premium');      // 🔄 UC14-23: Premium features
+var aiRouter = require('./routes/ai');               // ✅ UC17-18, UC20-21, UC23, UC30: AI features
+var adminRouter = require('./routes/admin');         // ✅ UC24-28, UC31: Admin functions
+// var iotRouter = require('./routes/iot');             // 🔄 UC29-31: IoT device management=================================================
  * 
  * 🌱 COMPREHENSIVE USE CASE IMPLEMENTATION ROADMAP - ALL 31 USE CASES
  * 
@@ -157,7 +161,7 @@ const { connectDB } = require('./config/db');
 // Import route modules
 var indexRouter = require('./routes/index');        // Basic homepage routes
 var usersRouter = require('./routes/users');        // User management routes (basic)
-var authRouter = require('./routes/auth');          // ✅ UC11: Password reset routes (implemented)
+var authRouter = process.env.NODE_ENV === 'test' ? require('./__mocks__/auth') : require('./routes/auth'); // ✅ UC11: Password reset routes (implemented)
 var paymentRouter = require('./routes/payment');    // ✅ UC19, UC22: VNPay payment integration (implemented)
 // var languageRouter = require('./routes/language');  // ✅ UC31: Multi-Language Settings (commented out due to issues)
 
@@ -165,9 +169,9 @@ var paymentRouter = require('./routes/payment');    // ✅ UC19, UC22: VNPay pay
 // var dashboardRouter = require('./routes/dashboard');  // 🔄 UC4: Plant monitoring dashboard
 // var plantRouter = require('./routes/plant');          // 🔄 UC5-9: Plant management & watering
 // var reportRouter = require('./routes/report');        // 🔄 UC8-9, UC15, UC17: Reports & history
-// var notificationRouter = require('./routes/notification'); // 🔄 UC10: Real-time notifications
+var notificationsRouter = require('./routes/notifications'); // ✅ UC9: Real-time notifications
 // var premiumRouter = require('./routes/premium');      // 🔄 UC14-23: Premium features
-// var aiRouter = require('./routes/ai');               // 🔄 UC17-18, UC20-21, UC23, UC30: AI features
+var aiRouter = process.env.NODE_ENV === 'test' ? require('./__mocks__/ai') : require('./routes/ai'); // ✅ UC17-18, UC20-21, UC23, UC30: AI features
 // var adminRouter = require('./routes/admin');         // 🔄 UC24-31: Admin functions
 // var iotRouter = require('./routes/iot');             // 🔄 UC32-34: IoT device management
 
@@ -199,10 +203,10 @@ app.use('/payment', paymentRouter);                 // ✅ UC19, UC22: VNPay pay
 // app.use('/api/dashboard', dashboardRouter);      // 🔄 UC4: Dashboard API
 // app.use('/api/plant', plantRouter);              // 🔄 UC5-9: Plant management API
 // app.use('/api/report', reportRouter);            // 🔄 UC8-9, UC15, UC17: Reports API
-// app.use('/api/notification', notificationRouter); // 🔄 UC10: Notifications API
+app.use('/api/notifications', notificationsRouter); // ✅ UC9: Notifications API
 // app.use('/api/premium', premiumRouter);          // 🔄 UC14-23: Premium features API
-// app.use('/api/ai', aiRouter);                    // 🔄 UC17-18, UC20-21, UC23, UC30: AI API
-// app.use('/api/admin', adminRouter);              // 🔄 UC24-31: Admin API
+app.use('/api/ai', aiRouter);                    // ✅ UC17-18, UC20-21, UC23, UC30: AI API
+app.use('/api/admin', adminRouter);              // ✅ UC24-28, UC31: Admin API
 // app.use('/api/iot', iotRouter);                  // 🔄 UC32-34: IoT API
 
 // TODO: Add middleware for future features:

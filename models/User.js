@@ -38,26 +38,68 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
 class User {
-    /**
-     * USER CONSTRUCTOR
-     * Initializes user object with validation and default values
-     * SUPPORTS: UC1 (Registration), UC13 (Profile Management), UC24 (User Management),
-     * UC31: Manage Multi-Language Settings
-     */
-    constructor(userData) {
-        this.user_id = userData.user_id;
-        this.email = userData.email;
-        this.password = userData.password_hash || userData.password;
-        this.full_name = userData.full_name;
-        this.role = userData.role || 'Regular'; // Default role for UC1
-        this.notification_prefs = userData.notification_prefs;
-        this.passwordResetToken = userData.password_reset_token;
-        this.passwordResetExpires = userData.password_reset_expires;
-        this.languagePreference = userData.language_preference || 'en'; // Default language
-        this.created_at = userData.created_at;
-    }
+/**
+ * USER CONSTRUCTOR
+ * Initializes user object with validation and default values
+ * SUPPORTS: UC1 (Registration), UC13 (Profile Management), UC24 (User Management),
+ * UC31: Manage Multi-Language Settings
+ */
+constructor(userData) {
+    this.user_id = userData.user_id;
+    this.email = userData.email;
+    this.password = userData.password_hash || userData.password;
+    this.full_name = userData.full_name;
+    this.role = userData.role || 'Regular'; // Default role for UC1
+    this.notification_prefs = userData.notification_prefs || {}; // Notification preferences
+    this.fcm_tokens = userData.fcm_tokens || []; // Firebase Cloud Messaging tokens for push notifications
+    this.passwordResetToken = userData.password_reset_token;
+    this.passwordResetExpires = userData.password_reset_expires;
+    this.languagePreference = userData.language_preference || 'en'; // Default language
+    this.created_at = userData.created_at;
+}
 
-    /**
+/**
+ * Create a password reset token for the user
+ * For UC11: Reset Password functionality
+ * @returns {string} JWT token for password reset
+ */
+createPasswordResetToken() {
+    try {
+        const resetToken = jwt.sign(
+            { id: this.user_id, email: this.email },
+            process.env.JWT_SECRET,
+            { expiresIn: '1h' }
+        );
+        
+        this.passwordResetToken = resetToken;
+        this.passwordResetExpires = new Date(Date.now() + 60 * 60 * 1000); // 1 hour
+        
+        return resetToken;
+    } catch (error) {
+        throw new Error('Error creating password reset token: ' + error.message);
+    }
+}
+
+/**
+ * Update the password reset fields in the database
+ * For UC11: Reset Password functionality
+ * @param {string} token - The reset token
+ * @param {Date} expires - When the token expires
+ * @returns {boolean} Success status
+ */
+async updatePasswordResetFields(token, expires) {
+    try {
+        const query = 'UPDATE Users SET password_reset_token = $1, password_reset_expires = $2 WHERE user_id = $3';
+        await pool.query(query, [token, expires, this.user_id]);
+        
+        this.passwordResetToken = token;
+        this.passwordResetExpires = expires;
+        
+        return true;
+    } catch (error) {
+        throw new Error('Error updating password reset fields: ' + error.message);
+    }
+}    /**
      * FIND USER BY EMAIL - AUTHENTICATION & SECURITY
      * Critical for login, password reset, and user identification
      * 
