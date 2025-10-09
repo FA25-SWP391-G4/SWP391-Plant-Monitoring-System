@@ -1,6 +1,8 @@
 import { NavLink } from "react-router-dom";
 import { useAuth } from "../auth/AuthContext";
 import { FiGrid, FiSettings, FiBarChart2, FiCpu, FiLayers, FiLogOut, FiSearch, FiStar } from "react-icons/fi";
+import ThemeToggle from "../components/ThemeToggle";
+import { motion } from "framer-motion";
 
 export default function MainLayout({ children }) {
   const { user, logout } = useAuth();
@@ -9,7 +11,14 @@ export default function MainLayout({ children }) {
   return (
     <div className="sf-app">
       <aside className="sf-sidebar">
-        <div className="sf-brand"><span className="dot" /> SmartFarm</div>
+        <div className="sf-brand">
+          <motion.span 
+            className="dot"
+            animate={{ scale: [1, 1.2, 1] }}
+            transition={{ duration: 2, repeat: Infinity }}
+          /> 
+          SmartFarm
+        </div>
         <nav className="sf-nav d-grid gap-1">
           <NavLink to="/" className={({isActive})=> isActive? "active": undefined }><FiGrid/> Dashboard</NavLink>
           {isPremium && <>
@@ -30,11 +39,19 @@ export default function MainLayout({ children }) {
       <header className="sf-topbar">
         <div className="sf-muted">Welcome back{user?.name ? `, ${user.name}` : ""}</div>
         <div className="d-flex align-items-center gap-2">
+          <ThemeToggle />
           {user ? <button className="sf-btn" onClick={logout}><FiLogOut/> Logout</button> : null}
         </div>
       </header>
 
-      <main className="sf-content">{children}</main>
+      <motion.main 
+        className="sf-content"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.3 }}
+      >
+        {children}
+      </motion.main>
     </div>
   );
 }
