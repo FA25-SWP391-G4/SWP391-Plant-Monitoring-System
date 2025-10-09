@@ -1,0 +1,115 @@
+/* ========= LIGHT THEME TOKENS ========= */
+:root{
+  --sg-bg:#f4f8f6;
+  --sg-surface:#ffffff;
+  --sg-text:#0f172a;
+  --sg-muted:#475569;           /* readable muted on light */
+  --sg-accent:#16a34a;
+  --sg-accent-2:#22c55e;
+  --sg-border:#e5e7eb;
+  --sg-shadow:0 8px 24px rgba(2,6,23,.06);
+
+  /* charts */
+  --sg-grid:rgba(0,0,0,.08);
+  --sg-tick:#334155;
+
+  --sg-chip-soft:#eef8f2;
+  --sg-chip-gray:#eef2f6;
+}
+
+/* ========= DARK THEME TOKENS ========= */
+html[data-bs-theme="dark"]{
+  --sg-bg:#000000;              /* full black */
+  --sg-surface:#0f0f0f;         /* deep gray for cards */
+  --sg-text:#f1f1f1;            /* high contrast text */
+  --sg-muted:#cbd5e1;           /* readable muted on black */
+  --sg-border:#1f2937;
+  --sg-shadow:0 12px 44px rgba(0,0,0,.55);
+
+  --sg-grid:rgba(255,255,255,.12);
+  --sg-tick:#e7e7e7;
+
+  --sg-chip-soft:#0c2316;
+  --sg-chip-gray:#171a1f;
+
+  /* Bridge to Bootstrap */
+  --bs-body-bg:var(--sg-bg);
+  --bs-body-color:var(--sg-text);
+}
+
+/* ========= GLOBAL SURFACES ========= */
+html,body{background:var(--sg-bg);color:var(--sg-text);}
+body{margin:0}
+
+/* Kill any legacy .bg-light that might be left in markup */
+html[data-bs-theme="dark"] .bg-light{ background-color:var(--sg-surface)!important; }
+html[data-bs-theme="dark"] .text-dark{ color:var(--sg-text)!important; }
+
+/* Make muted readable in both modes */
+.text-muted{ color:var(--sg-muted)!important; }
+
+/* Cards, navbar, dropdowns, modals, tables, toasts flip with the theme */
+.navbar.bg-white,
+.card.sg,
+.card,
+.dropdown-menu,
+.offcanvas,
+.modal-content,
+.table,
+.toast,
+.list-group,
+.form-control,
+.form-select,
+.input-group-text{
+  background:var(--sg-surface)!important;
+  color:var(--sg-text)!important;
+  border-color:var(--sg-border)!important;
+  box-shadow:var(--sg-shadow);
+}
+
+/* Hero block */
+.hero{
+  background:linear-gradient(135deg,rgba(22,163,74,.08),rgba(34,197,94,.05));
+  border-radius:20px; box-shadow:var(--sg-shadow);
+}
+html[data-bs-theme="dark"] .hero{
+  background:linear-gradient(135deg,#0a0a0a,#0f0f0f);
+}
+
+/* Chips */
+.chip{border-radius:999px;padding:.25rem .7rem;font-weight:600}
+.chip-soft{background:var(--sg-chip-soft);color:var(--sg-accent)}
+.chip-gray{background:var(--sg-chip-gray);color:var(--sg-text)}
+.icon-circle{width:36px;height:36px;display:flex;align-items:center;justify-content:center;border-radius:50%;background:#f1f5f9}
+html[data-bs-theme="dark"] .icon-circle{background:#171a1f;color:var(--sg-text)}
+
+/* Buttons/readability tweaks in dark */
+html[data-bs-theme="dark"] .btn-outline-dark{
+  color:#f1f1f1;border-color:#8b8b8b;
+}
+html[data-bs-theme="dark"] .btn-outline-dark:hover{
+  background:#1b1b1b;color:#fff;border-color:#bfbfbf;
+}
+
+/* Motion */
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.sg-animate{animation:fadeUp .45s ease both}
+.sg-animate-slow{animation:fadeUp .6s ease both}
+.hover-lift{transition:transform .15s ease, box-shadow .15s ease}
+.hover-lift:hover{transform:translateY(-4px); box-shadow:0 18px 40px rgba(0,0,0,.15)}
+
+/* Charts live inside .chart-wrap to pick up surface color */
+.chart-wrap{background:var(--sg-surface);border-radius:14px}
+
+/* Alerts with strong contrast in dark */
+.alert.soft{
+  border:1px solid var(--sg-border);
+  background:linear-gradient(180deg, rgba(250,204,21,.14), rgba(250,204,21,.08));
+  color:#7a5600;
+}
+html[data-bs-theme="dark"] .alert.soft{
+  background:linear-gradient(180deg, rgba(250,204,21,.18), rgba(250,204,21,.10));
+  color:#ffd86b;
+  border-color:#4a3b00;
+}
