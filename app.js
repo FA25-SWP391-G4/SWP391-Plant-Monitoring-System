@@ -151,6 +151,13 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
+// Import AWS IoT client and connect
+import { connectAwsIoT } from './services/awsIOTClient.js';
+connectAwsIoT().catch(console.error);
+
+//initialize MQTT client
+import mqttClient from './mqtt/mqttClient.js';
+
 // Import PostgreSQL database connection
 require("./config/db");
 
@@ -184,6 +191,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+// Serve the React client build files
+app.use(express.static(path.join(__dirname, 'client/build')));
 
 // Mount route handlers
 app.use('/', indexRouter);                          // Basic routes
@@ -210,20 +219,33 @@ app.use('/payment', paymentRouter);                 // ✅ UC19, UC22: VNPay pay
 // - WebSocket setup for real-time features
 // - MQTT client for IoT communication
 
+
+// Serve React app for client-side routing
+app.get('*', function(req, res, next) {
+  // Skip API routes and existing server routes
+  if (req.path.startsWith('/api/') || 
+      req.path.startsWith('/auth/') || 
+      req.path.startsWith('/users/') ||
+      req.path.startsWith('/payment/')) {
+    return next(createError(404));
+  }
+
+// Serve the React app for client-side routes
+  res.sendFile(path.join(__dirname, 'client/build/index.html'));
+});
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   next(createError(404));
 });
 
-// error handler
+// error handler (API-friendly)
 app.use(function(err, req, res, next) {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
-
-  // render the error page
-  res.status(err.status || 500);
-  res.render('error');
+  console.error('Error:', err.message);
+  res.status(err.status || 500).json({
+    success: false,
+    message: err.message || 'Internal Server Error'
+  });
 });
+
 
 module.exports = app;
