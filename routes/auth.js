@@ -9,7 +9,7 @@ const {
     resetPassword,
     changePassword 
 } = require('../controllers/authController');
-const authMiddleware = require('../middlewares/authMiddleware');
+const { authMiddleware } = require('../middlewares/authMiddleware');
 
 /**
  * ============================================================================
@@ -166,7 +166,5 @@ router.put('/change-password', authMiddleware, changePassword);
 // UC13: Manage Profile - Moved to userController/userRoutes for better organization
 // router.get('/profile', requireAuth, getProfile);
 // router.put('/profile', requireAuth, updateProfile);
-
-// 🔄 UC3: User Logout (client-side JWT clearing, no backend needed)
 
 module.exports = router;

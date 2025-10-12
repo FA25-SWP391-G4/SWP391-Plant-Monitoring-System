@@ -13,7 +13,7 @@
     "password": "Mật khẩu",
     "confirmPassword": "Xác nhận mật khẩu",
     "fullName": "Họ và tên",
-    "required": "Trường bắt buộc",
+    "required": "Thông tin bắt buộc",
     "success": "Thành công",
     "error": "Lỗi",
     "loading": "Đang tải..."
@@ -46,7 +46,7 @@
   "navigation": {
     "home": "Trang chủ",
     "dashboard": "Bảng điều khiển",
-    "zones": "Khu vườn",
+    "zones": "Khu vực",
     "reports": "Báo cáo",
     "searchReports": "Tìm kiếm báo cáo",
     "thresholds": "Ngưỡng cảnh báo",
@@ -59,8 +59,8 @@
     "forgotPassword": "Quên mật khẩu"
   },
   "zones": {
-    "title": "Quản lý nhiều khu vườn",
-    "createZone": "Tạo khu vườn",
+    "title": "Quản lý khu vực",
+    "createZone": "Tạo khu vực",
     "zoneName": "Tên",
     "zoneDescription": "Mô tả",
     "devices": "Thiết bị",
@@ -69,11 +69,11 @@
     "deviceType": "Loại",
     "assignTo": "Gán vào",
     "noDevices": "Không còn thiết bị trống",
-    "selectPump": "Chọn bơm cho Zone",
+    "selectPump": "Chọn bơm cho khu vực",
     "assignPump": "-- Gán bơm cho {{zone}} --",
-    "deleteZoneConfirm": "Xóa khu vườn này?",
-    "deleteZone": "Xóa zone",
-    "zoneDevices": "Thiết bị trong zone",
+    "deleteZoneConfirm": "Xóa khu vực này?",
+    "deleteZone": "Xóa khu vực",
+    "zoneDevices": "Thiết bị trong khu vực",
     "unassign": "Bỏ gán",
     "noZoneDevices": "Chưa có thiết bị"
   }

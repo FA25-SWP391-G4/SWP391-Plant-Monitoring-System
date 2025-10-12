@@ -56,7 +56,27 @@
     "profile": "Profile",
     "register": "Register",
     "changePassword": "Change Password",
-    "forgotPassword": "Forgot Password"
+    "forgotPassword": "Forgot Password",
+    "plants": "Plants",
+    "sensors": "Sensors",
+    "chat": "Chat",
+    "support": "Support",
+    "admin": "Administration",
+    "settings": "Settings"
+  },
+  "dashboard": {
+    "wateringHistory": "Watering History",
+    "sensorReadings": "Sensor Readings",
+    "plantHealth": "Plant Health",
+    "recentActivities": "Recent Activities",
+    "systemStatus": "System Status",
+    "waterNow": "Water Now",
+    "soilMoisture": "Soil Moisture",
+    "temperature": "Temperature",
+    "humidity": "Humidity",
+    "sunlight": "Sunlight",
+    "lastWatered": "Last Watered",
+    "nextScheduled": "Next Scheduled Watering"
   },
   "zones": {
     "title": "Manage Multiple Plant Zones",

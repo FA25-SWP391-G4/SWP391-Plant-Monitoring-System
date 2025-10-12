@@ -16,7 +16,7 @@
 
 const crypto = require('crypto');
 const querystring = require('qs');
-const dateFormat = require('dateformat').default;
+const dateFormat = require('dateformat');
 const vnpayConfig = require('../config/vnpay');
 
 class VNPayService {

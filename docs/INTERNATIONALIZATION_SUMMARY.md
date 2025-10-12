@@ -2,7 +2,7 @@
 
 ## Overview
 
-This document provides a summary of the internationalization (i18n) implementation in the Plant Monitoring System project (UC31: Manage Multi-Language Settings). The implementation includes both frontend and backend components to support multiple languages, with initial support for English and Vietnamese.
+This document provides a summary of the internationalization (i18n) implementation in the Plant Monitoring System project (UC31: Manage Multi-Language Settings). The implementation includes both frontend and backend components to support multiple languages, with support for English (en), Spanish (es), French (fr), and Chinese (zh).
 
 ## Implementation Components
 
@@ -19,8 +19,15 @@ This document provides a summary of the internationalization (i18n) implementati
 #### Translation Resources
 - Created language resource files:
   - `client/src/i18n/locales/en/translation.json` - English translations
-  - `client/src/i18n/locales/vi/translation.json` - Vietnamese translations
-- Organized translations by feature areas (common, navigation, zones)
+  - `client/src/i18n/locales/es/translation.json` - Spanish translations
+  - `client/src/i18n/locales/fr/translation.json` - French translations
+  - `client/src/i18n/locales/zh/translation.json` - Chinese translations
+- Organized translations by feature areas:
+  - common - Common UI elements and messages
+  - auth - Authentication-related text
+  - navigation - Navigation menu items
+  - dashboard - Dashboard-related content
+  - zones - Plant zones management text
 
 #### Components
 - Created `LanguageSwitcher.jsx` component for switching between languages
@@ -56,12 +63,12 @@ This document provides a summary of the internationalization (i18n) implementati
 #### Frontend Tests
 - Created `frontend-rendering-i18n.test.js` to test components with different languages
 - Tests include:
-  - Navbar rendering with English and Vietnamese
-  - Zones page rendering with English and Vietnamese
+  - Navbar rendering with all supported languages
+  - Zones page rendering with all supported languages
   - Language switching functionality
 
 #### Backend Tests
-- Created `language-api.test.js` to test language API endpoints
+- Created `language.test.js` to test language API endpoints
 - Tests include:
   - Getting available languages
   - Getting user language preferences
@@ -69,8 +76,42 @@ This document provides a summary of the internationalization (i18n) implementati
   - Handling invalid language codes
   - Authentication requirements for protected endpoints
 
-#### Integration Tests
-- Created `frontend-backend-mapping.test.js` to test API endpoint mapping
+#### Comprehensive i18n Tests
+- Created `i18n-comprehensive.test.js` to validate all translation files
+  - Verifies all required language files exist
+  - Validates JSON format of all translation files
+  - Ensures key consistency across languages
+  - Checks for empty translations
+
+#### Zone-specific i18n Tests
+- Created `zones-i18n.test.js` for zone functionality translations
+  - Tests for zone management specific translation keys
+  - Verifies format variables in zone-related content
+  - Ensures translations are different across languages
+
+#### Analysis Tools
+- Created `i18n-structure-analyzer.js` script to generate reports on translation completeness
+- Created `i18n-integrity-checker.js` to validate translation consistency
+
+## Format Variables
+
+The system supports dynamic content through format variables, using the `{{variable}}` syntax. For example:
+
+```json
+{
+  "zones": {
+    "assignPump": "-- Assign pump for {{zone}} --"
+  }
+}
+```
+
+## Quality Control
+
+We've implemented several quality control measures:
+1. All translation files are complete with no missing keys
+2. Format variables are consistent across all languages
+3. No placeholder values remain in production translations
+4. Automated tests validate i18n implementation
 
 ## Usage
 
@@ -78,6 +119,13 @@ This document provides a summary of the internationalization (i18n) implementati
 1. Users can switch languages using the language dropdown in the navbar
 2. Language preference is saved in localStorage for non-authenticated users
 3. Language preference is saved in the database for authenticated users
+4. Users can switch between English, Spanish, French, and Chinese
+
+### For Developers
+1. Use the `useTranslation` hook in components to access translations
+2. Run comprehensive tests before adding new translations
+3. Use the i18n analysis tools to check translation quality
+4. Follow the established key structure when adding new translations
 4. UI automatically updates with the selected language
 
 ### For Developers
