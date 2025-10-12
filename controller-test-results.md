@@ -1,142 +1,99 @@
 # Controller Test Results
 
-_Generated on 07:51:53 9/10/2025_
 
-## Environment Check
+## Auth Controller Tests
 
-Node.js version: v24.5.0
-## Controller Tests
-
-Running 9 controller test files:
-
-- user-controller.test.js
-- plant-controller.test.js
-- sensor-controller.test.js
-- payment-controller.test.js
-- notification-controller.test.js
-- ai-controller.test.js
-- admin-controller.test.js
-- vnpay.test.js
-- language-controller.test.js
-
-### user-controller.test.js
-
-✅ PASSED
-
-```
-  console.log
-    [dotenv@17.2.2] injecting env (12) from .env -- tip: 🔐 prevent building .env in docker: https://dotenvx.com/prebuild
-
-      at _log (node_modules/dotenv/lib/main.js:139:11)
-
+✅ All tests passed
 
 ```
 
-### plant-controller.test.js
-
-✅ PASSED
-
 ```
-  console.log
-    [dotenv@17.2.2] injecting env (12) from .env -- tip: ⚙️  suppress all logs with { quiet: true }
 
-      at _log (node_modules/dotenv/lib/main.js:139:11)
 
+## Email Service Tests
+
+✅ All tests passed
 
 ```
 
-### sensor-controller.test.js
-
-✅ PASSED
-
 ```
-  console.log
-    [dotenv@17.2.2] injecting env (12) from .env -- tip: 📡 observe env with Radar: https://dotenvx.com/radar
 
-      at _log (node_modules/dotenv/lib/main.js:139:11)
 
+## User Controller Tests
+
+✅ All tests passed
 
 ```
 
-### payment-controller.test.js
-
-✅ PASSED
-
 ```
-  console.log
-    [dotenv@17.2.2] injecting env (12) from .env -- tip: ⚙️  override existing env vars with { override: true }
 
-      at _log (node_modules/dotenv/lib/main.js:139:11)
 
+## Plant Controller Tests
+
+✅ All tests passed
 
 ```
 
-### notification-controller.test.js
-
-✅ PASSED
-
 ```
-  console.log
-    [dotenv@17.2.2] injecting env (12) from .env -- tip: ⚙️  suppress all logs with { quiet: true }
 
-      at _log (node_modules/dotenv/lib/main.js:139:11)
 
+## AI Controller Tests
+
+✅ All tests passed
 
 ```
 
-### ai-controller.test.js
-
-✅ PASSED
-
 ```
-  console.log
-    [dotenv@17.2.2] injecting env (12) from .env -- tip: 🛠️  run anywhere with `dotenvx run -- yourcommand`
 
-      at _log (node_modules/dotenv/lib/main.js:139:11)
 
+## Notification Controller Tests
+
+✅ All tests passed
 
 ```
 
-### admin-controller.test.js
-
-✅ PASSED
-
 ```
-  console.log
-    [dotenv@17.2.2] injecting env (12) from .env -- tip: ⚙️  suppress all logs with { quiet: true }
 
-      at _log (node_modules/dotenv/lib/main.js:139:11)
 
+## Admin Controller Tests
+
+✅ All tests passed
 
 ```
 
-### vnpay.test.js
-
-✅ PASSED
-
 ```
-  console.log
-    [dotenv@17.2.2] injecting env (12) from .env -- tip: 🛠️  run anywhere with `dotenvx run -- yourcommand`
 
-      at _log (node_modules/dotenv/lib/main.js:139:11)
 
+## Language Controller Tests
+
+✅ All tests passed
 
 ```
 
-### language-controller.test.js
+```
 
-✅ PASSED
+
+## Payment Controller Tests
+
+✅ All tests passed
 
 ```
-  console.log
-    [dotenv@17.2.2] injecting env (12) from .env -- tip: ⚙️  override existing env vars with { override: true }
-
-      at _log (node_modules/dotenv/lib/main.js:139:11)
-
 
 ```
+
+
+## Sensor Controller Tests
+
+✅ All tests passed
+
+```
+
+```
+
 
 ## Summary
 
-Controller Tests: 9 passed, 0 failed
-
+- Tests Run: 11
+- Tests Passed: 10
+- Tests Failed: 1
+- Success Rate: 91%

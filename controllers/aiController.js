@@ -327,6 +327,484 @@ const testModelPerformance = async (req, res) => {
     }
 };
 
+// Analyze plant condition using AI
+const analyzePlantCondition = async (req, res) => {
+    try {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).json({ errors: errors.array() });
+        }
+
+        // Extract data from request body
+        const { plantId, imageData, sensorData } = req.body;
+        
+        if (!plantId) {
+            return res.status(400).json({ 
+                success: false, 
+                message: 'Plant ID is required' 
+            });
+        }
+
+        // Log the analysis request
+        await SystemLog.create({
+            log_level: 'INFO',
+            source: 'AIService',
+            message: `Plant condition analysis requested for plant ${plantId}`
+        });
+
+        // Process the analysis
+        // This would normally call an AI service or model to analyze the plant
+        // For demonstration, we'll simulate an analysis result based on sensor data
+        
+        let analysisResult = {
+            plantId,
+            timestamp: new Date(),
+            healthStatus: 'healthy',
+            confidence: 85,
+            issues: [],
+            recommendations: ['Maintain current care routine'],
+        };
+        
+        if (sensorData) {
+            // If moisture is too low
+            if (sensorData.moisture && sensorData.moisture < 30) {
+                analysisResult.healthStatus = 'stressed';
+                analysisResult.issues.push('Low moisture detected');
+                analysisResult.recommendations.push('Water your plant immediately');
+                analysisResult.confidence = 90;
+            }
+            
+            // If temperature is too high
+            if (sensorData.temperature && sensorData.temperature > 30) {
+                analysisResult.healthStatus = 'stressed';
+                analysisResult.issues.push('High temperature detected');
+                analysisResult.recommendations.push('Move plant to cooler location');
+                analysisResult.confidence = Math.max(analysisResult.confidence, 85);
+            }
+            
+            // If light is too low
+            if (sensorData.light && sensorData.light < 20) {
+                analysisResult.healthStatus = 'stressed';
+                analysisResult.issues.push('Low light conditions detected');
+                analysisResult.recommendations.push('Move plant to brighter location');
+                analysisResult.confidence = Math.max(analysisResult.confidence, 80);
+            }
+        }
+        
+        // If image data provided, we would normally analyze it here
+        // For now, just acknowledge it was received
+        if (imageData) {
+            analysisResult.imageAnalyzed = true;
+        }
+        
+        // Log the analysis results
+        await SystemLog.create({
+            log_level: 'INFO',
+            source: 'AIService',
+            message: `Plant condition analysis completed for plant ${plantId}: ${analysisResult.healthStatus} (${analysisResult.confidence}% confidence)`
+        });
+
+        return res.json({
+            success: true,
+            data: analysisResult
+        });
+    } catch (error) {
+        console.error('Error analyzing plant condition:', error);
+        
+        // Log the error
+        await SystemLog.create({
+            log_level: 'ERROR',
+            source: 'AIService',
+            message: `Error analyzing plant condition: ${error.message}`
+        });
+        
+        return res.status(500).json({
+            success: false,
+            message: 'Failed to analyze plant condition',
+            error: error.message
+        });
+    }
+};
+
+// Optimize watering schedule using AI
+const optimizeWateringSchedule = async (req, res) => {
+    try {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).json({ errors: errors.array() });
+        }
+
+        const { plantId, historicalData, preferences } = req.body;
+        
+        if (!plantId) {
+            return res.status(400).json({ 
+                success: false, 
+                message: 'Plant ID is required' 
+            });
+        }
+
+        // Log the optimization request
+        await SystemLog.create({
+            log_level: 'INFO',
+            source: 'AIService',
+            message: `Watering schedule optimization requested for plant ${plantId}`
+        });
+
+        // Process the optimization request
+        // In a real system, this would analyze historical data and user preferences
+        // For now, we'll generate a simulated schedule
+        
+        // Default times (8 AM, 6 PM)
+        let schedule = {
+            plantId,
+            generatedAt: new Date(),
+            scheduleType: preferences?.scheduleType || 'fixed', // fixed or adaptive
+            wateringDays: preferences?.wateringDays || ['Monday', 'Thursday', 'Saturday'],
+            wateringTimes: preferences?.wateringTimes || ['08:00', '18:00'],
+            wateringDuration: preferences?.wateringDuration || 20, // seconds
+            recommendations: [
+                'Adjust watering based on temperature changes',
+                'Monitor moisture levels between waterings'
+            ],
+            efficiency: 85 // percent
+        };
+        
+        // If we have historical data, make the schedule more "intelligent"
+        if (historicalData && historicalData.length > 0) {
+            // Simulate analyzing the data for optimal times
+            schedule.efficiency = 92;
+            schedule.recommendations.push('Schedule optimized based on past 30 days of plant data');
+            
+            // If user has morning preference, adjust schedule
+            if (preferences && preferences.morningPreference) {
+                schedule.wateringTimes = ['07:30', ''];
+                schedule.recommendations.push('Morning-only schedule applied based on preferences');
+            }
+        }
+
+        // Log the schedule generation
+        await SystemLog.create({
+            log_level: 'INFO',
+            source: 'AIService',
+            message: `Watering schedule generated for plant ${plantId} with ${schedule.efficiency}% efficiency`
+        });
+
+        return res.json({
+            success: true,
+            data: schedule
+        });
+    } catch (error) {
+        console.error('Error optimizing watering schedule:', error);
+        
+        // Log the error
+        await SystemLog.create({
+            log_level: 'ERROR',
+            source: 'AIService',
+            message: `Error optimizing watering schedule: ${error.message}`
+        });
+        
+        return res.status(500).json({
+            success: false,
+            message: 'Failed to optimize watering schedule',
+            error: error.message
+        });
+    }
+};
+
+// Analyze historical data
+const analyzeHistoricalData = async (req, res) => {
+    try {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).json({ errors: errors.array() });
+        }
+
+        const { plantId, startDate, endDate, dataType } = req.body;
+        
+        if (!plantId) {
+            return res.status(400).json({ 
+                success: false, 
+                message: 'Plant ID is required' 
+            });
+        }
+
+        // Log the analysis request
+        await SystemLog.create({
+            log_level: 'INFO',
+            source: 'AIService',
+            message: `Historical data analysis requested for plant ${plantId} from ${startDate} to ${endDate}`
+        });
+
+        // Process the analysis request
+        // In a real system, this would retrieve historical sensor and watering data
+        // For now, we'll generate simulated analysis results
+        
+        let analysisResult = {
+            plantId,
+            analyzedAt: new Date(),
+            dateRange: {
+                start: startDate || new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // 30 days ago
+                end: endDate || new Date().toISOString().split('T')[0] // today
+            },
+            dataPoints: 86, // simulated number of data points analyzed
+            insights: [
+                'Plant has been consistently healthy over the analyzed period',
+                'Moisture levels have been optimal 78% of the time',
+                'Light conditions were below optimal for 3 days in the period'
+            ],
+            recommendations: [
+                'Consider increasing water frequency during warmer days',
+                'Current care routine is generally appropriate for this plant'
+            ],
+            charts: {
+                moisture: {
+                    trend: 'stable',
+                    average: 65,
+                    min: 32,
+                    max: 89
+                },
+                temperature: {
+                    trend: 'increasing',
+                    average: 24,
+                    min: 18,
+                    max: 31
+                },
+                light: {
+                    trend: 'fluctuating',
+                    average: 70,
+                    min: 25,
+                    max: 95
+                }
+            }
+        };
+        
+        // If specific data type was requested, focus the analysis
+        if (dataType) {
+            analysisResult.focusArea = dataType;
+            analysisResult.insights = analysisResult.insights.filter(insight => 
+                insight.toLowerCase().includes(dataType.toLowerCase()));
+                
+            if (analysisResult.insights.length === 0) {
+                analysisResult.insights.push(`No specific insights found for ${dataType}`);
+            }
+        }
+
+        // Log the analysis completion
+        await SystemLog.create({
+            log_level: 'INFO',
+            source: 'AIService',
+            message: `Historical data analysis completed for plant ${plantId} with ${analysisResult.insights.length} insights`
+        });
+
+        return res.json({
+            success: true,
+            data: analysisResult
+        });
+    } catch (error) {
+        console.error('Error analyzing historical data:', error);
+        
+        // Log the error
+        await SystemLog.create({
+            log_level: 'ERROR',
+            source: 'AIService',
+            message: `Error analyzing historical data: ${error.message}`
+        });
+        
+        return res.status(500).json({
+            success: false,
+            message: 'Failed to analyze historical data',
+            error: error.message
+        });
+    }
+};
+
+// Process plant image for identification and analysis
+const processPlantImage = async (req, res) => {
+    try {
+        if (!req.file) {
+            return res.status(400).json({
+                success: false,
+                message: 'No image file provided'
+            });
+        }
+
+        // Log the image analysis request
+        await SystemLog.create({
+            log_level: 'INFO',
+            source: 'AIService',
+            message: `Plant image analysis requested by user ${req.user.user_id}`
+        });
+
+        // Extract file information
+        const filePath = req.file.path;
+        const fileType = req.file.mimetype;
+        
+        // In a real system, we would send this to an image recognition model
+        // For this example, we'll simulate a response
+        
+        // Simulated delay for "processing"
+        await new Promise(resolve => setTimeout(resolve, 500));
+        
+        // Simulated analysis result
+        const analysisResult = {
+            timestamp: new Date(),
+            imageId: req.file.filename,
+            plantIdentification: {
+                species: {
+                    scientificName: "Monstera deliciosa",
+                    commonNames: ["Swiss cheese plant", "Split-leaf philodendron"],
+                    confidence: 92.4
+                },
+                alternatives: [
+                    {
+                        scientificName: "Philodendron bipinnatifidum",
+                        commonNames: ["Tree philodendron"],
+                        confidence: 8.6
+                    }
+                ]
+            },
+            healthAssessment: {
+                status: "healthy",
+                confidence: 88.2,
+                issues: [],
+                recommendations: [
+                    "Continue current care routine",
+                    "This plant thrives in indirect bright light"
+                ]
+            }
+        };
+        
+        // If file path starts with "problem_" or contains specific patterns, simulate disease detection
+        if (req.file.originalname.toLowerCase().includes('problem') || 
+            req.file.originalname.toLowerCase().includes('disease') ||
+            req.file.originalname.toLowerCase().includes('yellow')) {
+            
+            analysisResult.healthAssessment.status = "unhealthy";
+            analysisResult.healthAssessment.confidence = 79.5;
+            analysisResult.healthAssessment.issues = [
+                {
+                    type: "Leaf yellowing",
+                    confidence: 86.7,
+                    description: "Some leaves show yellowing which may indicate overwatering"
+                },
+                {
+                    type: "Possible root rot",
+                    confidence: 65.3,
+                    description: "Signs consistent with early stage root rot"
+                }
+            ];
+            analysisResult.healthAssessment.recommendations = [
+                "Check soil moisture and reduce watering frequency",
+                "Ensure proper drainage in pot",
+                "Remove affected leaves"
+            ];
+        }
+        
+        // Log the completion
+        await SystemLog.create({
+            log_level: 'INFO',
+            source: 'AIService',
+            message: `Plant image analysis completed with ${analysisResult.healthAssessment.status} result`
+        });
+
+        // In a production system, we might clean up the uploaded file or move it to permanent storage
+        // For now we'll just leave it in the uploads directory
+        
+        return res.json({
+            success: true,
+            data: analysisResult
+        });
+    } catch (error) {
+        console.error('Error processing plant image:', error);
+        
+        // Log the error
+        await SystemLog.create({
+            log_level: 'ERROR',
+            source: 'AIService',
+            message: `Error processing plant image: ${error.message}`
+        });
+        
+        return res.status(500).json({
+            success: false,
+            message: 'Failed to process plant image',
+            error: error.message
+        });
+    }
+};
+
+// Process chatbot queries
+const processChatbotQuery = async (req, res) => {
+    try {
+        const { query, conversationId, previousMessages } = req.body;
+        
+        if (!query) {
+            return res.status(400).json({
+                success: false,
+                message: 'No query provided'
+            });
+        }
+
+        // Log the chatbot query
+        await SystemLog.create({
+            log_level: 'INFO',
+            source: 'AIService',
+            message: `Chatbot query received: "${query.substring(0, 50)}..."`
+        });
+
+        // In a real system, this would connect to a language model API
+        // For this example, we'll simulate responses based on keywords
+        
+        let response = "I'm your plant care assistant. How can I help you?";
+        
+        // Simple pattern matching for demo purposes
+        if (query.toLowerCase().includes('water')) {
+            response = "Most indoor plants need water when the top inch of soil feels dry. However, it depends on the specific plant species, pot size, and environmental conditions. What plant are you asking about?";
+        } else if (query.toLowerCase().includes('fertilize') || query.toLowerCase().includes('fertilizer')) {
+            response = "Generally, indoor plants should be fertilized during their active growing season (spring and summer) with a balanced fertilizer diluted to half strength. During fall and winter, most plants need less fertilizer.";
+        } else if (query.toLowerCase().includes('light') || query.toLowerCase().includes('sunlight')) {
+            response = "Different plants have different light requirements. Some need bright, direct light while others prefer indirect light or even shade. It's important to match the plant's natural habitat.";
+        } else if (query.toLowerCase().includes('yellow') || query.toLowerCase().includes('yellowing')) {
+            response = "Yellowing leaves can indicate several issues: overwatering, underwatering, nutrient deficiency, too much direct sunlight, or pest problems. Can you describe where on the plant the yellowing is occurring?";
+        } else if (query.toLowerCase().includes('repot') || query.toLowerCase().includes('repotting')) {
+            response = "Most plants should be repotted every 1-2 years. Signs your plant needs repotting include: roots growing out of drainage holes, water running straight through the pot, slowed growth, or the plant becoming top-heavy.";
+        }
+        
+        // Log the response
+        await SystemLog.create({
+            log_level: 'INFO',
+            source: 'AIService',
+            message: `Chatbot response sent for query "${query.substring(0, 30)}..."`
+        });
+
+        return res.json({
+            success: true,
+            data: {
+                response,
+                conversationId: conversationId || Math.random().toString(36).substring(2, 15),
+                timestamp: new Date()
+            }
+        });
+    } catch (error) {
+        console.error('Error processing chatbot query:', error);
+        
+        // Log the error
+        await SystemLog.create({
+            log_level: 'ERROR',
+            source: 'AIService',
+            message: `Error processing chatbot query: ${error.message}`
+        });
+        
+        return res.status(500).json({
+            success: false,
+            message: 'Failed to process chatbot query',
+            error: error.message
+        });
+    }
+};
+
+// Alias for setModelActive to match route naming in mock
+const activateModel = setModelActive;
+
 module.exports = {
     // Service methods exported for use in other parts of the application
     runPrediction,
@@ -339,7 +817,13 @@ module.exports = {
     createModel,
     updateModel,
     setModelActive,
+    activateModel, // Alias for setModelActive
     deleteModel,
     runPredictionForPlant,
-    testModelPerformance
+    testModelPerformance,
+    analyzePlantCondition,
+    optimizeWateringSchedule,
+    analyzeHistoricalData,
+    processPlantImage,
+    processChatbotQuery
 };

@@ -1,11 +1,7 @@
 /**
  * ============================================================================
  * PLANT MONITORING SYSTEM - MAIN APPLICATION ENTRY POINT
- * ======================var notificationsRouter = require('./routes/notifications'); // ✅ UC9: Real-time notifications
-// var premiumRouter = require('./routes/premium');      // 🔄 UC14-23: Premium features
-var aiRouter = require('./routes/ai');               // ✅ UC17-18, UC20-21, UC23, UC30: AI features
-var adminRouter = require('./routes/admin');         // ✅ UC24-28, UC31: Admin functions
-// var iotRouter = require('./routes/iot');             // 🔄 UC29-31: IoT device management=================================================
+ * ============================================================================
  * 
  * 🌱 COMPREHENSIVE USE CASE IMPLEMENTATION ROADMAP - ALL 31 USE CASES
  * 
@@ -155,34 +151,41 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
+// Import AWS IoT client and connect
+const { connectAwsIoT } = require('./services/awsIOTClient');
+connectAwsIoT().catch(console.error);
+
+//initialize MQTT client
+const mqttClient = require('./mqtt/mqttClient');
+
 // Import PostgreSQL database connection
 const { connectDB } = require('./config/db');
 
 // Import route modules
 var indexRouter = require('./routes/index');        // Basic homepage routes
 var usersRouter = require('./routes/users');        // User management routes (basic)
-var authRouter = process.env.NODE_ENV === 'test' ? require('./__mocks__/auth') : require('./routes/auth'); // ✅ UC11: Password reset routes (implemented)
+var authRouter = require('./routes/auth');          // ✅ UC11: Password reset routes (implemented)
 var paymentRouter = require('./routes/payment');    // ✅ UC19, UC22: VNPay payment integration (implemented)
-// var languageRouter = require('./routes/language');  // ✅ UC31: Multi-Language Settings (commented out due to issues)
+var aiRouter = require('./routes/ai');              // 🔄 UC17-18, UC20-21, UC23, UC30: AI features
+var iotRouter = require('./routes/iot');            // 🔄 UC32-34: IoT device management
+var sensorRouter = require('./routes/sensor');      // 🔄 Sensor data management
 
 // TODO: Create additional route modules for remaining use cases:
 // var dashboardRouter = require('./routes/dashboard');  // 🔄 UC4: Plant monitoring dashboard
 // var plantRouter = require('./routes/plant');          // 🔄 UC5-9: Plant management & watering
 // var reportRouter = require('./routes/report');        // 🔄 UC8-9, UC15, UC17: Reports & history
-var notificationsRouter = require('./routes/notifications'); // ✅ UC9: Real-time notifications
+// var notificationRouter = require('./routes/notification'); // 🔄 UC10: Real-time notifications
 // var premiumRouter = require('./routes/premium');      // 🔄 UC14-23: Premium features
-var aiRouter = process.env.NODE_ENV === 'test' ? require('./__mocks__/ai') : require('./routes/ai'); // ✅ UC17-18, UC20-21, UC23, UC30: AI features
 // var adminRouter = require('./routes/admin');         // 🔄 UC24-31: Admin functions
-// var iotRouter = require('./routes/iot');             // 🔄 UC32-34: IoT device management
 
 var app = express();
 
 // Connect to PostgreSQL database
-connectDB();
+
 
 // view engine setup
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'jade');
+// app.set('views', path.join(__dirname, 'views'));
+// app.set('view engine', 'jade');
 
 app.use(logger('dev'));
 app.use(express.json());
@@ -197,17 +200,17 @@ app.use('/', indexRouter);                          // Basic routes
 app.use('/users', usersRouter);                     // User routes (basic)
 app.use('/auth', authRouter);                       // ✅ UC11: Authentication routes (password reset)
 app.use('/payment', paymentRouter);                 // ✅ UC19, UC22: VNPay payment integration
-// app.use('/api/language', languageRouter);           // ✅ UC31: Multi-Language Settings (commented out due to issues)
+app.use('/api/ai', aiRouter);                       // 🔄 UC17-18, UC20-21, UC23, UC30: AI API
+app.use('/api/iot', iotRouter);                     // 🔄 UC32-34: IoT API
+app.use('/api/sensor', sensorRouter);               // 🔄 Sensor data management API
 
 // TODO: Mount additional route handlers as they are implemented:
 // app.use('/api/dashboard', dashboardRouter);      // 🔄 UC4: Dashboard API
 // app.use('/api/plant', plantRouter);              // 🔄 UC5-9: Plant management API
 // app.use('/api/report', reportRouter);            // 🔄 UC8-9, UC15, UC17: Reports API
-app.use('/api/notifications', notificationsRouter); // ✅ UC9: Notifications API
+// app.use('/api/notification', notificationRouter); // 🔄 UC10: Notifications API
 // app.use('/api/premium', premiumRouter);          // 🔄 UC14-23: Premium features API
-app.use('/api/ai', aiRouter);                    // ✅ UC17-18, UC20-21, UC23, UC30: AI API
-app.use('/api/admin', adminRouter);              // ✅ UC24-28, UC31: Admin API
-// app.use('/api/iot', iotRouter);                  // 🔄 UC32-34: IoT API
+// app.use('/api/admin', adminRouter);              // 🔄 UC24-31: Admin API
 
 // TODO: Add middleware for future features:
 // - Authentication middleware (JWT verification)
@@ -218,6 +221,7 @@ app.use('/api/admin', adminRouter);              // ✅ UC24-28, UC31: Admin API
 // - WebSocket setup for real-time features
 // - MQTT client for IoT communication
 
+
 // Serve React app for client-side routing
 app.get('*', function(req, res, next) {
   // Skip API routes and existing server routes
@@ -227,25 +231,23 @@ app.get('*', function(req, res, next) {
       req.path.startsWith('/payment/')) {
     return next(createError(404));
   }
-  
-  // Serve the React app for client-side routes
+
+// Serve the React app for client-side routes
   res.sendFile(path.join(__dirname, 'client/build/index.html'));
 });
-
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   next(createError(404));
 });
 
-// error handler
+// error handler (API-friendly)
 app.use(function(err, req, res, next) {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
-
-  // render the error page
-  res.status(err.status || 500);
-  res.render('error');
+  console.error('Error:', err.message);
+  res.status(err.status || 500).json({
+    success: false,
+    message: err.message || 'Internal Server Error'
+  });
 });
+
 
 module.exports = app;

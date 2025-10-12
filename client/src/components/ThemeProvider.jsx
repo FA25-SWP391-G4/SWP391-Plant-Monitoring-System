@@ -33,11 +33,11 @@ export function ThemeProvider({ children, defaultTheme = 'light' }) {
   useEffect(() => {
     const root = window.document.documentElement;
     
-    // Remove previous theme class
-    root.classList.remove('light', 'dark');
+    // Remove previous theme data attribute
+    root.removeAttribute('data-theme');
     
-    // Add current theme class
-    root.classList.add(theme);
+    // Set new theme data attribute
+    root.setAttribute('data-theme', theme);
     
     // Store theme preference
     localStorage.setItem('plant-system-theme', theme);

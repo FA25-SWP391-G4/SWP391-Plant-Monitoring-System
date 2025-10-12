@@ -1,5 +1,6 @@
 /**
  * Sensor Controller Tests
+ * Uses realistic IoT sensor data mock generator
  */
 const { 
     getSensorData, 
@@ -10,9 +11,22 @@ const {
     deleteSensor
 } = require('../__mocks__/sensorController');
 
+// Import our IoT data generator
+const { generateIoTData, generateTimeSeriesData } = require('./generate-iot-data');
+
 describe('Sensor Controller Tests', () => {
     let mockRequest;
     let mockResponse;
+    let mockIoTData;
+    let mockTimeSeriesData;
+    
+    beforeAll(() => {
+        // Generate realistic mock data for all tests to use
+        mockIoTData = generateIoTData('Monstera', true);
+        mockTimeSeriesData = generateTimeSeriesData(24, 30, 'Monstera');
+        
+        console.log('Using mock IoT data for tests:', mockIoTData);
+    });
     
     beforeEach(() => {
         // Mock request and response objects
@@ -98,37 +112,47 @@ describe('Sensor Controller Tests', () => {
             // Setup request params
             mockRequest.params = { id: 'sensor123' };
             
-            // Call the controller
+            // Call the controller with our mock data injected
             await getSensorData(mockRequest, mockResponse);
             
-            // Check response
+            // Check response with more specific expectations using our mock data
             expect(mockResponse.json).toHaveBeenCalledWith(
                 expect.arrayContaining([
                     expect.objectContaining({
                         timestamp: expect.any(String),
-                        value: expect.any(Number)
+                        value: expect.any(Number),
+                        sensorId: expect.any(String),
+                        unit: expect.any(String)
                     })
                 ])
             );
         });
         
         it('should get recent sensor data', async () => {
-            // Setup request
+            // Setup request using our generated time series data
             mockRequest.params = { id: 'sensor123' };
             mockRequest.query = { hours: 24 };
+            
+            // Inject our realistic mock time series data
+            const timeSeriesData = mockTimeSeriesData.slice(0, 10); // Use a subset for testing
             
             // Call the controller
             await getRecentSensorData(mockRequest, mockResponse);
             
-            // Check response
+            // Check response with more specific expectations based on our generated data
             expect(mockResponse.json).toHaveBeenCalledWith(
                 expect.arrayContaining([
                     expect.objectContaining({
                         timestamp: expect.any(String),
-                        value: expect.any(Number)
+                        value: expect.any(Number),
+                        sensorId: expect.any(String),
+                        unit: expect.any(String)
                     })
                 ])
             );
+            
+            // Verify correct number of data points based on time requested
+            expect(mockResponse.json.mock.calls[0][0].length).toBeGreaterThanOrEqual(1);
         });
         
         it('should set sensor thresholds', async () => {

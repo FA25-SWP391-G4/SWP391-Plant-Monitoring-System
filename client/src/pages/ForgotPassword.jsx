@@ -1,7 +1,8 @@
-// src/pages/ForgotPassword.jsx
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import authApi from "../api/authApi";
+import { ButtonLoading } from "../components/Loading";
+import './Auth.css';
 
 export default function ForgotPassword() {
   const [email, setEmail] = useState("");
@@ -38,60 +39,124 @@ export default function ForgotPassword() {
   };
 
   return (
-    <div className="container py-5">
-      <div className="row justify-content-center">
-        <div className="col-md-6">
-          <div className="card shadow">
-            <div className="card-body p-4">
-              <h2 className="text-center mb-4">Forgot Password</h2>
-              
-              {error && (
-                <div className="alert alert-danger" role="alert">
-                  {error}
+    <div className="auth-container-2col">
+      <div className="auth-left">
+        <div className="auth-branding">
+          <Link to="/" className="brand-link">
+            <span className="brand-logo">🌱</span>
+            <span className="brand-text">PlantSmart</span>
+          </Link>
+          
+          <div className="welcome-content">
+            <div className="welcome-badge">
+              <span>🔒</span>
+              <span>Secure password recovery</span>
+            </div>
+            
+            <h1 className="welcome-title">
+              Forgot Your
+              <br />
+              Password?
+              <br />
+              No Problem!
+            </h1>
+            
+            <p className="welcome-description">
+              Enter your email address and we'll send you a secure link to reset your password and get back to caring for your plants.
+            </p>
+            
+            <div className="feature-highlights">
+              <div className="highlight-item">
+                <span className="highlight-icon">⚡</span>
+                <span>Quick and secure recovery</span>
+              </div>
+              <div className="highlight-item">
+                <span className="highlight-icon">🔐</span>
+                <span>Bank-level security</span>
+              </div>
+              <div className="highlight-item">
+                <span className="highlight-icon">📧</span>
+                <span>Email verification required</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div className="auth-right">
+        <div className="auth-card animate-fade-in">
+          <div className="auth-header">
+            <div className="auth-logo">
+              <div className="logo-icon">🌱</div>
+              <h2>PlantSmart</h2>
+            </div>
+          </div>
+
+          <div className="auth-form-container">
+            {success ? (
+              <div className="success-container">
+                <div className="success-icon">✅</div>
+                <div className="auth-title">
+                  <h3>Email verification sent to</h3>
+                  <p className="email-display">{email}</p>
                 </div>
-              )}
-              
-              {success ? (
-                <div className="alert alert-success" role="alert">
-                  <h5>Email Sent!</h5>
+                <div className="success-message">
                   <p>We've sent a password reset link to your email address. Please check your inbox and follow the instructions.</p>
-                  <p>The link will expire in 1 hour.</p>
-                  <div className="mt-3">
-                    <Link to="/login" className="btn btn-primary">Return to Login</Link>
-                  </div>
+                  <p className="text-muted">The link will expire in 1 hour.</p>
                 </div>
-              ) : (
-                <form onSubmit={handleSubmit}>
-                  <p className="text-muted mb-4">
-                    Enter your email address below and we'll send you a link to reset your password.
-                  </p>
-                  
-                  <div className="mb-3">
-                    <label htmlFor="email" className="form-label">Email address</label>
-                    <input
-                      type="email"
-                      className="form-control"
-                      id="email"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      required
-                    />
+                <Link to="/login" className="auth-btn primary">
+                  Return to Login
+                </Link>
+              </div>
+            ) : (
+              <>
+                <div className="auth-title">
+                  <h3>Reset your password</h3>
+                  <p>Enter your email address and we'll send you a link to reset your password.</p>
+                </div>
+
+                <form onSubmit={handleSubmit} className="auth-form">
+                  <div className="form-group">
+                    <label htmlFor="email">Email address</label>
+                    <div className="input-wrapper">
+                      <span className="input-icon">📧</span>
+                      <input 
+                        id="email"
+                        className="auth-input" 
+                        type="email"
+                        placeholder="you@greenspace.com" 
+                        value={email} 
+                        onChange={(e) => setEmail(e.target.value)}
+                        required
+                      />
+                    </div>
                   </div>
-                  
+
+                  {error && (
+                    <div className="auth-error animate-fade-in">
+                      <span className="error-icon">⚠️</span>
+                      {error}
+                    </div>
+                  )}
+
                   <button 
+                    className="auth-btn primary" 
                     type="submit" 
-                    className="btn btn-primary w-100 mb-3"
                     disabled={loading}
                   >
-                    {loading ? "Sending..." : "Send Reset Link"}
+                    {loading ? <ButtonLoading /> : 'Send Reset Link'}
                   </button>
-                  
-                  <div className="text-center">
-                    <Link to="/login">Back to Login</Link>
-                  </div>
                 </form>
-              )}
-            </div>
+              </>
+            )}
+          </div>
+
+          <div className="auth-footer">
+            <p>
+              Remember your password? 
+              <Link to="/login" className="auth-link"> Sign In</Link>
+            </p>
+            <Link to="/" className="back-link">Back to Site</Link>
           </div>
         </div>
       </div>

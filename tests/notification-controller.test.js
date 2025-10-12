@@ -5,7 +5,7 @@
 const { 
     getUserNotifications, 
     getUnreadNotifications, 
-    markAsRead, 
+    markNotificationAsRead, 
     deleteNotification, 
     updateNotificationPreferences 
 } = require('../__mocks__/notificationController');
@@ -71,7 +71,7 @@ describe('Notification Controller Tests', () => {
             mockRequest.params = { id: 'notif1' };
             
             // Call the controller
-            await markAsRead(mockRequest, mockResponse);
+            await markNotificationAsRead(mockRequest, mockResponse);
             
             // Check response
             expect(mockResponse.json).toHaveBeenCalledWith(

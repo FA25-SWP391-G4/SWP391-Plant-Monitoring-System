@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { FiDroplet, FiSun, FiThermometer, FiAlertCircle } from 'react-icons/fi';
+import { FiDroplet, FiSun, FiThermometer, FiAlertCircle, FiHeart, FiCalendar } from 'react-icons/fi';
+import './PlantStatusCard.css';
 
 /**
  * PlantStatusCard component
