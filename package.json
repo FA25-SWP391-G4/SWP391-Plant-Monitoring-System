@@ -1,9 +1,15 @@
 {
   "name": "plant-system",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "private": true,
+  "description": "Plant Monitoring System with IoT integration",
+  "main": "app.js",
   "dependencies": {
+    "aws-iot-device-sdk": "^2.2.12",
+    "aws-iot-device-sdk-v2": "^1.23.0",
+    "aws-sdk": "^2.1598.0",
     "axios": "^1.12.2",
+    "bcrypt": "^6.0.0",
     "bcryptjs": "^3.0.2",
     "body-parser": "^2.2.0",
     "concurrently": "^9.2.1",
@@ -12,28 +18,46 @@
     "dateformat": "^5.0.3",
     "debug": "~2.6.9",
     "dotenv": "^17.2.2",
+    "ejs": "^3.1.10",
     "express": "~4.16.1",
+    "express-rate-limit": "^7.2.0",
     "http-errors": "~1.6.3",
     "jade": "^1.11.0",
     "jsonwebtoken": "^9.0.2",
+    "mqtt": "^5.5.0",
     "mongoose": "^8.18.2",
     "morgan": "~1.9.1",
     "multer": "^2.0.2",
     "nodemailer": "^7.0.6",
+    "openai": "^6.2.0",
     "pg": "^8.16.3",
-    "qs": "^6.14.0"
+    "qs": "^6.14.0",
+    "socket.io": "^4.7.5",
+    "winston": "^3.13.0"
   },
   "scripts": {
-    "start:dev": "concurrently \"npm start --prefix client\" \"node ./bin/www\"",
-    "start": "npm run build --prefix client && node ./bin/www",
-    "test:setup": "node test-setup.js",
+    "start": "node ./bin/www",
+    "start:dev": "concurrently \"npm start --prefix client\" \"nodemon ./bin/www\"",
+    "start:all": "concurrently \"npm run start:dev\" \"npm run start:ai\"",
+    "start:ai": "cd ai_service && uvicorn main:app --reload",
+    "install:all": "npm install && npm --prefix client install",
+    "build": "npm --prefix client run build",
     "test": "jest",
+    "test:setup": "node tests/test-setup.js",
     "test:watch": "jest --watch",
-    "test:coverage": "jest --coverage"
+    "test:coverage": "jest --coverage",
+    "test:i18n": "node scripts/i18n-integrity-checker.js",
+    "test:sensor": "jest tests/sensor.test.js",
+    "test:mqtt": "jest tests/mqtt.test.js",
+    "test:aws": "jest tests/aws-iot.test.js"
+  },
+  "engines": {
+    "node": ">=14.0.0"
   },
   "proxy": "http://localhost:3010",
   "devDependencies": {
     "jest": "^30.2.0",
+    "nodemon": "^3.0.1",
     "supertest": "^7.1.4"
   }
 }

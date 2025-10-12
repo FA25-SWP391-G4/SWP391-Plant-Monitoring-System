@@ -4,8 +4,12 @@ class Alert {
     constructor(alertData) {
         this.alert_id = alertData.alert_id;
         this.user_id = alertData.user_id;
+        this.title = alertData.title || ''; // Added title field
         this.message = alertData.message;
-        this.status = alertData.status || 'unread';
+        this.type = alertData.type || 'general'; // Added type field
+        this.details = alertData.details || '{}'; // Added details field
+        this.is_read = alertData.is_read === false ? false : alertData.status === 'read'; // Convert status to is_read boolean
+        this.status = alertData.status || 'unread'; // Maintain backward compatibility
         this.created_at = alertData.created_at;
     }
 
@@ -122,15 +126,18 @@ class Alert {
                 // Update existing alert
                 const query = `
                     UPDATE Alerts 
-                    SET user_id = $1, message = $2, status = $3
-                    WHERE alert_id = $4
+                    SET user_id = $1, title = $2, message = $3, type = $4, details = $5, status = $6
+                    WHERE alert_id = $7
                     RETURNING *
                 `;
                 
                 const result = await pool.query(query, [
                     this.user_id,
+                    this.title,
                     this.message,
-                    this.status,
+                    this.type,
+                    this.details,
+                    this.is_read ? 'read' : 'unread',
                     this.alert_id
                 ]);
                 
@@ -140,15 +147,18 @@ class Alert {
             } else {
                 // Create new alert
                 const query = `
-                    INSERT INTO Alerts (user_id, message, status)
-                    VALUES ($1, $2, $3)
+                    INSERT INTO Alerts (user_id, title, message, type, details, status)
+                    VALUES ($1, $2, $3, $4, $5, $6)
                     RETURNING *
                 `;
                 
                 const result = await pool.query(query, [
                     this.user_id,
+                    this.title,
                     this.message,
-                    this.status || 'unread'
+                    this.type,
+                    this.details,
+                    this.is_read ? 'read' : 'unread'
                 ]);
                 
                 const newAlert = new Alert(result.rows[0]);
@@ -174,6 +184,7 @@ class Alert {
             
             if (result.rows.length > 0) {
                 this.status = 'read';
+                this.is_read = true;
             }
             
             return this;
@@ -196,6 +207,7 @@ class Alert {
             
             if (result.rows.length > 0) {
                 this.status = 'unread';
+                this.is_read = false;
             }
             
             return this;
@@ -234,6 +246,24 @@ class Alert {
             throw error;
         }
     }
+    
+    // Enhanced static method to create alert with more details
+    static async create(alertData) {
+        try {
+            const alert = new Alert({
+                user_id: alertData.user_id,
+                title: alertData.title || '',
+                message: alertData.message,
+                type: alertData.type || 'general',
+                details: alertData.details || '{}',
+                is_read: false
+            });
+            
+            return await alert.save();
+        } catch (error) {
+            throw error;
+        }
+    }
 
     // Static method to mark all alerts as read for a user
     static async markAllAsReadByUserId(userId) {
@@ -248,6 +278,11 @@ class Alert {
         } catch (error) {
             throw error;
         }
+    }
+
+    // Alias for markAllAsReadByUserId for better naming consistency
+    static async markAllAsReadForUser(userId) {
+        return this.markAllAsReadByUserId(userId);
     }
 
     // Static method to delete old read alerts
@@ -269,31 +304,54 @@ class Alert {
     static async createPlantAlert(userId, plantName, alertType, details = '') {
         try {
             let message = '';
+            let title = '';
+            let type = alertType;
             
             switch (alertType) {
-                case 'low_moisture':
-                    message = `🌱 ${plantName}: Soil moisture is below threshold. ${details}`;
+                case 'lowMoisture':
+                    title = 'Low Moisture Alert';
+                    message = `🌱 ${plantName}: Soil moisture is below threshold.`;
+                    break;
+                case 'highTemperature':
+                    title = 'High Temperature Alert';
+                    message = `🔥 ${plantName}: Temperature is above threshold.`;
                     break;
                 case 'watering_completed':
-                    message = `💧 ${plantName}: Watering completed successfully. ${details}`;
+                    title = 'Watering Completed';
+                    message = `💧 ${plantName}: Watering completed successfully.`;
                     break;
                 case 'watering_failed':
-                    message = `❌ ${plantName}: Watering failed. ${details}`;
+                    title = 'Watering Failed';
+                    message = `❌ ${plantName}: Watering failed.`;
                     break;
-                case 'device_offline':
-                    message = `📡 ${plantName}: Device went offline. ${details}`;
+                case 'deviceOffline':
+                    title = 'Device Offline';
+                    message = `📡 ${plantName}: Device went offline.`;
                     break;
-                case 'device_online':
-                    message = `✅ ${plantName}: Device is back online. ${details}`;
+                case 'deviceOnline':
+                    title = 'Device Online';
+                    message = `✅ ${plantName}: Device is back online.`;
                     break;
-                case 'sensor_error':
-                    message = `⚠️ ${plantName}: Sensor reading error. ${details}`;
+                case 'sensorError':
+                    title = 'Sensor Error';
+                    message = `⚠️ ${plantName}: Sensor reading error.`;
+                    break;
+                case 'pumpActivation':
+                    title = 'Pump Activated';
+                    message = `🚿 ${plantName}: Watering pump has been activated.`;
                     break;
                 default:
-                    message = `🔔 ${plantName}: ${alertType}. ${details}`;
+                    title = `Plant Alert: ${plantName}`;
+                    message = `🔔 ${plantName}: ${alertType}.`;
             }
             
-            return await Alert.createAlert(userId, message);
+            return await Alert.create({
+                user_id: userId,
+                title: title,
+                message: message + (details ? ` ${details}` : ''),
+                type: type,
+                details: typeof details === 'object' ? JSON.stringify(details) : details
+            });
         } catch (error) {
             throw error;
         }
@@ -302,28 +360,42 @@ class Alert {
     static async createSystemAlert(userId, alertType, details = '') {
         try {
             let message = '';
+            let title = '';
+            let type = alertType;
             
             switch (alertType) {
                 case 'payment_success':
-                    message = `💳 Payment completed successfully. ${details}`;
+                    title = 'Payment Successful';
+                    message = `💳 Payment completed successfully.`;
                     break;
                 case 'payment_failed':
-                    message = `❌ Payment failed. ${details}`;
+                    title = 'Payment Failed';
+                    message = `❌ Payment failed.`;
                     break;
                 case 'subscription_expiring':
-                    message = `⏰ Your premium subscription is expiring soon. ${details}`;
+                    title = 'Subscription Expiring';
+                    message = `⏰ Your premium subscription is expiring soon.`;
                     break;
                 case 'subscription_expired':
-                    message = `📅 Your premium subscription has expired. ${details}`;
+                    title = 'Subscription Expired';
+                    message = `📅 Your premium subscription has expired.`;
                     break;
                 case 'system_maintenance':
-                    message = `🔧 System maintenance scheduled. ${details}`;
+                    title = 'System Maintenance';
+                    message = `🔧 System maintenance scheduled.`;
                     break;
                 default:
-                    message = `🔔 System notification: ${alertType}. ${details}`;
+                    title = 'System Notification';
+                    message = `🔔 System notification: ${alertType}.`;
             }
             
-            return await Alert.createAlert(userId, message);
+            return await Alert.create({
+                user_id: userId,
+                title: title,
+                message: message + (details ? ` ${details}` : ''),
+                type: type,
+                details: typeof details === 'object' ? JSON.stringify(details) : details
+            });
         } catch (error) {
             throw error;
         }
@@ -359,8 +431,12 @@ class Alert {
         return {
             alert_id: this.alert_id,
             user_id: this.user_id,
+            title: this.title,
             message: this.message,
-            status: this.status,
+            type: this.type,
+            details: typeof this.details === 'string' ? JSON.parse(this.details) : this.details,
+            is_read: this.is_read,
+            status: this.status, // For backward compatibility
             created_at: this.created_at,
             age_string: this.getAgeString()
         };

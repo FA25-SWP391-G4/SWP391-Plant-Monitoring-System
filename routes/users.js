@@ -13,10 +13,10 @@
 const express = require('express');
 const router = express.Router();
 const userController = require('../controllers/userController');
-const authMiddleware = require('../middlewares/authMiddleware'); // Authentication middleware
+const { authMiddleware, isAdmin } = require('../middlewares/authMiddleware'); // Authentication middleware
 
-// Apply auth middleware to all routes
-router.use(authMiddleware);
+// Apply authentication middleware to all user routes
+router.use(require('../middlewares/authMiddleware'));
 
 /**
  * UC13: PROFILE MANAGEMENT ROUTES

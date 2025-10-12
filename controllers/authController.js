@@ -171,7 +171,17 @@ async function forgotPassword(req, res) {
         // Validate email input
         if (!email) {
             return res.status(400).json({ 
-                error: 'Email is required' 
+                success: false,
+                message: 'Email is required' 
+            });
+        }
+
+        // Validate email format
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            return res.status(400).json({ 
+                success: false,
+                message: 'Please provide a valid email address' 
             });
         }
 
@@ -179,8 +189,11 @@ async function forgotPassword(req, res) {
         const user = await User.findByEmail(email);
 
         if (!user) {
-            return res.status(404).json({ 
-                error: 'User not found with this email address' 
+            // For security, don't reveal that the user doesn't exist
+            // Return success for non-existent users too
+            return res.status(200).json({ 
+                success: true,
+                message: 'If your email is registered, a password reset link has been sent to it.' 
             });
         }
 
@@ -191,7 +204,7 @@ async function forgotPassword(req, res) {
         // Create password reset URL
         const resetUrl = `${process.env.FRONTEND_URL}/reset-password?token=${resetToken}`;
 
-        // Email options - Simple text email (no HTML since React FE will handle UI)
+        // Email options with HTML template
         const mailOptions = {
             from: process.env.EMAIL_USER,
             to: user.email,
@@ -210,6 +223,21 @@ async function forgotPassword(req, res) {
                 ---
                 This is an automated message from Plant Monitoring System. Please do not reply to this email.
             `,
+            html: `
+                <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e0e0e0; border-radius: 5px;">
+                    <h2 style="color: #4CAF50;">Password Reset Request</h2>
+                    <p>Hello ${user.full_name || 'User'},</p>
+                    <p>You requested a password reset for your Plant Monitoring System account.</p>
+                    <p>Please click the button below to reset your password:</p>
+                    <p style="text-align: center;">
+                        <a href="${resetUrl}" style="display: inline-block; background-color: #4CAF50; color: white; padding: 12px 24px; text-decoration: none; border-radius: 4px; font-weight: bold;">Reset Password</a>
+                    </p>
+                    <p>This link will expire in 1 hour.</p>
+                    <p>If you didn't request this password reset, please ignore this email.</p>
+                    <hr style="border: none; border-top: 1px solid #e0e0e0; margin: 20px 0;">
+                    <p style="font-size: 12px; color: #666;">This is an automated message from Plant Monitoring System. Please do not reply to this email.</p>
+                </div>
+            `
         };
 
         // Send email
@@ -242,7 +270,8 @@ async function forgotPassword(req, res) {
         }
 
         res.status(500).json({ 
-            error: 'Failed to send password reset email. Please try again later.' 
+            success: false,
+            message: 'Internal server error' 
         });
     }
 }
@@ -300,7 +329,7 @@ async function resetPassword(req, res) {
         // Update the user's password and remove the reset token
         await user.updatePassword(password);
 
-        // Send confirmation email - Simple text email (no HTML since React FE will handle UI)
+        // Send confirmation email with HTML template
         const mailOptions = {
             from: process.env.EMAIL_USER,
             to: user.email,
@@ -320,6 +349,24 @@ async function resetPassword(req, res) {
                 ---
                 This is an automated message from Plant Monitoring System. Please do not reply to this email.
             `,
+            html: `
+                <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e0e0e0; border-radius: 5px;">
+                    <h2 style="color: #4CAF50;">Password Reset Successful</h2>
+                    <p>Hello ${user.full_name || 'User'},</p>
+                    <p>Your password has been successfully reset for your Plant Monitoring System account.</p>
+                    <p>If you did not initiate this request, please contact our support team immediately.</p>
+                    <div style="background-color: #f9f9f9; padding: 15px; border-left: 4px solid #4CAF50; margin: 15px 0;">
+                        <p><strong>For your security, we recommend:</strong></p>
+                        <ul>
+                            <li>Using a strong, unique password</li>
+                            <li>Enabling two-factor authentication if available</li>
+                            <li>Keeping your login credentials secure</li>
+                        </ul>
+                    </div>
+                    <hr style="border: none; border-top: 1px solid #e0e0e0; margin: 20px 0;">
+                    <p style="font-size: 12px; color: #666;">This is an automated message from Plant Monitoring System. Please do not reply to this email.</p>
+                </div>
+            `
         };
 
         try {

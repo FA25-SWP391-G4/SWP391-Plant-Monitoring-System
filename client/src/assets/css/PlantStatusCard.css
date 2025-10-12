@@ -1,0 +1,333 @@
+/* Plant Status Card */
+.plant-status-card {
+  background: var(--background-card);
+  border: 1px solid var(--border-light);
+  border-radius: 16px;
+  padding: 1.5rem;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+.plant-status-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--primary-green), var(--primary-green-light));
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.plant-status-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-large);
+}
+
+.plant-status-card:hover::before {
+  opacity: 1;
+}
+
+/* Plant Header */
+.plant-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.plant-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  background: var(--primary-green-bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.plant-emoji {
+  font-size: 1.5rem;
+  animation: bounce 3s ease-in-out infinite;
+}
+
+.plant-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.plant-name {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0 0 0.25rem 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.plant-status {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.status-indicator {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.status-text {
+  font-size: 0.875rem;
+  font-weight: 500;
+  text-transform: capitalize;
+}
+
+.status-icon {
+  font-size: 1.25rem;
+  flex-shrink: 0;
+}
+
+/* Plant Metrics */
+.plant-metrics {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.metric {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.metric-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  flex-shrink: 0;
+  transition: all 0.3s ease;
+}
+
+.metric:nth-child(1) .metric-icon {
+  background: rgba(59, 130, 246, 0.1);
+  color: #3b82f6;
+}
+
+.metric:nth-child(2) .metric-icon {
+  background: rgba(245, 158, 11, 0.1);
+  color: #f59e0b;
+}
+
+.metric:nth-child(3) .metric-icon {
+  background: rgba(239, 68, 68, 0.1);
+  color: #ef4444;
+}
+
+.metric-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.metric-label {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  margin-bottom: 0.25rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.metric-value {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.metric-value-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.metric-bar {
+  width: 100%;
+  height: 4px;
+  background: var(--border-light);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.metric-fill {
+  height: 100%;
+  border-radius: 2px;
+  transition: all 0.5s ease;
+  position: relative;
+}
+
+.metric-fill::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 2px;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.8);
+  border-radius: 1px;
+}
+
+/* Plant Footer */
+.plant-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border-light);
+}
+
+.last-watered {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.calendar-icon {
+  font-size: 0.875rem;
+}
+
+.water-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: linear-gradient(135deg, var(--primary-green), var(--primary-green-hover));
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.water-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+  transition: left 0.5s;
+}
+
+.water-btn:hover::before {
+  left: 100%;
+}
+
+.water-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3);
+}
+
+.water-btn:active {
+  transform: translateY(0);
+}
+
+/* Animations */
+@keyframes bounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-2px);
+  }
+}
+
+/* Hover Effects */
+.plant-status-card:hover .plant-emoji {
+  animation-duration: 1s;
+}
+
+.plant-status-card:hover .metric-icon {
+  transform: scale(1.1);
+}
+
+.plant-status-card:hover .metric-fill {
+  box-shadow: 0 0 8px currentColor;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .plant-status-card {
+    padding: 1.25rem;
+  }
+  
+  .plant-header {
+    margin-bottom: 1.25rem;
+  }
+  
+  .plant-avatar {
+    width: 40px;
+    height: 40px;
+  }
+  
+  .plant-emoji {
+    font-size: 1.25rem;
+  }
+  
+  .plant-name {
+    font-size: 1rem;
+  }
+  
+  .plant-metrics {
+    gap: 0.75rem;
+    margin-bottom: 1.25rem;
+  }
+  
+  .metric-icon {
+    width: 28px;
+    height: 28px;
+    font-size: 0.875rem;
+  }
+  
+  .plant-footer {
+    flex-direction: column;
+    gap: 0.75rem;
+    align-items: stretch;
+  }
+  
+  .water-btn {
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .plant-status-card {
+    padding: 1rem;
+  }
+  
+  .plant-header {
+    gap: 0.75rem;
+  }
+  
+  .metric {
+    gap: 0.5rem;
+  }
+}

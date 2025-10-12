@@ -55,6 +55,22 @@ class SystemLog {
             throw error;
         }
     }
+    
+    // Static method to find logs by source
+    static async findBySource(source, limit = 100) {
+        try {
+            const query = `
+                SELECT * FROM System_Logs 
+                WHERE source = $1 
+                ORDER BY timestamp DESC 
+                LIMIT $2
+            `;
+            const result = await pool.query(query, [logLevel, limit]);
+            return result.rows.map(row => new SystemLog(row));
+        } catch (error) {
+            throw error;
+        }
+    }
 
     // Static method to find logs by source
     static async findBySource(source, limit = 100) {
@@ -82,6 +98,73 @@ class SystemLog {
                 LIMIT $3
             `;
             const result = await pool.query(query, [startDate, endDate, limit]);
+            return result.rows.map(row => new SystemLog(row));
+        } catch (error) {
+            throw error;
+        }
+    }
+    
+    // Advanced filtering method for admin panel
+    static async findWithFilters(filters = {}) {
+        try {
+            let conditions = [];
+            let params = [];
+            let paramIndex = 1;
+            
+            // Build dynamic query based on provided filters
+            if (filters.startDate) {
+                conditions.push(`timestamp >= $${paramIndex}`);
+                params.push(filters.startDate);
+                paramIndex++;
+            }
+            
+            if (filters.endDate) {
+                conditions.push(`timestamp <= $${paramIndex}`);
+                params.push(filters.endDate);
+                paramIndex++;
+            }
+            
+            if (filters.logLevel && filters.logLevel !== 'ALL') {
+                if (Array.isArray(filters.logLevel)) {
+                    conditions.push(`log_level IN (${filters.logLevel.map((_, i) => `$${paramIndex + i}`).join(', ')})`);
+                    params.push(...filters.logLevel);
+                    paramIndex += filters.logLevel.length;
+                } else {
+                    conditions.push(`log_level = $${paramIndex}`);
+                    params.push(filters.logLevel);
+                    paramIndex++;
+                }
+            }
+            
+            if (filters.source) {
+                conditions.push(`source = $${paramIndex}`);
+                params.push(filters.source);
+                paramIndex++;
+            }
+            
+            if (filters.searchTerm) {
+                conditions.push(`message ILIKE $${paramIndex}`);
+                params.push(`%${filters.searchTerm}%`);
+                paramIndex++;
+            }
+            
+            // Build the query
+            let query = 'SELECT * FROM System_Logs';
+            
+            if (conditions.length > 0) {
+                query += ' WHERE ' + conditions.join(' AND ');
+            }
+            
+            // Add sorting
+            query += ` ORDER BY timestamp ${filters.sortOrder === 'asc' ? 'ASC' : 'DESC'}`;
+            
+            // Add pagination
+            const limit = filters.limit || 100;
+            const offset = filters.offset || 0;
+            query += ` LIMIT $${paramIndex} OFFSET $${paramIndex + 1}`;
+            params.push(limit, offset);
+            
+            const result = await pool.query(query, params);
             return result.rows.map(row => new SystemLog(row));
         } catch (error) {
             throw error;

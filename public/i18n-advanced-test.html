@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Plant System i18n Testing</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background-color: #f5f7f9;
+      color: #333;
+    }
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      background-color: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    h1 {
+      color: #2c7f40;
+      border-bottom: 2px solid #e0e0e0;
+      padding-bottom: 10px;
+    }
+    .language-selector {
+      margin-bottom: 20px;
+    }
+    select {
+      padding: 8px;
+      border-radius: 4px;
+      border: 1px solid #ddd;
+      font-size: 16px;
+    }
+    button {
+      background-color: #2c7f40;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 4px;
+      font-size: 16px;
+      cursor: pointer;
+      margin-left: 10px;
+    }
+    button:hover {
+      background-color: #236b33;
+    }
+    .translation-group {
+      margin-top: 20px;
+      border: 1px solid #e0e0e0;
+      border-radius: 4px;
+      padding: 15px;
+    }
+    .translation-key {
+      font-weight: bold;
+      color: #2c7f40;
+      margin-bottom: 5px;
+    }
+    .translation-value {
+      background-color: #f9f9f9;
+      padding: 10px;
+      border-radius: 4px;
+      border-left: 3px solid #2c7f40;
+    }
+    .error {
+      color: #d9534f;
+      background-color: #f8d7da;
+      border-radius: 4px;
+      padding: 10px;
+      margin: 10px 0;
+    }
+    .translation-container {
+      margin-top: 30px;
+    }
+    .success {
+      color: #5cb85c;
+      background-color: #dff0d8;
+      border-radius: 4px;
+      padding: 10px;
+      margin: 10px 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Plant System i18n Testing</h1>
+    
+    <div class="language-selector">
+      <select id="language-select">
+        <option value="en">English</option>
+        <option value="es">Español</option>
+        <option value="fr">Français</option>
+        <option value="zh">中文</option>
+      </select>
+      <button id="change-language">Change Language</button>
+    </div>
+
+    <div id="messages"></div>
+    
+    <div class="translation-container">
+      <h2>Current Translations</h2>
+      <div id="translations"></div>
+      
+      <div class="translation-group">
+        <div class="translation-key">dashboard.wateringHistory</div>
+        <div class="translation-value" id="watering-history"></div>
+      </div>
+      
+      <div class="translation-group">
+        <div class="translation-key">dashboard.sensorReadings</div>
+        <div class="translation-value" id="sensor-readings"></div>
+      </div>
+      
+      <div class="translation-group">
+        <div class="translation-key">navigation.dashboard</div>
+        <div class="translation-value" id="nav-dashboard"></div>
+      </div>
+      
+      <div class="translation-group">
+        <div class="translation-key">navigation.plants</div>
+        <div class="translation-value" id="nav-plants"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Cache for loaded translations
+    const translationCache = {};
+    let currentLanguage = 'en';
+    
+    // Function to load translations
+    async function loadTranslations(lang) {
+      try {
+        // Check cache first
+        if (translationCache[lang]) {
+          return translationCache[lang];
+        }
+        
+        // Try to load from server
+        const response = await fetch(`/api/languages/${lang}/translations`);
+        
+        if (!response.ok) {
+          // If server request fails, try to load local file (for testing)
+          const localResponse = await fetch(`/client/src/i18n/locales/${lang}/translation.json`);
+          if (!localResponse.ok) {
+            throw new Error(`Failed to load translations for ${lang}`);
+          }
+          const translations = await localResponse.json();
+          translationCache[lang] = translations;
+          return translations;
+        }
+        
+        const data = await response.json();
+        const translations = data.translations || data;
+        translationCache[lang] = translations;
+        return translations;
+      } catch (error) {
+        // Fallback to hardcoded translations for testing
+        console.error('Error loading translations:', error);
+        return getFallbackTranslations(lang);
+      }
+    }
+    
+    // Fallback translations for testing
+    function getFallbackTranslations(lang) {
+      const translations = {
+        en: {
+          navigation: {
+            dashboard: "Dashboard",
+            plants: "Plants",
+            sensors: "Sensors",
+            settings: "Settings"
+          },
+          dashboard: {
+            wateringHistory: "Watering History",
+            sensorReadings: "Sensor Readings",
+            plantHealth: "Plant Health",
+            systemStatus: "System Status"
+          }
+        },
+        es: {
+          navigation: {
+            dashboard: "Tablero",
+            plants: "Plantas",
+            sensors: "Sensores",
+            settings: "Configuración"
+          },
+          dashboard: {
+            wateringHistory: "Historial de riego",
+            sensorReadings: "Lecturas de sensores",
+            plantHealth: "Salud de plantas",
+            systemStatus: "Estado del sistema"
+          }
+        },
+        fr: {
+          navigation: {
+            dashboard: "Tableau de bord",
+            plants: "Plantes",
+            sensors: "Capteurs",
+            settings: "Paramètres"
+          },
+          dashboard: {
+            wateringHistory: "Historique d'arrosage",
+            sensorReadings: "Lectures des capteurs",
+            plantHealth: "Santé des plantes",
+            systemStatus: "État du système"
+          }
+        },
+        zh: {
+          navigation: {
+            dashboard: "仪表板",
+            plants: "植物",
+            sensors: "传感器",
+            settings: "设置"
+          },
+          dashboard: {
+            wateringHistory: "浇水历史",
+            sensorReadings: "传感器读数",
+            plantHealth: "植物健康",
+            systemStatus: "系统状态"
+          }
+        }
+      };
+      
+      return translations[lang] || translations.en;
+    }
+    
+    // Get nested values using path
+    function getNestedValue(obj, path) {
+      const keys = path.split('.');
+      return keys.reduce((o, key) => (o && o[key] !== undefined ? o[key] : null), obj);
+    }
+    
+    // Update UI with translations
+    function updateUI(translations) {
+      document.getElementById('watering-history').textContent = 
+        getNestedValue(translations, 'dashboard.wateringHistory') || 'Missing translation';
+      
+      document.getElementById('sensor-readings').textContent = 
+        getNestedValue(translations, 'dashboard.sensorReadings') || 'Missing translation';
+      
+      document.getElementById('nav-dashboard').textContent = 
+        getNestedValue(translations, 'navigation.dashboard') || 'Missing translation';
+      
+      document.getElementById('nav-plants').textContent = 
+        getNestedValue(translations, 'navigation.plants') || 'Missing translation';
+      
+      // Display all translations (for debugging)
+      const translationsDiv = document.getElementById('translations');
+      translationsDiv.innerHTML = '<pre>' + JSON.stringify(translations, null, 2) + '</pre>';
+    }
+    
+    // Change language handler
+    async function changeLanguage() {
+      const select = document.getElementById('language-select');
+      const lang = select.value;
+      currentLanguage = lang;
+      
+      const messagesDiv = document.getElementById('messages');
+      messagesDiv.innerHTML = '<div class="info">Loading translations...</div>';
+      
+      try {
+        const translations = await loadTranslations(lang);
+        updateUI(translations);
+        messagesDiv.innerHTML = `<div class="success">Successfully loaded ${lang} translations</div>`;
+      } catch (error) {
+        messagesDiv.innerHTML = `<div class="error">Error: ${error.message}</div>`;
+      }
+    }
+    
+    // Set up event listeners
+    document.getElementById('change-language').addEventListener('click', changeLanguage);
+    
+    // Initialize with default language
+    window.addEventListener('DOMContentLoaded', async () => {
+      await changeLanguage();
+    });
+  </script>
+</body>
+</html>
