@@ -143,7 +143,8 @@
  * 🔄 Monitoring: Winston logging + PM2 + Prometheus metrics
  */
 
-require('dotenv').config();
+const dotenv = require('dotenv');
+dotenv.config();
 
 var createError = require('http-errors');
 var express = require('express');
@@ -152,11 +153,11 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
 // Import AWS IoT client and connect
-import { connectAwsIoT } from './services/awsIOTClient.js';
+const { connectAwsIoT } = require('./services/awsIOTClient.js');
 connectAwsIoT().catch(console.error);
 
 //initialize MQTT client
-import mqttClient from './mqtt/mqttClient.js';
+const mqttClient = require ('./mqtt/mqttClient.js');
 
 // Import PostgreSQL database connection
 require("./config/db");
