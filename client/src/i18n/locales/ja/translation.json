@@ -1,0 +1,409 @@
+{
+"errors": {
+"genericError": "エラーが発生しました。しばらくしてからもう一度お試しください。",
+"loginFailed": "ログインに失敗しました。認証情報をご確認ください。",
+"registrationFailed": "登録に失敗しました。もう一度お試しください。",
+"unauthorized": "不正アクセスです。ログインしてください。",
+"forbidden": "このリソースにアクセスする権限がありません。",
+"notFound": "リソースが見つかりません。",
+"serverError": "サーバーエラーが発生しました。しばらくしてからもう一度お試しください。",
+"validationError": "入力内容を確認して、もう一度お試しください。",
+"connectionError": "サーバーに接続できませんでした。インターネット接続をご確認ください。",
+"timeoutError": "リクエストがタイムアウトしました。もう一度お試しください。",
+"unsupportedBrowser": "お使いのブラウザはサポートされていません。新しいバージョンに更新してください。"
+},
+
+"common": {
+"submit": "送信",
+"cancel": "キャンセル",
+"delete": "削除",
+"add": "追加",
+"edit": "編集",
+"save": "保存",
+"close": "閉じる",
+"back": "戻る",
+"next": "次へ",
+"email": "メールアドレス",
+"password": "パスワード",
+"confirmPassword": "パスワードの確認",
+"fullName": "氏名",
+"firstName": "名",
+"lastName": "姓",
+"phoneNumber": "電話番号（任意）",
+"and": "および",
+"required": "必須項目",
+"success": "成功",
+"error": "エラー",
+"loading": "読み込み中...",
+"sending": "送信中...",
+"getStarted": "開始する",
+"learnMore": "詳細を見る",
+"retry": "再試行",
+"expand": "展開",
+"collapse": "折りたたむ",
+"appName": "PlantSmart"
+},
+"auth": {
+"login": "ログイン",
+"loginTitle": "アカウントにログイン",
+"register": "登録",
+"registerTitle": "アカウントを作成",
+"forgotPassword": "パスワードを忘れた場合",
+"forgotPasswordTitle": "パスワードをリセット",
+"forgotPasswordDescription": "メールアドレスを入力すると、パスワードをリセットするためのリンクが送信されます。",
+"resetPassword": "パスワードをリセット",
+"resetPasswordTitle": "新しいパスワードを作成",
+"changePassword": "パスワードを変更",
+"changePasswordTitle": "パスワードを更新",
+"logout": "サインアウト",
+"rememberMe": "ログイン情報を記憶する",
+"passwordRequirements": "パスワードは6文字以上である必要があります文字",
+"passwordMatch": "パスワードは一致する必要があります",
+"passwordChanged": "パスワードの変更に成功しました",
+"resetEmailSent": "パスワードリセットメールを送信しました",
+"resetLinkSent": "{{email}} にパスワードリセットリンクを送信しました",
+"resetSuccess": "パスワードのリセットに成功しました",
+"registerSuccess": "登録に成功しました",
+"continueWithGoogle": "Googleで続行",
+"orLoginWith": "またはログイン",
+"alreadyHaveAccount": "既にアカウントをお持ちですか？",
+"dontHaveAccount": "アカウントをお持ちではありませんか？",
+"goToLogin": "ログインに戻る",
+"checkYourEmail": "メールアドレスを確認してください",
+"checkSpamFolder": "メールが見つからない場合は、迷惑メールフォルダをご確認ください。",
+"sendResetLink": "リセットリンクを送信",
+"newsletter": "植物に関するメールを受け取るお手入れのヒントと最新情報",
+
+"acceptTerms": "同意します",
+"termsOfService": "利用規約",
+"privacyPolicy": "プライバシーポリシー"
+},
+"navigation": {
+"home": "ホーム",
+"dashboard": "ダッシュボード",
+"zones": "ゾーン",
+"reports": "レポート",
+"settings": "設定",
+"profile": "プロフィール",
+"plants": "植物",
+"sensors": "センサー",
+"chat": "チャット",
+"support": "サポート",
+"admin": "管理",
+"login": "ログイン",
+"logout": "セッションを閉じる",
+"register": "登録",
+"changePassword": "パスワードの変更",
+"forgotPassword": "パスワードを忘れた場合",
+"searchReports": "レポートを検索",
+"thresholds": "しきい値",
+"upgrade": "アップグレード"
+},
+"dashboard": {
+"wateringHistory": "水やり履歴",
+"sensorReadings": "センサーの測定値",
+"plantHealth": "植物の健康状態",
+"recentActivities": "最近のアクティビティ",
+"systemStatus": "システムステータス",
+"waterNow": "今すぐ水やり",
+"soilMoisture": "土壌水分",
+"temperature": "気温",
+"humidity": "湿度",
+"sunlight": "日光",
+"lastWatered": "前回の水やり",
+"nextScheduled": "次回の水やり予定",
+"title": "ダッシュボードコントロール",
+"plantStatus": "植物の状態",
+"allHealthy": "すべての植物が健康です",
+"nextWatering": "次回の水やり",
+"welcome": "ようこそ",
+"overview": "植物コレクションの概要です",
+"addPlant": "新しい植物を追加plant",
+"totalPlants": "植物の総数",
+"needsWatering": "水やりが必要です",
+"needsAttention": "注意が必要です",
+"yourPlants": "あなたの植物","noPlants": "まだ植物を追加していません",
+"startAdding": "コレクションに植物を追加し始めましょう",
+"addFirstPlant": "最初の植物を追加しましょう",
+"recentActivity": "最近のアクティビティ",
+"wateringSchedule": "水やりスケジュール",
+"errorLoading": "ダッシュボードの読み込みエラー",
+"loadError": "ダッシュボードのデータを読み込めませんでした。しばらくしてからもう一度お試しください。"
+},
+"plants": {
+"myPlants": "私の植物",
+"manage": "植物コレクションの管理と監視",
+"addNew": "新しい植物を追加する",
+"noMatchingPlants": "フィルターに一致する植物がありません",
+"noPlants": "まだ植物が追加されていません",
+"tryDifferentFilter": "別のフィルターまたは検索語句を試す",
+"startAdding": "コレクションへの植物の追加を開始する",
+"addFirstPlant": "最初の植物を追加する",
+"errorLoading": "植物の読み込み中にエラーが発生しました",
+"loadError": "植物データを読み込めませんでした。しばらくしてからもう一度お試しください。"
+},
+
+"notFound": {
+"title": "ページが見つかりません",
+"message": "お探しのページは存在しないか、移動されています。",
+"goBack": "ホームページに戻る",
+"errorCode": "エラー 404"
+},
+
+"forbidden": {
+"title": "アクセスが拒否されました",
+"message": "このページにアクセスする権限がありません。",
+"goBack": "ホームページに戻る",
+"errorCode": "エラー 403",
+"upgradeMessage": "この機能にはプレミアムサブスクリプションが必要です。",
+"upgrade": "今すぐアップグレード"
+},
+
+"zones": {
+"title": "複数のフロアゾーンを管理",
+"createZone": "ゾーンを作成",
+"deleteZone": "ゾーンを削除",
+"deleteZoneConfirm": "このゾーンを削除しますか？",
+"zoneName": "名前",
+"zoneDescription": "説明",
+"devices": "デバイス",
+"device": "デバイス",
+"deviceType": "タイプ",
+"assignTo": "割り当て先",
+"unassign": "割り当て解除",
+"assignPump": "-- {{zone}} にポンプを割り当て --",
+"selectPump": "ゾーンのポンプを選択",
+"zoneDevices": "ゾーン内のデバイス",
+"noZoneDevices": "このゾーンにデバイスはありません",
+"unassignedDevices": "未割り当てのデバイス",
+"noDevices": "未割り当てのデバイスはありません",
+"zone1": "ゾーン1：リビングルーム",
+"zone2": "ゾーン2：庭",
+"zone3": "ゾーン3：パティオ",
+"plantsMonitored": "{{count}} 個の植物を監視中"
+},
+
+"validation": {
+"emailRequired": "メールアドレスは必須です",
+"invalidEmail": "メールアドレスの形式が無効です",
+"passwordRequired": "パスワードは必須です",
+"passwordLength": "パスワードは8文字以上",
+"passwordsDoNotMatch": "パスワードが一致しません",
+"firstNameRequired": "名が必要です",
+"lastNameRequired": "姓が必要です",
+"termsRequired": "利用規約に同意する必要があります"
+},
+
+"landing": {
+"smartPlantCare": "スマートな植物ケア",
+"neverKill": "枯らさない",
+"anotherPlant": "もう一つの植物",
+"transformHome": "スマートモニタリングシステムとパーソナライズされたケアアドバイスで、ご自宅を植物の楽園に変身させましょう。",
+"startFreeTrial": "無料トライアルを開始",
+"watchDemo": "デモを見る",
+"freeTrialDays": "14日間無料トライアル",
+"noCardRequired": "クレジットカードは不要",
+"everythingYouNeed": "必要なものすべて",
+"perfectPlantCare": "完璧な植物ケア",
+"comprehensiveSystem": "包括的な植物モニタリングシステムでどんな環境でも植物が元気に育つためのツールがすべて揃っています。",
+"happyPlantParents": "幸せな植物の親たち",
+"lovedByThousands": "何千人もの植物愛好家に愛されています",
+"plantEnthusiasts": "世界中の植物愛好家",
+"testimonialDescription": "PlantSmart が植物のケア体験をどのように変えたかについて、コミュニティの声をご覧ください。",
+"readyToTransform": "植物のケアを変革する準備はできていますか？",
+"joinThousands": "PlantSmart を使って、すでに植物をより元気で健康に育てている何千人もの植物愛好家の仲間入りをしましょう。",
+"startYourFreeTrial": "無料トライアルを始める",
+"scheduleDemo": "デモを予約する",
+"futurePlantCare": "植物ケアの未来を、今すぐ。スマートモニタリングで、より元気で健康な植物を。"
+},
+
+"features": {
+"smartWatering": "スマートな散水",
+"smartWateringDesc": "当社のセンサーが土壌水分をモニタリングし、最適なタイミングで植物に自動的に水やりをします。水やりの過剰や不足を防ぎます。",
+"lightOptimization": "光の最適化",
+"lightOptimizationDesc": "一日を通して光への露出を追跡し、それぞれの植物のニーズに最適な場所を推奨します。",
+"healthAlerts": "アラート健康",
+"healthAlertsDesc": "健康問題、害虫、病気などの潜在的なリスクについて、深刻な問題になる前に即座に通知を受け取れます。"
+},
+
+"footer": {
+"product": "製品",
+"company": "会社情報",
+"support": "サポート",
+"helpCenter": "ヘルプセンター",
+"documentation": "ドキュメント",
+"community": "コミュニティ",
+"status": "システムステータス",
+"about": "会社概要",
+"blog": "ブログ",
+"careers": "採用情報",
+"security": "セキュリティ",
+"integrations": "連携",
+"privacyPolicy": "プライバシーポリシー",
+"termsOfService": "利用規約",
+"cookies": "Cookie"
+},
+
+"help": {
+"title": "ヘルプセンター",
+"searchPlaceholder": "ヘルプトピックを検索...",
+"popularTopics": "人気のトピック",
+"contactSupport": "サポートへのお問い合わせ",
+"faqTitle": "よくある質問",
+"noResults": "「{{query}}」に該当する結果は見つかりませんでした",
+"tryDifferent": "別の検索語を試すか、以下のカテゴリをご覧ください",
+
+"categories": {
+"gettingStarted": "はじめに",
+"account": "アカウントとお支払い",
+"devices": "デバイスとセンサー",
+"plantCare": "植物のケア",
+"troubleshooting": "トラブルシューティング"
+},
+
+"faqs": {
+"setup": {
+"title": "最初のデバイスをセットアップするにはどうすればよいですか？",
+"content": "最初のデバイスをセットアップするには、ログイン後、「デバイス」セクションに移動します。「新しいデバイスを追加」をクリックし、画面の指示に従ってデバイスをWi-Fiネットワークに接続します。セットアップには通常5分もかかりません。"
+},
+"pairing": {
+"title": "センサーがアプリとペアリングできません",
+"content": "センサーがペアリングできない場合は、以下の手順に従ってください。1) センサーが充電され、LEDが点滅していることを確認してください。2) スマートフォンのBluetoothがオンになっていることを確認してください。3) ペアリング中にセンサーをスマートフォンに近づけてください。4) バッテリーを一度取り外し、再度装着してセンサーをリセットしてください。"
+},
+"watering": {
+"title": "自動給水はどのように機能しますか？",
+"content": "自動給水は、土壌水分センサーを使用して植物への水やりの必要性を検知します。水分量が設定したしきい値を下回ると、システムは接続された給水ポンプを一定時間作動させます。植物ごとの給水しきい値と給水時間は、「植物設定」でカスタマイズできます。"
+},
+"accuracy": {
+"title": "水分量の測定値の精度はどのくらいですか？",
+"content": "当社の土壌水分センサーは、通常の条件下で±3%以内の精度です。最良の結果を得るには、センサープローブを土壌に少なくとも5cm埋め込み、鉢の縁から離してください。土壌の種類によってはキャリブレーションが必要な場合があり、センサー設定でキャリブレーションを行うことができます。"
+},
+"battery": {
+"title": "センサーのバッテリーはどのくらい持ちますか？",
+"content": "標準センサーのバッテリーは通常使用で6～12ヶ月持ちます。プレミアムソーラー充電センサーはさらに長く持ちます。バッテリー残量が少なくなると通知が届きます。バッテリーを長持ちさせるには、センサー設定で読み取り頻度を下げてください。"
+},
+"offline": {
+"title": "インターネットが切断された場合はどうなりますか？",
+"content": "インターネット接続が切断された場合、センサーはローカルでデータの収集を継続します（最大7日間保存）。自動給水システムは前回の設定に従って動作を続けます。接続が回復すると、保存されたすべてのデータがアカウントに同期されます。"
+},
+"plantTypes": {
+"title": "システムはすべての植物の種類に対応していますか？",
+"content": "はい、当社のシステムはほぼすべての屋内外の植物に対応しています。データベースには、5,000種以上の植物の具体的な管理情報が含まれています。特殊な要件を持つ特殊な植物の場合は、しきい値と設定を手動で調整できます。"
+},
+"subscription": {
+"title": "プレミアムサブスクリプションには何が含まれていますか？",
+"content": "プレミアムサブスクリプションには、AIによる植物病害検出、無制限の植物とセンサー、履歴データを使用した高度な分析、パーソナライズされたケアプログラム、専門家によるアドバイスへのアクセス、優先カスタマーサポートが含まれます。詳細な比較については、価格ページをご覧ください。"
+},
+"refunds": {
+"title": "返金ポリシーはどのようなものですか？",
+"content": "ハードウェアのご購入には30日間の満足保証を提供しています。ご満足いただけない場合は、サポートにご連絡の上、承認手続きを行ってください。返金ポリシー。サブスクリプションはいつでもキャンセルでき、次回の請求サイクルでは料金は発生しません。ただし、未使用のサブスクリプション期間の一部返金は行っておりません。"
+},
+"dataPrivacy": {
+"title": "植物データはどのように使用されますか？",
+"content": "お客様の植物データは、お客様に合わせたケアの推奨事項の提供とサービスの向上に使用されます。調査および分析の目的でデータを匿名化します。お客様の個人情報を第三者に販売することはありません。詳細はプライバシーポリシーをご覧ください。"
+}
+}
+},
+
+"premium": {
+"title": "プレミアムにアップグレード",
+"description": "高度な機能にアクセスして、植物モニタリングシステムを最大限に活用しましょう",
+"currentPlan": "現在のプラン: {{plan}}",
+"freeTrial": "14日間の無料トライアルを開始",
+"subscribe": "今すぐ登録",
+"monthly": "月額",
+"yearly": "年間（20%割引）",
+"yearlyDiscount": "2ヶ月無料！",
+"features": {
+"unlimited": "植物とゾーンが無制限",
+"ai": "AIを活用した植物病害検出",
+"history": "12ヶ月履歴データ",
+"export": "データエクスポートオプション",
+"support": "優先カスタマーサポート",
+"updates": "新機能への早期アクセス"
+},
+"comparison": {
+"title": "プラン比較",
+"free": "無料プラン",
+"premium": "プレミアムプラン",
+"plantLimit": "プラント数制限",
+"freeLimit": "プラント数5",
+"premiumLimit": "無制限",
+"zoneLimit": "ゾーン数制限",
+"freeZones": "1ゾーン",
+"premiumZones": "ゾーン数無制限",
+"dataHistory": "データ履歴",
+"freeHistory": "7日間",
+"premiumHistory": "12か月",
+"advancedAnalytics": "高度な分析",
+"freeAnalytics": "基本",
+"premiumAnalytics": "インサイト機能を備えた高度な分析",
+"aiDiagnostics": "AIプラント診断",
+"notIncluded": "含まれていません",
+"included": "含まれています"
+},
+"faq": {
+"title": "よくある質問",
+"cancelQuestion": "いつでもキャンセルできますか？",
+"cancelAnswer": "はい、サブスクリプションはいつでもキャンセルできます。プレミアム機能は、現在の請求期間の終了まで有効です。",
+"deviceQuestion": "特別なデバイスが必要ですか？",
+"deviceAnswer": "いいえ、プレミアムは既存のすべてのPlantSmartセンサーとデバイスで動作します。現在の設定ですぐに新しい機能にアクセスできます。",
+"trialQuestion": "無料トライアル後はどうなりますか？",
+"trialAnswer": "14日間のトライアル期間が終了すると、自動的にプレミアムプランに加入されます。お支払い方法に請求する前に、リマインダーをお送りします。",
+"refundQuestion": "払い戻しはできますか？",
+"refundAnswer": "一部払い戻しは行っておりません。サブスクリプション期間は無制限ですが、将来の請求を避けるためにいつでもキャンセルできます。」"
+}
+},
+
+"settings": {
+"title": "設定",
+"account": "アカウント設定",
+"notificationsSection": "通知設定",
+"devices": "デバイス管理",
+"appearance": "外観",
+"language": "言語",
+"privacySection": "プライバシーとデータ",
+"help": "ヘルプとサポート",
+"about": "概要",
+"logout": "サインアウト",
+"deleteAccount": "アカウントを削除",
+"theme": {
+"title": "テーマ",
+"light": "ライト",
+"dark": "ダーク",
+"system": "システムのデフォルト"
+},
+"notificationPreferences": {
+"push": "プッシュ通知",
+"email": "メール通知",
+"watering": "水やりリマインダー",
+"moisture": "低湿度アラート",
+"battery": "バッテリー残量低下アラート",
+"tips": "植物のお手入れのヒント",
+"updates": "製品のアップデート"
+},
+"privacySettings": {
+"dataCollection": "データ収集",
+"dataSharing": "データ共有",
+"analytics": "アナリティクス",
+"downloadData": "データのダウンロード",
+"deleteData": "データの削除"
+},
+"advanced": {
+"title": "詳細設定",
+"readingFrequency": "センサーの読み取り頻度",
+"frequenhint": "読み取り頻度が高いほどバッテリー消費量が多くなります",
+"debug": "デバッグモード",
+"logs": "システムログの表示",
+"resetSystem": "システムのリセット"
+},
+"accountDeletion": {
+"title": "アカウントの削除",
+"warning": "この操作を行うと、アカウントとすべてのデータが完全に削除されます。",
+"confirmation": "この操作は元に戻せないことを理解しています",
+"button": "アカウントを削除",
+"feedback": "退会の理由をお聞かせください",
+"success": "アカウントを削除しました"
+}
+}
+}

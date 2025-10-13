@@ -1,0 +1,13 @@
+{
+  "ai": {
+    "plantAnalysis": "Phân tích tình trạng cây thông minh",
+    "analyzing": "Đang phân tích...",
+    "analyzePlant": "Phân tích tình trạng cây",
+    "overallCondition": "Tình trạng tổng thể",
+    "warnings": "Cảnh báo",
+    "careRecommendations": "Đề xuất chăm sóc",
+    "good": "Tốt",
+    "moderate": "Trung bình",
+    "poor": "Kém"
+  }
+}

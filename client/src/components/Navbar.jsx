@@ -1,5 +1,6 @@
-import { Link } from "react-router-dom";
-import { useAuth } from "../auth/AuthContext";
+import Link from "next/link";
+import { useAuth } from "@/providers/AuthProvider";
+import { LanguageSwitcher } from './LanguageSwitcher';
 
 export default function Navbar() {
   const { user, logout } = useAuth();
@@ -7,24 +8,27 @@ export default function Navbar() {
 
   return (
     <nav className="navbar navbar-expand bg-light px-3">
-      <Link className="navbar-brand" to="/">SmartFarm</Link>
+      <Link className="navbar-brand" href="/">SmartFarm</Link>
       <div className="navbar-nav">
         {isPremium && <>
-          <Link className="nav-link" to="/zones">Zones</Link>
-          <Link className="nav-link" to="/reports">Reports</Link>
-          <Link className="nav-link" to="/thresholds">Thresholds</Link>
-          <Link className="nav-link" to="/search-reports">Search</Link>
-          <Link className="nav-link" to="/customize">Customize</Link>
+          <Link className="nav-link" href="/zones">Zones</Link>
+          <Link className="nav-link" href="/reports">Reports</Link>
+          <Link className="nav-link" href="/thresholds">Thresholds</Link>
+          <Link className="nav-link" href="/search-reports">Search</Link>
+          <Link className="nav-link" href="/customize">Customize</Link>
         </>}
       </div>
-      <div className="ms-auto">
+      <div className="ms-auto d-flex align-items-center">
+        <div className="me-3">
+          <LanguageSwitcher />
+        </div>
         {user ? (
           <>
             <span className="me-2">{user.name} ({user.role})</span>
-            {user.role==="Regular" && <Link className="btn btn-sm btn-warning me-2" to="/upgrade">Upgrade</Link>}
+            {user.role==="Regular" && <Link className="btn btn-sm btn-warning me-2" href="/upgrade">Upgrade</Link>}
             <button className="btn btn-sm btn-outline-secondary" onClick={logout}>Logout</button>
           </>
-        ) : <Link className="btn btn-sm btn-primary" to="/login">Login</Link>}
+        ) : <Link className="btn btn-sm btn-primary" href="/login">Login</Link>}
       </div>
     </nav>
   );

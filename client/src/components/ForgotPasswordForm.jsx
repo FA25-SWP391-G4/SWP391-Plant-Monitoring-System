@@ -1,14 +1,16 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { Button } from '../ui/Button';
-import { Input } from '../ui/Input';
-import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '../ui/Card';
+import Link from 'next/link';
+import { useTranslation } from 'react-i18next';
+import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from './ui/Card';
+import { Input } from './ui/Input';
+import { Button } from './ui/Button';
 
 /**
  * ForgotPasswordForm component
  * Adapted from the SWP391 design system
  */
 export function ForgotPasswordForm() {
+  const { t } = useTranslation();
   const [isLoading, setIsLoading] = useState(false);
   const [email, setEmail] = useState('');
   const [emailSent, setEmailSent] = useState(false);
@@ -18,12 +20,12 @@ export function ForgotPasswordForm() {
     e.preventDefault();
     
     if (!email.trim()) {
-      setError('Please enter your email address');
+      setError(t('validation.emailRequired'));
       return;
     }
     
     if (!/^\S+@\S+\.\S+$/.test(email)) {
-      setError('Please enter a valid email address');
+      setError(t('validation.invalidEmail'));
       return;
     }
     
@@ -41,7 +43,7 @@ export function ForgotPasswordForm() {
       setEmailSent(true);
     } catch (error) {
       console.error('Password reset error:', error);
-      setError('An error occurred. Please try again later.');
+      setError(t('errors.genericError', 'An error occurred. Please try again later.'));
     } finally {
       setIsLoading(false);
     }
@@ -56,9 +58,9 @@ export function ForgotPasswordForm() {
             <span className="text-green-700 text-xl">🔒</span>
           </span>
         </div>
-        <CardTitle className="text-center text-2xl">Forgot your password?</CardTitle>
+        <CardTitle className="text-center text-2xl">{t('auth.forgotPasswordTitle')}</CardTitle>
         <CardDescription className="text-center">
-          Enter your email address and we'll send you a link to reset your password.
+          {t('auth.forgotPasswordDescription')}
         </CardDescription>
       </CardHeader>
       
@@ -71,12 +73,12 @@ export function ForgotPasswordForm() {
                 <span className="text-green-700 text-xl">✓</span>
               </span>
             </div>
-            <h3 className="text-lg font-medium">Check your email</h3>
+            <h3 className="text-lg font-medium">{t('auth.checkYourEmail')}</h3>
             <p className="text-sm text-gray-600">
-              We've sent a password reset link to <strong>{email}</strong>
+              {t('auth.resetLinkSent', { email: email })}
             </p>
             <p className="text-sm text-gray-500">
-              If you don't see it, please check your spam folder.
+              {t('auth.checkSpamFolder')}
             </p>
           </div>
         ) : (
@@ -84,7 +86,7 @@ export function ForgotPasswordForm() {
             <div className="space-y-4">
               <div>
                 <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
-                  Email
+                  {t('common.email')}
                 </label>
                 <Input
                   id="email"
@@ -102,7 +104,7 @@ export function ForgotPasswordForm() {
                 className="w-full"
                 disabled={isLoading}
               >
-                {isLoading ? 'Sending...' : 'Send reset link'}
+                {isLoading ? t('common.sending') : t('auth.sendResetLink')}
               </Button>
             </div>
           </form>
@@ -111,8 +113,8 @@ export function ForgotPasswordForm() {
       
       <CardFooter className="justify-center">
         <p className="text-sm text-gray-500">
-          <Link to="/login" className="text-blue-600 hover:underline">
-            ← Back to login
+          <Link href="/login" className="text-blue-600 hover:underline">
+            ← {t('auth.goToLogin')}
           </Link>
         </p>
       </CardFooter>

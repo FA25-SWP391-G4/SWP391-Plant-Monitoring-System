@@ -7,14 +7,22 @@ import Backend from 'i18next-http-backend';
 // Import translation resources
 import translationEN from './locales/en/translation.json';
 import translationVI from './locales/vi/translation.json';
+import translationJA from './locales/ja/translation.json';
+import aiEN from './locales/en/ai.json';
+import aiVI from './locales/vi/ai.json';
 
 // Translation resources
 const resources = {
   en: {
-    translation: translationEN
+    translation: translationEN,
+    ai: aiEN.ai
   },
   vi: {
-    translation: translationVI
+    translation: translationVI,
+    ai: aiVI.ai
+  },
+  ja: {
+    translation: translationJA
   }
 };
 

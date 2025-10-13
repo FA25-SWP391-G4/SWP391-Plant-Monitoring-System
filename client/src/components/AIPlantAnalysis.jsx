@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import aiApi from '../api/aiApi';
+import { useTranslation } from 'react-i18next';
 import { 
   Box, Button, Card, CardContent, CircularProgress, 
   Grid, TextField, Typography, Alert, Paper, Divider
@@ -9,6 +10,7 @@ import WarningIcon from '@mui/icons-material/Warning';
 import RecommendIcon from '@mui/icons-material/Recommend';
 
 const AIPlantAnalysis = ({ plantId, plantType, sensorData }) => {
+  const { t } = useTranslation();
   const [analysis, setAnalysis] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -35,7 +37,7 @@ const AIPlantAnalysis = ({ plantId, plantType, sensorData }) => {
       setAnalysis(response.data);
     } catch (err) {
       console.error('Error analyzing plant:', err);
-      setError('Không thể phân tích tình trạng cây. Vui lòng thử lại sau.');
+      setError(t('errors.analysisError', 'Could not analyze plant condition. Please try again later.'));
     } finally {
       setLoading(false);
     }
@@ -45,7 +47,7 @@ const AIPlantAnalysis = ({ plantId, plantType, sensorData }) => {
     <Paper elevation={3} sx={{ p: 3, mb: 3 }}>
       <Typography variant="h5" gutterBottom sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
         <AnalyticsIcon color="primary" />
-        Phân tích tình trạng cây thông minh
+        {t('ai.plantAnalysis', 'Smart Plant Analysis')}
       </Typography>
       
       <Divider sx={{ my: 2 }} />
@@ -59,7 +61,7 @@ const AIPlantAnalysis = ({ plantId, plantType, sensorData }) => {
           startIcon={loading ? <CircularProgress size={20} color="inherit" /> : <AnalyticsIcon />}
           fullWidth
         >
-          {loading ? 'Đang phân tích...' : 'Phân tích tình trạng cây'}
+          {loading ? t('ai.analyzing', 'Analyzing...') : t('ai.analyzePlant', 'Analyze Plant Condition')}
         </Button>
       </Box>
       
@@ -75,7 +77,11 @@ const AIPlantAnalysis = ({ plantId, plantType, sensorData }) => {
                                       analysis.overall_health === 'Trung bình' ? 'warning.light' : 'error.light' }}>
             <CardContent>
               <Typography variant="h6" gutterBottom>
-                Tình trạng tổng thể: {analysis.overall_health}
+                {t('ai.overallCondition', 'Overall Condition')}: {
+                  analysis.overall_health === 'Tốt' ? t('ai.good', 'Good') : 
+                  analysis.overall_health === 'Trung bình' ? t('ai.moderate', 'Moderate') : 
+                  t('ai.poor', 'Poor')
+                }
               </Typography>
               <Typography variant="body1">
                 {analysis.health_description}
@@ -88,7 +94,7 @@ const AIPlantAnalysis = ({ plantId, plantType, sensorData }) => {
               <CardContent>
                 <Typography variant="h6" gutterBottom sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                   <WarningIcon color="warning" />
-                  Cảnh báo
+                  {t('ai.warnings', 'Warnings')}
                 </Typography>
                 <Box component="ul" sx={{ pl: 2 }}>
                   {analysis.warnings.map((warning, index) => (
@@ -105,7 +111,7 @@ const AIPlantAnalysis = ({ plantId, plantType, sensorData }) => {
             <CardContent>
               <Typography variant="h6" gutterBottom sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                 <RecommendIcon color="info" />
-                Đề xuất chăm sóc
+                {t('ai.careRecommendations', 'Care Recommendations')}
               </Typography>
               <Box component="ul" sx={{ pl: 2 }}>
                 {analysis.recommendations.map((recommendation, index) => (

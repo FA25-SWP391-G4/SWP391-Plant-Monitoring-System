@@ -1,0 +1,13 @@
+{
+  "ai": {
+    "plantAnalysis": "Smart Plant Analysis",
+    "analyzing": "Analyzing...",
+    "analyzePlant": "Analyze Plant Condition",
+    "overallCondition": "Overall Condition",
+    "warnings": "Warnings",
+    "careRecommendations": "Care Recommendations",
+    "good": "Good",
+    "moderate": "Moderate",
+    "poor": "Poor"
+  }
+}
