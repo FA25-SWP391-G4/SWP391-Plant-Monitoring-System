@@ -18,6 +18,11 @@ export function targetIndoorLightFor(outside, plantName = "") {
 
   if (/rosemary/i.test(plantName)) base -= 2; // bright lover but avoid overexpose indoors
   if (/fig/i.test(plantName)) base += 2;      // Ficus lyrata likes a touch more
+<<<<<<< HEAD
   if (/snake|sansevieria/i.test(plantName)) base -= 3; // Snake plants do fine with less
   return base;
 }
+=======
+  return Math.max(45, Math.min(75, base));
+}
+>>>>>>> fe-Quan

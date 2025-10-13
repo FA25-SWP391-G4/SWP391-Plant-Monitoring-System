@@ -1,4 +1,5 @@
 import React from "react";
+<<<<<<< HEAD
 
 // Mock function for RSSI-to-bars conversion if lib/wifiApi doesn't exist
 const rssiToBars = (rssi) => {
@@ -32,6 +33,10 @@ const useWifiScan = (baseUrl, endpoints) => {
 
   return { networks, loading, error, scan };
 };
+=======
+import { rssiToBars } from "../lib/wifiApi";
+import { useWifiScan } from "../hooks/useWifiScan";
+>>>>>>> fe-Quan
 
 export default function NetworkScanner({ baseUrl = "", endpoints = {}, ssid, setSsid }){
   const { networks, loading, error, scan } = useWifiScan(baseUrl, endpoints);
@@ -80,4 +85,8 @@ function Bars({ count = 0 }){
       ))}
     </div>
   );
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> fe-Quan

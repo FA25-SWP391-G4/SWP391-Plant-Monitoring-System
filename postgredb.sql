@@ -1,6 +1,10 @@
+<<<<<<< HEAD
 -- Active: 1755670041367@@127.0.0.1@5432@plant_system
 -- Active: 1755670041367@@127.0.0.1@5432@plant_system-- Active: 1755670041367@@127.0.0.1@5432@postgres
 -- Plant Monitoring System Database Schema for PostgreSQL
+=======
+-- Active: 1759207571568@@127.0.0.1@5432@plant_system
+>>>>>>> fe-Quan
 
 CREATE DATABASE plant_system;
 \c plant_system;
@@ -25,9 +29,16 @@ CREATE TABLE Users (
   email VARCHAR(100) NOT NULL UNIQUE,
   password_hash VARCHAR(255) NOT NULL,
   full_name VARCHAR(100) NULL,
+<<<<<<< HEAD
   role VARCHAR(30) NOT NULL DEFAULT 'Regular' CHECK (role IN ('Regular', 'Premium', 'Admin')),
   notification_prefs JSONB NULL,
   created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+=======
+  role VARCHAR(30) CHECK (ROLE IN ('Regular', 'Premium', 'Admin')) NOT NULL DEFAULT 'Regular',
+  notification_prefs JSON NULL,
+  created_at TIMESTAMP(0) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (user_id),
+>>>>>>> fe-Quan
   password_reset_token VARCHAR(255),
   password_reset_expires TIMESTAMP
 );
@@ -39,7 +50,12 @@ CREATE TABLE Plant_Profiles (
   profile_id SERIAL PRIMARY KEY,
   species_name VARCHAR(100) NOT NULL,
   description TEXT NULL,
+<<<<<<< HEAD
   ideal_moisture INT NULL -- Recommended soil moisture percentage
+=======
+  ideal_moisture INT NULL,
+  PRIMARY KEY (profile_id)
+>>>>>>> fe-Quan
 );
 
 -- Table for AI_Models
@@ -49,8 +65,14 @@ CREATE TABLE AI_Models (
   version VARCHAR(20) NULL,
   file_path VARCHAR(255) NOT NULL,
   is_active BOOLEAN NOT NULL DEFAULT FALSE,
+<<<<<<< HEAD
   uploaded_by INT NOT NULL, -- Admin user_id
   created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+=======
+  uploaded_by INT NOT NULL,
+  created_at TIMESTAMP(0) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (model_id),
+>>>>>>> fe-Quan
   CONSTRAINT fk_ai_models_admin FOREIGN KEY (uploaded_by) REFERENCES Users (user_id) ON DELETE RESTRICT ON UPDATE CASCADE
 );
 
@@ -58,7 +80,11 @@ CREATE TABLE AI_Models (
 CREATE TABLE Devices (
   device_id SERIAL PRIMARY KEY,
   user_id INT NOT NULL,
+<<<<<<< HEAD
   device_key CHAR(36) NOT NULL UNIQUE, -- UUID for secure API communication
+=======
+  device_key CHAR(36) NOT NULL UNIQUE,
+>>>>>>> fe-Quan
   device_name VARCHAR(100) NULL,
   status VARCHAR(30) NOT NULL DEFAULT 'offline' CHECK (status IN ('online', 'offline', 'error')),
   last_seen TIMESTAMP NULL,
@@ -73,7 +99,11 @@ CREATE TABLE Plants (
   device_id INT NOT NULL,
   profile_id INT NULL,
   custom_name VARCHAR(100) NOT NULL,
+<<<<<<< HEAD
   moisture_threshold INT NOT NULL, -- The specific moisture % to trigger watering
+=======
+  moisture_threshold INT NOT NULL,
+>>>>>>> fe-Quan
   auto_watering_on BOOLEAN NOT NULL DEFAULT TRUE,
   created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   CONSTRAINT fk_plants_user FOREIGN KEY (user_id) REFERENCES Users (user_id) ON DELETE CASCADE ON UPDATE CASCADE,
@@ -107,7 +137,11 @@ CREATE TABLE Watering_History (
 CREATE TABLE Pump_Schedules (
   schedule_id SERIAL PRIMARY KEY,
   plant_id INT NOT NULL,
+<<<<<<< HEAD
   cron_expression VARCHAR(50) NOT NULL, -- e.g., "0 8 * * *" for 8 AM daily
+=======
+  cron_expression VARCHAR(50) NOT NULL,
+>>>>>>> fe-Quan
   is_active BOOLEAN NOT NULL DEFAULT TRUE,
   CONSTRAINT fk_schedules_plant FOREIGN KEY (plant_id) REFERENCES Plants (plant_id) ON DELETE CASCADE ON UPDATE CASCADE
 );

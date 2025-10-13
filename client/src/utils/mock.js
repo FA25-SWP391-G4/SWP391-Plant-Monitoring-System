@@ -21,6 +21,7 @@ export function computeAlerts({ soil, water }) {
   return alerts;
 }
 
+<<<<<<< HEAD
 // Return the pretty name for a plant type
 export function formatPlantType(type) {
   return {
@@ -31,3 +32,7 @@ export function formatPlantType(type) {
     'ficus': 'Fiddle Leaf Fig',
   }[type.toLowerCase()] || type;
 }
+=======
+export const fmtPct = (n) => `${n.toFixed(0)}%`;
+export const fmtTemp = (n) => `${n.toFixed(1)}°C`;
+>>>>>>> fe-Quan
