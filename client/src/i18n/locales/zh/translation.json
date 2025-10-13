@@ -1,100 +1,409 @@
 {
-  "common": {
-    "submit": "提交",
-    "cancel": "取消",
-    "delete": "删除",
-    "add": "添加",
-    "edit": "编辑",
-    "save": "保存",
-    "close": "关闭",
-    "back": "返回",
-    "next": "下一步",
-    "email": "电子邮件",
-    "password": "密码",
-    "confirmPassword": "确认密码",
-    "fullName": "全名",
-    "required": "必填项",
-    "success": "成功",
-    "error": "错误",
-    "loading": "加载中..."
-  },
-  "auth": {
-    "login": "登录",
-    "loginTitle": "登录您的账户",
-    "register": "注册",
-    "registerTitle": "创建账户",
-    "forgotPassword": "忘记密码",
-    "forgotPasswordTitle": "重置您的密码",
-    "resetPassword": "重置密码",
-    "resetPasswordTitle": "创建新密码",
-    "changePassword": "更改密码",
-    "changePasswordTitle": "更新您的密码",
-    "logout": "登出",
-    "rememberMe": "记住我",
-    "passwordRequirements": "密码长度至少为6个字符",
-    "passwordMatch": "密码必须匹配",
-    "passwordChanged": "密码更改成功",
-    "resetEmailSent": "已发送密码重置邮件",
-    "resetSuccess": "密码重置成功",
-    "registerSuccess": "注册成功",
-    "continueWithGoogle": "使用Google继续",
-    "orLoginWith": "或使用以下方式登录",
-    "alreadyHaveAccount": "已有账户？",
-    "dontHaveAccount": "没有账户？",
-    "goToLogin": "返回登录"
-  },
-  "navigation": {
-    "home": "首页",
-    "dashboard": "仪表板",
-    "zones": "区域",
-    "reports": "报告",
-    "settings": "设置",
-    "profile": "个人资料",
-    "plants": "植物",
-    "sensors": "传感器",
-    "chat": "聊天",
-    "support": "支持",
-    "admin": "管理员",
-    "login": "登录",
-    "logout": "登出",
-    "register": "注册",
-    "changePassword": "更改密码",
-    "forgotPassword": "忘记密码",
-    "searchReports": "搜索报告",
-    "thresholds": "阈值",
-    "upgrade": "升级"
-  },
-  "dashboard": {
-    "wateringHistory": "浇水历史",
-    "sensorReadings": "传感器读数",
-    "plantHealth": "植物健康",
-    "recentActivities": "最近活动",
-    "systemStatus": "系统状态",
-    "waterNow": "立即浇水",
-    "soilMoisture": "土壤湿度",
-    "temperature": "温度",
-    "humidity": "湿度",
-    "sunlight": "阳光",
-    "lastWatered": "最后浇水时间",
-    "nextScheduled": "下次计划浇水"
-  },
-  "zones": {
-    "title": "管理多个植物区域",
-    "createZone": "创建区域",
-    "deleteZone": "删除区域",
-    "deleteZoneConfirm": "删除此区域？",
-    "zoneName": "名称",
-    "zoneDescription": "描述",
-    "devices": "设备",
-    "device": "设备",
-    "deviceType": "类型",
-    "assignTo": "分配给",
-    "unassign": "取消分配",
-    "assignPump": "-- 为 {{zone}} 分配泵 --",
-    "selectPump": "为区域选择泵",
-    "zoneDevices": "区域内的设备",
-    "noZoneDevices": "此区域内没有设备",
-    "unassignedDevices": "未分配的设备",
-    "noDevices": "没有可用的未分配设备"
-  }
+"errors": {
+"genericError": "发生错误。请稍后重试。",
+"loginFailed": "登录失败。请检查您的凭据。",
+"registrationFailed": "注册失败。请重试。",
+"unauthorized": "未经授权的访问。请登录。",
+"forbidden": "您无权访问此资源。",
+"notFound": "未找到资源。",
+"serverError": "服务器错误。请稍后重试。",
+"validationError": "请检查您的输入并重试。",
+"connectionError": "无法连接到服务器。请检查您的网络连接。",
+"timeoutError": "请求超时。请重试。",
+"unsupportedBrowser": "您的浏览器不受支持。请更新到较新版本。"
+},
+
+"common": {
+"submit": "提交",
+"cancel": "取消",
+"delete": "删除",
+"add": "添加",
+"edit": "编辑",
+"save": "保存",
+"close": "关闭",
+"back": "返回",
+"next": "下一步",
+"email": "邮箱",
+"password": "密码",
+"confirmPassword": "确认密码",
+"fullName": "全名",
+"firstName": "名字",
+"lastName": "姓氏",
+"phoneNumber": "电话号码（可选）",
+"and": "和",
+"required": "必填字段",
+"success": "成功",
+"error": "错误",
+"loading": "正在加载...",
+"sending": "正在发送...",
+"getStarted": "开始",
+"learnMore": "了解更多",
+"retry": "重试",
+"expand": "展开",
+"collapse": "折叠",
+"appName": "PlantSmart"
+},
+"auth": {
+"login": "登录",
+"loginTitle": "登录您的账户",
+"register": "注册",
+"registerTitle": "创建账户",
+"forgotPassword": "忘记密码",
+"forgotPasswordTitle": "重置密码",
+"forgotPasswordDescription": "输入您的电子邮件地址，我们将向您发送重置密码的链接。",
+"resetPassword": "重置密码",
+"resetPasswordTitle": "创建新密码",
+"changePassword": "更改密码",
+"changePasswordTitle": "更新密码",
+"logout": "退出",
+"rememberMe": "记住我",
+"passwordRequirements": "密码必须至少包含 6 个字符",
+"passwordMatch": "密码必须匹配",
+"passwordChanged": "密码已更改成功",
+"resetEmailSent": "密码重置邮件已发送",
+"resetLinkSent": "我们已将密码重置链接发送至 {{email}}",
+"resetSuccess": "密码重置成功",
+"registerSuccess": "注册成功",
+"continueWithGoogle": "继续使用 Google 账户",
+"orLoginWith": "或使用其他账户登录",
+"alreadyHaveAccount": "已有账户？",
+"dontHaveAccount": "没有账户？",
+"goToLogin": "返回登录",
+"checkYourEmail": "查看您的邮箱",
+"checkSpamFolder": "如果您没有看到，请检查您的垃圾邮件文件夹。",
+"sendResetLink": "发送重置链接",
+"newsletter": "向我发送包含植物护理技巧和更新的电子邮件",
+"acceptTerms": "我接受",
+"termsOfService": "使用条款服务",
+"privacyPolicy": "隐私政策"
+},
+"navigation": {
+"home": "首页",
+"dashboard": "仪表盘",
+"zones": "区域",
+"reports": "报告",
+"settings": "设置",
+"profile": "个人资料",
+"plants": "植物",
+"sensors": "传感器",
+"chat": "聊天",
+"support": "支持",
+"admin": "管理",
+"login": "登录",
+"logout": "关闭会话",
+"register": "注册",
+"changePassword": "更改密码",
+"forgotPassword": "忘记密码",
+"searchReports": "搜索报告",
+"thresholds": "阈值",
+"upgrade": "升级"
+},
+"dashboard": {
+"wateringHistory": "浇水历史记录",
+"sensorReadings": "传感器读数",
+"plantHealth": "植物健康",
+"recentActivities": "最近活动",
+"systemStatus": "系统状态",
+"waterNow": "立即浇水",
+"soilMoisture": "土壤湿度",
+"temperature": "温度",
+"humidity": "湿度",
+"sunlight": "日照",
+"lastWatered": "上次浇水",
+"nextScheduled": "下次计划浇水",
+"title": "仪表盘控件",
+"plantStatus": "植物状态",
+"allHealthy": "所有植物健康",
+"nextWatering": "下次浇水",
+"welcome": "欢迎回来",
+"overview": "这是您植物收藏的概览",
+"addPlant": "添加新植物",
+"totalPlants": "植物总数",
+"needsWatering": "需要浇水",
+"needsAttention": "需要注意",
+"yourPlants": "你的植物","noPlants": "尚未添加任何植物",
+"startAdding": "开始将植物添加到您的收藏",
+"addFirstPlant": "添加您的第一株植物",
+"recentActivity": "最近活动",
+"wateringSchedule": "浇水计划",
+"errorLoading": "加载仪表板时出错",
+"loadError": "无法加载仪表板数据。请稍后重试。"
+},
+"plants": {
+"myPlants": "我的植物",
+"manage": "管理和监控您的植物收藏",
+"addNew": "添加新植物",
+"noMatchingPlants": "没有符合您筛选条件的植物",
+"noPlants": "尚未添加任何植物",
+"tryDifferentFilter": "尝试其他筛选条件或搜索词",
+"startAdding": "开始将植物添加到您的收藏",
+"addFirstPlant": "添加您的第一株植物",
+"errorLoading": "加载植物时出错",
+"loadError": "无法加载植物数据。请稍后重试。"
+},
+
+"notFound": {
+"title": "页面未找到",
+"message": "您查找的页面不存在或已被移动。",
+"goBack": "返回首页",
+"errorCode": "错误 404"
+},
+
+"forbidden": {
+"title": "访问被拒绝",
+"message": "您无权访问此页面。",
+"goBack": "返回首页",
+"errorCode": "错误 403",
+"upgradeMessage": "此功能需要高级订阅。",
+"upgrade": "立即升级"
+},
+
+"zones": {
+"title": "管理多个楼层区域",
+"createZone": "创建区域",
+"deleteZone": "删除区域",
+"deleteZoneConfirm": "删除此区域？",
+"zoneName": "名称",
+"zoneDescription": "描述",
+"devices": "设备",
+"device": "设备",
+"deviceType": "类型",
+"assignTo": "分配给",
+"unassign": "取消分配",
+"assignPump": "-- 为 {{zone}} 分配水泵 --",
+"selectPump": "选择区域的水泵",
+"zoneDevices": "区域中的设备",
+"noZoneDevices": "此区域中没有设备",
+"unassignedDevices": "未分配的设备",
+"noDevices": "没有可用的未分配设备",
+"zone1": "区域 1：客厅",
+"zone2": "区域 2：花园",
+"zone3": "区域 3：露台",
+"plantsMonitored": "已监控 {{count}} 株植物"
+},
+
+"validation": {
+"emailRequired": "邮箱为必填项",
+"invalidEmail": "邮箱格式无效",
+"passwordRequired": "密码为必填项",
+"passwordLength": "密码必须至少为 8 位字符",
+"passwordsDoNotMatch": "密码不匹配",
+"firstNameRequired": "名字为必填项",
+"lastNameRequired": "姓氏为必填项",
+"termsRequired": "您必须同意条款和条件"
+},
+
+"landing": {
+"smartPlantCare": "智能植物护理",
+"neverKill": "永不杀死",
+"anotherPlant": "另一种植物",
+"transformHome": "使用我们的智能监控系统和个性化护理建议，将您的家变成一个蓬勃发展的植物天堂。",
+"startFreeTrial": "开始免费试用",
+"watchDemo": "观看演示",
+"freeTrialDays": "14 天免费试用",
+"noCardRequired": "无需信用卡",
+"everythingYouNeed": "您所需的一切",
+"perfectPlantCare": "完美的植物护理",
+"comprehensiveSystem": "我们全面的植物监控系统为您提供所有确保您的植物在任何环境下茁壮成长的工具。",
+"happyPlantParents": "快乐的植物父母",
+"lovedByThousands": "深受数千人的喜爱",
+"plantEnthusiasts": "全球植物爱好者",
+"testimonialDescription": "听听我们的社区如何评价 PlantSmart 如何改变他们的植物护理体验。",
+"readyToTransform": "准备好改变您的植物护理了吗？",
+"joinThousands": "加入数千名植物爱好者的行列，他们已经通过 PlantSmart 让自己的植物变得更快乐、更健康。",
+"startYourFreeTrial": "开始您的免费试用",
+"scheduleDemo": "安排演示",
+"futurePlantCare": "植物护理的未来，就在今天。智能监测，让植物更快乐、更健康。"
+},
+
+"features": {
+"smartWatering": "智能浇水",
+"smartWateringDesc": "我们的传感器监测土壤湿度，并在最佳时间自动为您的植物浇水，确保它们不会过度或不足。",
+"lightOptimization": "光照优化",
+"lightOptimizationDesc": "全天跟踪光照，并根据每株植物的具体需求，获得最佳位置的建议。",
+"healthAlerts": "警报健康",
+"healthAlertsDesc": "在潜在健康问题、害虫或疾病发展成严重问题之前，立即收到通知。"
+},
+
+"footer": {
+"product": "产品",
+"company": "公司",
+"support": "支持",
+"helpCenter": "帮助中心",
+"documentation": "文档",
+"community": "社区",
+"status": "系统状态",
+"about": "关于我们",
+"blog": "博客",
+"careers": "职业发展",
+"security": "安全",
+"integrations": "集成",
+"privacyPolicy": "隐私政策",
+"termsOfService": "服务条款",
+"cookies": "Cookies"
+},
+
+"help": {
+"title": "帮助中心",
+"searchPlaceholder": "搜索帮助主题...",
+"popularTopics": "热门主题",
+"contactSupport": "联系客服",
+
+"faqTitle": "常见问题解答",
+"noResults": "未找到“{{query}}”的结果",
+"tryDifferent": "尝试其他搜索词或浏览以下类别",
+
+"categories": {
+"gettingStarted": "入门指南",
+"account": "账户和账单",
+"devices": "设备和传感器",
+"plantCare": "植物护理",
+"troubleshooting": "故障排除"
+},
+
+"faqs": {
+"setup": {
+"title": "如何设置我的第一台设备？",
+"content": "要设置您的第一台设备，请在登录后导航至“设备”部分。点击“添加新设备”，然后按照屏幕上的说明将您的设备连接到 Wi-Fi 网络。设置通常只需不到 5 分钟。"
+},
+"pairing": {
+"title": "我的传感器无法与应用程序配对",
+"content": "如果您的传感器无法配对，请尝试以下操作：1) 确保您的传感器已充电且 LED 指示灯闪烁；2) 确保您的手机蓝牙已开启；3) 配对期间将传感器移近您的手机；4) 取出并重新插入电池以重置传感器。"
+},
+"watering": {
+"title": "自动浇水功能如何工作？",
+"content": "自动浇水功能使用土壤湿度传感器来检测植物何时需要浇水。当湿度低于您设置的阈值时，系统将启动连接的水泵并持续浇水一段指定的时间。您可以在“植物设置”中自定义每株植物的浇水阈值和浇水时长。"
+},
+"accuracy": {
+"title": "湿度读数的准确度如何？",
+"content": "我们的土壤湿度传感器在正常条件下的准确度在±3%以内。为了获得最佳效果，请将传感器探头插入土壤至少5厘米，并远离花盆边缘。某些土壤类型可能需要校准，您可以在传感器设置中进行校准。"
+},
+"battery": {
+"title": "传感器电池续航时间是多久？",
+"content": "标准传感器电池在正常使用情况下可持续使用6至12个月。高级太阳能充电传感器的续航时间更长。电池电量低时，您会收到通知。为了延长电池寿命，请在传感器设置中降低读数频率。"
+},
+"offline": {
+"title": "如果我的互联网断线会发生什么？",
+"content": "如果您的互联网连接丢失，传感器将继续在本地收集数据（最多可存储7天）。自动浇水系统将继续按照上次设置运行。连接恢复后，所有存储的数据将同步到您的帐户。"
+},
+"plantTypes": {
+"title": "该系统适用于所有植物类型吗？",
+"content": "是的，我们的系统几乎适用于所有室内和室外植物。数据库包含超过 5,000 种植物的具体养护信息。对于有特殊要求的特殊植物，您可以手动调整阈值和设置。"
+},
+"subscription": {
+"title": "高级订阅包含哪些内容？",
+"content": "高级订阅包含：AI 植物病害检测、无限数量的植物和传感器、基于历史数据的高级分析、个性化养护方案、专家建议以及优先客户支持。有关详细比较，请参阅我们的定价页面。"
+},
+"refunds": {
+"title": "你们的退款政策是什么？",
+"content": "我们为购买的硬件提供 30 天满意保证。如果您不满意，请联系客服获取授权。退款政策。对于订阅，您可以随时取消，并且不会在下一个计费周期收取费用，但我们不提供未使用订阅时间的部分退款。"
+},
+"dataPrivacy": {
+"title": "我的植物数据是如何使用的？",
+"content": "您的植物数据将用于提供个性化的养护建议并改进我们的服务。我们会将数据匿名化，用于研究和分析目的。我们绝不会将您的个人信息出售给第三方。请参阅我们的隐私政策，了解更多详情。"
+}
+}
+},
+
+"premium": {
+"title": "升级到高级版",
+"description": "解锁高级功能，充分利用您的植物监测系统",
+"currentPlan": "当前计划：{{plan}}",
+"freeTrial": "开始 14 天免费试用",
+"subscribe": "立即订阅",
+"monthly": "月度",
+"yearly": "年度（节省 20%）",
+"yearlyDiscount": "免费 2 个月！",
+"features": {
+"unlimited": "无限植物和区域",
+"ai": "人工智能驱动的植物病害检测",
+"history": "12 个月的历史数据",
+"export": "数据导出选项",
+"support": "优先客户支持",
+"updates": "抢先体验新功能"
+},
+"comparison": {
+"title": "方案比较",
+"free": "免费方案",
+"premium": "高级方案",
+"plantLimit": "植物数量限制",
+"freeLimit": "5 株植物",
+"premiumLimit": "无限",
+"zoneLimit": "区域限制",
+"freeZones": "1 个区域",
+"premiumZones": "无限区域",
+"dataHistory": "数据历史记录",
+"freeHistory": "7 天",
+"premiumHistory": "12 个月",
+"advancedAnalytics": "高级分析",
+"freeAnalytics": "基础版",
+"premiumAnalytics": "高级洞察版",
+"aiDiagnostics": "AI 植物诊断",
+"notIncluded": "不包含",
+"included": "包含"
+},
+"faq": {
+"title": "常见问题",
+"cancelQuestion": "我可以随时取消吗？",
+"cancelAnswer": "是的，您可以随时取消订阅。您的高级版功能将一直有效，直到当前计费周期结束。",
+"deviceQuestion": "我需要特殊设备吗？",
+"deviceAnswer": "否，高级版适用于所有现有的 PlantSmart 传感器和设备。您将立即通过当前设置获得新功能。",
+"trialQuestion": "免费试用期结束后会发生什么？",
+"trialAnswer": "14 天试用期结束后，您将自动订阅高级版计划。我们会在向您的付款方式扣款之前向您发送提醒。",
+"refundQuestion": "我可以退款吗？",
+"refundAnswer": "我们不提供部分订阅期的退款。但您可以随时取消，以避免将来产生费用。"
+}
+},
+
+"settings": {
+"title": "设置",
+"account": "账户设置",
+"notificationsSection": "通知偏好设置",
+"devices": "设备管理",
+"appearance": "外观",
+"language": "语言",
+"privacySection": "隐私和数据",
+"help": "帮助和支持",
+"about": "关于",
+"logout": "退出",
+"deleteAccount": "删除账户",
+"theme": {
+"title": "主题",
+"light": "浅色",
+"dark": "深色",
+"system": "系统默认设置"
+},
+"notificationPreferences": {
+"push": "推送通知",
+"email": "电子邮件通知",
+"watering": "浇水提醒",
+"moisture": "低湿度警报",
+"battery": "电池电量低警报",
+"tips": "植物养护技巧",
+"updates": "产品更新"
+},
+"privacySettings": {
+"dataCollection": "数据收集",
+"dataSharing": "数据共享",
+"analytics": "分析",
+"downloadData": "下载我的数据",
+"deleteData": "删除我的数据"
+},
+"advanced": {
+"title": "高级设置",
+"readingFrequency": "传感器读数频率",
+"frequencyHint": "读数频率越高，电池消耗越多",
+"debug": "调试模式",
+"logs": "查看系统日志",
+"resetSystem": "重置系统"
+},
+"accountDeletion": {
+"title": "删除您的帐户",
+"warning": "此操作将永久删除您的帐户和所有数据。",
+"confirmation": "我理解此操作无法撤消",
+"button": "删除我的帐户",
+"feedback": "请告诉我们您离开的原因：",
+"success": "帐户已成功删除"
+}
+}
 }

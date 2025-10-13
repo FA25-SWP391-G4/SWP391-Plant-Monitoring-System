@@ -1,4 +1,22 @@
 {
+  "errors": {
+    "genericError": "An error occurred. Please try again later.",
+    "loginFailed": "Login failed. Please check your credentials.",
+    "registrationFailed": "Registration failed. Please try again.",
+    "unauthorized": "Unauthorized access. Please log in.",
+    "forbidden": "You don't have permission to access this resource.",
+    "notFound": "Resource not found.",
+    "serverError": "Server error. Please try again later.",
+    "validationError": "Please check your input and try again.",
+    "connectionError": "Could not connect to server. Check your internet connection.",
+    "timeoutError": "Request timed out. Please try again.",
+    "unsupportedBrowser": "Your browser is not supported. Please update to a newer version.",
+    "fetchFailed": "Failed to fetch data. Please try again later.",
+    "updateFailed": "Failed to update data. Please try again.",
+    "wateringFailed": "Failed to trigger watering. Please try again.",
+    "analysisError": "Could not analyze plant condition. Please try again later."
+  },
+  
   "common": {
     "submit": "Submit",
     "cancel": "Cancel",
@@ -13,10 +31,28 @@
     "password": "Password",
     "confirmPassword": "Confirm Password",
     "fullName": "Full Name",
+    "firstName": "First name",
+    "lastName": "Last name",
+    "phoneNumber": "Phone Number (optional)",
+    "and": "and",
     "required": "Required field",
     "success": "Success",
     "error": "Error",
-    "loading": "Loading..."
+    "loading": "Loading...",
+    "sending": "Sending...",
+    "getStarted": "Get Started",
+    "learnMore": "Learn More",
+    "retry": "Retry",
+    "expand": "Expand",
+    "collapse": "Collapse",
+    "appName": "PlantSmart",
+    "plantLover": "Plant Lover"
+  },
+  
+  "accessibility": {
+    "email": "Email",
+    "phone": "Phone",
+    "location": "Location"
   },
   "auth": {
     "login": "Login",
@@ -25,6 +61,7 @@
     "registerTitle": "Create an account",
     "forgotPassword": "Forgot Password",
     "forgotPasswordTitle": "Reset your password",
+    "forgotPasswordDescription": "Enter your email address and we'll send you a link to reset your password.",
     "resetPassword": "Reset Password",
     "resetPasswordTitle": "Create new password",
     "changePassword": "Change Password",
@@ -35,13 +72,21 @@
     "passwordMatch": "Passwords must match",
     "passwordChanged": "Password changed successfully",
     "resetEmailSent": "Password reset email sent",
+    "resetLinkSent": "We've sent a password reset link to {{email}}",
     "resetSuccess": "Password reset successful",
     "registerSuccess": "Registration successful",
     "continueWithGoogle": "Continue with Google",
     "orLoginWith": "or login with",
     "alreadyHaveAccount": "Already have an account?",
     "dontHaveAccount": "Don't have an account?",
-    "goToLogin": "Back to login"
+    "goToLogin": "Back to login",
+    "checkYourEmail": "Check your email",
+    "checkSpamFolder": "If you don't see it, please check your spam folder.",
+    "sendResetLink": "Send reset link",
+    "newsletter": "Send me emails with plant care tips and updates",
+    "acceptTerms": "I accept the",
+    "termsOfService": "Terms of Service",
+    "privacyPolicy": "Privacy Policy"
   },
   "navigation": {
     "home": "Home",
@@ -62,7 +107,11 @@
     "chat": "Chat",
     "support": "Support",
     "admin": "Administration",
-    "settings": "Settings"
+    "settings": "Settings",
+    "features": "Features",
+    "benefits": "Benefits",
+    "pricing": "Pricing",
+    "contact": "Contact Us"
   },
   "dashboard": {
     "wateringHistory": "Watering History",
@@ -76,7 +125,58 @@
     "humidity": "Humidity",
     "sunlight": "Sunlight",
     "lastWatered": "Last Watered",
-    "nextScheduled": "Next Scheduled Watering"
+    "nextScheduled": "Next Scheduled Watering",
+    "title": "Dashboard",
+    "plantStatus": "Plant Status",
+    "allHealthy": "All plants are healthy",
+    "nextWatering": "Next watering",
+    "welcome": "Welcome back",
+    "overview": "Here's an overview of your plant collection",
+    "addPlant": "Add New Plant",
+    "totalPlants": "Total Plants",
+    "needsWatering": "Needs Watering",
+    "needsAttention": "Needs Attention",
+    "yourPlants": "Your Plants",
+    "noPlants": "No plants added yet",
+    "startAdding": "Start adding plants to your collection",
+    "addFirstPlant": "Add Your First Plant",
+    "recentActivity": "Recent Activity",
+    "wateringSchedule": "Watering Schedule",
+    "errorLoading": "Error Loading Dashboard",
+    "loadError": "Failed to load dashboard data. Please try again later."
+  },
+"plants": {
+  "myPlants": "My Plants",
+  "manage": "Manage and monitor your plant collection",
+  "addNew": "Add New Plant",
+  "noMatchingPlants": "No plants match your filters",
+  "noPlants": "No plants added yet",
+  "tryDifferentFilter": "Try a different filter or search term",
+  "startAdding": "Start adding plants to your collection",
+  "addFirstPlant": "Add Your First Plant",
+  "errorLoading": "Error Loading Plants",
+  "loadError": "Failed to load plants data. Please try again later.",
+  "notFound": "Plant not found",
+  "manualWatering": "Manual Watering",
+  "tabs": {
+    "overview": "Overview",
+    "sensorData": "Sensor Data",
+    "wateringSchedule": "Watering Schedule"
+  }
+},  "notFound": {
+    "title": "Page Not Found",
+    "message": "The page you are looking for doesn't exist or has been moved.",
+    "goBack": "Go back to home page",
+    "errorCode": "Error 404"
+  },
+  
+  "forbidden": {
+    "title": "Access Denied",
+    "message": "You don't have permission to access this page.",
+    "goBack": "Go back to home page",
+    "errorCode": "Error 403",
+    "upgradeMessage": "This feature requires a premium subscription.",
+    "upgrade": "Upgrade Now"
   },
   "zones": {
     "title": "Manage Multiple Plant Zones",
@@ -95,6 +195,231 @@
     "deleteZone": "Delete zone",
     "zoneDevices": "Devices in zone",
     "unassign": "Unassign",
-    "noZoneDevices": "No devices in this zone"
+    "noZoneDevices": "No devices in this zone",
+    "zone1": "Zone 1: Living Room",
+    "zone2": "Zone 2: Garden",
+    "zone3": "Zone 3: Patio",
+    "plantsMonitored": "{{count}} plants monitored"
+  },
+  "validation": {
+    "emailRequired": "Email is required",
+    "invalidEmail": "Invalid email format",
+    "passwordRequired": "Password is required",
+    "passwordLength": "Password must be at least 8 characters",
+    "passwordsDoNotMatch": "Passwords do not match",
+    "firstNameRequired": "First name is required",
+    "lastNameRequired": "Last name is required",
+    "termsRequired": "You must accept the terms and conditions"
+  },
+  "landing": {
+    "smartPlantCare": "Smart Plant Care",
+    "neverKill": "Never Kill",
+    "anotherPlant": "Another Plant Again",
+    "transformHome": "Transform your home into a thriving plant paradise with our intelligent monitoring system and personalized care recommendations.",
+    "startFreeTrial": "Start Free Trial",
+    "watchDemo": "Watch Demo",
+    "freeTrialDays": "14-day free trial",
+    "noCardRequired": "No credit card required",
+    "everythingYouNeed": "Everything you need for",
+    "perfectPlantCare": "perfect plant care",
+    "comprehensiveSystem": "Our comprehensive plant monitoring system gives you all the tools to ensure your plants thrive in any environment.",
+    "happyPlantParents": "Happy Plant Parents",
+    "lovedByThousands": "Loved by thousands of",
+    "plantEnthusiasts": "plant enthusiasts worldwide",
+    "testimonialDescription": "Hear what our community is saying about how PlantSmart has transformed their plant care experience.",
+    "readyToTransform": "Ready to transform your plant care?",
+    "joinThousands": "Join thousands of plant lovers who've already made their plants happier and healthier with PlantSmart.",
+    "startYourFreeTrial": "Start Your Free Trial",
+    "scheduleDemo": "Schedule a Demo",
+    "futurePlantCare": "The future of plant care, today. Smart monitoring for happier, healthier plants.",
+    "allRightsReserved": "All rights reserved."
+  },
+  "features": {
+    "smartWatering": "Smart Watering",
+    "smartWateringDesc": "Our sensors monitor soil moisture and automatically water your plants at the perfect time, ensuring they're never over or under-watered.",
+    "lightOptimization": "Light Optimization",
+    "lightOptimizationDesc": "Track light exposure throughout the day and receive recommendations on optimal placement for each of your plants' specific needs.",
+    "healthAlerts": "Health Alerts",
+    "healthAlertsDesc": "Get instant notifications about potential health issues, pests, or diseases before they become serious problems."
+  },
+  "footer": {
+    "product": "Product",
+    "company": "Company",
+    "support": "Support",
+    "helpCenter": "Help Center",
+    "documentation": "Documentation",
+    "community": "Community",
+    "status": "System Status",
+    "about": "About Us",
+    "blog": "Blog",
+    "careers": "Careers",
+    "security": "Security",
+    "integrations": "Integrations",
+    "privacyPolicy": "Privacy Policy",
+    "termsOfService": "Terms of Service",
+    "cookies": "Cookies"
+  },
+  
+  "help": {
+    "title": "Help Center",
+    "searchPlaceholder": "Search for help topics...",
+    "popularTopics": "Popular Topics",
+    "contactSupport": "Contact Support",
+    "faqTitle": "Frequently Asked Questions",
+    "noResults": "No results found for '{{query}}'",
+    "tryDifferent": "Try a different search term or browse categories below",
+    
+    "categories": {
+      "gettingStarted": "Getting Started",
+      "account": "Account & Billing",
+      "devices": "Devices & Sensors",
+      "plantCare": "Plant Care",
+      "troubleshooting": "Troubleshooting"
+    },
+    
+    "faqs": {
+      "setup": {
+        "title": "How do I set up my first device?",
+        "content": "To set up your first device, navigate to the Devices section after logging in. Click 'Add New Device' and follow the on-screen instructions to connect your device to your WiFi network. The setup typically takes less than 5 minutes."
+      },
+      "pairing": {
+        "title": "My sensor won't pair with the app",
+        "content": "If your sensor won't pair, try the following: 1) Make sure your sensor is charged and the LED is blinking, 2) Ensure your phone's Bluetooth is enabled, 3) Place the sensor closer to your phone during pairing, 4) Restart the sensor by removing and reinserting the battery."
+      },
+      "watering": {
+        "title": "How does automatic watering work?",
+        "content": "Automatic watering uses soil moisture sensors to detect when your plant needs water. When moisture falls below the threshold you set, the system will activate the connected water pump for a specified duration. You can customize thresholds and watering duration for each plant in the Plant Settings."
+      },
+      "accuracy": {
+        "title": "How accurate are the moisture readings?",
+        "content": "Our soil moisture sensors are accurate to within ±3% in normal conditions. For best results, place the sensor probe at least 2 inches into the soil and away from the pot's edge. Calibration may be needed for certain soil types, which you can perform in the sensor settings."
+      },
+      "battery": {
+        "title": "How long does the sensor battery last?",
+        "content": "Standard sensor batteries last 6-12 months with normal use. Premium sensors with solar recharging can last significantly longer. You'll receive a notification when battery levels are low. To preserve battery life, reduce the reading frequency in sensor settings."
+      },
+      "offline": {
+        "title": "What happens if my internet goes offline?",
+        "content": "If your internet connection is lost, sensors will continue to collect data locally (up to 7 days of storage). The automatic watering system will continue to function based on the last settings. Once connection is restored, all stored data will sync to your account."
+      },
+      "plantTypes": {
+        "title": "Does the system work for all plant types?",
+        "content": "Yes, our system works with virtually all indoor and outdoor plants. The database includes specific care information for over 5,000 plant species. For specialized plants with unique requirements, you can manually adjust thresholds and settings."
+      },
+      "subscription": {
+        "title": "What's included in the premium subscription?",
+        "content": "Premium subscription includes: AI-powered plant disease detection, unlimited plants and sensors, advanced analytics with historical data, custom care schedules, expert advice access, and priority customer support. View our Pricing page for a detailed comparison."
+      },
+      "refunds": {
+        "title": "What is your refund policy?",
+        "content": "We offer a 30-day satisfaction guarantee for hardware purchases. If you're not satisfied, contact support for a return authorization. For subscriptions, you can cancel anytime and will not be charged for the next billing cycle, but we do not provide partial refunds for unused subscription time."
+      },
+      "dataPrivacy": {
+        "title": "How is my plant data used?",
+        "content": "Your plant data is used to provide personalized care recommendations and improve our service. We anonymize data for research and analysis purposes. We never sell your personal information to third parties. See our Privacy Policy for complete details."
+      }
+    }
+  },
+  
+  "premium": {
+    "title": "Upgrade to Premium",
+    "description": "Unlock advanced features and get the most from your plant monitoring system",
+    "currentPlan": "Current Plan: {{plan}}",
+    "freeTrial": "Start 14-Day Free Trial",
+    "subscribe": "Subscribe Now",
+    "monthly": "Monthly",
+    "yearly": "Yearly (Save 20%)",
+    "yearlyDiscount": "2 months free!",
+    "features": {
+      "unlimited": "Unlimited plants and zones",
+      "ai": "AI plant disease detection",
+      "history": "12 months of historical data",
+      "export": "Data export options",
+      "support": "Priority customer support",
+      "updates": "Early access to new features"
+    },
+    "comparison": {
+      "title": "Plan Comparison",
+      "free": "Free Plan",
+      "premium": "Premium Plan",
+      "plantLimit": "Plant Limit",
+      "freeLimit": "5 plants",
+      "premiumLimit": "Unlimited",
+      "zoneLimit": "Zone Limit",
+      "freeZones": "1 zone",
+      "premiumZones": "Unlimited zones",
+      "dataHistory": "Data History",
+      "freeHistory": "7 days",
+      "premiumHistory": "12 months",
+      "advancedAnalytics": "Advanced Analytics",
+      "freeAnalytics": "Basic",
+      "premiumAnalytics": "Advanced with insights",
+      "aiDiagnostics": "AI Plant Diagnostics",
+      "notIncluded": "Not included",
+      "included": "Included"
+    },
+    "faq": {
+      "title": "Frequently Asked Questions",
+      "cancelQuestion": "Can I cancel anytime?",
+      "cancelAnswer": "Yes, you can cancel your subscription at any time. Your Premium features will remain active until the end of your current billing period.",
+      "deviceQuestion": "Do I need special devices?",
+      "deviceAnswer": "No, Premium works with all existing PlantSmart sensors and devices. You'll immediately gain access to new features with your current setup.",
+      "trialQuestion": "What happens after the free trial?",
+      "trialAnswer": "After your 14-day trial ends, you'll be automatically subscribed to the Premium plan. We'll send a reminder before charging your payment method.",
+      "refundQuestion": "Can I get a refund?",
+      "refundAnswer": "We don't offer refunds for partial subscription periods, but you can cancel anytime to avoid future charges."
+    }
+  },
+  
+  "settings": {
+    "title": "Settings",
+    "account": "Account Settings",
+    "notificationsSection": "Notification Preferences",
+    "devices": "Device Management",
+    "appearance": "Appearance",
+    "language": "Language",
+    "privacySection": "Privacy & Data",
+    "help": "Help & Support",
+    "about": "About",
+    "logout": "Log Out",
+    "deleteAccount": "Delete Account",
+    "theme": {
+      "title": "Theme",
+      "light": "Light",
+      "dark": "Dark",
+      "system": "System Default"
+    },
+    "notificationPreferences": {
+      "push": "Push Notifications",
+      "email": "Email Notifications",
+      "watering": "Watering Reminders",
+      "moisture": "Low Moisture Alerts",
+      "battery": "Low Battery Alerts",
+      "tips": "Plant Care Tips",
+      "updates": "Product Updates"
+    },
+    "privacySettings": {
+      "dataCollection": "Data Collection",
+      "dataSharing": "Data Sharing",
+      "analytics": "Analytics",
+      "downloadData": "Download My Data",
+      "deleteData": "Delete My Data"
+    },
+    "advanced": {
+      "title": "Advanced Settings",
+      "readingFrequency": "Sensor Reading Frequency",
+      "frequencyHint": "More frequent readings use more battery power",
+      "debug": "Debug Mode",
+      "logs": "View System Logs",
+      "resetSystem": "Reset System"
+    },
+    "accountDeletion": {
+      "title": "Delete Your Account",
+      "warning": "This action permanently deletes your account and all data.",
+      "confirmation": "I understand this cannot be undone",
+      "button": "Delete My Account",
+      "feedback": "Please tell us why you're leaving:",
+      "success": "Account successfully deleted"
+    }
   }
 }

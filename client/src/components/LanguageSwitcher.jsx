@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Dropdown } from 'react-bootstrap';
-import { useAuth } from '../auth/AuthContext';
+import { useAuth } from '@/providers/AuthProvider';
 import languageApi from '../api/languageApi';
 
 /**
@@ -15,7 +15,11 @@ const LanguageSwitcher = () => {
   const [currentLanguage, setCurrentLanguage] = useState(i18n.language);
   const [availableLanguages, setAvailableLanguages] = useState({
     en: { name: 'English', flag: '🇬🇧' },
-    vi: { name: 'Tiếng Việt', flag: '🇻🇳' }
+    vi: { name: 'Tiếng Việt', flag: '🇻🇳' },
+    ja: { name: '日本語', flag: '🇯🇵' },
+    zh: { name: '简体中文', flag: '🇨🇳' },
+    es: { name: 'Español', flag: '🇪🇸' },
+    fr: { name: 'Français', flag: '🇫🇷' }
   });
 
   // Load available languages from backend
