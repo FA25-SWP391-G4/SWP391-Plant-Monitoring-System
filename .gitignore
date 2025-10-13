@@ -9,6 +9,7 @@
 node_modules/
 jspm_packages/
 *.rar
+backup/
 
 # Build output
 /dist

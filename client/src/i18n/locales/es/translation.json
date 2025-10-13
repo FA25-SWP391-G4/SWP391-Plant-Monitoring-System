@@ -1,4 +1,18 @@
 {
+  "errors": {
+    "genericError": "Se produjo un error. Por favor, inténtelo de nuevo más tarde.",
+    "loginFailed": "Error de inicio de sesión. Verifique sus credenciales.",
+    "registrationFailed": "Registro fallido. Inténtelo de nuevo.",
+    "unauthorized": "Acceso no autorizado. Por favor inicie sesión.",
+    "forbidden": "No tiene permiso para acceder a este recurso.",
+    "notFound": "Recurso no encontrado.",
+    "serverError": "Error del servidor. Por favor, inténtelo de nuevo más tarde.",
+    "validationError": "Verifique su entrada e inténtelo de nuevo.",
+    "connectionError": "No se pudo conectar al servidor. Verifique su conexión a internet.",
+    "timeoutError": "La solicitud expiró. Por favor, inténtelo de nuevo.",
+    "unsupportedBrowser": "Su navegador no es compatible. Actualice a una versión más reciente."
+  },
+  
   "common": {
     "submit": "Enviar",
     "cancel": "Cancelar",
@@ -13,10 +27,21 @@
     "password": "Contraseña",
     "confirmPassword": "Confirmar contraseña",
     "fullName": "Nombre completo",
+    "firstName": "Nombre",
+    "lastName": "Apellido",
+    "phoneNumber": "Número de teléfono (opcional)",
+    "and": "y",
     "required": "Campo obligatorio",
     "success": "Éxito",
     "error": "Error",
-    "loading": "Cargando..."
+    "loading": "Cargando...",
+    "sending": "Enviando...",
+    "getStarted": "Comenzar",
+    "learnMore": "Más información",
+    "retry": "Reintentar",
+    "expand": "Expandir",
+    "collapse": "Colapsar",
+    "appName": "PlantSmart"
   },
   "auth": {
     "login": "Iniciar sesión",
@@ -25,6 +50,7 @@
     "registerTitle": "Crear una cuenta",
     "forgotPassword": "Olvidé la contraseña",
     "forgotPasswordTitle": "Restablecer tu contraseña",
+    "forgotPasswordDescription": "Ingresa tu dirección de correo electrónico y te enviaremos un enlace para restablecer tu contraseña.",
     "resetPassword": "Restablecer contraseña",
     "resetPasswordTitle": "Crear nueva contraseña",
     "changePassword": "Cambiar contraseña",
@@ -35,13 +61,21 @@
     "passwordMatch": "Las contraseñas deben coincidir",
     "passwordChanged": "Contraseña cambiada con éxito",
     "resetEmailSent": "Correo de restablecimiento de contraseña enviado",
+    "resetLinkSent": "Hemos enviado un enlace de restablecimiento de contraseña a {{email}}",
     "resetSuccess": "Contraseña restablecida con éxito",
     "registerSuccess": "Registro exitoso",
     "continueWithGoogle": "Continuar con Google",
     "orLoginWith": "o inicia sesión con",
     "alreadyHaveAccount": "¿Ya tienes una cuenta?",
     "dontHaveAccount": "¿No tienes una cuenta?",
-    "goToLogin": "Volver al inicio de sesión"
+    "goToLogin": "Volver al inicio de sesión",
+    "checkYourEmail": "Revisa tu correo electrónico",
+    "checkSpamFolder": "Si no lo ves, por favor revisa tu carpeta de spam.",
+    "sendResetLink": "Enviar enlace de restablecimiento",
+    "newsletter": "Envíame correos con consejos de cuidado de plantas y actualizaciones",
+    "acceptTerms": "Acepto los",
+    "termsOfService": "Términos de servicio",
+    "privacyPolicy": "Política de privacidad"
   },
   "navigation": {
     "home": "Inicio",
@@ -76,8 +110,55 @@
     "humidity": "Humedad",
     "sunlight": "Luz solar",
     "lastWatered": "Último riego",
-    "nextScheduled": "Próximo riego programado"
+    "nextScheduled": "Próximo riego programado",
+    "title": "Panel de control",
+    "plantStatus": "Estado de las plantas",
+    "allHealthy": "Todas las plantas están saludables",
+    "nextWatering": "Próximo riego",
+    "welcome": "Bienvenido de nuevo",
+    "overview": "Aquí hay una visión general de tu colección de plantas",
+    "addPlant": "Añadir nueva planta",
+    "totalPlants": "Total de plantas",
+    "needsWatering": "Necesitan riego",
+    "needsAttention": "Necesitan atención",
+    "yourPlants": "Tus plantas",
+    "noPlants": "No hay plantas añadidas todavía",
+    "startAdding": "Comienza a añadir plantas a tu colección",
+    "addFirstPlant": "Añadir tu primera planta",
+    "recentActivity": "Actividad reciente",
+    "wateringSchedule": "Programa de riego",
+    "errorLoading": "Error al cargar el panel",
+    "loadError": "No se pudieron cargar los datos del panel. Por favor, inténtelo de nuevo más tarde."
   },
+  "plants": {
+    "myPlants": "Mis plantas",
+    "manage": "Gestiona y monitorea tu colección de plantas",
+    "addNew": "Añadir nueva planta",
+    "noMatchingPlants": "Ninguna planta coincide con tus filtros",
+    "noPlants": "No hay plantas añadidas todavía",
+    "tryDifferentFilter": "Prueba un filtro diferente o un término de búsqueda distinto",
+    "startAdding": "Comienza a añadir plantas a tu colección",
+    "addFirstPlant": "Añade tu primera planta",
+    "errorLoading": "Error al cargar plantas",
+    "loadError": "No se pudieron cargar los datos de las plantas. Por favor, inténtelo de nuevo más tarde."
+  },
+  
+  "notFound": {
+    "title": "Página no encontrada",
+    "message": "La página que busca no existe o ha sido movida.",
+    "goBack": "Volver a la página de inicio",
+    "errorCode": "Error 404"
+  },
+  
+  "forbidden": {
+    "title": "Acceso denegado",
+    "message": "No tiene permiso para acceder a esta página.",
+    "goBack": "Volver a la página de inicio",
+    "errorCode": "Error 403",
+    "upgradeMessage": "Esta función requiere una suscripción premium.",
+    "upgrade": "Actualizar ahora"
+  },
+  
   "zones": {
     "title": "Administrar múltiples zonas de plantas",
     "createZone": "Crear zona",
@@ -95,6 +176,234 @@
     "zoneDevices": "Dispositivos en zona",
     "noZoneDevices": "No hay dispositivos en esta zona",
     "unassignedDevices": "Dispositivos no asignados",
-    "noDevices": "No hay dispositivos no asignados disponibles"
+    "noDevices": "No hay dispositivos no asignados disponibles",
+    "zone1": "Zona 1: Sala de estar",
+    "zone2": "Zona 2: Jardín",
+    "zone3": "Zona 3: Patio",
+    "plantsMonitored": "{{count}} plantas monitorizadas"
+  },
+  
+  "validation": {
+    "emailRequired": "El correo electrónico es obligatorio",
+    "invalidEmail": "Formato de correo electrónico inválido",
+    "passwordRequired": "La contraseña es obligatoria",
+    "passwordLength": "La contraseña debe tener al menos 8 caracteres",
+    "passwordsDoNotMatch": "Las contraseñas no coinciden",
+    "firstNameRequired": "El nombre es obligatorio",
+    "lastNameRequired": "El apellido es obligatorio",
+    "termsRequired": "Debe aceptar los términos y condiciones"
+  },
+  
+  "landing": {
+    "smartPlantCare": "Cuidado Inteligente de Plantas",
+    "neverKill": "Nunca Mates",
+    "anotherPlant": "Otra Planta Más",
+    "transformHome": "Transforma tu hogar en un paraíso de plantas próspero con nuestro sistema de monitoreo inteligente y recomendaciones de cuidado personalizadas.",
+    "startFreeTrial": "Iniciar Prueba Gratuita",
+    "watchDemo": "Ver Demostración",
+    "freeTrialDays": "14 días de prueba gratuita",
+    "noCardRequired": "No se requiere tarjeta de crédito",
+    "everythingYouNeed": "Todo lo que necesitas para",
+    "perfectPlantCare": "el cuidado perfecto de las plantas",
+    "comprehensiveSystem": "Nuestro sistema integral de monitoreo de plantas te proporciona todas las herramientas para garantizar que tus plantas prosperen en cualquier entorno.",
+    "happyPlantParents": "Padres de Plantas Felices",
+    "lovedByThousands": "Amado por miles de",
+    "plantEnthusiasts": "entusiastas de plantas en todo el mundo",
+    "testimonialDescription": "Escucha lo que dice nuestra comunidad sobre cómo PlantSmart ha transformado su experiencia de cuidado de plantas.",
+    "readyToTransform": "¿Listo para transformar el cuidado de tus plantas?",
+    "joinThousands": "Únete a miles de amantes de las plantas que ya han hecho sus plantas más felices y saludables con PlantSmart.",
+    "startYourFreeTrial": "Inicia Tu Prueba Gratuita",
+    "scheduleDemo": "Programa una Demostración",
+    "futurePlantCare": "El futuro del cuidado de plantas, hoy. Monitoreo inteligente para plantas más felices y saludables."
+  },
+  
+  "features": {
+    "smartWatering": "Riego Inteligente",
+    "smartWateringDesc": "Nuestros sensores monitorean la humedad del suelo y riegan automáticamente tus plantas en el momento perfecto, asegurando que nunca estén sobre o bajo regadas.",
+    "lightOptimization": "Optimización de Luz",
+    "lightOptimizationDesc": "Rastrea la exposición a la luz durante el día y recibe recomendaciones sobre la ubicación óptima para las necesidades específicas de cada una de tus plantas.",
+    "healthAlerts": "Alertas de Salud",
+    "healthAlertsDesc": "Recibe notificaciones instantáneas sobre posibles problemas de salud, plagas o enfermedades antes de que se conviertan en problemas graves."
+  },
+  
+  "footer": {
+    "product": "Producto",
+    "company": "Empresa",
+    "support": "Soporte",
+    "helpCenter": "Centro de Ayuda",
+    "documentation": "Documentación",
+    "community": "Comunidad",
+    "status": "Estado del Sistema",
+    "about": "Acerca de Nosotros",
+    "blog": "Blog",
+    "careers": "Carreras",
+    "security": "Seguridad",
+    "integrations": "Integraciones",
+    "privacyPolicy": "Política de Privacidad",
+    "termsOfService": "Términos de Servicio",
+    "cookies": "Cookies"
+  },
+  
+  "help": {
+    "title": "Centro de Ayuda",
+    "searchPlaceholder": "Buscar temas de ayuda...",
+    "popularTopics": "Temas Populares",
+    "contactSupport": "Contactar con Soporte",
+    "faqTitle": "Preguntas Frecuentes",
+    "noResults": "No se encontraron resultados para '{{query}}'",
+    "tryDifferent": "Intente con un término de búsqueda diferente o navegue por las categorías a continuación",
+    
+    "categories": {
+      "gettingStarted": "Primeros Pasos",
+      "account": "Cuenta y Facturación",
+      "devices": "Dispositivos y Sensores",
+      "plantCare": "Cuidado de Plantas",
+      "troubleshooting": "Solución de Problemas"
+    },
+    
+    "faqs": {
+      "setup": {
+        "title": "¿Cómo configuro mi primer dispositivo?",
+        "content": "Para configurar tu primer dispositivo, navega a la sección Dispositivos después de iniciar sesión. Haz clic en 'Añadir Nuevo Dispositivo' y sigue las instrucciones en pantalla para conectar tu dispositivo a tu red WiFi. La configuración normalmente toma menos de 5 minutos."
+      },
+      "pairing": {
+        "title": "Mi sensor no se empareja con la aplicación",
+        "content": "Si tu sensor no se empareja, intenta lo siguiente: 1) Asegúrate de que tu sensor esté cargado y el LED esté parpadeando, 2) Asegúrate de que el Bluetooth de tu teléfono esté activado, 3) Coloca el sensor más cerca de tu teléfono durante el emparejamiento, 4) Reinicia el sensor quitando y volviendo a insertar la batería."
+      },
+      "watering": {
+        "title": "¿Cómo funciona el riego automático?",
+        "content": "El riego automático utiliza sensores de humedad del suelo para detectar cuándo tu planta necesita agua. Cuando la humedad cae por debajo del umbral que estableces, el sistema activará la bomba de agua conectada durante una duración específica. Puedes personalizar los umbrales y la duración del riego para cada planta en la Configuración de la Planta."
+      },
+      "accuracy": {
+        "title": "¿Qué tan precisas son las lecturas de humedad?",
+        "content": "Nuestros sensores de humedad del suelo son precisos dentro del ±3% en condiciones normales. Para mejores resultados, coloca la sonda del sensor al menos a 5 cm en el suelo y lejos del borde de la maceta. Puede ser necesario calibrar para ciertos tipos de suelo, lo cual puedes realizar en la configuración del sensor."
+      },
+      "battery": {
+        "title": "¿Cuánto dura la batería del sensor?",
+        "content": "Las baterías de los sensores estándar duran de 6 a 12 meses con uso normal. Los sensores premium con recarga solar pueden durar significativamente más. Recibirás una notificación cuando los niveles de batería sean bajos. Para preservar la vida de la batería, reduce la frecuencia de lectura en la configuración del sensor."
+      },
+      "offline": {
+        "title": "¿Qué sucede si mi internet se desconecta?",
+        "content": "Si se pierde la conexión a Internet, los sensores continuarán recopilando datos localmente (hasta 7 días de almacenamiento). El sistema de riego automático seguirá funcionando según la última configuración. Una vez que se restablezca la conexión, todos los datos almacenados se sincronizarán con tu cuenta."
+      },
+      "plantTypes": {
+        "title": "¿El sistema funciona para todos los tipos de plantas?",
+        "content": "Sí, nuestro sistema funciona con prácticamente todas las plantas de interior y exterior. La base de datos incluye información de cuidado específica para más de 5,000 especies de plantas. Para plantas especializadas con requisitos únicos, puedes ajustar manualmente los umbrales y configuraciones."
+      },
+      "subscription": {
+        "title": "¿Qué incluye la suscripción premium?",
+        "content": "La suscripción premium incluye: detección de enfermedades de plantas con IA, plantas y sensores ilimitados, análisis avanzados con datos históricos, programas de cuidado personalizados, acceso a consejos de expertos y soporte prioritario al cliente. Consulta nuestra página de Precios para una comparación detallada."
+      },
+      "refunds": {
+        "title": "¿Cuál es su política de reembolso?",
+        "content": "Ofrecemos una garantía de satisfacción de 30 días para compras de hardware. Si no estás satisfecho, contacta con soporte para una autorización de devolución. Para suscripciones, puedes cancelar en cualquier momento y no se te cobrará para el próximo ciclo de facturación, pero no ofrecemos reembolsos parciales por tiempo de suscripción no utilizado."
+      },
+      "dataPrivacy": {
+        "title": "¿Cómo se utilizan mis datos de plantas?",
+        "content": "Tus datos de plantas se utilizan para proporcionar recomendaciones de cuidado personalizadas y mejorar nuestro servicio. Anonimizamos los datos para fines de investigación y análisis. Nunca vendemos tu información personal a terceros. Consulta nuestra Política de Privacidad para detalles completos."
+      }
+    }
+  },
+  
+  "premium": {
+    "title": "Actualizar a Premium",
+    "description": "Desbloquea funciones avanzadas y obtén lo máximo de tu sistema de monitoreo de plantas",
+    "currentPlan": "Plan Actual: {{plan}}",
+    "freeTrial": "Iniciar Prueba Gratuita de 14 Días",
+    "subscribe": "Suscribirse Ahora",
+    "monthly": "Mensual",
+    "yearly": "Anual (Ahorra 20%)",
+    "yearlyDiscount": "¡2 meses gratis!",
+    "features": {
+      "unlimited": "Plantas y zonas ilimitadas",
+      "ai": "Detección de enfermedades de plantas con IA",
+      "history": "12 meses de datos históricos",
+      "export": "Opciones de exportación de datos",
+      "support": "Soporte prioritario al cliente",
+      "updates": "Acceso anticipado a nuevas funciones"
+    },
+    "comparison": {
+      "title": "Comparación de Planes",
+      "free": "Plan Gratuito",
+      "premium": "Plan Premium",
+      "plantLimit": "Límite de Plantas",
+      "freeLimit": "5 plantas",
+      "premiumLimit": "Ilimitado",
+      "zoneLimit": "Límite de Zonas",
+      "freeZones": "1 zona",
+      "premiumZones": "Zonas ilimitadas",
+      "dataHistory": "Historial de Datos",
+      "freeHistory": "7 días",
+      "premiumHistory": "12 meses",
+      "advancedAnalytics": "Análisis Avanzado",
+      "freeAnalytics": "Básico",
+      "premiumAnalytics": "Avanzado con insights",
+      "aiDiagnostics": "Diagnósticos de Plantas con IA",
+      "notIncluded": "No incluido",
+      "included": "Incluido"
+    },
+    "faq": {
+      "title": "Preguntas Frecuentes",
+      "cancelQuestion": "¿Puedo cancelar en cualquier momento?",
+      "cancelAnswer": "Sí, puedes cancelar tu suscripción en cualquier momento. Tus funciones Premium permanecerán activas hasta el final de tu período de facturación actual.",
+      "deviceQuestion": "¿Necesito dispositivos especiales?",
+      "deviceAnswer": "No, Premium funciona con todos los sensores y dispositivos PlantSmart existentes. Inmediatamente obtendrás acceso a nuevas funciones con tu configuración actual.",
+      "trialQuestion": "¿Qué sucede después de la prueba gratuita?",
+      "trialAnswer": "Después de que termine tu prueba de 14 días, serás suscrito automáticamente al plan Premium. Te enviaremos un recordatorio antes de cobrar a tu método de pago.",
+      "refundQuestion": "¿Puedo obtener un reembolso?",
+      "refundAnswer": "No ofrecemos reembolsos para períodos de suscripción parciales, pero puedes cancelar en cualquier momento para evitar cargos futuros."
+    }
+  },
+  
+  "settings": {
+    "title": "Configuración",
+    "account": "Configuración de Cuenta",
+    "notificationsSection": "Preferencias de Notificaciones",
+    "devices": "Gestión de Dispositivos",
+    "appearance": "Apariencia",
+    "language": "Idioma",
+    "privacySection": "Privacidad y Datos",
+    "help": "Ayuda y Soporte",
+    "about": "Acerca de",
+    "logout": "Cerrar Sesión",
+    "deleteAccount": "Eliminar Cuenta",
+    "theme": {
+      "title": "Tema",
+      "light": "Claro",
+      "dark": "Oscuro",
+      "system": "Predeterminado del Sistema"
+    },
+    "notificationPreferences": {
+      "push": "Notificaciones Push",
+      "email": "Notificaciones por Correo",
+      "watering": "Recordatorios de Riego",
+      "moisture": "Alertas de Baja Humedad",
+      "battery": "Alertas de Batería Baja",
+      "tips": "Consejos de Cuidado de Plantas",
+      "updates": "Actualizaciones de Producto"
+    },
+    "privacySettings": {
+      "dataCollection": "Recopilación de Datos",
+      "dataSharing": "Compartir Datos",
+      "analytics": "Análisis",
+      "downloadData": "Descargar Mis Datos",
+      "deleteData": "Eliminar Mis Datos"
+    },
+    "advanced": {
+      "title": "Configuración Avanzada",
+      "readingFrequency": "Frecuencia de Lectura del Sensor",
+      "frequencyHint": "Lecturas más frecuentes usan más batería",
+      "debug": "Modo Debug",
+      "logs": "Ver Registros del Sistema",
+      "resetSystem": "Restablecer Sistema"
+    },
+    "accountDeletion": {
+      "title": "Eliminar Tu Cuenta",
+      "warning": "Esta acción elimina permanentemente tu cuenta y todos los datos.",
+      "confirmation": "Entiendo que esto no se puede deshacer",
+      "button": "Eliminar Mi Cuenta",
+      "feedback": "Por favor, dinos por qué te vas:",
+      "success": "Cuenta eliminada correctamente"
+    }
   }
 }
