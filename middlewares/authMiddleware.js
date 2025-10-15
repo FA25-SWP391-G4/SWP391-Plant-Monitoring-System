@@ -118,3 +118,4 @@ const auth = authMiddleware;
 module.exports = auth;
 module.exports.authMiddleware = authMiddleware;
 module.exports.isAdmin = isAdmin;
+
