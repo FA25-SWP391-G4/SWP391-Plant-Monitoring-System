@@ -20,7 +20,7 @@ class SystemLog {
                 log_source = level.source || 'System';
                 log_message = level.message || '';
             } else if (typeof level === 'string') {
-                log_level = level || 'info';
+                log_level = level || 'INFO';
                 log_source = source || 'System';
                 log_message = message || '';
         }else{
