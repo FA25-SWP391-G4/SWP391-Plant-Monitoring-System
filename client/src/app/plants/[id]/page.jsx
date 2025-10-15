@@ -4,14 +4,14 @@ import { useState, useEffect } from 'react';
 import { useAuth } from '@/providers/AuthProvider';
 import { useRouter } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
-import DashboardHeader from '@/components/dashboard/DashboardHeader';
-import PlantHeader from '@/components/plants/PlantHeader';
-import PlantStats from '@/components/plants/PlantStats';
-import WateringHistory from '@/components/plants/WateringHistory';
-import SensorChart from '@/components/plants/SensorChart';
-import PlantActions from '@/components/plants/PlantActions';
-import WateringSchedule from '@/components/plants/WateringSchedule';
-import NotesList from '@/components/plants/NotesList';
+// import DashboardHeader from '@/components/dashboard/DashboardHeader';
+// import PlantHeader from '@/components/plants/PlantHeader';
+// import PlantStats from '@/components/plants/PlantStats';
+// import WateringHistory from '@/components/plants/WateringHistory';
+// import SensorChart from '@/components/plants/SensorChart';
+// import PlantActions from '@/components/plants/PlantActions';
+// import WateringSchedule from '@/components/plants/WateringSchedule';
+// import NotesList from '@/components/plants/NotesList';
 
 // Mock data for development - would come from API in real app
 const MOCK_PLANT = {

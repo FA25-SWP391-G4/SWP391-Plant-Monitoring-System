@@ -9,6 +9,43 @@ class SystemLog {
         this.message = logData.message;
     }
 
+    //create log 
+    static async create(level, source, message) {
+        try {
+            let log_level, log_source, log_message;
+
+            //object syntax
+            if(typeof level === 'object' && level !== null) {
+                log_level = level.log_level || 'INFO';
+                log_source = level.source || 'System';
+                log_message = level.message || '';
+            } else if (typeof level === 'string') {
+                log_level = level || 'INFO';
+                log_source = source || 'System';
+                log_message = message || '';
+        }else{
+            throw new Error('Invalid parameters for creating log');
+        }
+        log_level = log_level.toUpperCase();
+
+        const validLevels = ['INFO', 'WARNING', 'ERROR', 'DEBUG'];
+        if (!validLevels.includes(log_level)) {
+            log_level = 'INFO';
+        }
+        const systemLog = new SystemLog({
+            log_level: log_level,
+            source: log_source,
+            message: log_message,
+            timestamp: new Date()
+        });
+        return await systemLog.save();
+        } catch (error) {
+            // Don't throw error in logging to avoid infinite loops
+            console.error('Failed to create system log:', error);
+            return null;
+        }
+    }
+    
     // Static method to find all system logs
     static async findAll(limit = 100) {
         try {

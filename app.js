@@ -168,6 +168,8 @@ var authRouter = require('./routes/auth');          // ✅ UC11: Password reset 
 var paymentRouter = require('./routes/payment');    // ✅ UC19, UC22: VNPay payment integration (implemented)
 var aiRouter = require('./routes/ai');              // 🔄 UC17-18, UC20-21, UC23, UC30: AI features
 var iotRouter = require('./routes/iot');            // 🔄 UC32-34: IoT device management
+console.log('iotRouter type:', typeof iotRouter);
+console.log('iotRouter keys:', Object.keys(iotRouter));
 var sensorRouter = require('./routes/sensor');      // 🔄 Sensor data management
 
 // TODO: Create additional route modules for remaining use cases:

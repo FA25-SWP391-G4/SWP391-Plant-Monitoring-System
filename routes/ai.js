@@ -9,7 +9,9 @@ const router = express.Router();
 const axios = require('axios');
 const { body, param } = require('express-validator');
 const aiController = require('../controllers/aiController');
-const { authenticate, isAdmin } = require('../middlewares/authMiddleware');
+const auth = require('../middlewares/authMiddleware');
+const authenticate = auth;
+const isAdmin = auth.isAdmin;
 const multer = require('multer');
 const upload = multer({ dest: 'uploads/' });
 const fs = require('fs');
@@ -17,6 +19,7 @@ const fs = require('fs');
 // AI Service URL from environment or default to localhost in development
 const AI_SERVICE_URL = process.env.AI_SERVICE_URL || 'http://localhost:8000';
 
+console.log("AI Controller keys:", Object.keys(aiController));
 /**
  * @route POST /api/ai/watering-prediction
  * @desc Predict watering needs using AI
