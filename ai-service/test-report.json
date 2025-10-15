@@ -1,0 +1,171 @@
+{
+  "timestamp": "2025-10-13T02:29:02.961Z",
+  "summary": {
+    "total": 20,
+    "passed": 6,
+    "failed": 14,
+    "successRate": 30
+  },
+  "details": [
+    {
+      "name": "Health Check",
+      "success": true,
+      "details": "",
+      "timestamp": "2025-10-13T02:28:52.513Z"
+    },
+    {
+      "name": "Chatbot - Basic Message",
+      "success": true,
+      "details": "",
+      "timestamp": "2025-10-13T02:29:00.036Z"
+    },
+    {
+      "name": "Chatbot - Context Aware",
+      "success": true,
+      "details": "",
+      "timestamp": "2025-10-13T02:29:02.875Z"
+    },
+    {
+      "name": "Chatbot - Error Handling",
+      "success": false,
+      "details": "Request failed with status code 400",
+      "timestamp": "2025-10-13T02:29:02.878Z"
+    },
+    {
+      "name": "Image Recognition - Analysis",
+      "success": true,
+      "details": "Image analysis failed",
+      "timestamp": "2025-10-13T02:29:02.892Z"
+    },
+    {
+      "name": "Image Recognition - History",
+      "success": false,
+      "details": "",
+      "timestamp": "2025-10-13T02:29:02.894Z"
+    },
+    {
+      "name": "Irrigation - Basic Prediction",
+      "success": {
+        "plantId": "1",
+        "prediction": {
+          "needsWatering": false,
+          "urgencyLevel": "low",
+          "optimalWateringTime": "2025-10-14T00:00:00.000Z",
+          "recommendedAmount": null,
+          "confidence": 95,
+          "nextCheckTime": "2025-10-14T02:29:02.895Z"
+        },
+        "analysis": {
+          "currentConditions": [
+            {
+              "parameter": "Độ ẩm đất",
+              "current": "undefined%",
+              "optimal": "15-25%",
+              "status": "optimal",
+              "impact": "Bình thường"
+            },
+            {
+              "parameter": "Nhiệt độ",
+              "current": "24°C",
+              "optimal": "20-30°C",
+              "status": "optimal",
+              "impact": "Bình thường"
+            }
+          ],
+          "weatherImpact": [],
+          "historicalTrends": {
+            "averageInterval": "NaN giờ",
+            "recentInterval": "NaN giờ",
+            "trend": "stable",
+            "interpretation": "Tần suất tưới ổn định"
+          },
+          "plantSpecificFactors": {
+            "age": "Không xác định ngày",
+            "healthScore": null,
+            "growthStage": "Không xác định",
+            "specialNeeds": [
+              "Chăm sóc theo hướng dẫn chung"
+            ]
+          }
+        },
+        "recommendations": [],
+        "timestamp": "2025-10-13T02:29:02.895Z"
+      },
+      "details": "",
+      "timestamp": "2025-10-13T02:29:02.897Z"
+    },
+    {
+      "name": "Irrigation - Schedule Optimization",
+      "details": "",
+      "timestamp": "2025-10-13T02:29:02.905Z"
+    },
+    {
+      "name": "Early Warning - Risk Analysis",
+      "details": "",
+      "timestamp": "2025-10-13T02:29:02.911Z"
+    },
+    {
+      "name": "Early Warning - Dashboard",
+      "details": "",
+      "timestamp": "2025-10-13T02:29:02.916Z"
+    },
+    {
+      "name": "Automation - Setup",
+      "success": "automation_1_1760322542917",
+      "details": "",
+      "timestamp": "2025-10-13T02:29:02.919Z"
+    },
+    {
+      "name": "Automation - Dashboard",
+      "success": false,
+      "details": "Request failed with status code 500",
+      "timestamp": "2025-10-13T02:29:02.923Z"
+    },
+    {
+      "name": "Self-Learning - Collect Feedback",
+      "success": false,
+      "details": "",
+      "timestamp": "2025-10-13T02:29:02.926Z"
+    },
+    {
+      "name": "Self-Learning - Model Improvement",
+      "success": false,
+      "details": "Request failed with status code 404",
+      "timestamp": "2025-10-13T02:29:02.929Z"
+    },
+    {
+      "name": "Historical Analysis - Data Analysis",
+      "success": false,
+      "details": "Request failed with status code 404",
+      "timestamp": "2025-10-13T02:29:02.932Z"
+    },
+    {
+      "name": "Historical Analysis - Trend Prediction",
+      "success": false,
+      "details": "Request failed with status code 404",
+      "timestamp": "2025-10-13T02:29:02.934Z"
+    },
+    {
+      "name": "Integration - Comprehensive Analysis",
+      "details": "",
+      "timestamp": "2025-10-13T02:29:02.952Z"
+    },
+    {
+      "name": "Integration - System Statistics",
+      "details": "",
+      "timestamp": "2025-10-13T02:29:02.954Z"
+    },
+    {
+      "name": "Database - Sensor Data Access",
+      "success": false,
+      "details": "Request failed with status code 404",
+      "timestamp": "2025-10-13T02:29:02.956Z"
+    },
+    {
+      "name": "Database - Plant Info Access",
+      "success": false,
+      "details": "Request failed with status code 404",
+      "timestamp": "2025-10-13T02:29:02.957Z"
+    }
+  ]
+}

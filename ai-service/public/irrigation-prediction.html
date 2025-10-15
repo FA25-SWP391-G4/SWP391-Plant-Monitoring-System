@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dự đoán nhu cầu tưới cây</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f9f5;
+            color: #333;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #2e7d32;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+        input, select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #2e7d32;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            display: block;
+            margin: 20px auto;
+        }
+        button:hover {
+            background-color: #1b5e20;
+        }
+        .result {
+            margin-top: 30px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: #f9f9f9;
+            display: none;
+        }
+        .result h2 {
+            color: #2e7d32;
+            margin-top: 0;
+        }
+        .loading {
+            text-align: center;
+            display: none;
+        }
+        .error {
+            color: #d32f2f;
+            margin-top: 10px;
+            display: none;
+        }
+        .factor {
+            margin-bottom: 10px;
+            padding: 10px;
+            background-color: #e8f5e9;
+            border-radius: 4px;
+        }
+        .factor-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .confidence {
+            margin-top: 15px;
+            font-weight: bold;
+        }
+        .high {
+            color: #2e7d32;
+        }
+        .medium {
+            color: #f57c00;
+        }
+        .low {
+            color: #d32f2f;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Dự đoán nhu cầu tưới cây</h1>
+        
+        <div class="form-group">
+            <label for="plantId">ID Cây trồng:</label>
+            <input type="number" id="plantId" value="1">
+        </div>
+        
+        <div class="form-group">
+            <label for="plantType">Loại cây:</label>
+            <select id="plantType">
+                <option value="tomato">Cà chua</option>
+                <option value="cucumber">Dưa chuột</option>
+                <option value="lettuce">Xà lách</option>
+                <option value="pepper">Ớt</option>
+                <option value="basil">Húng quế</option>
+            </select>
+        </div>
+        
+        <div class="form-group">
+            <label for="growthStage">Giai đoạn phát triển:</label>
+            <select id="growthStage">
+                <option value="seedling">Cây con</option>
+                <option value="vegetative">Giai đoạn sinh trưởng</option>
+                <option value="flowering">Giai đoạn ra hoa</option>
+                <option value="fruiting">Giai đoạn ra quả</option>
+                <option value="mature">Trưởng thành</option>
+            </select>
+        </div>
+        
+        <div class="form-group">
+            <label for="soilMoisture">Độ ẩm đất hiện tại (%):</label>
+            <input type="number" id="soilMoisture" value="45" min="0" max="100">
+        </div>
+        
+        <div class="form-group">
+            <label for="temperature">Nhiệt độ hiện tại (°C):</label>
+            <input type="number" id="temperature" value="28" min="0" max="50">
+        </div>
+        
+        <div class="form-group">
+            <label for="humidity">Độ ẩm không khí (%):</label>
+            <input type="number" id="humidity" value="65" min="0" max="100">
+        </div>
+        
+        <div class="form-group">
+            <label for="lightLevel">Mức độ ánh sáng (lux):</label>
+            <input type="number" id="lightLevel" value="5000" min="0" max="100000">
+        </div>
+        
+        <button id="predictBtn">Dự đoán nhu cầu tưới</button>
+        
+        <div class="loading" id="loading">Đang xử lý dự đoán...</div>
+        
+        <div class="error" id="error"></div>
+        
+        <div class="result" id="result">
+            <h2>Kết quả dự đoán</h2>
+            <div id="needsWatering"></div>
+            <div id="waterAmount"></div>
+            <div id="nextWateringTime"></div>
+            
+            <h3>Các yếu tố ảnh hưởng</h3>
+            <div id="factors"></div>
+            
+            <div class="confidence" id="confidence"></div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('predictBtn').addEventListener('click', async function() {
+            const resultDiv = document.getElementById('result');
+            const loadingDiv = document.getElementById('loading');
+            const errorDiv = document.getElementById('error');
+            
+            resultDiv.style.display = 'none';
+            loadingDiv.style.display = 'block';
+            errorDiv.style.display = 'none';
+            
+            try {
+                const plantId = document.getElementById('plantId').value;
+                const plantType = document.getElementById('plantType').value;
+                const growthStage = document.getElementById('growthStage').value;
+                const soilMoisture = document.getElementById('soilMoisture').value;
+                const temperature = document.getElementById('temperature').value;
+                const humidity = document.getElementById('humidity').value;
+                const lightLevel = document.getElementById('lightLevel').value;
+                
+                const response = await fetch('/api/irrigation/predict/detailed', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        plantId,
+                        plantType,
+                        growthStage,
+                        sensorData: {
+                            soilMoisture,
+                            temperature,
+                            humidity,
+                            lightLevel
+                        }
+                    })
+                });
+                
+                if (!response.ok) {
+                    throw new Error('Lỗi khi gọi API: ' + response.statusText);
+                }
+                
+                const data = await response.json();
+                
+                // Hiển thị kết quả
+                document.getElementById('needsWatering').innerHTML = `<p><strong>Cần tưới:</strong> ${data.needsWatering ? 'Có' : 'Không'}</p>`;
+                document.getElementById('waterAmount').innerHTML = `<p><strong>Lượng nước đề xuất:</strong> ${data.waterAmount} ml</p>`;
+                document.getElementById('nextWateringTime').innerHTML = `<p><strong>Thời gian tưới tiếp theo:</strong> ${new Date(data.nextWateringTime).toLocaleString()}</p>`;
+                
+                // Hiển thị các yếu tố ảnh hưởng
+                const factorsDiv = document.getElementById('factors');
+                factorsDiv.innerHTML = '';
+                
+                if (data.contributingFactors && data.contributingFactors.length > 0) {
+                    data.contributingFactors.forEach(factor => {
+                        const factorDiv = document.createElement('div');
+                        factorDiv.className = 'factor';
+                        factorDiv.innerHTML = `
+                            <div class="factor-title">${factor.name}</div>
+                            <div>Ảnh hưởng: ${factor.impact}%</div>
+                            <div>Giá trị: ${factor.value} ${factor.unit}</div>
+                        `;
+                        factorsDiv.appendChild(factorDiv);
+                    });
+                } else {
+                    factorsDiv.innerHTML = '<p>Không có thông tin về các yếu tố ảnh hưởng</p>';
+                }
+                
+                // Hiển thị độ tin cậy
+                const confidenceDiv = document.getElementById('confidence');
+                let confidenceClass = 'medium';
+                if (data.confidence >= 80) confidenceClass = 'high';
+                if (data.confidence < 50) confidenceClass = 'low';
+                
+                confidenceDiv.innerHTML = `<p>Độ tin cậy của dự đoán: <span class="${confidenceClass}">${data.confidence}%</span></p>`;
+                
+                resultDiv.style.display = 'block';
+            } catch (error) {
+                console.error('Error:', error);
+                errorDiv.textContent = error.message || 'Đã xảy ra lỗi khi dự đoán';
+                errorDiv.style.display = 'block';
+            } finally {
+                loadingDiv.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>

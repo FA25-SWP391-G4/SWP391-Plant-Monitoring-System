@@ -1,9 +1,9 @@
--- Active: 1755670041367@@127.0.0.1@5432@plant_system
--- Active: 1755670041367@@127.0.0.1@5432@plant_system-- Active: 1755670041367@@127.0.0.1@5432@postgres
+-- Active: 1759376368890@@127.0.0.1@5432@plant_monitoring
+-- Active: 1755670041367@@127.0.0.1@5432@plant_monitoring-- Active: 1755670041367@@127.0.0.1@5432@postgres
 -- Plant Monitoring System Database Schema for PostgreSQL
 
-CREATE DATABASE plant_system;
-\c plant_system;
+CREATE DATABASE plant_monitoring;
+\c plant_monitoring;
 
 -- Drop tables in reverse order to handle dependencies
 DROP TABLE IF EXISTS Chat_History;

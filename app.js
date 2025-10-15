@@ -167,6 +167,7 @@ var usersRouter = require('./routes/users');        // User management routes (b
 var authRouter = require('./routes/auth');          // ✅ UC11: Password reset routes (implemented)
 var paymentRouter = require('./routes/payment');    // ✅ UC19, UC22: VNPay payment integration (implemented)
 var aiRouter = require('./routes/ai');              // 🔄 UC17-18, UC20-21, UC23, UC30: AI features
+var aiIntegrationRouter = require('./routes/aiIntegration'); // ✅ AI Integration routes
 var iotRouter = require('./routes/iot');            // 🔄 UC32-34: IoT device management
 console.log('iotRouter type:', typeof iotRouter);
 console.log('iotRouter keys:', Object.keys(iotRouter));
@@ -203,6 +204,7 @@ app.use('/users', usersRouter);                     // User routes (basic)
 app.use('/auth', authRouter);                       // ✅ UC11: Authentication routes (password reset)
 app.use('/payment', paymentRouter);                 // ✅ UC19, UC22: VNPay payment integration
 app.use('/api/ai', aiRouter);                       // 🔄 UC17-18, UC20-21, UC23, UC30: AI API
+app.use('/api/ai-integration', aiIntegrationRouter); // ✅ AI Integration API
 app.use('/api/iot', iotRouter);                     // 🔄 UC32-34: IoT API
 app.use('/api/sensor', sensorRouter);               // 🔄 Sensor data management API
 

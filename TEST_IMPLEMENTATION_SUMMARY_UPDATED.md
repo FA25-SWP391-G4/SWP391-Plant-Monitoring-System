@@ -21,7 +21,7 @@ We've made significant progress in fixing the failing tests in the Plant System 
 
 4. **Database Connection**
    - Verified PostgreSQL connection is working properly
-   - Connection string: `postgresql://postgres:0@localhost:5432/plant_system`
+   - Connection string: `postgresql://postgres:password@localhost:5432/plant_monitoring`
    - Created script to test database connectivity
 
 ### Still Needs Attention
@@ -44,10 +44,10 @@ We've made significant progress in fixing the failing tests in the Plant System 
 The database connection has been verified with the following connection string in `.env`:
 
 ```
-DATABASE_URL=postgresql://postgres:0@localhost:5432/plant_system
+DATABASE_URL=postgresql://postgres:password@localhost:5432/plant_monitoring
 ```
 
-This connects to a local PostgreSQL instance with username `postgres`, password `0`, and database name `plant_system`.
+This connects to a local PostgreSQL instance with username `postgres`, password `password`, and database name `plant_monitoring`.
 
 ## Current Test Results
 

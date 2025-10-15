@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Giao diện kiểm tra Microservices</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <style>
+        body {
+            padding-top: 20px;
+            background-color: #f8f9fa;
+        }
+        .service-card {
+            margin-bottom: 20px;
+            transition: all 0.3s;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        .service-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        .card-header {
+            font-weight: bold;
+        }
+        .result-container {
+            height: 200px;
+            overflow-y: auto;
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            padding: 10px;
+            font-family: monospace;
+            font-size: 14px;
+        }
+        .status-badge {
+            font-size: 12px;
+            padding: 5px 10px;
+            border-radius: 20px;
+        }
+        .form-label {
+            font-weight: 500;
+        }
+        .nav-tabs .nav-link {
+            border-radius: 10px 10px 0 0;
+            font-weight: 500;
+        }
+        .nav-tabs .nav-link.active {
+            background-color: #f8f9fa;
+            border-bottom-color: #f8f9fa;
+        }
+        .tab-content {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-top: none;
+            padding: 20px;
+            border-radius: 0 0 10px 10px;
+        }
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+        .loading-spinner {
+            width: 3rem;
+            height: 3rem;
+        }
+        pre {
+            background-color: #f1f1f1;
+            padding: 10px;
+            border-radius: 5px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="text-center mb-4">Kiểm tra Microservices</h1>
+        
+        <ul class="nav nav-tabs mb-4" id="myTab" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="chatbot-tab" data-bs-toggle="tab" data-bs-target="#chatbot" type="button" role="tab" aria-controls="chatbot" aria-selected="true">
+                    <i class="bi bi-chat-dots"></i> Chatbot
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="irrigation-tab" data-bs-toggle="tab" data-bs-target="#irrigation" type="button" role="tab" aria-controls="irrigation" aria-selected="false">
+                    <i class="bi bi-droplet"></i> Tưới cây
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="prediction-tab" data-bs-toggle="tab" data-bs-target="#prediction" type="button" role="tab" aria-controls="prediction" aria-selected="false">
+                    <i class="bi bi-graph-up"></i> Dự báo
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="warning-tab" data-bs-toggle="tab" data-bs-target="#warning" type="button" role="tab" aria-controls="warning" aria-selected="false">
+                    <i class="bi bi-exclamation-triangle"></i> Cảnh báo
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="image-tab" data-bs-toggle="tab" data-bs-target="#image" type="button" role="tab" aria-controls="image" aria-selected="false">
+                    <i class="bi bi-image"></i> Phân tích hình ảnh
+                </button>
+            </li>
+        </ul>
+        
+        <div class="tab-content" id="myTabContent">
+            <!-- Chatbot Tab -->
+            <div class="tab-pane fade show active" id="chatbot" role="tabpanel" aria-labelledby="chatbot-tab">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="card service-card">
+                            <div class="card-header bg-primary text-white">
+                                <i class="bi bi-chat-dots"></i> Kiểm tra Chatbot
+                            </div>
+                            <div class="card-body">
+                                <form id="chatbot-form">
+                                    <div class="mb-3">
+                                        <label for="user-id" class="form-label">ID người dùng:</label>
+                                        <input type="text" class="form-control" id="user-id" value="user123">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="plant-id" class="form-label">ID cây trồng:</label>
+                                        <input type="text" class="form-control" id="plant-id" value="plant456">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="message" class="form-label">Tin nhắn:</label>
+                                        <textarea class="form-control" id="message" rows="3" placeholder="Nhập tin nhắn của bạn...">Cây của tôi có lá vàng, tôi nên làm gì?</textarea>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="language" class="form-label">Ngôn ngữ:</label>
+                                        <select class="form-control" id="language">
+                                            <option value="vi">Tiếng Việt</option>
+                                            <option value="en">Tiếng Anh</option>
+                                        </select>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">Gửi tin nhắn</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card service-card">
+                            <div class="card-header bg-success text-white">
+                                <i class="bi bi-reply"></i> Phản hồi
+                            </div>
+                            <div class="card-body">
+                                <div id="chatbot-loading" class="loading">
+                                    <div class="spinner-border loading-spinner text-primary" role="status">
+                                        <span class="visually-hidden">Đang tải...</span>
+                                    </div>
+                                    <p class="mt-2">Đang xử lý tin nhắn...</p>
+                                </div>
+                                <div id="chatbot-result" class="result-container">
+                                    <p class="text-muted">Kết quả sẽ hiển thị ở đây...</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Irrigation Tab -->
+            <div class="tab-pane fade" id="irrigation" role="tabpanel" aria-labelledby="irrigation-tab">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="card service-card">
+                            <div class="card-header bg-info text-white">
+                                <i class="bi bi-droplet"></i> Tối ưu hóa lịch tưới
+                            </div>
+                            <div class="card-body">
+                                <form id="irrigation-form">
+                                    <div class="mb-3">
+                                        <label for="irrigation-plant-id" class="form-label">ID cây trồng:</label>
+                                        <input type="text" class="form-control" id="irrigation-plant-id" value="plant456">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="device-id" class="form-label">ID thiết bị:</label>
+                                        <input type="text" class="form-control" id="device-id" value="device789">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="moisture-threshold" class="form-label">Ngưỡng độ ẩm (%):</label>
+                                        <input type="number" class="form-control" id="moisture-threshold" value="50">
+                                    </div>
+                                    <div class="mb-3 form-check">
+                                        <input type="checkbox" class="form-check-input" id="real-time-monitoring" checked>
+                                        <label class="form-check-label" for="real-time-monitoring">Giám sát thời gian thực</label>
+                                    </div>
+                                    <button type="submit" class="btn btn-info text-white">Tối ưu hóa lịch tưới</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card service-card">
+                            <div class="card-header bg-success text-white">
+                                <i class="bi bi-calendar-check"></i> Kết quả lịch tưới
+                            </div>
+                            <div class="card-body">
+                                <div id="irrigation-loading" class="loading">
+                                    <div class="spinner-border loading-spinner text-info" role="status">
+                                        <span class="visually-hidden">Đang tải...</span>
+                                    </div>
+                                    <p class="mt-2">Đang tối ưu hóa lịch tưới...</p>
+                                </div>
+                                <div id="irrigation-result" class="result-container">
+                                    <p class="text-muted">Kết quả sẽ hiển thị ở đây...</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Prediction Tab -->
+            <div class="tab-pane fade" id="prediction" role="tabpanel" aria-labelledby="prediction-tab">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="card service-card">
+                            <div class="card-header bg-warning text-dark">
+                                <i class="bi bi-graph-up"></i> Dự báo nhu cầu tưới
+                            </div>
+                            <div class="card-body">
+                                <form id="prediction-form">
+                                    <div class="mb-3">
+                                        <label for="prediction-plant-id" class="form-label">ID cây trồng:</label>
+                                        <input type="text" class="form-control" id="prediction-plant-id" value="plant456">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="days-ahead" class="form-label">Số ngày dự báo:</label>
+                                        <select class="form-control" id="days-ahead">
+                                            <option value="3">3 ngày</option>
+                                            <option value="7" selected>7 ngày</option>
+                                            <option value="14">14 ngày</option>
+                                        </select>
+                                    </div>
+                                    <button type="submit" class="btn btn-warning">Phân tích và dự báo</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card service-card">
+                            <div class="card-header bg-success text-white">
+                                <i class="bi bi-bar-chart"></i> Kết quả dự báo
+                            </div>
+                            <div class="card-body">
+                                <div id="prediction-loading" class="loading">
+                                    <div class="spinner-border loading-spinner text-warning" role="status">
+                                        <span class="visually-hidden">Đang tải...</span>
+                                    </div>
+                                    <p class="mt-2">Đang phân tích dữ liệu...</p>
+                                </div>
+                                <div id="prediction-result" class="result-container">
+                                    <p class="text-muted">Kết quả sẽ hiển thị ở đây...</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Warning Tab -->
+            <div class="tab-pane fade" id="warning" role="tabpanel" aria-labelledby="warning-tab">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="card service-card">
+                            <div class="card-header bg-danger text-white">
+                                <i class="bi bi-exclamation-triangle"></i> Phân tích cảnh báo sớm
+                            </div>
+                            <div class="card-body">
+                                <form id="warning-form">
+                                    <div class="mb-3">
+                                        <label for="warning-plant-id" class="form-label">ID cây trồng:</label>
+                                        <input type="text" class="form-control" id="warning-plant-id" value="plant456">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="analysis-type" class="form-label">Loại phân tích:</label>
+                                        <select class="form-control" id="analysis-type">
+                                            <option value="threshold">Ngưỡng cố định</option>
+                                            <option value="trend" selected>Phân tích xu hướng</option>
+                                            <option value="ai">Sử dụng AI</option>
+                                        </select>
+                                    </div>
+                                    <div class="mb-3 form-check">
+                                        <input type="checkbox" class="form-check-input" id="include-recommendations" checked>
+                                        <label class="form-check-label" for="include-recommendations">Bao gồm đề xuất</label>
+                                    </div>
+                                    <button type="submit" class="btn btn-danger">Phân tích cảnh báo</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card service-card">
+                            <div class="card-header bg-success text-white">
+                                <i class="bi bi-list-check"></i> Kết quả phân tích
+                            </div>
+                            <div class="card-body">
+                                <div id="warning-loading" class="loading">
+                                    <div class="spinner-border loading-spinner text-danger" role="status">
+                                        <span class="visually-hidden">Đang tải...</span>
+                                    </div>
+                                    <p class="mt-2">Đang phân tích dữ liệu...</p>
+                                </div>
+                                <div id="warning-result" class="result-container">
+                                    <p class="text-muted">Kết quả sẽ hiển thị ở đây...</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Image Analysis Tab -->
+            <div class="tab-pane fade" id="image" role="tabpanel" aria-labelledby="image-tab">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="card service-card">
+                            <div class="card-header bg-secondary text-white">
+                                <i class="bi bi-image"></i> Phân tích hình ảnh
+                            </div>
+                            <div class="card-body">
+                                <form id="image-form">
+                                    <div class="mb-3">
+                                        <label for="image-plant-id" class="form-label">ID cây trồng:</label>
+                                        <input type="text" class="form-control" id="image-plant-id" value="plant456">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="image-file" class="form-label">Tải lên hình ảnh:</label>
+                                        <input class="form-control" type="file" id="image-file" accept="image/*">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="analysis-focus" class="form-label">Tập trung phân tích:</label>
+                                        <select class="form-control" id="analysis-focus">
+                                            <option value="health">Sức khỏe tổng thể</option>
+                                            <option value="disease" selected>Phát hiện bệnh</option>
+                                            <option value="growth">Đánh giá tăng trưởng</option>
+                                        </select>
+                                    </div>
+                                    <button type="submit" class="btn btn-secondary">Phân tích hình ảnh</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card service-card">
+                            <div class="card-header bg-success text-white">
+                                <i class="bi bi-card-image"></i> Kết quả phân tích
+                            </div>
+                            <div class="card-body">
+                                <div id="image-loading" class="loading">
+                                    <div class="spinner-border loading-spinner text-secondary" role="status">
+                                        <span class="visually-hidden">Đang tải...</span>
+                                    </div>
+                                    <p class="mt-2">Đang phân tích hình ảnh...</p>
+                                </div>
+                                <div id="image-result" class="result-container">
+                                    <p class="text-muted">Kết quả sẽ hiển thị ở đây...</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Chatbot Form
+            document.getElementById('chatbot-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                const userId = document.getElementById('user-id').value;
+                const plantId = document.getElementById('plant-id').value;
+                const message = document.getElementById('message').value;
+                const language = document.getElementById('language').value;
+                
+                document.getElementById('chatbot-loading').style.display = 'block';
+                document.getElementById('chatbot-result').innerHTML = '<p class="text-muted">Đang xử lý...</p>';
+                
+                fetch('/api/chatbot/message', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        userId,
+                        plantId,
+                        message,
+                        language,
+                        sessionId: 'test-session-' + Date.now()
+                    }),
+                })
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('chatbot-loading').style.display = 'none';
+                    const resultHtml = `
+                        <div class="mb-3">
+                            <strong>Phản hồi:</strong>
+                            <p>${data.response}</p>
+                        </div>
+                        <div class="mb-3">
+                            <strong>Thời gian phản hồi:</strong>
+                            <p>${data.responseTime} ms</p>
+                        </div>
+                        <div>
+                            <strong>Dữ liệu bổ sung:</strong>
+                            <pre>${JSON.stringify(data.additionalData || {}, null, 2)}</pre>
+                        </div>
+                    `;
+                    document.getElementById('chatbot-result').innerHTML = resultHtml;
+                })
+                .catch(error => {
+                    document.getElementById('chatbot-loading').style.display = 'none';
+                    document.getElementById('chatbot-result').innerHTML = `
+                        <div class="alert alert-danger">
+                            <strong>Lỗi:</strong> ${error.message}
+                        </div>
+                    `;
+                });
+            });
+            
+            // Irrigation Form
+            document.getElementById('irrigation-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                const plantId = document.getElementById('irrigation-plant-id').value;
+                const deviceId = document.getElementById('device-id').value;
+                const moistureThreshold = document.getElementById('moisture-threshold').value;
+                const enableRealTimeMonitoring = document.getElementById('real-time-monitoring').checked;
+                
+                document.getElementById('irrigation-loading').style.display = 'block';
+                document.getElementById('irrigation-result').innerHTML = '<p class="text-muted">Đang xử lý...</p>';
+                
+                fetch('/api/irrigation/automate', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        plantId,
+                        deviceId,
+                        moistureThreshold,
+                        enableRealTimeMonitoring,
+                        preferences: {
+                            wateringTime: 'morning',
+                            conserveWater: true
+                        }
+                    }),
+                })
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('irrigation-loading').style.display = 'none';
+                    const resultHtml = `
+                        <div class="mb-3">
+                            <strong>Trạng thái:</strong>
+                            <p>${data.success ? '<span class="badge bg-success">Thành công</span>' : '<span class="badge bg-danger">Thất bại</span>'}</p>
+                        </div>
+                        <div class="mb-3">
+                            <strong>Thông báo:</strong>
+                            <p>${data.message}</p>
+                        </div>
+                        <div>
+                            <strong>Lịch tưới:</strong>
+                            <pre>${JSON.stringify(data.config?.schedule || {}, null, 2)}</pre>
+                        </div>
+                    `;
+                    document.getElementById('irrigation-result').innerHTML = resultHtml;
+                })
+                .catch(error => {
+                    document.getElementById('irrigation-loading').style.display = 'none';
+                    document.getElementById('irrigation-result').innerHTML = `
+                        <div class="alert alert-danger">
+                            <strong>Lỗi:</strong> ${error.message}
+                        </div>
+                    `;
+                });
+            });
+            
+            // Prediction Form
+            document.getElementById('prediction-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                const plantId = document.getElementById('prediction-plant-id').value;
+                const daysAhead = document.getElementById('days-ahead').value;
+                
+                document.getElementById('prediction-loading').style.display = 'block';
+                document.getElementById('prediction-result').innerHTML = '<p class="text-muted">Đang xử lý...</p>';
+                
+                fetch(`/api/irrigation/predict?plantId=${plantId}&daysAhead=${daysAhead}`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('prediction-loading').style.display = 'none';
+                    const resultHtml = `
+                        <div class="mb-3">
+                            <strong>Cần tưới:</strong>
+                            <p>${data.needsWatering ? '<span class="badge bg-success">Có</span>' : '<span class="badge bg-warning">Không</span>'}</p>
+                        </div>
+                        <div class="mb-3">
+                            <strong>Độ tin cậy:</strong>
+                            <p>${data.confidence}%</p>
+                        </div>
+                        <div class="mb-3">
+                            <strong>Thời gian tưới tiếp theo:</strong>
+                            <p>${new Date(data.nextWateringTime).toLocaleString()}</p>
+                        </div>
+                        <div class="mb-3">
+                            <strong>Độ ẩm đất hiện tại:</strong>
+                            <p>${data.currentSoilMoisture}%</p>
+                        </div>
+                        <div>
+                            <strong>Đề xuất:</strong>
+                            <ul>
+                                ${data.recommendations.map(rec => `<li>${rec}</li>`).join('')}
+                            </ul>
+                        </div>
+                    `;
+                    document.getElementById('prediction-result').innerHTML = resultHtml;
+                })
+                .catch(error => {
+                    document.getElementById('prediction-loading').style.display = 'none';
+                    document.getElementById('prediction-result').innerHTML = `
+                        <div class="alert alert-danger">
+                            <strong>Lỗi:</strong> ${error.message}
+                        </div>
+                    `;
+                });
+            });
+            
+            // Warning Form
+            document.getElementById('warning-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                const plantId = document.getElementById('warning-plant-id').value;
+                const analysisType = document.getElementById('analysis-type').value;
+                const includeRecommendations = document.getElementById('include-recommendations').checked;
+                
+                document.getElementById('warning-loading').style.display = 'block';
+                document.getElementById('warning-result').innerHTML = '<p class="text-muted">Đang xử lý...</p>';
+                
+                fetch('/api/early-warning/analyze', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        plantId,
+                        analysisType,
+                        includeRecommendations
+                    }),
+                })
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('warning-loading').style.display = 'none';
+                    
+                    let anomaliesHtml = '';
+                    if (data.anomalies && data.anomalies.length > 0) {
+                        anomaliesHtml = `
+                            <div class="mb-3">
+                                <strong>Phát hiện bất thường:</strong>
+                                <ul class="list-group">
+                                    ${data.anomalies.map(anomaly => `
+                                        <li class="list-group-item ${anomaly.severity === 'critical' ? 'list-group-item-danger' : 'list-group-item-warning'}">
+                                            <strong>${anomaly.parameter}:</strong> ${anomaly.message}
+                                            <span class="badge ${anomaly.severity === 'critical' ? 'bg-danger' : 'bg-warning'} float-end">${anomaly.severity}</span>
+                                        </li>
+                                    `).join('')}
+                                </ul>
+                            </div>
+                        `;
+                    } else {
+                        anomaliesHtml = `
+                            <div class="alert alert-success">
+                                <i class="bi bi-check-circle"></i> Không phát hiện bất thường
+                            </div>
+                        `;
+                    }
+                    
+                    let recommendationsHtml = '';
+                    if (data.recommendations && data.recommendations.length > 0) {
+                        recommendationsHtml = `
+                            <div>
+                                <strong>Đề xuất:</strong>
+                                <ul>
+                                    ${data.recommendations.map(rec => `<li>${rec}</li>`).join('')}
+                                </ul>
+                            </div>
+                        `;
+                    }
+                    
+                    const resultHtml = `
+                        ${anomaliesHtml}
+                        <div class="mb-3">
+                            <strong>Thời gian phân tích:</strong>
+                            <p>${new Date(data.detectionTime).toLocaleString()}</p>
+                        </div>
+                        ${recommendationsHtml}
+                    `;
+                    document.getElementById('warning-result').innerHTML = resultHtml;
+                })
+                .catch(error => {
+                    document.getElementById('warning-loading').style.display = 'none';
+                    document.getElementById('warning-result').innerHTML = `
+                        <div class="alert alert-danger">
+                            <strong>Lỗi:</strong> ${error.message}
+                        </div>
+                    `;
+                });
+            });
+            
+            // Image Analysis Form
+            document.getElementById('image-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                const plantId = document.getElementById('image-plant-id').value;
+                const imageFile = document.getElementById('image-file').files[0];
+                const analysisFocus = document.getElementById('analysis-focus').value;
+                
+                if (!imageFile) {
+                    document.getElementById('image-result').innerHTML = `
+                        <div class="alert alert-warning">
+                            <strong>Cảnh báo:</strong> Vui lòng chọn một hình ảnh để phân tích
+                        </div>
+                    `;
+                    return;
+                }
+                
+                document.getElementById('image-loading').style.display = 'block';
+                document.getElementById('image-result').innerHTML = '<p class="text-muted">Đang xử lý...</p>';
+                
+                const formData = new FormData();
+                formData.append('plantId', plantId);
+                formData.append('image', imageFile);
+                formData.append('analysisFocus', analysisFocus);
+                
+                fetch('/api/image-analysis/analyze', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('image-loading').style.display = 'none';
+                    
+                    let healthStatusHtml = '';
+                    if (data.healthStatus) {
+                        const statusClass = data.healthStatus === 'healthy' ? 'success' : 
+                                          (data.healthStatus === 'moderate' ? 'warning' : 'danger');
+                        healthStatusHtml = `
+                            <div class="mb-3">
+                                <strong>Tình trạng sức khỏe:</strong>
+                                <span class="badge bg-${statusClass}">${data.healthStatus}</span>
+                            </div>
+                        `;
+                    }
+                    
+                    let diseasesHtml = '';
+                    if (data.diseases && data.diseases.length > 0) {
+                        diseasesHtml = `
+                            <div class="mb-3">
+                                <strong>Phát hiện bệnh:</strong>
+                                <ul class="list-group">
+                                    ${data.diseases.map(disease => `
+                                        <li class="list-group-item list-group-item-danger">
+                                            <strong>${disease.name}:</strong> ${disease.confidence}% tin cậy
+                                        </li>
+                                    `).join('')}
+                                </ul>
+                            </div>
+                        `;
+                    }
+                    
+                    const resultHtml = `
+                        ${healthStatusHtml}
+                        ${diseasesHtml}
+                        <div class="mb-3">
+                            <strong>Đánh giá:</strong>
+                            <p>${data.assessment || 'Không có đánh giá'}</p>
+                        </div>
+                        <div>
+                            <strong>Đề xuất:</strong>
+                            <ul>
+                                ${(data.recommendations || []).map(rec => `<li>${rec}</li>`).join('')}
+                            </ul>
+                        </div>
+                    `;
+                    document.getElementById('image-result').innerHTML = resultHtml;
+                })
+                .catch(error => {
+                    document.getElementById('image-loading').style.display = 'none';
+                    document.getElementById('image-result').innerHTML = `
+                        <div class="alert alert-danger">
+                            <strong>Lỗi:</strong> ${error.message}
+                        </div>
+                    `;
+                });
+            });
+        });
+    </script>
+</body>
+</html>

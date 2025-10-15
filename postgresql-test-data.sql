@@ -1,12 +1,12 @@
--- Active: 1755670041367@@127.0.0.1@5432@plant_system@public
--- Active: 1755670041367@@127.0.0.1@5432@postgres@plant_system
+-- Active: 1759376368890@@127.0.0.1@5432@plant_monitoring
+-- Active: 1755670041367@@127.0.0.1@5432@postgres@plant_monitoring
 -- Test data for Plant Monitoring System
 -- Created: October 6, 2023
 
--- Connect to the plant_system database
--- \c plant_system;  -- This only works in psql interactive mode
+-- Connect to the plant_monitoring database
+-- \c plant_monitoring;  -- This only works in psql interactive mode
 -- Using SET statement instead:
-SET search_path TO plant_system;
+SET search_path TO plant_monitoring;
 
 -- Insert test users
 INSERT INTO Users (email, password_hash, full_name, role, created_at)
@@ -215,5 +215,5 @@ SELECT setval('chat_history_chat_id_seq', (SELECT MAX(chat_id) FROM Chat_History
 -- Output completion message
 DO $$ 
 BEGIN 
-  RAISE NOTICE 'Test data has been successfully loaded into the plant_system database.';
+  RAISE NOTICE 'Test data has been successfully loaded into the plant_monitoring database.';
 END $$;

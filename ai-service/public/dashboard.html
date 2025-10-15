@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bảng điều khiển AI Service</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            padding-top: 20px;
+            background-color: #f5f5f5;
+        }
+        .status-card {
+            margin-bottom: 20px;
+            transition: all 0.3s;
+        }
+        .status-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        .status-indicator {
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 5px;
+        }
+        .status-online {
+            background-color: #28a745;
+        }
+        .status-offline {
+            background-color: #dc3545;
+        }
+        .status-warning {
+            background-color: #ffc107;
+        }
+        .chart-container {
+            height: 300px;
+            margin-bottom: 30px;
+        }
+        .log-container {
+            height: 300px;
+            overflow-y: auto;
+            background-color: #212529;
+            color: #f8f9fa;
+            padding: 10px;
+            font-family: monospace;
+            border-radius: 5px;
+        }
+        .log-entry {
+            margin-bottom: 5px;
+            border-bottom: 1px solid #495057;
+            padding-bottom: 5px;
+        }
+        .log-info {
+            color: #0dcaf0;
+        }
+        .log-warning {
+            color: #ffc107;
+        }
+        .log-error {
+            color: #dc3545;
+        }
+        .log-success {
+            color: #28a745;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="text-center mb-4">Bảng điều khiển AI Service</h1>
+        
+        <div class="row mb-4">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0">Trạng thái hệ thống</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-3">
+                                <div class="card status-card">
+                                    <div class="card-body text-center">
+                                        <h5 class="card-title">AI Service</h5>
+                                        <div id="ai-service-status">
+                                            <span class="status-indicator status-online"></span>
+                                            <span>Hoạt động</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="card status-card">
+                                    <div class="card-body text-center">
+                                        <h5 class="card-title">IoT Connection</h5>
+                                        <div id="iot-status">
+                                            <span class="status-indicator status-online"></span>
+                                            <span>Kết nối</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="card status-card">
+                                    <div class="card-body text-center">
+                                        <h5 class="card-title">Database</h5>
+                                        <div id="db-status">
+                                            <span class="status-indicator status-online"></span>
+                                            <span>Kết nối</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="card status-card">
+                                    <div class="card-body text-center">
+                                        <h5 class="card-title">ML Models</h5>
+                                        <div id="ml-status">
+                                            <span class="status-indicator status-online"></span>
+                                            <span>Đã tải</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header bg-success text-white">
+                        <h5 class="mb-0">Thống kê hệ thống</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="chart-container" id="system-chart">
+                            <canvas id="systemChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header bg-info text-white">
+                        <h5 class="mb-0">Hoạt động AI</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="chart-container" id="ai-chart">
+                            <canvas id="aiChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">Nhật ký hệ thống</h5>
+                        <button class="btn btn-sm btn-outline-light" id="clear-logs">Xóa nhật ký</button>
+                    </div>
+                    <div class="card-body">
+                        <div class="log-container" id="system-logs">
+                            <div class="log-entry log-info">[INFO] Khởi động hệ thống AI Service...</div>
+                            <div class="log-entry log-success">[SUCCESS] Kết nối thành công đến cơ sở dữ liệu</div>
+                            <div class="log-entry log-info">[INFO] Đang tải các mô hình ML...</div>
+                            <div class="log-entry log-success">[SUCCESS] Đã tải mô hình nhận diện bệnh cây</div>
+                            <div class="log-entry log-warning">[WARNING] Không tìm thấy mô hình dự đoán tưới cây, đang tạo mô hình mới...</div>
+                            <div class="log-entry log-success">[SUCCESS] Đã tạo mô hình dự đoán tưới cây</div>
+                            <div class="log-entry log-info">[INFO] Khởi tạo kết nối IoT...</div>
+                            <div class="log-entry log-success">[SUCCESS] Kết nối thành công đến IoT Service</div>
+                            <div class="log-entry log-info">[INFO] Hệ thống AI Service đã sẵn sàng</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Khởi tạo biểu đồ và dữ liệu
+        document.addEventListener('DOMContentLoaded', function() {
+            // Cập nhật trạng thái dịch vụ
+            updateServiceStatus();
+            
+            // Khởi tạo biểu đồ
+            initCharts();
+            
+            // Cập nhật logs
+            updateLogs();
+            
+            // Cập nhật dữ liệu mỗi 30 giây
+            setInterval(function() {
+                updateServiceStatus();
+                updateCharts();
+                updateLogs();
+            }, 30000);
+        });
+        
+        // Cập nhật trạng thái dịch vụ
+        function updateServiceStatus() {
+            // Mô phỏng kiểm tra trạng thái dịch vụ
+            fetch('/api/sensor-data')
+                .then(response => {
+                    if (response.ok) {
+                        document.getElementById('ai-service-status').innerHTML = 
+                            '<span class="status-indicator status-online"></span><span>Hoạt động</span>';
+                    } else {
+                        document.getElementById('ai-service-status').innerHTML = 
+                            '<span class="status-indicator status-offline"></span><span>Không hoạt động</span>';
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    // Cập nhật trạng thái IoT
+                    document.getElementById('iot-status').innerHTML = 
+                        '<span class="status-indicator status-online"></span><span>Kết nối</span>';
+                    
+                    // Cập nhật trạng thái Database
+                    document.getElementById('db-status').innerHTML = 
+                        '<span class="status-indicator status-online"></span><span>Kết nối</span>';
+                    
+                    // Cập nhật trạng thái AI Model
+                    document.getElementById('ml-status').innerHTML = 
+                        '<span class="status-indicator status-online"></span><span>Sẵn sàng</span>';
+                })
+                .catch(error => {
+                    console.error('Lỗi khi kiểm tra trạng thái dịch vụ:', error);
+                    document.getElementById('ai-service-status').innerHTML = 
+                        '<span class="status-indicator status-warning"></span><span>Cảnh báo</span>';
+                    document.getElementById('iot-status').innerHTML = 
+                        '<span class="status-indicator status-warning"></span><span>Cảnh báo</span>';
+                    document.getElementById('db-status').innerHTML = 
+                        '<span class="status-indicator status-warning"></span><span>Cảnh báo</span>';
+                    document.getElementById('ml-status').innerHTML = 
+                        '<span class="status-indicator status-warning"></span><span>Cảnh báo</span>';
+                });
+        }
+        
+        // Biến toàn cục cho biểu đồ
+        let systemChart, aiChart;
+        
+        // Dữ liệu mẫu cho biểu đồ
+        function initCharts() {
+            const systemChartCtx = document.getElementById('systemChart').getContext('2d');
+            systemChart = new Chart(systemChartCtx, {
+            type: 'line',
+            data: {
+                labels: ['00:00', '01:00', '02:00', '03:00', '04:00', '05:00', '06:00', '07:00', '08:00', '09:00', '10:00', '11:00'],
+                datasets: [{
+                    label: 'CPU Usage (%)',
+                    data: [10, 15, 12, 18, 25, 30, 28, 35, 40, 38, 32, 30],
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    tension: 0.4
+                }, {
+                    label: 'Memory Usage (%)',
+                    data: [20, 25, 30, 35, 40, 45, 50, 55, 60, 58, 55, 50],
+                    borderColor: 'rgba(153, 102, 255, 1)',
+                    backgroundColor: 'rgba(153, 102, 255, 0.2)',
+                    tension: 0.4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false
+            }
+        });
+
+        const aiChartCtx = document.getElementById('aiChart').getContext('2d');
+        aiChart = new Chart(aiChartCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Phân tích hình ảnh', 'Dự đoán tưới', 'Chatbot', 'Phân tích dữ liệu', 'Cảnh báo sớm'],
+                datasets: [{
+                    label: 'Số lượng yêu cầu',
+                    data: [65, 120, 80, 45, 30],
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.2)',
+                        'rgba(54, 162, 235, 0.2)',
+                        'rgba(255, 206, 86, 0.2)',
+                        'rgba(75, 192, 192, 0.2)',
+                        'rgba(153, 102, 255, 0.2)'
+                    ],
+                    borderColor: [
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 206, 86, 1)',
+                        'rgba(75, 192, 192, 1)',
+                        'rgba(153, 102, 255, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+        // Xử lý sự kiện xóa nhật ký
+        document.getElementById('clear-logs').addEventListener('click', function() {
+            document.getElementById('system-logs').innerHTML = '<div class="log-entry log-info">[INFO] Đã xóa nhật ký</div>';
+        });
+
+        // Mô phỏng thêm nhật ký mới
+        function addLogEntry() {
+            const logTypes = ['info', 'success', 'warning', 'error'];
+            const logType = logTypes[Math.floor(Math.random() * logTypes.length)];
+            
+            const logMessages = {
+                info: [
+                    'Đang xử lý yêu cầu phân tích hình ảnh',
+                    'Nhận yêu cầu chatbot từ người dùng',
+                    'Đang tạo lịch tưới tự động',
+                    'Đang phân tích dữ liệu cảm biến'
+                ],
+                success: [
+                    'Phân tích hình ảnh thành công',
+                    'Đã trả lời yêu cầu chatbot',
+                    'Đã tạo lịch tưới tự động',
+                    'Kết nối thành công đến thiết bị IoT'
+                ],
+                warning: [
+                    'Độ ẩm đất thấp, cần tưới nước',
+                    'Phát hiện dấu hiệu bệnh trên lá',
+                    'Kết nối IoT không ổn định',
+                    'Dự đoán có thể mưa, điều chỉnh lịch tưới'
+                ],
+                error: [
+                    'Không thể kết nối đến thiết bị IoT',
+                    'Lỗi khi phân tích hình ảnh',
+                    'Không thể tạo lịch tưới tự động',
+                    'Mất kết nối đến cơ sở dữ liệu'
+                ]
+            };
+            
+            const message = logMessages[logType][Math.floor(Math.random() * logMessages[logType].length)];
+            const logEntry = document.createElement('div');
+            logEntry.className = `log-entry log-${logType}`;
+            logEntry.textContent = `[${logType.toUpperCase()}] ${message}`;
+            
+            const logsContainer = document.getElementById('system-logs');
+            logsContainer.insertBefore(logEntry, logsContainer.firstChild);
+            
+            // Giới hạn số lượng nhật ký hiển thị
+            if (logsContainer.children.length > 100) {
+                logsContainer.removeChild(logsContainer.lastChild);
+            }
+        }
+
+        // Mô phỏng cập nhật trạng thái
+        function updateStatus() {
+            const statuses = ['online', 'warning', 'offline'];
+            const statusElements = ['ai-service-status', 'iot-status', 'db-status', 'ml-status'];
+            
+            // Chọn ngẫu nhiên một phần tử để cập nhật
+            const elementToUpdate = statusElements[Math.floor(Math.random() * statusElements.length)];
+            const newStatus = statuses[Math.floor(Math.random() * 3)]; // Ưu tiên trạng thái online
+            
+            const element = document.getElementById(elementToUpdate);
+            const indicator = element.querySelector('.status-indicator');
+            const text = element.querySelector('span:not(.status-indicator)');
+            
+            // Xóa tất cả các class status
+            indicator.classList.remove('status-online', 'status-warning', 'status-offline');
+            
+            // Thêm class mới
+            indicator.classList.add(`status-${newStatus}`);
+            
+            // Cập nhật text
+            if (newStatus === 'online') {
+                text.textContent = 'Hoạt động';
+            } else if (newStatus === 'warning') {
+                text.textContent = 'Cảnh báo';
+            } else {
+                text.textContent = 'Ngắt kết nối';
+            }
+            
+            // Thêm log tương ứng
+            const logType = newStatus === 'online' ? 'success' : (newStatus === 'warning' ? 'warning' : 'error');
+            const component = elementToUpdate === 'ai-service-status' ? 'AI Service' : 
+                            (elementToUpdate === 'iot-status' ? 'IoT Connection' : 
+                            (elementToUpdate === 'db-status' ? 'Database' : 'ML Models'));
+            
+            const logEntry = document.createElement('div');
+            logEntry.className = `log-entry log-${logType}`;
+            logEntry.textContent = `[${logType.toUpperCase()}] ${component}: ${text.textContent}`;
+            
+            const logsContainer = document.getElementById('system-logs');
+            logsContainer.insertBefore(logEntry, logsContainer.firstChild);
+        }
+
+        // Cập nhật dữ liệu biểu đồ
+        function updateCharts() {
+            // Cập nhật biểu đồ hệ thống
+            systemChart.data.datasets[0].data.push(Math.floor(Math.random() * 30) + 10);
+            systemChart.data.datasets[0].data.shift();
+            
+            systemChart.data.datasets[1].data.push(Math.floor(Math.random() * 20) + 40);
+            systemChart.data.datasets[1].data.shift();
+            
+            const now = new Date();
+            const timeString = `${now.getHours()}:${now.getMinutes().toString().padStart(2, '0')}`;
+            systemChart.data.labels.push(timeString);
+            systemChart.data.labels.shift();
+            
+            systemChart.update();
+            
+            // Cập nhật biểu đồ AI
+            for (let i = 0; i < aiChart.data.datasets[0].data.length; i++) {
+                aiChart.data.datasets[0].data[i] += Math.floor(Math.random() * 10) - 2;
+                if (aiChart.data.datasets[0].data[i] < 0) {
+                    aiChart.data.datasets[0].data[i] = 0;
+                }
+            }
+            
+            aiChart.update();
+        }
+
+        // Mô phỏng hoạt động hệ thống
+        setInterval(addLogEntry, 3000);
+        setInterval(updateStatus, 15000);
+        setInterval(updateCharts, 5000);
+    </script>
+</body>
+</html>

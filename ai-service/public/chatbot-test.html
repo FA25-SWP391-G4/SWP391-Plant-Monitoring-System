@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Chatbot AI - Plant Monitoring</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .chat-container {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .chat-messages {
+            height: 400px;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin-bottom: 15px;
+            background-color: #fafafa;
+        }
+        .message {
+            margin-bottom: 15px;
+            padding: 10px;
+            border-radius: 8px;
+        }
+        .user-message {
+            background-color: #007bff;
+            color: white;
+            text-align: right;
+        }
+        .ai-message {
+            background-color: #e9ecef;
+            color: #333;
+        }
+        .input-container {
+            display: flex;
+            gap: 10px;
+        }
+        #messageInput {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        #sendButton {
+            padding: 10px 20px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        #sendButton:hover {
+            background-color: #218838;
+        }
+        .loading {
+            color: #666;
+            font-style: italic;
+        }
+        .plant-info {
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+        }
+        .sensor-data {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        .sensor-item {
+            background-color: #fff3cd;
+            border: 1px solid #ffeaa7;
+            padding: 8px;
+            border-radius: 5px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="chat-container">
+        <h1>🤖 Test Chatbot AI - Hệ thống Giám sát Cây trồng</h1>
+        
+        <div class="plant-info">
+            <h3>🌱 Thông tin cây hiện tại:</h3>
+            <div id="plantInfo">Đang tải...</div>
+        </div>
+        
+        <div class="sensor-data" id="sensorData">
+            <!-- Sensor data will be loaded here -->
+        </div>
+        
+        <div class="chat-messages" id="chatMessages">
+            <div class="message ai-message">
+                Xin chào! Tôi là trợ lý AI chăm sóc cây trồng. Bạn có thể hỏi tôi về:
+                <ul>
+                    <li>Tình trạng cây trồng</li>
+                    <li>Lịch tưới nước</li>
+                    <li>Độ ẩm đất và nhiệt độ</li>
+                    <li>Cách chăm sóc cây</li>
+                    <li>Phát hiện bệnh tật</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="input-container">
+            <input type="text" id="messageInput" placeholder="Nhập câu hỏi của bạn..." onkeypress="handleKeyPress(event)">
+            <button id="sendButton" onclick="sendMessage()">Gửi</button>
+        </div>
+        
+        <div style="margin-top: 15px;">
+            <h4>💡 Câu hỏi mẫu:</h4>
+            <button onclick="sendSampleMessage('Cây của tôi cần tưới nước không?')" style="margin: 5px; padding: 5px 10px;">Cần tưới nước không?</button>
+            <button onclick="sendSampleMessage('Độ ẩm đất hiện tại là bao nhiêu?')" style="margin: 5px; padding: 5px 10px;">Độ ẩm đất?</button>
+            <button onclick="sendSampleMessage('Cây có bị bệnh không?')" style="margin: 5px; padding: 5px 10px;">Cây có bệnh?</button>
+            <button onclick="sendSampleMessage('Làm thế nào chăm sóc cây xương rồng?')" style="margin: 5px; padding: 5px 10px;">Chăm sóc cây?</button>
+        </div>
+    </div>
+
+    <script>
+        let currentPlantId = 1;
+        let userId = 'test_user_' + Date.now();
+        let sessionId = 'session_' + Date.now();
+
+        // Load plant and sensor data
+        async function loadPlantData() {
+            try {
+                const response = await fetch('/api/ai/chatbot/simulate?plantId=' + currentPlantId);
+                const data = await response.json();
+                
+                // Display plant info
+                document.getElementById('plantInfo').innerHTML = `
+                    <strong>${data.plantInfo.name}</strong> (${data.plantInfo.plant_type})<br>
+                    ${data.plantInfo.description}
+                `;
+                
+                // Display sensor data
+                const sensorHtml = `
+                    <div class="sensor-item">
+                        <strong>🌡️ Nhiệt độ</strong><br>
+                        ${data.sensorData.temperature}°C
+                    </div>
+                    <div class="sensor-item">
+                        <strong>💧 Độ ẩm đất</strong><br>
+                        ${data.sensorData.soilMoisture}%
+                    </div>
+                    <div class="sensor-item">
+                        <strong>💨 Độ ẩm không khí</strong><br>
+                        ${data.sensorData.humidity}%
+                    </div>
+                    <div class="sensor-item">
+                        <strong>☀️ Ánh sáng</strong><br>
+                        ${data.sensorData.lightLevel} lux
+                    </div>
+                `;
+                document.getElementById('sensorData').innerHTML = sensorHtml;
+                
+            } catch (error) {
+                console.error('Lỗi khi tải dữ liệu cây:', error);
+            }
+        }
+
+        async function sendMessage() {
+            const messageInput = document.getElementById('messageInput');
+            const message = messageInput.value.trim();
+            
+            if (!message) return;
+            
+            // Add user message to chat
+            addMessage(message, 'user');
+            messageInput.value = '';
+            
+            // Show loading
+            const loadingDiv = addMessage('Đang suy nghĩ...', 'ai', true);
+            
+            try {
+                const response = await fetch('/api/ai/chatbot/message', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        message: message,
+                        userId: userId,
+                        plantId: currentPlantId,
+                        sessionId: sessionId,
+                        language: 'vi'
+                    })
+                });
+                
+                const data = await response.json();
+                
+                // Remove loading message
+                loadingDiv.remove();
+                
+                if (data.success) {
+                    addMessage(data.response, 'ai');
+                    
+                    // Update sensor data if provided
+                    if (data.sensorData) {
+                        const sensorHtml = `
+                            <div class="sensor-item">
+                                <strong>🌡️ Nhiệt độ</strong><br>
+                                ${data.sensorData.temperature}°C
+                            </div>
+                            <div class="sensor-item">
+                                <strong>💧 Độ ẩm đất</strong><br>
+                                ${data.sensorData.soilMoisture}%
+                            </div>
+                            <div class="sensor-item">
+                                <strong>💨 Độ ẩm không khí</strong><br>
+                                ${data.sensorData.humidity}%
+                            </div>
+                            <div class="sensor-item">
+                                <strong>☀️ Ánh sáng</strong><br>
+                                ${data.sensorData.lightLevel} lux
+                            </div>
+                        `;
+                        document.getElementById('sensorData').innerHTML = sensorHtml;
+                    }
+                } else {
+                    addMessage('Xin lỗi, tôi gặp vấn đề kỹ thuật. Vui lòng thử lại.', 'ai');
+                }
+                
+            } catch (error) {
+                loadingDiv.remove();
+                addMessage('Lỗi kết nối. Vui lòng kiểm tra server và thử lại.', 'ai');
+                console.error('Lỗi:', error);
+            }
+        }
+
+        function addMessage(text, sender, isLoading = false) {
+            const chatMessages = document.getElementById('chatMessages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${sender}-message${isLoading ? ' loading' : ''}`;
+            messageDiv.textContent = text;
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+            return messageDiv;
+        }
+
+        function sendSampleMessage(message) {
+            document.getElementById('messageInput').value = message;
+            sendMessage();
+        }
+
+        function handleKeyPress(event) {
+            if (event.key === 'Enter') {
+                sendMessage();
+            }
+        }
+
+        // Load initial data
+        loadPlantData();
+    </script>
+</body>
+</html>
