@@ -353,7 +353,7 @@ async function resetUserPassword(req, res) {
         
         // Log admin action
         await SystemLog.create({
-            log_level: 'WARN',
+            log_level: 'WARNING',
             source: 'AdminController',
             message: `Admin ${req.user.user_id} reset password for user ${userId}`,
             user_id: req.user.user_id
@@ -422,7 +422,7 @@ async function deleteUser(req, res) {
         
         // Log admin action
         await SystemLog.create({
-            log_level: 'WARN',
+            log_level: 'WARNING',
             source: 'AdminController',
             message: `Admin ${req.user.user_id} deleted user ${userId} (${userData.email})`,
             user_id: req.user.user_id,
@@ -532,7 +532,7 @@ async function bulkUserActions(req, res) {
         
         // Log admin action
         await SystemLog.create({
-            log_level: 'WARN',
+            log_level: 'WARNING',
             source: 'AdminController',
             message: `Admin ${req.user.user_id} performed bulk action: ${action} on ${results.successful.length} users`,
             user_id: req.user.user_id,
@@ -1205,7 +1205,7 @@ async function updateSystemSettings(req, res) {
         
         // Log admin action
         await SystemLog.create({
-            log_level: 'WARN',
+            log_level: 'WARNING',
             source: 'AdminController',
             message: `Admin ${req.user.user_id} updated system settings (${updatedSettings.length} updated, ${failedSettings.length} failed)`,
             user_id: req.user.user_id,
@@ -1352,7 +1352,7 @@ async function deleteSystemLogs(req, res) {
         
         // Log admin action
         await SystemLog.create({
-            log_level: 'WARN',
+            log_level: 'WARNING',
             source: 'AdminController',
             message: `Admin ${req.user.user_id} deleted ${deletedCount} system logs`,
             user_id: req.user.user_id,
@@ -1566,7 +1566,7 @@ async function restoreDatabase(req, res) {
         
         // Log admin action
         await SystemLog.create({
-            log_level: 'WARN',
+            log_level: 'WARNING',
             source: 'AdminController',
             message: `Admin ${req.user.user_id} restored database from backup: ${filename}`,
             user_id: req.user.user_id
