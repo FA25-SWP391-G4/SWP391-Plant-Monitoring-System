@@ -8,7 +8,7 @@ const configBuilder = iot.AwsIotMqttConnectionConfigBuilder.new_mtls_builder_fro
     process.env.AWS_PRIVATE_KEY_PATH
 );
 configBuilder.with_certificate_authority_from_path(undefined, process.env.AWS_ROOT_CA_PATH);
-configBuilder.with_client_id("plant-monitoring-system-client");
+configBuilder.with_client_id("ESP32_SmartPlant");
 configBuilder.with_endpoint(process.env.AWS_IOT_ENDPOINT);
 
 const config = configBuilder.build();
@@ -17,7 +17,7 @@ const connection = client.new_connection(config);
 
 connection.on("connect", () => {
     console.log("Connected to AWS IoT Core");
-    connection.subscribe("smartplant/pub", mqtt.QoS.AtLeastOnce, (topic, payload) => {
+    connection.subscribe("smartplant/sub", mqtt.QoS.AtLeastOnce, (topic, payload) => {
         const data = JSON.parse(new TextDecoder().decode(payload));
         console.log("Received message:", data);
 

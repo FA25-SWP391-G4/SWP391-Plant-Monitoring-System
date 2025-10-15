@@ -5,9 +5,9 @@ import { useAuth } from '@/providers/AuthProvider';
 import { useRouter } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
 import PlantDetails from '@/components/plants/PlantDetails';
-import SensorReadings from '@/components/plants/SensorReadings';
-import WateringScheduleControl from '@/components/plants/WateringScheduleControl';
-import ManualWateringControl from '@/components/plants/ManualWateringControl';
+// import SensorReadings from '@/components/plants/SensorReadings';
+// import WateringScheduleControl from '@/components/plants/WateringScheduleControl';
+// import ManualWateringControl from '@/components/plants/ManualWateringControl';
 import api from '@/api/axiosClient';
 
 export default function PlantDetailPage({ params }) {

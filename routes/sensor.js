@@ -1,11 +1,11 @@
-import express from 'express';
-import { getLastestSensorData } from '../controllers/sensorController.js';
-
+const express = require('express');
+const getLastestSensorData = require('../controllers/sensorController').getLastestSensorData;
+const db = require ('../config/db.js');
 const router = express.Router();
 
 router.get('/latest', getLastestSensorData);
 
-export default router;
+module.exports = router;
 
 // SELECT * FROM 'plant-system/device/+/data'
 

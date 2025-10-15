@@ -1,4 +1,4 @@
-import db from  '../config'
+import db from  '../config/db.js';
 
 //fetch all sensor data
 export const getLastestSensorData = async (req, res) => {
