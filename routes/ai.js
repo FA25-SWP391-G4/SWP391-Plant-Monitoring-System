@@ -17,7 +17,7 @@ const upload = multer({ dest: 'uploads/' });
 const fs = require('fs');
 
 // AI Service URL from environment or default to localhost in development
-const AI_SERVICE_URL = process.env.AI_SERVICE_URL || 'http://localhost:8000';
+const AI_SERVICE_URL = process.env.AI_SERVICE_URL;
 
 console.log("AI Controller keys:", Object.keys(aiController));
 /**
