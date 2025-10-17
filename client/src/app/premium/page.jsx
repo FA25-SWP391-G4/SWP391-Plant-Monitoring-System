@@ -1,12 +1,122 @@
 'use client'
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useTranslation } from 'react-i18next';
+import { useAuth } from '@/providers/AuthProvider';
+import { useRouter } from 'next/navigation';
+import paymentApi from '@/api/paymentApi';
 
 export default function PremiumPage() {
   const { t } = useTranslation();
+  const { user, loading } = useAuth();
+  const router = useRouter();
   const [selectedPlan, setSelectedPlan] = useState('monthly');
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [paymentError, setPaymentError] = useState(null);
+  const [paymentDialogOpen, setPaymentDialogOpen] = useState(false);
+  const [paymentInfo, setPaymentInfo] = useState(null);
+  
+  // Redirect if not logged in
+  useEffect(() => {
+    if (!loading && !user) {
+      console.log('User not authenticated, redirecting to login');
+      router.push('/login?redirect=premium');
+      return;
+    }
+    
+    if (user) {
+      console.log(`User authenticated: ID=${user.user_id}, Name=${user.full_name || 'Not available'}, Email=${user.email || 'Not available'}`);
+    }
+  }, [user, loading, router]);
+  
+  // Clean up any stored order IDs when component mounts
+  useEffect(() => {
+    // We'll keep a function to clean up any pending order IDs
+    const cleanupPendingPayments = () => {
+      // Remove any pending order ID from localStorage since we now have a dedicated result page
+      if (localStorage.getItem('pendingOrderId')) {
+        localStorage.removeItem('pendingOrderId');
+      }
+    };
+    
+    cleanupPendingPayments();
+  }, []);
+  
+  // Handle upgrade button click
+  const handleUpgradeClick = async (planType) => {
+    if (!user) {
+      router.push('/login?redirect=premium');
+      return;
+    }
+    
+    setPaymentDialogOpen(true);
+    setSelectedPlan(planType);
+  };
+  
+  // Process payment
+  const handlePayment = async (paymentType) => {
+    setIsProcessing(true);
+    setPaymentError(null);
+    
+    try {
+      // Verify user is authenticated
+      if (!user || !user.user_id) {
+        console.error('Payment attempted without authentication');
+        setPaymentError(t('payment.authError', 'You must be logged in to make a payment. Please log in and try again.'));
+        router.push('/login?redirect=premium');
+        return;
+      }
+      
+      console.log(`Processing payment for user ID: ${user.user_id}, Name: ${user.full_name || 'Not set'}`);
+      
+      // Determine amount based on selected plan and payment type
+      let amount = 0;
+      let description = '';
+      
+      if (paymentType === 'monthly') {
+        amount = 20000; // 20,000 VND per month
+        description = t('payment.monthlySubscription', 'Monthly Premium Subscription');
+      } else if (paymentType === 'annual') {
+        amount = 200000; // 200,000 VND per year (20% off)
+        description = t('payment.annualSubscription', 'Annual Premium Subscription (20% off)');
+      } else if (paymentType === 'lifetime') {
+        amount = 399000; // 399,000 VND one-time payment
+        description = t('payment.lifetimeSubscription', 'Lifetime Premium Subscription');
+      }
+      
+      // Create payment URL through backend
+      console.log(`Sending payment request: amount=${amount}, user_id=${user.user_id}`);
+      const response = await paymentApi.createPaymentUrl({
+        amount,
+        orderInfo: description,
+        orderType: 'premium_subscription',
+        planType: paymentType,
+        directRedirect: true // Use direct server-side redirection for better compatibility
+      });
+      
+      // For server-side redirection, the browser will be redirected by the server
+      // This client-side code should not execute if server-side redirect works
+      // But we keep it as fallback
+      if (response.data && response.data.paymentUrl) {
+        // Store order ID for verification on return
+        if (response.data.orderId) {
+          localStorage.setItem('pendingOrderId', response.data.orderId);
+        }
+        
+        // Redirect to VNPay payment page (fallback)
+        console.log("Server-side redirect didn't happen, using client-side fallback");
+        window.location.href = response.data.paymentUrl;
+      } else {
+        setPaymentError(t('payment.createPaymentError', 'Failed to create payment. Please try again.'));
+      }
+    } catch (error) {
+      console.error('Payment error:', error);
+      setPaymentError(t('payment.genericError', 'An error occurred. Please try again later.'));
+    } finally {
+      setIsProcessing(false);
+    }
+  };
   
   return (
     <div className="container mx-auto px-4 py-8">
@@ -75,7 +185,7 @@ export default function PremiumPage() {
                 {t('premium.basicDesc', 'Essential features for casual plant owners')}
               </p>
               <div className="mb-6">
-                <span className="text-3xl font-bold text-gray-900">$0</span>
+                <span className="text-3xl font-bold text-gray-900">0₫</span>
                 <span className="text-gray-500 ml-1">{t('premium.forever', 'forever')}</span>
               </div>
               <button
@@ -114,24 +224,35 @@ export default function PremiumPage() {
               <div className="mb-6">
                 {selectedPlan === 'monthly' ? (
                   <>
-                    <span className="text-3xl font-bold text-emerald-600">$9.99</span>
+                    <span className="text-3xl font-bold text-emerald-600">20,000₫</span>
                     <span className="text-gray-500 ml-1">{t('premium.perMonth', 'per month')}</span>
                   </>
                 ) : (
                   <>
-                    <span className="text-3xl font-bold text-emerald-600">$95.88</span>
+                    <span className="text-3xl font-bold text-emerald-600">200,000₫</span>
                     <span className="text-gray-500 ml-1">{t('premium.perYear', 'per year')}</span>
                     <div className="text-sm text-emerald-600 font-medium mt-1">
-                      {t('premium.billed', 'Billed annually ($7.99/month)')}
+                      {t('premium.billed', 'Billed annually (20% off)')}
                     </div>
                   </>
                 )}
               </div>
-              <button
-                className="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-2 px-4 rounded-lg font-medium transition-colors"
-              >
-                {t('premium.upgrade', 'Upgrade Now')}
-              </button>
+              <div className="space-y-2">
+                <button
+                  className="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-2 px-4 rounded-lg font-medium transition-colors"
+                  onClick={() => handleUpgradeClick(selectedPlan)}
+                >
+                  {selectedPlan === 'monthly' ? 
+                    t('premium.monthlyUpgrade', 'Get Monthly Plan') : 
+                    t('premium.annualUpgrade', 'Get Annual Plan')}
+                </button>
+                <button
+                  className="w-full bg-white border border-emerald-600 hover:bg-emerald-50 text-emerald-600 py-2 px-4 rounded-lg font-medium transition-colors"
+                  onClick={() => handleUpgradeClick('lifetime')}
+                >
+                  {t('premium.lifetimeUpgrade', 'Lifetime Access - 399,000₫')}
+                </button>
+              </div>
             </div>
             <div className="border-t border-gray-200 p-6">
               <h3 className="font-medium text-gray-900 mb-4">
@@ -282,13 +403,86 @@ export default function PremiumPage() {
         <p className="mb-6 max-w-xl mx-auto">
           {t('premium.ctaDescription', 'Join thousands of plant enthusiasts who have transformed their plant care routine with PlantSmart Premium.')}
         </p>
-        <button className="bg-white text-emerald-600 hover:bg-gray-100 px-8 py-3 rounded-lg font-medium transition-colors">
-          {t('premium.startFreeTrial', 'Start Free 7-Day Trial')}
-        </button>
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+          <button 
+            className="bg-white text-emerald-600 hover:bg-gray-100 px-8 py-3 rounded-lg font-medium transition-colors"
+            onClick={() => handleUpgradeClick('monthly')}
+          >
+            {t('premium.getStartedMonthly', 'Get Started - 20,000₫/month')}
+          </button>
+          <button 
+            className="bg-white text-emerald-600 hover:bg-gray-100 px-8 py-3 rounded-lg font-medium transition-colors"
+            onClick={() => handleUpgradeClick('lifetime')}
+          >
+            {t('premium.getLifetime', 'Get Lifetime - 399,000₫')}
+          </button>
+        </div>
         <p className="mt-3 text-sm opacity-80">
-          {t('premium.noCommitment', 'No commitment. Cancel anytime during trial period.')}
+          {t('premium.securePayment', 'Secure payment processing by VNPay')}
         </p>
       </div>
+      
+      {/* Payment Dialog */}
+      {paymentDialogOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 max-w-md w-full">
+            <h3 className="text-xl font-bold mb-4">{t('payment.confirmPayment', 'Confirm Payment')}</h3>
+            
+            <div className="mb-6">
+              <p className="mb-2">{t('payment.selectPlan', 'Please confirm your payment:')}</p>
+              
+              <div className="space-y-3">
+                {selectedPlan === 'monthly' && (
+                  <button 
+                    className="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-3 px-4 rounded-lg font-medium transition-colors flex items-center justify-center"
+                    onClick={() => handlePayment('monthly')}
+                    disabled={isProcessing}
+                  >
+                    {isProcessing ? t('payment.processing', 'Processing...') : t('payment.payMonthly', 'Pay 20,000₫ for Monthly Plan')}
+                  </button>
+                )}
+                
+                {selectedPlan === 'annual' && (
+                  <button 
+                    className="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-3 px-4 rounded-lg font-medium transition-colors flex items-center justify-center"
+                    onClick={() => handlePayment('annual')}
+                    disabled={isProcessing}
+                  >
+                    {isProcessing ? t('payment.processing', 'Processing...') : t('payment.payAnnual', 'Pay 200,000₫ for Annual Plan')}
+                  </button>
+                )}
+                
+                {selectedPlan === 'lifetime' && (
+                  <button 
+                    className="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-3 px-4 rounded-lg font-medium transition-colors flex items-center justify-center"
+                    onClick={() => handlePayment('lifetime')}
+                    disabled={isProcessing}
+                  >
+                    {isProcessing ? t('payment.processing', 'Processing...') : t('payment.payLifetime', 'Pay 399,000₫ for Lifetime Access')}
+                  </button>
+                )}
+              </div>
+              
+              {paymentError && (
+                <p className="text-red-500 mt-3 text-sm">{paymentError}</p>
+              )}
+              
+              <div className="mt-6 text-center">
+                <p className="text-xs text-gray-500 mb-3">
+                  {t('payment.securePayment', 'Secure payment processed by VNPay')}
+                </p>
+                <button
+                  className="text-gray-500 hover:text-gray-700 text-sm"
+                  onClick={() => setPaymentDialogOpen(false)}
+                  disabled={isProcessing}
+                >
+                  {t('common.cancel', 'Cancel')}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

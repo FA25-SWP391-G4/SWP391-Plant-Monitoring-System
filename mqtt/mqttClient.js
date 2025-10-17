@@ -26,7 +26,7 @@ if (USE_AWS_IOT) {
   });
 } else {
   // Local or cloud MQTT broker connection
-  const mqttUrl = process.env.MQTT_URL || 'mqtt://localhost:1883';
+  const mqttUrl = process.env.MQTT_URL;
   
   client = mqtt.connect(mqttUrl, {
     clientId: 'plant-monitoring-system-' + Math.random().toString(16).slice(3),

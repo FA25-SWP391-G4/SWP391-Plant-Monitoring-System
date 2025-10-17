@@ -66,7 +66,7 @@ const PaymentController = require('../controllers/paymentController');
  * }
  */
 router.post('/create', 
-    // requireAuth,           // JWT authentication
+    require('../middlewares/authMiddleware'),  // JWT authentication
     // rateLimitPayment,      // Rate limiting
     // validatePayment,       // Input validation
     PaymentController.createPaymentUrl
@@ -136,7 +136,7 @@ router.get('/vnpay-ipn', PaymentController.handleVNPayIPN);
  * }
  */
 router.get('/status/:orderId', 
-    // requireAuth,
+    require('../middlewares/authMiddleware'), // Add authentication for payment status
     PaymentController.getPaymentStatus
 );
 

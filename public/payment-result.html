@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Result</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #2c3e50;
+        }
+        .success {
+            color: #27ae60;
+            font-weight: bold;
+        }
+        .error {
+            color: #e74c3c;
+            font-weight: bold;
+        }
+        .details {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f9f9f9;
+            border-radius: 4px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        table td, table th {
+            padding: 8px;
+            border-bottom: 1px solid #ddd;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Payment Result</h1>
+        <div id="status"></div>
+        <div class="details">
+            <h2>Transaction Details</h2>
+            <table>
+                <tbody id="details"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Get URL parameters
+            const urlParams = new URLSearchParams(window.location.search);
+            const code = urlParams.get('code');
+            const message = urlParams.get('message');
+            const orderId = urlParams.get('orderId');
+            const amount = urlParams.get('amount');
+            const status = urlParams.get('status');
+            
+            // Display status
+            const statusDiv = document.getElementById('status');
+            if (code === '00') {
+                statusDiv.innerHTML = '<h2 class="success">Payment Successful</h2>';
+                statusDiv.innerHTML += `<p>${message || 'Your payment has been processed successfully.'}</p>`;
+            } else {
+                statusDiv.innerHTML = '<h2 class="error">Payment Failed</h2>';
+                statusDiv.innerHTML += `<p>${message || 'There was an issue with your payment.'}</p>`;
+            }
+            
+            // Display transaction details
+            const detailsTable = document.getElementById('details');
+            const details = [
+                { label: 'Response Code', value: code || 'N/A' },
+                { label: 'Order ID', value: orderId || 'N/A' },
+                { label: 'Amount', value: amount ? `${amount} VND` : 'N/A' },
+                { label: 'Status', value: status || 'N/A' },
+            ];
+            
+            // Add all URL parameters
+            urlParams.forEach((value, key) => {
+                if (!['code', 'message', 'orderId', 'amount', 'status'].includes(key)) {
+                    details.push({ label: key, value: value });
+                }
+            });
+            
+            details.forEach(item => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td><strong>${item.label}</strong></td>
+                    <td>${item.value}</td>
+                `;
+                detailsTable.appendChild(row);
+            });
+        });
+    </script>
+</body>
+</html>

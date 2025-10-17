@@ -113,40 +113,6 @@ router.post('/forgot-password', forgotPassword);
 // POST /auth/reset-password?token=JWT_TOKEN
 router.post('/reset-password', resetPassword);
 
-// TODO: [OTHER BACKEND TEAM MEMBER] Implement these authentication routes:
-
-// 📝 UC1: User Registration - Account Creation with Email Verification
-// router.post('/register', validateRegistration, register);
-// IMPLEMENTATION REQUIREMENTS:
-// - Input validation (email format, password strength 8+ chars, required fields)
-// - Duplicate email checking with User.findByEmail()
-// - Password hashing with User.hashPassword()
-// - User creation with User.save()
-// - Email verification (optional: send verification link)
-// - Return sanitized user data with User.toJSON()
-// SECURITY: Rate limiting, input sanitization, SQL injection prevention
-
-// 📝 UC2: User Login - JWT Authentication with Session Management
-// router.post('/login', validateLogin, rateLimit, login);
-// IMPLEMENTATION REQUIREMENTS:
-// - Email lookup with User.findByEmail()
-// - Password verification with user.validatePassword()
-// - JWT token generation (15min access + 7d refresh tokens)
-// - Login success/failure audit logging
-// - Return user data + JWT tokens
-// SECURITY: Rate limiting (5 attempts/15min), brute force protection
-
-// 📝 UC3: User Logout - Session Cleanup with Audit Logging
-// router.post('/logout', requireAuth, logout);
-// IMPLEMENTATION REQUIREMENTS:
-// - Validate current session with JWT middleware
-// - User lookup with User.findById() from token
-// - Optional: Token blacklisting in Redis/database
-// - Clear refresh tokens if stored
-// - Audit log logout event with SystemLog model
-// - Return logout confirmation
-// SECURITY: Immediate token invalidation, session termination
-
 // UC1: User Registration
 router.post('/register', register);
 
