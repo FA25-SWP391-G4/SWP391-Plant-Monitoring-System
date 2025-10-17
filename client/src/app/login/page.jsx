@@ -1,6 +1,6 @@
 'use client'
 
-import LoginForm from '@/components/LoginForm';
+import { LoginForm } from '@/components/LoginForm';
 import { useAuth } from '@/providers/AuthProvider';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
@@ -70,14 +70,14 @@ export default function LoginPage() {
                       <circle cx="12" cy="12" r="10"></circle>
                       <path d="m9 12 2 2 4-4"></path>
                     </svg>
-                    <span>{t('features.smartWatering', 'Smart watering schedules tailored to each plant')}</span>
+                    <span>{t('features.smartWatering.description', 'Smart watering schedules tailored to each plant')}</span>
                   </li>
                   <li className="flex items-center text-gray-700">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-circle-check h-5 w-5 text-emerald-600 mr-3" aria-hidden="true">
                       <circle cx="12" cy="12" r="10"></circle>
                       <path d="m9 12 2 2 4-4"></path>
                     </svg>
-                    <span>{t('features.healthAlerts', 'Health alerts and expert recommendations')}</span>
+                    <span>{t('features.healthAlerts.description', 'Health alerts and expert recommendations')}</span>
                   </li>
                   <li className="flex items-center text-gray-700">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-circle-check h-5 w-5 text-emerald-600 mr-3" aria-hidden="true">

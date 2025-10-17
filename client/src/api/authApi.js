@@ -15,9 +15,9 @@ const authApi = {
   login: (email, password) =>
     axiosClient.post("/auth/login", { email, password }),
 
-  // Google Login
-  loginWithGoogle: (googleData) =>
-    axiosClient.post("/auth/google-login", googleData),
+  // Google Login - Updated to use credential token from Google Identity Services
+  loginWithGoogle: (credential) =>
+    axiosClient.post("/auth/google-login", { credential }),
 
   // User Logout
   logout: () =>

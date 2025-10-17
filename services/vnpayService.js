@@ -1,148 +1,191 @@
 /**
  * ============================================================================
- * VNPAY SERVICE - PAYMENT PROCESSING UTILITIES
- * ============================================================================
+ * VNPAY PAYMENT SERVICE
+ * =============================        // Create signature string using qs instead of querystring
+        const signData = qs.stringify(sortedParams, { encode: false });
+        console.log('IPN verification sign data:', signData);
+        
+        // Create secure hash
+        const hmac = crypto.createHmac('sha512', vnpayConfig.vnp_HashSecret);
+        const calculatedHash = hmac.update(Buffer.from(signData, 'utf-8')).digest('hex');
+        console.log('Received hash:', secureHash);
+        console.log('Calculated hash:', calculatedHash);=========================================
+ * 
+ * This service provides integration with VNPay payment gateway:
+ * - Creates payment URLs for redirection to VNPay
+ * - Verifies IPN (Instant Payment Notification) from VNPay
+ * - Verifies payment return URLs
+ * - Provides utility methods for VNPay integration
  * 
  * SUPPORTS THESE USE CASES:
  * - UC19: Upgrade to Premium - Payment URL generation and processing
  * - UC22: Make Payment for Premium - Complete payment workflow
- * 
- * FEATURES:
- * - Payment URL generation with secure hash
- * - IPN (Instant Payment Notification) verification
- * - Transaction status validation
- * - Signature verification for security
  */
 
 const crypto = require('crypto');
-const querystring = require('qs');
-const dateFormat = require('dateformat');
+const moment = require('moment');
+require('moment-timezone');
 const vnpayConfig = require('../config/vnpay');
+const url = require('url');
+// Using qs instead of querystring for better compatibility with VNPay requirements
+let qs;
+try {
+    qs = require('qs');
+    console.log('Successfully loaded qs module');
+} catch (error) {
+    console.error('Error loading qs module, falling back to querystring', error);
+    qs = require('querystring');
+}
 
 class VNPayService {
-    
     /**
-     * Sort object parameters for VNPay signature generation
+     * Sort object by key for consistent hash generation
      */
     static sortObject(obj) {
-        let sorted = {};
-        let str = [];
-        let key;
-        for (key in obj) {
-            if (obj.hasOwnProperty(key)) {
-                str.push(encodeURIComponent(key));
+        const sorted = {};
+        const keys = Object.keys(obj).sort();
+        
+        for (const key of keys) {
+            if (obj[key] !== null && obj[key] !== undefined) {
+                if (typeof obj[key] === 'object' && !Array.isArray(obj[key]) && obj[key] !== null) {
+                    sorted[key] = this.sortObject(obj[key]);
+                } else {
+                    sorted[key] = obj[key];
+                }
             }
         }
-        str.sort();
-        for (key = 0; key < str.length; key++) {
-            sorted[str[key]] = encodeURIComponent(obj[str[key]]).replace(/%20/g, "+");
-        }
+        
         return sorted;
     }
-
+    
     /**
-     * Generate VNPay payment URL
-     * 
-     * SUPPORTS:
-     * - UC19: Upgrade to Premium - Generate payment URL for subscription
-     * - UC22: Make Payment for Premium - Create secure payment link
+     * Create payment URL for VNPay redirect
      */
-    static createPaymentUrl(paymentData) {
-        const {
+    static createPaymentUrl({
+        amount,
+        orderId,
+        orderInfo,
+        orderType = vnpayConfig.ORDER_TYPES.PREMIUM_UPGRADE,
+        bankCode = '',
+        ipAddr = '127.0.0.1',
+        returnUrl = vnpayConfig.vnp_ReturnUrl,
+        locale = vnpayConfig.vnp_Locale
+    }) {
+        console.log('[VNPAY] Creating payment URL with params:', {
             amount,
             orderId,
-            orderInfo,
-            orderType = vnpayConfig.ORDER_TYPES.PREMIUM_UPGRADE,
-            bankCode = '',
-            locale = vnpayConfig.vnp_Locale,
-            ipAddr
-        } = paymentData;
-
-        // Validate required fields
-        if (!amount || !orderId || !orderInfo || !ipAddr) {
-            throw new Error('Missing required payment data: amount, orderId, orderInfo, ipAddr');
+            orderInfo: orderInfo?.substring(0, 30) + '...',
+            orderType,
+            bankCode: bankCode || 'Not provided',
+            ipAddr,
+            returnUrl,
+            locale
+        });
+        
+        // Validate required parameters
+        if (!amount || !orderId || !orderInfo) {
+            throw new Error('Missing required parameters for payment URL creation');
         }
-
-        // Generate timestamps
-        const date = new Date();
-        const createDate = dateFormat(date, 'yyyymmddHHmmss');
-        const expireDate = dateFormat(new Date(date.getTime() + 15 * 60 * 1000), 'yyyymmddHHmmss'); // 15 minutes
-
-        // Build VNPay parameters
+        
+        // Validate amount
+        if (!this.validateAmount(amount)) {
+            throw new Error('Invalid payment amount');
+        }
+        
+        // Get current time in Vietnam timezone
+        const createDate = moment().tz('Asia/Ho_Chi_Minh').format('YYYYMMDDHHmmss');
+        const expireDate = moment().tz('Asia/Ho_Chi_Minh').add(15, 'minutes').format('YYYYMMDDHHmmss');
+        
+        // Create VNPay parameters
         let vnp_Params = {
             vnp_Version: vnpayConfig.vnp_Version,
             vnp_Command: vnpayConfig.vnp_Command,
             vnp_TmnCode: vnpayConfig.vnp_TmnCode,
-            vnp_Locale: locale,
+            vnp_Amount: Math.round(amount) * 100, // Convert to smallest currency unit (e.g. cents)
+            vnp_CreateDate: createDate,
             vnp_CurrCode: vnpayConfig.vnp_CurrCode,
-            vnp_TxnRef: orderId,
+            vnp_IpAddr: ipAddr,
+            vnp_Locale: locale,
             vnp_OrderInfo: orderInfo,
             vnp_OrderType: orderType,
-            vnp_Amount: amount * 100, // VNPay requires amount in cents
-            vnp_ReturnUrl: vnpayConfig.vnp_ReturnUrl,
-            vnp_IpAddr: ipAddr,
-            vnp_CreateDate: createDate,
+            vnp_ReturnUrl: returnUrl,
+            vnp_TxnRef: orderId,
             vnp_ExpireDate: expireDate
         };
-
-        // Add bank code if specified
-        if (bankCode) {
+        
+        // Add bank code if provided
+        if (bankCode && bankCode !== '') {
             vnp_Params.vnp_BankCode = bankCode;
         }
-
-        // Sort parameters and generate signature
+        
+        // Sort the parameters and create the signed query string
         vnp_Params = this.sortObject(vnp_Params);
-        const signData = querystring.stringify(vnp_Params, { encode: false });
+        
+        // Use qs module instead of querystring for better compatibility with VNPay
+        const signData = qs.stringify(vnp_Params, { encode: false });
+        console.log('Sign data:', signData);
+        
+        // Create secure hash
         const hmac = crypto.createHmac('sha512', vnpayConfig.vnp_HashSecret);
-        const signed = hmac.update(Buffer.from(signData, 'utf-8')).digest('hex');
+        const secureHash = hmac.update(Buffer.from(signData, 'utf-8')).digest('hex');
+        console.log('Secure hash:', secureHash);
         
-        vnp_Params.vnp_SecureHash = signed;
+        // Add secure hash to params
+        vnp_Params.vnp_SecureHash = secureHash;
         
-        // Build final payment URL
-        const paymentUrl = vnpayConfig.vnp_Url + '?' + querystring.stringify(vnp_Params, { encode: false });
+        // Build the complete payment URL - IMPORTANT: Don't encode the parameters in the final URL
+        // Using qs.stringify with encode: false ensures spaces are not encoded as %20
+        const paymentUrl = `${vnpayConfig.vnp_Url}?${qs.stringify(vnp_Params, { encode: false })}`;
+        console.log('Payment URL created (first 100 chars):', paymentUrl.substring(0, 100) + '...');
         
         return {
             paymentUrl,
             orderId,
             amount,
+            expireDate,
             createDate,
-            expireDate
+            vnp_Params
         };
     }
-
+    
     /**
-     * Verify VNPay IPN (Instant Payment Notification)
-     * 
-     * SUPPORTS:
-     * - UC19: Upgrade to Premium - Verify payment completion
-     * - UC22: Make Payment for Premium - Process payment callback
+     * Verify Instant Payment Notification from VNPay
      */
     static verifyIPN(vnpParams) {
+        // Extract the secure hash from the params
         const secureHash = vnpParams.vnp_SecureHash;
-        
-        // Remove hash fields for verification
         delete vnpParams.vnp_SecureHash;
-        delete vnpParams.vnp_SecureHashType;
+        if (vnpParams.vnp_SecureHashType) {
+            delete vnpParams.vnp_SecureHashType;
+        }
         
-        // Sort parameters and verify signature
-        const sortedParams = this.sortObject(vnpParams);
-        const signData = querystring.stringify(sortedParams, { encode: false });
+        // Sort the parameters exactly as in the demo
+        vnpParams = this.sortObject(vnpParams);
+        
+        // Create signature string
+        const signData = querystring.stringify(vnpParams, { encode: false });
+        
+        // Create secure hash
         const hmac = crypto.createHmac('sha512', vnpayConfig.vnp_HashSecret);
-        const signed = hmac.update(Buffer.from(signData, 'utf-8')).digest('hex');
+        const calculatedHash = hmac.update(Buffer.from(signData, 'utf-8')).digest('hex');
         
-        const isValidSignature = secureHash === signed;
+        // Check if the calculated hash matches the secure hash from VNPay
+        const isValidSignature = secureHash === calculatedHash;
+        
+        // Extract payment information
         const orderId = vnpParams.vnp_TxnRef;
+        const amount = parseInt(vnpParams.vnp_Amount) / 100; // Convert back to VND
         const responseCode = vnpParams.vnp_ResponseCode;
-        const amount = parseInt(vnpParams.vnp_Amount) / 100; // Convert back from cents
         const transactionNo = vnpParams.vnp_TransactionNo;
         const bankCode = vnpParams.vnp_BankCode;
         const payDate = vnpParams.vnp_PayDate;
         
+        // Return verification result and payment details
         return {
             isValid: isValidSignature,
             orderId,
-            responseCode,
             amount,
+            responseCode,
             transactionNo,
             bankCode,
             payDate,
@@ -150,14 +193,14 @@ class VNPayService {
             message: this.getResponseMessage(responseCode)
         };
     }
-
+    
     /**
      * Verify return URL from VNPay
      */
     static verifyReturnUrl(vnpParams) {
         return this.verifyIPN(vnpParams); // Same verification logic
     }
-
+    
     /**
      * Get response message based on VNPay response code
      */
@@ -180,16 +223,30 @@ class VNPayService {
         
         return messages[responseCode] || 'Lỗi không xác định';
     }
-
+    
     /**
      * Generate unique order ID
      */
     static generateOrderId(prefix = 'ORDER') {
-        const timestamp = dateFormat(new Date(), 'yyyymmddHHmmss');
+        const date = new Date();
+        const timestamp = moment(date).format('YYYYMMDDHHmmss');
         const random = Math.floor(Math.random() * 1000).toString().padStart(3, '0');
         return `${prefix}${timestamp}${random}`;
     }
-
+    
+    /**
+     * Get client IP address from request
+     */
+    static getClientIpAddress(req) {
+        const ipAddr = req.headers['x-forwarded-for'] ||
+            req.connection.remoteAddress ||
+            req.socket.remoteAddress ||
+            req.connection.socket?.remoteAddress ||
+            '127.0.0.1';
+            
+        return ipAddr;
+    }
+    
     /**
      * Validate payment amount
      */
@@ -210,7 +267,7 @@ class VNPayService {
         
         return true;
     }
-
+    
     /**
      * Get client IP address
      */
@@ -220,6 +277,25 @@ class VNPayService {
                req.socket.remoteAddress ||
                (req.connection.socket ? req.connection.socket.remoteAddress : null) ||
                '127.0.0.1';
+    }
+    
+    /**
+     * Parse VNPay query parameters from return URL or IPN
+     */
+    static parseVNPayParams(req) {
+        let vnpParams = {};
+        
+        // Handle GET request (return URL)
+        if (req.method === 'GET') {
+            const parsedUrl = url.parse(req.url, true);
+            vnpParams = { ...parsedUrl.query };
+        } 
+        // Handle POST request (IPN)
+        else if (req.method === 'POST') {
+            vnpParams = { ...req.body };
+        }
+        
+        return vnpParams;
     }
 }
 
