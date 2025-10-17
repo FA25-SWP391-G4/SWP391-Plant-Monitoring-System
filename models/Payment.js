@@ -255,6 +255,14 @@ class Payment {
     // Static method to create payment
     static async createPayment(userId, amount, vnpayTxnRef = null) {
         try {
+            // Validate user ID
+            if (!userId) {
+                console.error('Payment creation error: Missing userId');
+                throw new Error('Cannot create payment without user ID');
+            }
+            
+            console.log(`Creating payment record: UserID=${userId}, Amount=${amount}, TxnRef=${vnpayTxnRef}`);
+            
             const payment = new Payment({
                 user_id: userId,
                 vnpay_txn_ref: vnpayTxnRef,
@@ -262,8 +270,12 @@ class Payment {
                 status: 'pending'
             });
             
-            return await payment.save();
+            const savedPayment = await payment.save();
+            console.log(`Payment created successfully: PaymentID=${savedPayment.payment_id}, UserID=${savedPayment.user_id}`);
+            
+            return savedPayment;
         } catch (error) {
+            console.error('Payment creation error:', error);
             throw error;
         }
     }
