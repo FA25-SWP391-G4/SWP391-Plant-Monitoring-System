@@ -1,0 +1,2 @@
+# Shared image storage for both main app and AI service
+# Images uploaded through main app and processed by AI service are stored here

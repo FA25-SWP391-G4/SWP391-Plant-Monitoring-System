@@ -1,77 +1,87 @@
 const express = require('express');
 const cors = require('cors');
-const path = require('path');
+const helmet = require('helmet');
 require('dotenv').config();
-const chatbotController = require('./controllers/chatbotController');
 
-// Khởi tạo ứng dụng Express
+// TensorFlow.js initialization (optional)
+let aiUtils = null;
+try {
+  aiUtils = require('./services/aiUtils');
+} catch (error) {
+  console.warn('⚠️  AI Utils not available:', error.message);
+}
+
 const app = express();
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.AI_SERVICE_PORT || 8000;
 
-// Middleware
-app.use(cors());
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-app.use(express.static(path.join(__dirname, 'public')));
+// Security middleware
+app.use(helmet());
+app.use(cors({
+  origin: process.env.ALLOWED_ORIGINS?.split(',') || ['http://localhost:3000', 'http://localhost:3001'],
+  credentials: true
+}));
+
+// Body parsing middleware
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
 // Routes
-app.use('/api/image-recognition', require('./routes/imageRecognition'));
 app.use('/api/chatbot', require('./routes/chatbot'));
-app.use('/api/irrigation', require('./routes/irrigation'));
-app.use('/api/irrigation-schedule', require('./routes/irrigationSchedule'));
-app.use('/api/historical-analysis', require('./routes/historicalAnalysis'));
-app.use('/api/self-learning', require('./routes/selfLearning'));
+app.use('/api/watering-prediction', require('./routes/watering'));
+app.use('/api/disease-recognition', require('./routes/disease'));
 
-// Chatbot UI route
-app.get('/chatbot', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'chatbot.html'));
-});
-
-// API giả lập dữ liệu cảm biến cho giao diện
-app.get('/api/sensor-data', chatbotController.simulateData);
-
-// API giả lập dữ liệu cảm biến cho giao diện
-app.get('/api/chatbot/simulate-data', chatbotController.simulateData);
-
-// Trang chủ API
-app.get('/', (req, res) => {
+// Health check endpoint
+app.get('/health', (req, res) => {
   res.json({
-    message: 'Chào mừng đến với AI Service API',
-    endpoints: {
-      imageRecognition: '/api/image-recognition',
-      chatbot: '/api/chatbot',
-      irrigation: '/api/irrigation',
-      irrigationSchedule: '/api/irrigation-schedule',
-      historicalAnalysis: '/api/historical-analysis',
-      selfLearning: '/api/self-learning'
-    },
-    ui: {
-      chatbot: '/chatbot'
-    }
+    status: 'healthy',
+    service: 'plant-monitoring-ai-service',
+    timestamp: new Date().toISOString(),
+    version: '1.0.0'
   });
 });
 
-// Xử lý lỗi 404
-app.use((req, res, next) => {
-  res.status(404).json({
-    error: true,
-    message: 'Không tìm thấy endpoint'
-  });
-});
-
-// Xử lý lỗi
+// Error handling middleware
 app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).json({
-    error: true,
-    message: 'Đã xảy ra lỗi server',
-    details: err.message
+  console.error('AI Service Error:', err);
+  res.status(err.status || 500).json({
+    success: false,
+    message: err.message || 'Internal AI service error',
+    ...(process.env.NODE_ENV === 'development' && { stack: err.stack })
   });
 });
 
-// Khởi động server
-app.listen(PORT, () => {
-  console.log(`AI Service đang chạy trên cổng ${PORT}`);
+// 404 handler
+app.use('*', (req, res) => {
+  res.status(404).json({
+    success: false,
+    message: 'AI service endpoint not found'
+  });
+});
+
+app.listen(PORT, async () => {
+  console.log(`🤖 AI Service running on port ${PORT}`);
+  console.log(`🔗 Health check: http://localhost:${PORT}/health`);
+  
+  // Initialize AI infrastructure (optional)
+  console.log('🧠 Initializing AI infrastructure...');
+  
+  if (aiUtils) {
+    try {
+      const tfInitialized = await aiUtils.initializeTensorFlow();
+      if (tfInitialized) {
+        console.log('✅ TensorFlow.js initialized successfully');
+        console.log('✅ AI Service ready (full ML mode)');
+      } else {
+        console.log('⚠️  TensorFlow.js initialization failed - using fallback mode');
+        console.log('✅ AI Service ready (fallback mode)');
+      }
+    } catch (error) {
+      console.warn('⚠️  TensorFlow.js error:', error.message);
+      console.log('✅ AI Service ready (chatbot-only mode)');
+    }
+  } else {
+    console.log('✅ AI Service ready (chatbot-only mode)');
+  }
 });
 
 module.exports = app;
