@@ -10,7 +10,11 @@ import WeatherWidget from '@/components/dashboard/WeatherWidget';
 import RecentActivity from '@/components/dashboard/RecentActivity';
 import WateringSchedule from '@/components/dashboard/WateringSchedule';
 import PremiumFeaturePrompt from '@/components/dashboard/PremiumFeaturePrompt';
-import Navbar from '@/components/Navbar';
+import AIInsightsWidget from '@/components/dashboard/AIInsightsWidget';
+import AIPredictionsWidget from '@/components/dashboard/AIPredictionsWidget';
+import AIHistoryWidget from '@/components/dashboard/AIHistoryWidget';
+import { AIProvider } from '@/providers/AIProvider';
+import { AIProvider } from '@/providers/AIProvider';
 
 // Mock data for development - would come from API in real app
 const MOCK_PLANTS = [
@@ -123,9 +127,11 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <Navbar user={user} />
-      <main className="container mx-auto px-4 py-8">
+    <AIProvider>
+      <div className="min-h-screen bg-gray-50">
+        <DashboardHeader user={user} />
+        
+        <main className="container mx-auto px-4 py-8">
         {/* Welcome Banner */}
         <div className="bg-gradient-to-r from-emerald-500 to-emerald-700 rounded-xl shadow-lg mb-8 p-6 text-white flex items-center justify-between">
           <div>
@@ -220,6 +226,12 @@ export default function DashboardPage() {
           
           {/* Right column - Widgets */}
           <div className="space-y-6">
+            {/* AI Insights Widget */}
+            <AIInsightsWidget />
+            
+            {/* AI Predictions Widget */}
+            <AIPredictionsWidget />
+            
             <WeatherWidget />
             
             <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-5">
@@ -232,6 +244,9 @@ export default function DashboardPage() {
               <WateringSchedule plants={plants} />
             </div>
             
+            {/* AI History Widget */}
+            <AIHistoryWidget />
+            
             {/* Premium feature banner */}
             {!isPremium && (
               <PremiumFeaturePrompt />
@@ -240,5 +255,6 @@ export default function DashboardPage() {
         </div>
       </main>
     </div>
+    </AIProvider>
   );
 }

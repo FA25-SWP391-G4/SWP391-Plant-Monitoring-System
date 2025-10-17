@@ -4,9 +4,17 @@ class ChatHistory {
     constructor(chatData) {
         this.chat_id = chatData.chat_id;
         this.user_id = chatData.user_id;
-        this.timestamp = chatData.timestamp;
-        this.user_message = chatData.user_message;
-        this.ai_response = chatData.ai_response;
+        this.plant_id = chatData.plant_id;
+        this.conversation_id = chatData.conversation_id;
+        this.message = chatData.message || chatData.user_message; // Support both field names
+        this.response = chatData.response || chatData.ai_response; // Support both field names
+        this.context = chatData.context;
+        this.created_at = chatData.created_at || chatData.timestamp;
+        
+        // Legacy support
+        this.user_message = this.message;
+        this.ai_response = this.response;
+        this.timestamp = this.created_at;
     }
 
     // Static method to find all chat history
@@ -148,17 +156,20 @@ class ChatHistory {
             if (this.chat_id) {
                 // Update existing chat history
                 const query = `
-                    UPDATE Chat_History 
-                    SET user_id = $1, timestamp = $2, user_message = $3, ai_response = $4
-                    WHERE chat_id = $5
+                    UPDATE chat_history 
+                    SET user_id = $1, plant_id = $2, conversation_id = $3, message = $4, response = $5, context = $6, created_at = $7
+                    WHERE chat_id = $8
                     RETURNING *
                 `;
                 
                 const result = await pool.query(query, [
                     this.user_id,
-                    this.timestamp || new Date(),
-                    this.user_message,
-                    this.ai_response,
+                    this.plant_id,
+                    this.conversation_id,
+                    this.message,
+                    this.response,
+                    JSON.stringify(this.context || {}),
+                    this.created_at || new Date(),
                     this.chat_id
                 ]);
                 
@@ -168,16 +179,19 @@ class ChatHistory {
             } else {
                 // Create new chat history
                 const query = `
-                    INSERT INTO Chat_History (user_id, timestamp, user_message, ai_response)
-                    VALUES ($1, $2, $3, $4)
+                    INSERT INTO chat_history (user_id, plant_id, conversation_id, message, response, context, created_at)
+                    VALUES ($1, $2, $3, $4, $5, $6, $7)
                     RETURNING *
                 `;
                 
                 const result = await pool.query(query, [
                     this.user_id,
-                    this.timestamp || new Date(),
-                    this.user_message,
-                    this.ai_response
+                    this.plant_id,
+                    this.conversation_id,
+                    this.message,
+                    this.response,
+                    JSON.stringify(this.context || {}),
+                    this.created_at || new Date()
                 ]);
                 
                 const newChat = new ChatHistory(result.rows[0]);
@@ -228,16 +242,72 @@ class ChatHistory {
     }
 
     // Static method to create chat entry
-    static async createChat(userId, userMessage, aiResponse = null) {
+    static async createChat(userId, userMessage, aiResponse = null, plantId = null, conversationId = null, context = {}) {
         try {
             const chatHistory = new ChatHistory({
                 user_id: userId,
-                timestamp: new Date(),
-                user_message: userMessage,
-                ai_response: aiResponse
+                plant_id: plantId,
+                conversation_id: conversationId,
+                message: userMessage,
+                response: aiResponse,
+                context: context,
+                created_at: new Date()
             });
             
             return await chatHistory.save();
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    // Static method to find conversation history by conversation_id
+    static async findByConversationId(conversationId, limit = 50) {
+        try {
+            const query = `
+                SELECT ch.*, u.full_name as user_name 
+                FROM chat_history ch
+                LEFT JOIN users u ON ch.user_id = u.user_id
+                WHERE ch.conversation_id = $1
+                ORDER BY ch.created_at ASC 
+                LIMIT $2
+            `;
+            const result = await pool.query(query, [conversationId, limit]);
+            return result.rows.map(row => new ChatHistory(row));
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    // Static method to get conversation context for OpenRouter API
+    static async getConversationContext(conversationId, limit = 10) {
+        try {
+            const query = `
+                SELECT message, response, created_at
+                FROM chat_history 
+                WHERE conversation_id = $1
+                ORDER BY created_at ASC 
+                LIMIT $2
+            `;
+            const result = await pool.query(query, [conversationId, limit]);
+            
+            // Format for OpenRouter API (alternating user/assistant messages)
+            const messages = [];
+            result.rows.forEach(row => {
+                if (row.message) {
+                    messages.push({
+                        role: 'user',
+                        content: row.message
+                    });
+                }
+                if (row.response) {
+                    messages.push({
+                        role: 'assistant',
+                        content: row.response
+                    });
+                }
+            });
+            
+            return messages;
         } catch (error) {
             throw error;
         }

@@ -173,19 +173,20 @@ var indexRouter = require('./routes/index');        // Basic homepage routes
 var usersRouter = require('./routes/users');        // User management routes (basic)
 var authRouter = require('./routes/auth');          // ✅ UC11: Password reset routes (implemented)
 var paymentRouter = require('./routes/payment');    // ✅ UC19, UC22: VNPay payment integration (implemented)
-var aiRouter = require('./routes/ai');              // 🔄 UC17-18, UC20-21, UC23, UC30: AI features
+var aiRouter = require('./routes/ai');              // ✅ UC17-18, UC20-21, UC23, UC30: AI features (implemented)
 var iotRouter = require('./routes/iot');            // 🔄 UC32-34: IoT device management
 console.log('iotRouter type:', typeof iotRouter);
 console.log('iotRouter keys:', Object.keys(iotRouter));
 var sensorRouter = require('./routes/sensor');      // 🔄 Sensor data management
+var plantRouter = require('./routes/plant');        // ✅ UC5-9: Plant management & watering (implemented)
+var adminRouter = require('./routes/admin');        // 🔄 UC24-31: Admin functions
+var notificationRouter = require('./routes/notifications'); // 🔄 UC10: Real-time notifications
+// var languageRouter = require('./routes/language');  // 🔄 UC31: Multi-language settings (tạm thời vô hiệu hóa)
 
 // TODO: Create additional route modules for remaining use cases:
 // var dashboardRouter = require('./routes/dashboard');  // 🔄 UC4: Plant monitoring dashboard
-// var plantRouter = require('./routes/plant');          // 🔄 UC5-9: Plant management & watering
 // var reportRouter = require('./routes/report');        // 🔄 UC8-9, UC15, UC17: Reports & history
-// var notificationRouter = require('./routes/notification'); // 🔄 UC10: Real-time notifications
 // var premiumRouter = require('./routes/premium');      // 🔄 UC14-23: Premium features
-// var adminRouter = require('./routes/admin');         // 🔄 UC24-31: Admin functions
 
 var app = express();
 
@@ -242,17 +243,18 @@ app.use('/', indexRouter);                          // Basic routes
 app.use('/users', usersRouter);                     // User routes (basic)
 app.use('/auth', authRouter);                       // ✅ UC11: Authentication routes (password reset)
 app.use('/payment', paymentRouter);                 // ✅ UC19, UC22: VNPay payment integration
-app.use('/api/ai', aiRouter);                       // 🔄 UC17-18, UC20-21, UC23, UC30: AI API
+app.use('/api/ai', aiRouter);                       // ✅ UC17-18, UC20-21, UC23, UC30: AI API (implemented)
 app.use('/api/iot', iotRouter);                     // 🔄 UC32-34: IoT API
 app.use('/api/sensor', sensorRouter);               // 🔄 Sensor data management API
+app.use('/api/plants', plantRouter);                // ✅ UC5-9: Plant management API (implemented)
+app.use('/api/admin', adminRouter);                 // 🔄 UC24-31: Admin API
+app.use('/api/notifications', notificationRouter);  // 🔄 UC10: Notifications API
+// app.use('/api/language', languageRouter);           // 🔄 UC31: Multi-language API (tạm thời vô hiệu hóa)
 
 // TODO: Mount additional route handlers as they are implemented:
 // app.use('/api/dashboard', dashboardRouter);      // 🔄 UC4: Dashboard API
-// app.use('/api/plant', plantRouter);              // 🔄 UC5-9: Plant management API
 // app.use('/api/report', reportRouter);            // 🔄 UC8-9, UC15, UC17: Reports API
-// app.use('/api/notification', notificationRouter); // 🔄 UC10: Notifications API
 // app.use('/api/premium', premiumRouter);          // 🔄 UC14-23: Premium features API
-// app.use('/api/admin', adminRouter);              // 🔄 UC24-31: Admin API
 
 // TODO: Add middleware for future features:
 // - Authentication middleware (JWT verification)

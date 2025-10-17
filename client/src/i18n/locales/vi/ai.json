@@ -9,5 +9,17 @@
     "good": "Tốt",
     "moderate": "Trung bình",
     "poor": "Kém"
+  },
+  "chatbot": {
+    "title": "Trợ lý AI chăm sóc cây trồng",
+    "welcome": "Xin chào! Tôi là trợ lý AI chăm sóc cây trồng. Tôi có thể giúp bạn trả lời các câu hỏi về chăm sóc cây. Bạn muốn biết gì?",
+    "welcomeWithPlant": "Xin chào! Tôi là trợ lý AI chăm sóc cây trồng. Tôi có thể giúp bạn với các câu hỏi về {{plantName}}. Bạn muốn biết gì?",
+    "helpingWith": "Đang hỗ trợ với {{plantName}}",
+    "placeholder": "Hỏi tôi về chăm sóc cây trồng...",
+    "clear": "Xóa",
+    "error": "Xin lỗi, tôi đang gặp sự cố kết nối. Vui lòng thử lại sau.",
+    "connectionError": "Lỗi kết nối. Vui lòng kiểm tra kết nối internet của bạn.",
+    "suggestions": "Gợi ý:",
+    "contextActive": "Ngữ cảnh cây đang hoạt động: {{plantName}}"
   }
 }

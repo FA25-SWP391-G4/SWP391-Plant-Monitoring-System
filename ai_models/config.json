@@ -1,0 +1,35 @@
+{
+  "models": {
+    "watering_prediction": {
+      "path": "./ai_models/watering_prediction",
+      "version": "1.0.0",
+      "input_shape": [1, 7],
+      "output_classes": 2,
+      "description": "Neural network for predicting watering needs based on sensor data"
+    },
+    "disease_recognition": {
+      "path": "./ai_models/disease_recognition",
+      "version": "1.0.0",
+      "input_shape": [224, 224, 3],
+      "output_classes": 11,
+      "description": "MobileNetV2-based CNN for plant disease classification"
+    }
+  },
+  "preprocessing": {
+    "image": {
+      "resize": [224, 224],
+      "normalize": true,
+      "format": "RGB"
+    },
+    "sensor": {
+      "features": ["moisture", "temperature", "humidity", "light"],
+      "window_size": 7,
+      "normalize": true
+    }
+  },
+  "inference": {
+    "batch_size": 1,
+    "confidence_threshold": 0.6,
+    "backend": "cpu"
+  }
+}

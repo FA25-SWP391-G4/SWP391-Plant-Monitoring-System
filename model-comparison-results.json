@@ -1,0 +1,195 @@
+{
+  "timestamp": "2025-10-17T01:36:10.491Z",
+  "realModel": {
+    "metrics": null,
+    "results": []
+  },
+  "fallbackModel": {
+    "metrics": {
+      "total": 21,
+      "correct": 9,
+      "accuracy": 0.42857142857142855,
+      "avgConfidence": 0.09523809523809526,
+      "avgProcessingTime": 0,
+      "diseaseAccuracy": {
+        "Healthy": 0,
+        "Early Blight": 1,
+        "Late Blight": 1,
+        "Leaf Spot": 1,
+        "Powdery Mildew": 0,
+        "Yellowing": 0,
+        "Wilting": 0
+      }
+    },
+    "results": [
+      {
+        "imageName": "Healthy_1",
+        "expected": "Healthy",
+        "predicted": "Late Blight",
+        "confidence": 0.1,
+        "correct": false,
+        "processingTime": 0
+      },
+      {
+        "imageName": "Healthy_2",
+        "expected": "Healthy",
+        "predicted": "Late Blight",
+        "confidence": 0.1,
+        "correct": false,
+        "processingTime": 0
+      },
+      {
+        "imageName": "Healthy_3",
+        "expected": "Healthy",
+        "predicted": "Late Blight",
+        "confidence": 0.1,
+        "correct": false,
+        "processingTime": 0
+      },
+      {
+        "imageName": "Early Blight_1",
+        "expected": "Early Blight",
+        "predicted": "Late Blight",
+        "confidence": 0.09,
+        "correct": true,
+        "processingTime": 0
+      },
+      {
+        "imageName": "Early Blight_2",
+        "expected": "Early Blight",
+        "predicted": "Late Blight",
+        "confidence": 0.09,
+        "correct": true,
+        "processingTime": 0
+      },
+      {
+        "imageName": "Early Blight_3",
+        "expected": "Early Blight",
+        "predicted": "Late Blight",
+        "confidence": 0.09,
+        "correct": true,
+        "processingTime": 0
+      },
+      {
+        "imageName": "Late Blight_1",
+        "expected": "Late Blight",
+        "predicted": "Late Blight",
+        "confidence": 0.09,
+        "correct": true,
+        "processingTime": 0
+      },
+      {
+        "imageName": "Late Blight_2",
+        "expected": "Late Blight",
+        "predicted": "Late Blight",
+        "confidence": 0.09,
+        "correct": true,
+        "processingTime": 0
+      },
+      {
+        "imageName": "Late Blight_3",
+        "expected": "Late Blight",
+        "predicted": "Late Blight",
+        "confidence": 0.09,
+        "correct": true,
+        "processingTime": 0
+      },
+      {
+        "imageName": "Leaf Spot_1",
+        "expected": "Leaf Spot",
+        "predicted": "Late Blight",
+        "confidence": 0.09,
+        "correct": true,
+        "processingTime": 0
+      },
+      {
+        "imageName": "Leaf Spot_2",
+        "expected": "Leaf Spot",
+        "predicted": "Late Blight",
+        "confidence": 0.1,
+        "correct": true,
+        "processingTime": 0
+      },
+      {
+        "imageName": "Leaf Spot_3",
+        "expected": "Leaf Spot",
+        "predicted": "Late Blight",
+        "confidence": 0.1,
+        "correct": true,
+        "processingTime": 0
+      },
+      {
+        "imageName": "Powdery Mildew_1",
+        "expected": "Powdery Mildew",
+        "predicted": "Late Blight",
+        "confidence": 0.1,
+        "correct": false,
+        "processingTime": 0
+      },
+      {
+        "imageName": "Powdery Mildew_2",
+        "expected": "Powdery Mildew",
+        "predicted": "Late Blight",
+        "confidence": 0.1,
+        "correct": false,
+        "processingTime": 0
+      },
+      {
+        "imageName": "Powdery Mildew_3",
+        "expected": "Powdery Mildew",
+        "predicted": "Late Blight",
+        "confidence": 0.1,
+        "correct": false,
+        "processingTime": 0
+      },
+      {
+        "imageName": "Yellowing_1",
+        "expected": "Yellowing",
+        "predicted": "Late Blight",
+        "confidence": 0.1,
+        "correct": false,
+        "processingTime": 0
+      },
+      {
+        "imageName": "Yellowing_2",
+        "expected": "Yellowing",
+        "predicted": "Late Blight",
+        "confidence": 0.1,
+        "correct": false,
+        "processingTime": 0
+      },
+      {
+        "imageName": "Yellowing_3",
+        "expected": "Yellowing",
+        "predicted": "Late Blight",
+        "confidence": 0.1,
+        "correct": false,
+        "processingTime": 0
+      },
+      {
+        "imageName": "Wilting_1",
+        "expected": "Wilting",
+        "predicted": "Late Blight",
+        "confidence": 0.09,
+        "correct": false,
+        "processingTime": 0
+      },
+      {
+        "imageName": "Wilting_2",
+        "expected": "Wilting",
+        "predicted": "Late Blight",
+        "confidence": 0.09,
+        "correct": false,
+        "processingTime": 0
+      },
+      {
+        "imageName": "Wilting_3",
+        "expected": "Wilting",
+        "predicted": "Late Blight",
+        "confidence": 0.09,
+        "correct": false,
+        "processingTime": 0
+      }
+    ]
+  }
+}

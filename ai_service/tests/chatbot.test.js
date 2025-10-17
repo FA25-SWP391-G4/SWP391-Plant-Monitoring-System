@@ -1,339 +1,444 @@
-const axios = require('axios');
-const assert = require('assert');
+const request = require('supertest');
+const app = require('../app');
+const openRouterService = require('../services/openRouterService');
+const ChatHistory = require('../models/ChatHistory');
 
-const API_URL = 'http://localhost:3003/api/chatbot';
+// Mock the database
+const mockQuery = jest.fn();
+jest.mock('pg', () => ({
+  Pool: jest.fn(() => ({
+    query: mockQuery
+  }))
+}));
 
-// Unit Testing - Kiểm tra các hàm xử lý
-async function unitTestChatbot() {
-  console.log('\n===== UNIT TESTING =====');
-  try {
-    // Test 1: Kiểm tra API trả về phản hồi đúng định dạng
-    console.log('Test 1: Kiểm tra định dạng phản hồi...');
-    const messageData = {
-      userId: 'test_user_123',
-      message: 'Cây của tôi cần tưới nước không?',
-      plantId: '1'
-    };
-    
-    const response = await axios.post(`${API_URL}/message`, messageData);
-    
-    assert(response.data.success === true, 'Phản hồi phải có trường success là true');
-    assert(typeof response.data.response === 'string', 'Phản hồi phải có trường response là chuỗi');
-    assert(response.data.responseTime > 0, 'Phản hồi phải có trường responseTime > 0');
-    console.log('✅ Test 1 thành công: Định dạng phản hồi đúng');
-    console.log(`Thời gian phản hồi: ${response.data.responseTime}ms`);
-    
-    // Test 2: Kiểm tra xử lý tin nhắn trống
-    console.log('\nTest 2: Kiểm tra xử lý tin nhắn trống...');
-    const emptyMessageData = {
-      userId: 'test_user_123',
-      message: '',
-      plantId: '1'
-    };
-    
-    const emptyResponse = await axios.post(`${API_URL}/message`, emptyMessageData);
-    assert(emptyResponse.data.success === false, 'Tin nhắn trống phải trả về success là false');
-    assert(emptyResponse.data.message.includes('không được để trống'), 'Phải có thông báo lỗi về tin nhắn trống');
-    console.log('✅ Test 2 thành công: Xử lý tin nhắn trống đúng');
-    
-    // Test 3: Kiểm tra API simulate-data
-    console.log('\nTest 3: Kiểm tra API simulate-data...');
-    const simulateResponse = await axios.get(`${API_URL}/simulate-data?plantId=1`);
-    
-    assert(simulateResponse.data.plantInfo, 'Phải có thông tin cây trồng');
-    assert(simulateResponse.data.sensorData, 'Phải có dữ liệu cảm biến');
-    assert(simulateResponse.data.wateringHistory, 'Phải có lịch sử tưới nước');
-    console.log('✅ Test 3 thành công: API simulate-data hoạt động đúng');
-    
-    console.log('\n✅ Unit Testing hoàn tất thành công!');
-    return true;
-  } catch (error) {
-    console.error('❌ Unit Testing thất bại!', error.message);
-    if (error.response) {
-      console.error('Chi tiết lỗi:', error.response.data);
-    } else {
-      console.error(error);
-    }
-    return false;
-  }
-}
+// Mock JWT for testing
+const jwt = require('jsonwebtoken');
+const testToken = jwt.sign({ user_id: 1, id: 1 }, process.env.JWT_SECRET || 'test-secret');
 
-// Integration Testing - Kiểm tra tích hợp giữa chatbot và dữ liệu cảm biến
-async function integrationTestChatbot() {
-  console.log('\n===== INTEGRATION TESTING =====');
-  try {
-    // Test 1: Kiểm tra chatbot sử dụng dữ liệu cảm biến trong câu trả lời
-    console.log('Test 1: Kiểm tra tích hợp dữ liệu cảm biến...');
+describe('AI Service - Chatbot Integration Tests', () => {
+  
+  beforeEach(() => {
+    // Reset mocks before each test
+    mockQuery.mockClear();
+    jest.clearAllMocks();
     
-    // Lấy dữ liệu cảm biến hiện tại
-    const sensorData = await axios.get(`${API_URL}/simulate-data?plantId=1`);
-    const moisture = sensorData.data.sensorData.moisture;
-    
-    // Gửi câu hỏi liên quan đến độ ẩm đất
-    const messageData = {
-      userId: 'test_user_456',
-      message: 'Độ ẩm đất của cây tôi hiện tại là bao nhiêu?',
-      plantId: '1'
-    };
-    
-    const response = await axios.post(`${API_URL}/message`, messageData);
-    
-    // Kiểm tra xem câu trả lời có chứa thông tin về độ ẩm đất không
-    const containsMoistureInfo = response.data.response.includes(moisture.toString()) || 
-                               response.data.response.toLowerCase().includes('độ ẩm');
-    
-    assert(containsMoistureInfo, 'Câu trả lời phải chứa thông tin về độ ẩm đất');
-    console.log('✅ Test 1 thành công: Chatbot sử dụng dữ liệu cảm biến trong câu trả lời');
-    
-    // Test 2: Kiểm tra các kịch bản khác nhau
-    console.log('\nTest 2: Kiểm tra các kịch bản khác nhau...');
-    
-    // Kịch bản thiếu nước
-    const scenario1 = await axios.get(`${API_URL}/simulate-data?plantId=1&scenario=Thiếu nước`);
-    assert(scenario1.data.sensorData.moisture < 30, 'Kịch bản thiếu nước phải có độ ẩm đất thấp');
-    
-    // Kịch bản quá nóng
-    const scenario2 = await axios.get(`${API_URL}/simulate-data?plantId=1&scenario=Quá nóng`);
-    assert(scenario2.data.sensorData.temperature > 30, 'Kịch bản quá nóng phải có nhiệt độ cao');
-    
-    console.log('✅ Test 2 thành công: Các kịch bản hoạt động đúng');
-    
-    console.log('\n✅ Integration Testing hoàn tất thành công!');
-    return true;
-  } catch (error) {
-    console.error('❌ Integration Testing thất bại!', error.message);
-    if (error.response) {
-      console.error('Chi tiết lỗi:', error.response.data);
-    } else {
-      console.error(error);
-    }
-    return false;
-  }
-}
+    // Clear OpenRouter service queue
+    openRouterService.clearQueue();
+  });
 
-// End-to-End Testing - Kiểm tra luồng hoạt động hoàn chỉnh
-async function e2eTestChatbot() {
-  console.log('\n===== END-TO-END TESTING =====');
-  try {
-    // Mô phỏng một cuộc hội thoại hoàn chỉnh
-    console.log('Mô phỏng cuộc hội thoại hoàn chỉnh...');
-    
-    const userId = 'test_user_789';
-    const plantId = '2'; // Cây lưỡi hổ
-    
-    // Lấy thông tin cây trồng
-    const plantInfo = await axios.get(`${API_URL}/simulate-data?plantId=${plantId}`);
-    console.log(`Đang kiểm tra với cây: ${plantInfo.data.plantInfo.name}`);
-    
-    // Câu hỏi 1: Thông tin chung về cây
-    console.log('\nCâu hỏi 1: Thông tin chung về cây');
-    const response1 = await axios.post(`${API_URL}/message`, {
-      userId,
-      message: `Cho tôi biết thông tin về ${plantInfo.data.plantInfo.name}?`,
-      plantId
-    });
-    console.log(`Chatbot: ${response1.data.response}`);
-    
-    // Câu hỏi 2: Về điều kiện chăm sóc
-    console.log('\nCâu hỏi 2: Về điều kiện chăm sóc');
-    const response2 = await axios.post(`${API_URL}/message`, {
-      userId,
-      message: 'Cây của tôi cần điều kiện ánh sáng như thế nào?',
-      plantId
-    });
-    console.log(`Chatbot: ${response2.data.response}`);
-    
-    // Câu hỏi 3: Về tình trạng hiện tại
-    console.log('\nCâu hỏi 3: Về tình trạng hiện tại');
-    const response3 = await axios.post(`${API_URL}/message`, {
-      userId,
-      message: 'Cây của tôi có vấn đề gì không?',
-      plantId
-    });
-    console.log(`Chatbot: ${response3.data.response}`);
-    
-    // Câu hỏi 4: Câu hỏi không liên quan
-    console.log('\nCâu hỏi 4: Câu hỏi không liên quan');
-    const response4 = await axios.post(`${API_URL}/message`, {
-      userId,
-      message: 'Thời tiết hôm nay thế nào?',
-      plantId
-    });
-    console.log(`Chatbot: ${response4.data.response}`);
-    
-    // Câu hỏi 5: Câu hỏi về cây không có trong dữ liệu
-    console.log('\nCâu hỏi 5: Câu hỏi về cây không có trong dữ liệu');
-    const response5 = await axios.post(`${API_URL}/message`, {
-      userId,
-      message: 'Làm thế nào để chăm sóc cây bonsai?',
-      plantId
-    });
-    console.log(`Chatbot: ${response5.data.response}`);
-    
-    console.log('\n✅ End-to-End Testing hoàn tất thành công!');
-    return true;
-  } catch (error) {
-    console.error('❌ End-to-End Testing thất bại!', error.message);
-    if (error.response) {
-      console.error('Chi tiết lỗi:', error.response.data);
-    } else {
-      console.error(error);
-    }
-    return false;
-  }
-}
-
-// Stress Testing - Kiểm tra hiệu suất dưới tải cao
-async function stressTestChatbot() {
-  console.log('\n===== STRESS TESTING =====');
-  try {
-    const NUM_REQUESTS = 10;
-    const CONCURRENT_REQUESTS = 5;
-    
-    console.log(`Gửi ${NUM_REQUESTS} yêu cầu, ${CONCURRENT_REQUESTS} yêu cầu đồng thời...`);
-    
-    const messageData = {
-      userId: 'stress_test_user',
-      message: 'Cây của tôi cần tưới nước không?',
-      plantId: '1'
-    };
-    
-    let responseTimes = [];
-    let successCount = 0;
-    let failCount = 0;
-    
-    // Tạo các nhóm yêu cầu
-    for (let batch = 0; batch < NUM_REQUESTS / CONCURRENT_REQUESTS; batch++) {
-      console.log(`\nĐang xử lý nhóm ${batch + 1}...`);
+  describe('Basic Endpoint Tests', () => {
+    test('Health check should work', async () => {
+      const response = await request(app)
+        .get('/health');
       
-      const requests = [];
-      for (let i = 0; i < CONCURRENT_REQUESTS; i++) {
-        const startTime = Date.now();
-        requests.push(
-          axios.post(`${API_URL}/message`, messageData)
-            .then(response => {
-              const endTime = Date.now();
-              const responseTime = endTime - startTime;
-              responseTimes.push(responseTime);
-              successCount++;
-              return { success: true, responseTime };
-            })
-            .catch(error => {
-              failCount++;
-              return { success: false, error };
-            })
-        );
+      expect(response.status).toBe(200);
+      expect(response.body.status).toBe('healthy');
+      expect(response.body.service).toBe('plant-monitoring-ai-service');
+    });
+
+    test('POST /api/chatbot/query should require authentication', async () => {
+      const response = await request(app)
+        .post('/api/chatbot/query')
+        .send({
+          message: 'How to water plants?'
+        });
+      
+      expect(response.status).toBe(401);
+      expect(response.body.success).toBe(false);
+    });
+
+    test('POST /api/chatbot/query should validate message', async () => {
+      const response = await request(app)
+        .post('/api/chatbot/query')
+        .set('Authorization', `Bearer ${testToken}`)
+        .send({});
+      
+      expect(response.status).toBe(400);
+      expect(response.body.success).toBe(false);
+    });
+  });
+
+  describe('OpenRouter API Integration Tests', () => {
+    test('Should process plant-related queries with OpenRouter integration', async () => {
+      // Mock database operations
+      mockQuery
+        .mockResolvedValueOnce({ rows: [] }) // getConversationContext
+        .mockResolvedValueOnce({ rows: [{ chat_id: 1, user_id: 1, conversation_id: 'test-conv' }] }); // createChat
+
+      const response = await request(app)
+        .post('/api/chatbot/query')
+        .set('Authorization', `Bearer ${testToken}`)
+        .send({
+          message: 'How often should I water my tomato plants?',
+          context: { 
+            plantType: 'tomato',
+            currentMoisture: 45,
+            temperature: 24,
+            humidity: 60
+          }
+        });
+      
+      expect(response.status).toBe(200);
+      expect(response.body.success).toBe(true);
+      expect(response.body.data).toHaveProperty('response');
+      expect(response.body.data).toHaveProperty('conversation_id');
+      expect(response.body.data).toHaveProperty('isPlantRelated');
+      expect(response.body.data).toHaveProperty('confidence');
+      expect(response.body.data).toHaveProperty('source');
+      expect(response.body.data.isPlantRelated).toBe(true);
+      expect(typeof response.body.data.response).toBe('string');
+      expect(response.body.data.response.length).toBeGreaterThan(0);
+    });
+
+    test('Should reject non-plant queries with appropriate response', async () => {
+      // Mock database operations
+      mockQuery
+        .mockResolvedValueOnce({ rows: [] }) // getConversationContext
+        .mockResolvedValueOnce({ rows: [{ chat_id: 1, user_id: 1, conversation_id: 'test-conv' }] }); // createChat
+
+      const response = await request(app)
+        .post('/api/chatbot/query')
+        .set('Authorization', `Bearer ${testToken}`)
+        .send({
+          message: 'What is the weather today?'
+        });
+      
+      expect(response.status).toBe(200);
+      expect(response.body.success).toBe(true);
+      expect(response.body.data.isPlantRelated).toBe(false);
+      expect(response.body.data.response).toContain('plant');
+      expect(response.body.data.source).toBe('fallback');
+      expect(response.body.data.confidence).toBe(1.0);
+    });
+
+    test('Should handle OpenRouter API errors gracefully', async () => {
+      // Mock database operations
+      mockQuery
+        .mockResolvedValueOnce({ rows: [] }) // getConversationContext
+        .mockResolvedValueOnce({ rows: [{ chat_id: 1, user_id: 1, conversation_id: 'test-conv' }] }); // createChat
+
+      // Temporarily disable API key to trigger error handling
+      const originalApiKey = openRouterService.apiKey;
+      openRouterService.apiKey = null;
+
+      const response = await request(app)
+        .post('/api/chatbot/query')
+        .set('Authorization', `Bearer ${testToken}`)
+        .send({
+          message: 'How do I care for my plants?'
+        });
+      
+      expect(response.status).toBe(200);
+      expect(response.body.success).toBe(true);
+      expect(response.body.data.isPlantRelated).toBe(true);
+      expect(response.body.data.source).toBe('fallback');
+      expect(response.body.data.confidence).toBeLessThan(1.0);
+      expect(response.body.data.response).toContain('offline mode');
+
+      // Restore API key
+      openRouterService.apiKey = originalApiKey;
+    });
+
+    test('Should include plant context in OpenRouter requests', async () => {
+      // Mock database operations
+      mockQuery
+        .mockResolvedValueOnce({ rows: [] }) // getConversationContext
+        .mockResolvedValueOnce({ rows: [{ chat_id: 1, user_id: 1, conversation_id: 'test-conv' }] }); // createChat
+
+      const plantContext = {
+        plantType: 'tomato',
+        currentMoisture: 30,
+        temperature: 26,
+        humidity: 55,
+        lastWatering: '2024-10-15T10:30:00Z'
+      };
+
+      const response = await request(app)
+        .post('/api/chatbot/query')
+        .set('Authorization', `Bearer ${testToken}`)
+        .send({
+          message: 'Should I water my plant now?',
+          context: plantContext
+        });
+      
+      expect(response.status).toBe(200);
+      expect(response.body.success).toBe(true);
+      expect(response.body.data.isPlantRelated).toBe(true);
+      
+      // Verify that context was stored in database
+      expect(mockQuery).toHaveBeenCalledWith(
+        expect.stringContaining('INSERT INTO chat_history'),
+        expect.arrayContaining([
+          1, // user_id
+          null, // plant_id
+          expect.any(String), // conversation_id
+          'Should I water my plant now?', // message
+          expect.any(String), // response
+          expect.stringContaining('tomato'), // context should include plant type
+          expect.any(Date) // created_at
+        ])
+      );
+    });
+  });
+
+  describe('Conversation Context Management Tests', () => {
+    test('Should maintain conversation context across multiple messages', async () => {
+      const conversationId = 'test-conversation-123';
+      
+      // Mock conversation history
+      const mockHistory = [
+        {
+          message: 'Hello, I need help with my plants',
+          response: 'I\'d be happy to help with your plant care questions!',
+          created_at: new Date('2024-10-15T10:00:00Z')
+        },
+        {
+          message: 'My tomato plant leaves are yellowing',
+          response: 'Yellowing leaves on tomato plants can indicate several issues...',
+          created_at: new Date('2024-10-15T10:05:00Z')
+        }
+      ];
+
+      mockQuery
+        .mockResolvedValueOnce({ rows: mockHistory }) // getConversationContext
+        .mockResolvedValueOnce({ rows: [{ chat_id: 3, user_id: 1, conversation_id: conversationId }] }); // createChat
+
+      const response = await request(app)
+        .post('/api/chatbot/query')
+        .set('Authorization', `Bearer ${testToken}`)
+        .send({
+          message: 'What should I do about it?',
+          conversation_id: conversationId,
+          context: { plantType: 'tomato' }
+        });
+      
+      expect(response.status).toBe(200);
+      expect(response.body.success).toBe(true);
+      expect(response.body.data.conversation_id).toBe(conversationId);
+      
+      // Verify conversation context was retrieved
+      expect(mockQuery).toHaveBeenCalledWith(
+        expect.stringContaining('SELECT message, response, created_at'),
+        [conversationId, 10]
+      );
+    });
+
+    test('Should generate new conversation ID when not provided', async () => {
+      // Mock database operations
+      mockQuery
+        .mockResolvedValueOnce({ rows: [] }) // getConversationContext
+        .mockResolvedValueOnce({ rows: [{ chat_id: 1, user_id: 1, conversation_id: 'generated-conv' }] }); // createChat
+
+      const response = await request(app)
+        .post('/api/chatbot/query')
+        .set('Authorization', `Bearer ${testToken}`)
+        .send({
+          message: 'How do I start a garden?'
+        });
+      
+      expect(response.status).toBe(200);
+      expect(response.body.success).toBe(true);
+      expect(response.body.data).toHaveProperty('conversation_id');
+      expect(response.body.data.conversation_id).toMatch(/^conv_\d+_[a-z0-9]+$/);
+    });
+
+    test('Should store conversation history in database', async () => {
+      const conversationId = 'test-storage-conv';
+      const plantId = 42;
+      
+      // Mock database operations
+      mockQuery
+        .mockResolvedValueOnce({ rows: [] }) // getConversationContext
+        .mockResolvedValueOnce({ rows: [{ chat_id: 1, user_id: 1, conversation_id: conversationId }] }); // createChat
+
+      const response = await request(app)
+        .post('/api/chatbot/query')
+        .set('Authorization', `Bearer ${testToken}`)
+        .send({
+          message: 'How much water does a succulent need?',
+          conversation_id: conversationId,
+          plant_id: plantId,
+          context: { plantType: 'succulent', currentMoisture: 20 }
+        });
+      
+      expect(response.status).toBe(200);
+      expect(response.body.success).toBe(true);
+      
+      // Verify chat history was stored with correct parameters
+      expect(mockQuery).toHaveBeenCalledWith(
+        expect.stringContaining('INSERT INTO chat_history'),
+        expect.arrayContaining([
+          1, // user_id
+          plantId, // plant_id
+          conversationId, // conversation_id
+          'How much water does a succulent need?', // message
+          expect.any(String), // response
+          expect.stringContaining('succulent'), // context
+          expect.any(Date) // created_at
+        ])
+      );
+    });
+  });
+
+  describe('Chat History Management Tests', () => {
+    test('GET /api/chatbot/history should return user chat history', async () => {
+      const mockChatHistory = [
+        {
+          chat_id: 1,
+          user_id: 1,
+          plant_id: null,
+          conversation_id: 'conv-1',
+          message: 'How to water plants?',
+          response: 'Water when soil is dry...',
+          context: '{}',
+          created_at: new Date()
+        },
+        {
+          chat_id: 2,
+          user_id: 1,
+          plant_id: 42,
+          conversation_id: 'conv-2',
+          message: 'My plant is wilting',
+          response: 'Wilting can be caused by...',
+          context: '{"plantType": "tomato"}',
+          created_at: new Date()
+        }
+      ];
+
+      mockQuery.mockResolvedValueOnce({ rows: mockChatHistory });
+
+      const response = await request(app)
+        .get('/api/chatbot/history')
+        .set('Authorization', `Bearer ${testToken}`);
+      
+      expect(response.status).toBe(200);
+      expect(response.body.success).toBe(true);
+      expect(response.body.data).toHaveProperty('chats');
+      expect(response.body.data.chats).toHaveLength(2);
+      expect(response.body.data.user_id).toBe(1);
+      
+      // Verify database query
+      expect(mockQuery).toHaveBeenCalledWith(
+        expect.stringContaining('SELECT * FROM chat_history'),
+        [1, 50] // user_id, limit
+      );
+    });
+
+    test('GET /api/chatbot/conversation/:id should return specific conversation', async () => {
+      const conversationId = 'test-conversation-456';
+      const mockConversation = [
+        {
+          chat_id: 1,
+          user_id: 1,
+          conversation_id: conversationId,
+          message: 'Hello',
+          response: 'Hi there!',
+          context: '{}',
+          created_at: new Date()
+        }
+      ];
+
+      mockQuery.mockResolvedValueOnce({ rows: mockConversation });
+
+      const response = await request(app)
+        .get(`/api/chatbot/conversation/${conversationId}`)
+        .set('Authorization', `Bearer ${testToken}`);
+      
+      expect(response.status).toBe(200);
+      expect(response.body.success).toBe(true);
+      expect(response.body.data.conversation_id).toBe(conversationId);
+      expect(response.body.data.messages).toHaveLength(1);
+      
+      // Verify database query
+      expect(mockQuery).toHaveBeenCalledWith(
+        expect.stringContaining('SELECT * FROM chat_history'),
+        [conversationId, 50]
+      );
+    });
+
+    test('Should handle database errors gracefully', async () => {
+      // Mock database error
+      mockQuery.mockRejectedValueOnce(new Error('Database connection failed'));
+
+      const response = await request(app)
+        .post('/api/chatbot/query')
+        .set('Authorization', `Bearer ${testToken}`)
+        .send({
+          message: 'How to care for plants?'
+        });
+      
+      expect(response.status).toBe(500);
+      expect(response.body.success).toBe(false);
+      expect(response.body.message).toContain('Failed to process chatbot query');
+    });
+  });
+
+  describe('Service Status Tests', () => {
+    test('GET /api/chatbot/status should return comprehensive service status', async () => {
+      const response = await request(app)
+        .get('/api/chatbot/status')
+        .set('Authorization', `Bearer ${testToken}`);
+      
+      expect(response.status).toBe(200);
+      expect(response.body.success).toBe(true);
+      expect(response.body.data).toHaveProperty('service');
+      expect(response.body.data.service).toBe('chatbot');
+      expect(response.body.data).toHaveProperty('configured');
+      expect(response.body.data).toHaveProperty('model');
+      expect(response.body.data).toHaveProperty('queueLength');
+      expect(response.body.data).toHaveProperty('rateLimitConfig');
+      expect(response.body.data).toHaveProperty('timestamp');
+    });
+  });
+
+  describe('Rate Limiting and Error Handling Tests', () => {
+    test('Should handle rate limiting appropriately', async () => {
+      // Mock database operations for multiple requests
+      mockQuery
+        .mockResolvedValue({ rows: [] }) // getConversationContext
+        .mockResolvedValue({ rows: [{ chat_id: 1, user_id: 1, conversation_id: 'test-conv' }] }); // createChat
+
+      // Make multiple rapid requests to test rate limiting
+      const requests = Array.from({ length: 3 }, (_, i) => 
+        request(app)
+          .post('/api/chatbot/query')
+          .set('Authorization', `Bearer ${testToken}`)
+          .send({
+            message: `Plant question ${i + 1}: How to water plants?`
+          })
+      );
+
+      const responses = await Promise.all(requests);
+      
+      // All requests should succeed (rate limiting is handled internally)
+      responses.forEach(response => {
+        expect(response.status).toBe(200);
+        expect(response.body.success).toBe(true);
+      });
+    });
+
+    test('Should validate request parameters properly', async () => {
+      const testCases = [
+        { body: { message: '' }, expectedStatus: 400 },
+        { body: { message: null }, expectedStatus: 400 },
+        { body: { message: undefined }, expectedStatus: 400 },
+        { body: {}, expectedStatus: 400 }
+      ];
+
+      for (const testCase of testCases) {
+        const response = await request(app)
+          .post('/api/chatbot/query')
+          .set('Authorization', `Bearer ${testToken}`)
+          .send(testCase.body);
+        
+        expect(response.status).toBe(testCase.expectedStatus);
+        expect(response.body.success).toBe(false);
       }
-      
-      await Promise.all(requests);
-    }
-    
-    // Tính toán thống kê
-    const avgResponseTime = responseTimes.reduce((sum, time) => sum + time, 0) / responseTimes.length;
-    const maxResponseTime = Math.max(...responseTimes);
-    const minResponseTime = Math.min(...responseTimes);
-    
-    console.log('\nKết quả Stress Testing:');
-    console.log(`- Tổng số yêu cầu: ${NUM_REQUESTS}`);
-    console.log(`- Thành công: ${successCount}`);
-    console.log(`- Thất bại: ${failCount}`);
-    console.log(`- Tỷ lệ thành công: ${(successCount / NUM_REQUESTS * 100).toFixed(2)}%`);
-    console.log(`- Thời gian phản hồi trung bình: ${avgResponseTime.toFixed(2)}ms`);
-    console.log(`- Thời gian phản hồi nhanh nhất: ${minResponseTime}ms`);
-    console.log(`- Thời gian phản hồi chậm nhất: ${maxResponseTime}ms`);
-    
-    const success = failCount === 0;
-    if (success) {
-      console.log('\n✅ Stress Testing hoàn tất thành công!');
-    } else {
-      console.log('\n⚠️ Stress Testing hoàn tất với một số lỗi!');
-    }
-    
-    return success;
-  } catch (error) {
-    console.error('❌ Stress Testing thất bại!', error.message);
-    return false;
-  }
-}
+    });
+  });
 
-// User Acceptance Testing - Kiểm tra trải nghiệm người dùng
-async function uatTestChatbot() {
-  console.log('\n===== USER ACCEPTANCE TESTING =====');
-  try {
-    // Kiểm tra các tình huống người dùng thực tế
-    console.log('Kiểm tra các tình huống người dùng thực tế...');
-    
-    // Tình huống 1: Người dùng hỏi về cách chăm sóc cây
-    console.log('\nTình huống 1: Người dùng hỏi về cách chăm sóc cây');
-    const response1 = await axios.post(`${API_URL}/message`, {
-      userId: 'uat_user_1',
-      message: 'Làm thế nào để chăm sóc cây xương rồng?',
-      plantId: '1'
-    });
-    console.log(`Chatbot: ${response1.data.response}`);
-    
-    // Tình huống 2: Người dùng hỏi về vấn đề cụ thể
-    console.log('\nTình huống 2: Người dùng hỏi về vấn đề cụ thể');
-    const response2 = await axios.post(`${API_URL}/message`, {
-      userId: 'uat_user_2',
-      message: 'Tại sao lá cây của tôi bị vàng?',
-      plantId: '3' // Cây trầu bà
-    });
-    console.log(`Chatbot: ${response2.data.response}`);
-    
-    // Tình huống 3: Người dùng nhập tin nhắn không rõ ràng
-    console.log('\nTình huống 3: Người dùng nhập tin nhắn không rõ ràng');
-    const response3 = await axios.post(`${API_URL}/message`, {
-      userId: 'uat_user_3',
-      message: 'cây?',
-      plantId: '2'
-    });
-    console.log(`Chatbot: ${response3.data.response}`);
-    
-    // Tình huống 4: Người dùng hỏi về cây không có trong dữ liệu
-    console.log('\nTình huống 4: Người dùng hỏi về cây không có trong dữ liệu');
-    const response4 = await axios.post(`${API_URL}/message`, {
-      userId: 'uat_user_4',
-      message: 'Làm thế nào để chăm sóc cây phong lan?',
-      plantId: '999'
-    });
-    console.log(`Chatbot: ${response4.data.response}`);
-    
-    console.log('\n✅ User Acceptance Testing hoàn tất thành công!');
-    return true;
-  } catch (error) {
-    console.error('❌ User Acceptance Testing thất bại!', error.message);
-    if (error.response) {
-      console.error('Chi tiết lỗi:', error.response.data);
-    } else {
-      console.error(error);
-    }
-    return false;
-  }
-}
-
-// Chạy tất cả các bài kiểm thử
-async function runAllTests() {
-  console.log('===== BẮT ĐẦU KIỂM THỬ CHATBOT =====');
-  
-  const results = {
-    unit: await unitTestChatbot(),
-    integration: await integrationTestChatbot(),
-    e2e: await e2eTestChatbot(),
-    stress: await stressTestChatbot(),
-    uat: await uatTestChatbot()
-  };
-  
-  console.log('\n===== KẾT QUẢ KIỂM THỬ =====');
-  console.log(`Unit Testing: ${results.unit ? '✅ Thành công' : '❌ Thất bại'}`);
-  console.log(`Integration Testing: ${results.integration ? '✅ Thành công' : '❌ Thất bại'}`);
-  console.log(`End-to-End Testing: ${results.e2e ? '✅ Thành công' : '❌ Thất bại'}`);
-  console.log(`Stress Testing: ${results.stress ? '✅ Thành công' : '❌ Thất bại'}`);
-  console.log(`User Acceptance Testing: ${results.uat ? '✅ Thành công' : '❌ Thất bại'}`);
-  
-  const overallSuccess = Object.values(results).every(result => result === true);
-  console.log(`\nKết quả tổng thể: ${overallSuccess ? '✅ TẤT CẢ CÁC BÀI KIỂM THỬ ĐỀU THÀNH CÔNG' : '❌ MỘT SỐ BÀI KIỂM THỬ THẤT BẠI'}`);
-}
-
-// Chạy kiểm thử
-runAllTests();
+  afterEach(() => {
+    // Clean up after each test
+    openRouterService.clearQueue();
+  });
+});
