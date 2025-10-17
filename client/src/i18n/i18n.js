@@ -8,8 +8,12 @@ import Backend from 'i18next-http-backend';
 import translationEN from './locales/en/translation.json';
 import translationVI from './locales/vi/translation.json';
 import translationJA from './locales/ja/translation.json';
+import translationKR from './locales/kr/translation.json';
+import translationFR from './locales/fr/translation.json';
+import translationZH from './locales/zh/translation.json';
 import aiEN from './locales/en/ai.json';
 import aiVI from './locales/vi/ai.json';
+import aiZH from './locales/zh/ai.json';
 
 // Translation resources
 const resources = {
@@ -23,6 +27,16 @@ const resources = {
   },
   ja: {
     translation: translationJA
+  },
+  kr: {
+    translation: translationKR
+  },
+  fr: {
+    translation: translationFR
+  },
+  zh: {
+    translation: translationZH,
+    ai: aiZH.ai
   }
 };
 
@@ -36,7 +50,7 @@ i18n
   // Init i18next
   .init({
     resources,
-    fallbackLng: 'en',
+    fallbackLng: 'vi',
     debug: process.env.NODE_ENV === 'development',
     
     interpolation: {
@@ -46,7 +60,7 @@ i18n
     // Detect language from localStorage or navigator
     detection: {
       order: ['localStorage', 'navigator'],
-      caches: ['localStorage'],
+      cachkr: ['localStorage'],
     },
   });
 

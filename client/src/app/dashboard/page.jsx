@@ -10,6 +10,7 @@ import WeatherWidget from '@/components/dashboard/WeatherWidget';
 import RecentActivity from '@/components/dashboard/RecentActivity';
 import WateringSchedule from '@/components/dashboard/WateringSchedule';
 import PremiumFeaturePrompt from '@/components/dashboard/PremiumFeaturePrompt';
+import Navbar from '@/components/Navbar';
 
 // Mock data for development - would come from API in real app
 const MOCK_PLANTS = [
@@ -123,8 +124,7 @@ export default function DashboardPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <DashboardHeader user={user} />
-      
+      <Navbar user={user} />
       <main className="container mx-auto px-4 py-8">
         {/* Welcome Banner */}
         <div className="bg-gradient-to-r from-emerald-500 to-emerald-700 rounded-xl shadow-lg mb-8 p-6 text-white flex items-center justify-between">

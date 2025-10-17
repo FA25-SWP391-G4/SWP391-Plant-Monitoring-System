@@ -1,19 +1,16 @@
 'use client'
 
+import React from 'react';
 import Link from 'next/link';
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 
-export default function ErrorPage({ 
-  error,
-  reset 
-}) {
-  const { t } = useTranslation();
-  
-  useEffect(() => {
-    // Log the error to an error reporting service
-    console.error('Page error:', error);
-  }, [error]);
+export default function ErrorPage({ error, reset }) {
+    const { t } = useTranslation();
+
+    useEffect(() => {
+        console.error('Page error:', error);
+    }, [error]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-teal-50 to-cyan-50 flex flex-col">
@@ -56,11 +53,11 @@ export default function ErrorPage({
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <button
-              onClick={() => reset()} 
+              onClick={() => reset()}
               className="px-6 py-3 bg-emerald-600 text-white rounded-lg font-semibold hover:bg-emerald-700 transition-colors shadow-md">
               {t('error.tryAgain', 'Try Again')}
             </button>
-            <Link href="/" 
+            <Link href="/"
               className="px-6 py-3 border-2 border-emerald-600 text-emerald-700 rounded-lg font-semibold hover:bg-emerald-50 transition-colors">
               {t('error.returnHome', 'Return Home')}
             </Link>

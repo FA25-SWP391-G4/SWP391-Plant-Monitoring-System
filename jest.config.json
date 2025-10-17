@@ -5,9 +5,6 @@
   "testMatch": [
     "<rootDir>/tests/**/*.test.js"
   ],
-  "moduleNameMapper": {
-    "dateformat": "<rootDir>/__mocks__/dateformat.js"
-  },
   "transform": {
     "^.+\\.[t|j]sx?$": "babel-jest"
   },

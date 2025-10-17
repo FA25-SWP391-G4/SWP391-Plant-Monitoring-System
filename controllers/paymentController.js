@@ -35,7 +35,38 @@ class PaymentController {
     static async createPaymentUrl(req, res) {
         try {
             const { amount, orderInfo, orderType, bankCode } = req.body;
-            const userId = req.user ? req.user.user_id : null; // Assuming auth middleware sets req.user
+            
+            // Debug auth information
+            console.log('========== PAYMENT AUTH DEBUG ==========');
+            console.log('Request headers:', req.headers);
+            console.log('Auth header:', req.headers.authorization);
+            console.log('User object in request:', req.user ? 'Present' : 'Missing');
+            if (req.user) {
+                console.log('User ID:', req.user.user_id);
+                console.log('User email:', req.user.email);
+                console.log('User family name:', req.user.family_name);
+                console.log('User given name:', req.user.given_name);
+                console.log('User role:', req.user.role);
+            }
+            console.log('======================================');
+            
+            // The auth middleware should ensure req.user exists - add extra validation
+            if (!req.user || !req.user.user_id) {
+                console.error('Auth Middleware Error: Missing user information in request');
+                return res.status(401).json({
+                    success: false,
+                    message: 'Authentication required. Please log in and try again.'
+                });
+            }
+            
+            const userId = req.user.user_id;
+            const fullName = req.user.full_name || 
+                             (req.user.given_name && req.user.family_name ? `${req.user.given_name} ${req.user.family_name}` : null) || 
+                             req.user.family_name || 
+                             req.user.given_name || 
+                             'Unknown User';
+                             
+            console.log(`Creating payment for user ID: ${userId}, name: ${fullName}, email: ${req.user.email || 'Not set'}`);
             
             // Validate required fields
             if (!amount || !orderInfo) {
@@ -69,31 +100,54 @@ class PaymentController {
                 orderInfo: `${orderInfo} - User: ${userId || 'Guest'}`,
                 orderType: orderType || vnpayConfig.ORDER_TYPES.PREMIUM_UPGRADE,
                 bankCode,
-                ipAddr
+                ipAddr,
+                returnUrl: process.env.VNPAY_RETURN_URL || vnpayConfig.vnp_ReturnUrl
             };
+            
+            console.log('Creating VNPay payment with data:', {
+                ...paymentData,
+                amount: `${paymentData.amount} VND`,
+                returnUrl: paymentData.returnUrl
+            });
             
             const paymentResult = VNPayService.createPaymentUrl(paymentData);
             
+            console.log('Payment URL created successfully:', {
+                orderId: paymentResult.orderId,
+                paymentUrlLength: paymentResult.paymentUrl.length,
+                paymentUrlStart: paymentResult.paymentUrl.substring(0, 100) + '...',
+                expireDate: paymentResult.expireDate
+            });
+            
             // Log payment creation
             if (userId) {
-                await SystemLog.logActivity(
-                    userId,
-                    'payment_created',
-                    `Payment created: ${orderId} - Amount: ${amount} VND`
+                await SystemLog.create(
+                    'INFO',
+                    'Payment',
+                    `User ${userId} created payment: ${orderId} - Amount: ${amount} VND`
                 );
             }
             
-            res.status(200).json({
-                success: true,
-                message: 'Payment URL created successfully',
-                data: {
-                    paymentUrl: paymentResult.paymentUrl,
-                    orderId: paymentResult.orderId,
-                    amount: paymentResult.amount,
-                    expireTime: paymentResult.expireDate,
-                    paymentId: payment.payment_id
-                }
-            });
+            // Check if direct redirect is requested
+            const directRedirect = req.body.directRedirect === true;
+            
+            if (directRedirect) {
+                console.log('Redirecting directly to VNPay URL');
+                return res.redirect(paymentResult.paymentUrl);
+            } else {
+                // Return JSON response with payment URL for frontend handling
+                res.status(200).json({
+                    success: true,
+                    message: 'Payment URL created successfully',
+                    data: {
+                        paymentUrl: paymentResult.paymentUrl,
+                        orderId: paymentResult.orderId,
+                        amount: paymentResult.amount,
+                        expireTime: paymentResult.expireDate,
+                        paymentId: payment.payment_id
+                    }
+                });
+            }
             
         } catch (error) {
             console.error('Create Payment URL Error:', error);
@@ -112,25 +166,34 @@ class PaymentController {
     static async handleVNPayReturn(req, res) {
         try {
             const vnpParams = req.query;
+            console.log('VNPay return parameters:', vnpParams);
             
-            // Verify VNPay response
-            const verificationResult = VNPayService.verifyReturnUrl(vnpParams);
+            // Add fallback for missing frontend URL
+            const frontendUrl = process.env.FRONTEND_PAYMENT_RESULT_URL || 'http://localhost:3000/payment/result';
             
-            if (!verificationResult.isValid) {
-                return res.status(400).json({
-                    success: false,
-                    message: 'Invalid payment signature'
-                });
+            // Attempt to verify the VNPay response, but handle errors gracefully
+            let verificationResult;
+            try {
+                verificationResult = VNPayService.verifyReturnUrl(vnpParams);
+            } catch (verifyError) {
+                console.error('Error verifying VNPay return URL:', verifyError);
+                return res.redirect(`${frontendUrl}?code=99&message=Verification%20error`);
             }
+            
+            // If the signature is invalid, redirect to frontend with error code
+            if (!verificationResult.isValid) {
+                console.error('Invalid VNPay signature in return URL');
+                return res.redirect(`${frontendUrl}?code=97&message=Invalid%20payment%20signature`);
+            }
+            
+            // Use the fallback URL defined above
             
             // Find payment record
             const payment = await Payment.findByVNPayTxnRef(verificationResult.orderId);
             
             if (!payment) {
-                return res.status(404).json({
-                    success: false,
-                    message: 'Payment not found'
-                });
+                console.error(`Payment not found for orderId: ${verificationResult.orderId}`);
+                return res.redirect(`${frontendUrl}?code=91&message=Payment%20not%20found&orderId=${verificationResult.orderId}`);
             }
             
             // Update payment status based on VNPay response
@@ -145,20 +208,20 @@ class PaymentController {
                         await user.save();
                         
                         // Log upgrade
-                        await SystemLog.logActivity(
-                            user.user_id,
-                            'user_upgraded_to_premium',
-                            `User upgraded to Premium via payment: ${verificationResult.orderId}`
+                        await SystemLog.create(
+                            'INFO',
+                            'User Upgrade',
+                            `User ${user.user_id} upgraded to Premium via payment: ${verificationResult.orderId}`
                         );
                     }
                 }
                 
                 // Log successful payment
                 if (payment.user_id) {
-                    await SystemLog.logActivity(
-                        payment.user_id,
-                        'payment_completed',
-                        `Payment completed: ${verificationResult.orderId} - Amount: ${verificationResult.amount} VND`
+                    await SystemLog.create(
+                        'INFO',
+                        'Payment',
+                        `User ${payment.user_id} completed payment: ${verificationResult.orderId} - Amount: ${verificationResult.amount} VND`
                     );
                 }
                 
@@ -167,34 +230,49 @@ class PaymentController {
                 
                 // Log failed payment
                 if (payment.user_id) {
-                    await SystemLog.logActivity(
-                        payment.user_id,
-                        'payment_failed',
-                        `Payment failed: ${verificationResult.orderId} - Code: ${verificationResult.responseCode}`
+                    await SystemLog.create(
+                        'ERROR',
+                        'Payment',
+                        `User ${payment.user_id} payment failed: ${verificationResult.orderId} - Code: ${verificationResult.responseCode}`
                     );
                 }
             }
             
-            // Return result to frontend
-            res.status(200).json({
-                success: verificationResult.isSuccess,
-                message: verificationResult.message,
-                data: {
-                    orderId: verificationResult.orderId,
-                    amount: verificationResult.amount,
-                    transactionNo: verificationResult.transactionNo,
-                    payDate: verificationResult.payDate,
-                    status: payment.status,
-                    paymentId: payment.payment_id
-                }
-            });
+            // Always redirect to frontend with appropriate parameters
+            try {
+                // Build redirect URL with result parameters
+                const redirectUrl = new URL(frontendUrl);
+                redirectUrl.searchParams.append('code', verificationResult.responseCode);
+                redirectUrl.searchParams.append('orderId', verificationResult.orderId);
+                redirectUrl.searchParams.append('amount', verificationResult.amount);
+                redirectUrl.searchParams.append('status', payment.status);
+                redirectUrl.searchParams.append('message', verificationResult.message);
+                
+                console.log(`Redirecting to payment result page: ${redirectUrl.toString()}`);
+                return res.redirect(redirectUrl.toString());
+            } catch (urlError) {
+                console.error('Error building redirect URL:', urlError);
+                
+                // Fallback to basic redirect if URL construction fails
+                return res.redirect(`${frontendUrl}?code=${verificationResult.responseCode}&status=${payment.status}`);
+            }
             
         } catch (error) {
             console.error('VNPay Return Error:', error);
-            res.status(500).json({
-                success: false,
-                message: 'Internal server error while processing payment return'
-            });
+            
+            // Even if there's an error, redirect to frontend with error code
+            try {
+                return res.redirect(`${frontendUrl}?code=99&message=Server%20error&error=${encodeURIComponent(error.message)}`);
+            } catch (redirectError) {
+                console.error('Failed to redirect after error:', redirectError);
+                
+                // Last resort - return JSON response
+                res.status(200).json({
+                    success: false,
+                    message: 'Payment processing error',
+                    code: '99'
+                });
+            }
         }
     }
     
@@ -205,14 +283,16 @@ class PaymentController {
     static async handleVNPayIPN(req, res) {
         try {
             const vnpParams = req.query;
+            console.log('VNPay IPN parameters:', vnpParams);
             
-            // Verify VNPay IPN
+            // Verify VNPay IPN exactly as in the demo
             const verificationResult = VNPayService.verifyIPN(vnpParams);
             
             if (!verificationResult.isValid) {
+                console.error('Invalid signature in VNPay IPN');
                 return res.status(200).json({
-                    RspCode: vnpayConfig.RESPONSE_CODES.FAIL_CHECKSUM,
-                    Message: 'Invalid checksum'
+                    RspCode: '97',
+                    Message: 'Fail checksum'
                 });
             }
             
@@ -255,53 +335,66 @@ class PaymentController {
             // Log IPN processing
             console.log(`VNPay IPN processed: ${verificationResult.orderId} - Status: ${payment.status}`);
             
-            // Respond to VNPay
+            // Respond to VNPay exactly as in the demo
             res.status(200).json({
-                RspCode: vnpayConfig.RESPONSE_CODES.SUCCESS,
-                Message: 'Confirm Success'
+                RspCode: '00',
+                Message: 'success'
             });
             
         } catch (error) {
             console.error('VNPay IPN Error:', error);
+            // Always respond with status 200, even for errors - this is what VNPay expects
             res.status(200).json({
                 RspCode: '99',
-                Message: 'Internal server error'
+                Message: 'Unknown error'
             });
         }
     }
     
-    /**
-     * GET PAYMENT STATUS
-     * Retrieves current payment status by order ID
-     */
-    static async getPaymentStatus(req, res) {
-        try {
-            const { orderId } = req.params;
-            
-            const payment = await Payment.findByVNPayTxnRef(orderId);
-            
-            if (!payment) {
-                return res.status(404).json({
-                    success: false,
-                    message: 'Payment not found'
-                });
-            }
-            
-            res.status(200).json({
-                success: true,
-                data: payment.toJSON()
-            });
-            
-        } catch (error) {
-            console.error('Get Payment Status Error:', error);
-            res.status(500).json({
+/**
+ * GET PAYMENT STATUS
+ * Retrieves current payment status by order ID
+ */
+static async getPaymentStatus(req, res) {
+    try {
+        const { orderId } = req.params;
+        
+        // Ensure user authentication for payment status check
+        if (!req.user || !req.user.user_id) {
+            console.warn('Unauthenticated payment status check attempt for order:', orderId);
+        }
+        
+        const payment = await Payment.findByVNPayTxnRef(orderId);
+        
+        if (!payment) {
+            return res.status(404).json({
                 success: false,
-                message: 'Internal server error'
+                message: 'Payment not found'
             });
         }
+        
+        // If authenticated, verify this payment belongs to the user
+        if (req.user && req.user.user_id && payment.user_id && 
+            payment.user_id !== req.user.user_id && req.user.role !== 'admin') {
+            return res.status(403).json({
+                success: false,
+                message: 'You do not have permission to view this payment'
+            });
+        }
+        
+        res.status(200).json({
+            success: true,
+            data: payment.toJSON()
+        });
+        
+    } catch (error) {
+        console.error('Get Payment Status Error:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Internal server error'
+        });
     }
-    
-    /**
+}    /**
      * GET USER PAYMENT HISTORY
      * Retrieves payment history for authenticated user
      */

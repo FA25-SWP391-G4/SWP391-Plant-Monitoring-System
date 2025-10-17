@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import { useTranslation } from 'react-i18next';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/Card';
 import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
+import axios from 'axios';
 
 /**
  * RegisterForm component
@@ -24,6 +25,16 @@ export function RegisterForm() {
   });
   
   const [errors, setErrors] = useState({});
+  const [registerStatus, setRegisterStatus] = useState(""); // Add status state
+  const [debugInfo, setDebugInfo] = useState(null); // Add debug info state
+  const statusRef = useRef(null); // Add ref for scrolling to status
+
+  // Scroll to status message when it changes
+  useEffect(() => {
+    if (registerStatus && statusRef.current) {
+      statusRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [registerStatus]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -65,18 +76,93 @@ export function RegisterForm() {
     }
     
     setIsLoading(true);
+    setRegisterStatus("Status: Starting registration process..."); // Update status
+
+    // Create API payload
+    const apiPayload = {
+      firstName: formData.firstName,
+      lastName: formData.lastName,
+      email: formData.email,
+      phoneNumber: formData.phoneNumber || null,
+      password: formData.password,
+      confirmPassword: formData.confirmPassword,
+      newsletter: formData.newsletter
+    };
 
     try {
-      // In a real implementation, this would call the registration API
-      console.log('Registration data:', formData);
-      
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
+      console.log('Registration data to send:', apiPayload);
+      setRegisterStatus("Status: Connecting to API..."); // Update status
+
+      // Use the correct API URL from environment variables
+      const API_URL = process.env.NEXT_PUBLIC_API_URL;
+      const response = await axios.post(`${API_URL}/auth/register`, apiPayload, {
+        withCredentials: true, // Important for cookies/sessions
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      });
+
+      // Log detailed response for debugging
+      console.log('Registration API response:', response);
+      setDebugInfo({
+        status: response.status,
+        data: response.data,
+        headers: response.headers
+      });
+
+      setRegisterStatus(`Success! Redirecting to login page...`); // Update status
+
+      // Store session info in localStorage if provided
+      if (response.data?.sessionId) {
+        localStorage.setItem('sessionId', response.data.sessionId);
+      }
+
       // Redirect to login after successful registration
-      window.location.href = '/login?registered=true';
+      setTimeout(() => {
+        window.location.href = '/login?registered=true';
+      }, 1500);
     } catch (error) {
+      // Detailed error logging
       console.error('Registration error:', error);
+
+      let errorMessage = "Status: Registration failed";
+      let errorDetails = null;
+
+      if (error.response) {
+        // Handle specific error cases with user-friendly messages
+        const status = error.response.status;
+        const errorData = error.response.data;
+        
+        if (status === 409 && errorData?.error?.includes('email')) {
+          errorMessage = t('auth.emailAlreadyExists', 'This email address is already registered. Please log in or use a different email.');
+        } else if (status === 429) {
+          errorMessage = t('auth.tooManyAttempts', 'Too many registration attempts. Please try again later.');
+        } else {
+          // Generic server error
+          errorMessage = `${t('auth.registrationFailed', 'Registration failed')}: ${errorData?.error || t('common.unknownError', 'Unknown error')}`;
+        }
+        
+        errorDetails = {
+          status: status,
+          data: errorData,
+          headers: error.response.headers
+        };
+        console.error('Server response:', errorDetails);
+      } else if (error.request) {
+        // Request was made but no response received
+        errorMessage = t('auth.noServerResponse', 'No response from server. Please check your connection and try again.');
+        errorDetails = {
+          request: error.request
+        };
+        console.error('No response received:', error.request);
+      } else {
+        // Error in setting up the request
+        errorMessage = `${t('auth.requestError', 'Request error')}: ${error.message}`;
+        console.error('Request error:', error.message);
+      }
+
+      setRegisterStatus(errorMessage);
+      setDebugInfo(errorDetails);
     } finally {
       setIsLoading(false);
     }
@@ -104,6 +190,15 @@ export function RegisterForm() {
         {t('auth.registerTitle', 'Create your account')}
       </h2>
       
+      {/* Add status display area with ref for scrolling */}
+      <div ref={statusRef}>
+        {registerStatus && (
+          <div className={`mb-4 p-3 rounded-lg ${registerStatus.includes('Success') ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'}`}>
+            <p className="font-medium">{registerStatus}</p>
+          </div>
+        )}
+      </div>
+
       <form className="space-y-5" onSubmit={handleSubmit} noValidate>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
@@ -195,16 +290,16 @@ export function RegisterForm() {
                 <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
               </svg>
             </div>
-            <input
-              id="phoneNumber"
-              name="phoneNumber"
-              type="tel"
-              placeholder="(123) 456-7890"
-              value={formData.phoneNumber}
-              onChange={handleInputChange}
-              autoComplete="tel"
-              className="w-full rounded-lg border border-gray-200 pl-10 pr-3 py-3 text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-colors"
-            />
+              <input
+                id="phoneNumber"
+                name="phoneNumber"
+                type="tel"
+                placeholder="(123) 456-7890"
+                value={formData.phoneNumber}
+                onChange={handleInputChange}
+                autoComplete="tel"
+                className="w-full rounded-lg border border-gray-200 pl-10 pr-3 py-3 text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-colors"
+              />
           </div>
         </div>
         
