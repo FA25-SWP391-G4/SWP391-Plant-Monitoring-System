@@ -109,20 +109,63 @@
  * 🔄 Security testing for authentication flows
  */
 
-const User = require('../models/User');
 const jwt = require('jsonwebtoken');
 const nodemailer = require('nodemailer');
 const crypto = require('crypto');
+const bcrypt = require('bcryptjs');
+const { User, SystemLog } = require('../models');
+const emailService = require('../services/emailService');
 
 // Create email transporter
 const createTransporter = () => {
-    return nodemailer.createTransport({
+    // Log email configuration
+    console.log('[EMAIL DEBUG] Creating email transporter with config:', {
         service: process.env.EMAIL_SERVICE || 'gmail',
+        host: process.env.EMAIL_HOST || 'smtp.gmail.com',
+        port: process.env.EMAIL_PORT || 587,
+        user: process.env.EMAIL_USER ? `${process.env.EMAIL_USER.substring(0, 3)}...` : 'not set',
+        pass: process.env.EMAIL_PASS ? 'set (masked)' : 'not set',
+        secure: process.env.EMAIL_SECURE === 'false' ? false : true
+    });
+    
+    // Check for missing configuration
+    if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
+        console.error('[EMAIL DEBUG] WARNING: Missing email configuration. EMAIL_USER or EMAIL_PASS is not set.');
+    }
+    
+    // Use direct SMTP configuration instead of service
+    const transporterConfig = {
+        host: process.env.EMAIL_HOST || 'smtp.gmail.com',
+        port: process.env.EMAIL_PORT || 587,
+        secure: false, // MUST be false for port 587, true only for port 465
         auth: {
             user: process.env.EMAIL_USER,
             pass: process.env.EMAIL_PASS,
         },
-    });
+        tls: {
+            // Do not fail on invalid certs
+            rejectUnauthorized: false
+        },
+        debug: true, // Enable debug logging
+        logger: true // Log info to console
+    };
+    
+    // Fallback to service-based config if explicitly set
+    if (process.env.EMAIL_USE_SERVICE === 'true') {
+        console.log('[EMAIL DEBUG] Using service-based configuration');
+        return nodemailer.createTransport({
+            service: process.env.EMAIL_SERVICE || 'gmail',
+            auth: {
+                user: process.env.EMAIL_USER,
+                pass: process.env.EMAIL_PASS,
+            },
+            debug: true,
+            logger: true
+        });
+    }
+    
+    console.log('[EMAIL DEBUG] Using direct SMTP configuration');
+    return nodemailer.createTransport(transporterConfig);
 };
 
 /**
@@ -131,8 +174,19 @@ const createTransporter = () => {
  * @returns {String} JWT token
  */
 const generateToken = (user) => {
+    const fullName = user.givenName && user.familyName 
+        ? `${user.givenName} ${user.familyName}`
+        : user.familyName || user.givenName || '';
+        
     return jwt.sign(
-        { user_id: user.user_id, email: user.email, role: user.role },
+        { 
+            user_id: user.user_id, 
+            email: user.email, 
+            role: user.role,
+            family_name: user.familyName,
+            given_name: user.givenName,
+            full_name: fullName
+        },
         process.env.JWT_SECRET,
         { expiresIn: '1d' }
     );
@@ -167,6 +221,7 @@ const generateToken = (user) => {
 async function forgotPassword(req, res) {
     try {
         const { email } = req.body;
+        console.log(`[PASSWORD RESET] Received request for email: ${email}`);
 
         // Validate email input
         if (!email) {
@@ -188,29 +243,30 @@ async function forgotPassword(req, res) {
         // Find the user by email
         const user = await User.findByEmail(email);
 
+        // Check if user exists
         if (!user) {
-            // For security, don't reveal that the user doesn't exist
-            // Return success for non-existent users too
-            return res.status(200).json({ 
-                success: true,
-                message: 'If your email is registered, a password reset link has been sent to it.' 
+            console.log(`[PASSWORD RESET] Email not registered: ${email}`);
+            // Return error for non-existent email
+            return res.status(404).json({
+                success: false,
+                message: 'No account found with this email address. Please check the email or register first.'
             });
         }
 
         // Generate a password reset token
         const resetToken = user.createPasswordResetToken();
         await user.updatePasswordResetFields(resetToken, user.passwordResetExpires);
+        console.log(`[PASSWORD RESET] Token generated for user: ${user.email}`);
 
         // Create password reset URL
         const resetUrl = `${process.env.FRONTEND_URL}/reset-password?token=${resetToken}`;
 
         // Email options with HTML template
         const mailOptions = {
-            from: process.env.EMAIL_USER,
             to: user.email,
             subject: 'Plant Monitoring System - Password Reset Request',
             text: `
-                Hello ${user.full_name || 'User'},
+                Hello ${user.family_name || 'User'},
 
                 You requested a password reset for your Plant Monitoring System account.
 
@@ -226,7 +282,7 @@ async function forgotPassword(req, res) {
             html: `
                 <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e0e0e0; border-radius: 5px;">
                     <h2 style="color: #4CAF50;">Password Reset Request</h2>
-                    <p>Hello ${user.full_name || 'User'},</p>
+                    <p>Hello ${user.family_name || 'User'},</p>
                     <p>You requested a password reset for your Plant Monitoring System account.</p>
                     <p>Please click the button below to reset your password:</p>
                     <p style="text-align: center;">
@@ -240,38 +296,55 @@ async function forgotPassword(req, res) {
             `
         };
 
-        // Send email
-        const transporter = createTransporter();
-        await transporter.sendMail(mailOptions);
+        try {
+            console.log(`[PASSWORD RESET] Attempting to send email to: ${user.email}`);
 
-        res.status(200).json({ 
-            success: true,
-            message: 'Password reset email sent successfully',
-            data: {
-                email: user.email,
-                resetUrl: resetUrl, // Include reset URL for FE team reference
-                expiresIn: '1 hour'
+            // Test email connection before sending
+            const isConnected = await emailService.verifyConnection();
+            if (!isConnected) {
+                throw new Error('SMTP connection failed - Email service is not available');
             }
-        });
 
-    } catch (error) {
-        console.error('Forgot password error:', error);
-        
-        // Reset password reset fields if email failed
-        if (req.body.email) {
-            try {
-                const user = await User.findByEmail(req.body.email);
-                if (user) {
-                    await user.updatePasswordResetFields(null, null);
+            // Use the emailService to send the email
+            const emailResult = await emailService.sendEmail(mailOptions);
+            console.log(`[PASSWORD RESET] Email sent with ID: ${emailResult.messageId}`);
+
+            // Log success
+            await SystemLog.info('authController', 'forgotPassword', `Password reset email sent to ${user.email}`);
+
+            res.status(200).json({
+                success: true,
+                message: 'Password reset email sent successfully',
+                data: {
+                    email: user.email,
+                    expiresIn: '1 hour'
                 }
-            } catch (cleanupError) {
-                console.error('Cleanup error:', cleanupError);
-            }
-        }
+            });
+        } catch (emailError) {
+            // Log the email sending error with detailed diagnostics
+            console.error(`[PASSWORD RESET] Email sending failed: ${emailError.message}`);
 
-        res.status(500).json({ 
+            // Add specific error diagnostics
+            if (emailError.code === 'ECONNECTION' || emailError.code === 'ETIMEDOUT') {
+                console.error('[PASSWORD RESET] Connection issue - Check network/firewall settings');
+            } else if (emailError.code === 'EAUTH') {
+                console.error('[PASSWORD RESET] Authentication failed - Check email credentials');
+            }
+
+            await SystemLog.error('authController', 'forgotPassword', `Failed to send password reset email: ${emailError.message}`);
+
+            res.status(500).json({
+                success: false,
+                message: 'Failed to send password reset email. Please try again later or contact support.'
+            });
+        }
+    } catch (error) {
+        console.error('Password reset error:', error);
+        await SystemLog.error('authController', 'forgotPassword', error.message);
+
+        res.status(500).json({
             success: false,
-            message: 'Internal server error' 
+            message: 'An error occurred during the password reset process'
         });
     }
 }
@@ -317,7 +390,7 @@ async function resetPassword(req, res) {
             });
         }
 
-        // Find the user by reset token
+        // Find the user with the given token
         const user = await User.findByResetToken(token);
 
         if (!user || user.user_id !== decodedToken.id) {
@@ -335,7 +408,7 @@ async function resetPassword(req, res) {
             to: user.email,
             subject: 'Plant Monitoring System - Password Reset Confirmation',
             text: `
-                Hello ${user.full_name || 'User'},
+                Hello ${user.family_name || 'User'},
 
                 Your password has been successfully reset for your Plant Monitoring System account.
 
@@ -352,7 +425,7 @@ async function resetPassword(req, res) {
             html: `
                 <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e0e0e0; border-radius: 5px;">
                     <h2 style="color: #4CAF50;">Password Reset Successful</h2>
-                    <p>Hello ${user.full_name || 'User'},</p>
+                    <p>Hello ${user.family_name || 'User'},</p>
                     <p>Your password has been successfully reset for your Plant Monitoring System account.</p>
                     <p>If you did not initiate this request, please contact our support team immediately.</p>
                     <div style="background-color: #f9f9f9; padding: 15px; border-left: 4px solid #4CAF50; margin: 15px 0;">
@@ -370,10 +443,14 @@ async function resetPassword(req, res) {
         };
 
         try {
+            console.log(`[EMAIL DEBUG] Attempting to send password reset confirmation email to: ${user.email}`);
             const transporter = createTransporter();
-            await transporter.sendMail(mailOptions);
+            console.log('[EMAIL DEBUG] Reset confirmation transporter created successfully');
+            
+            const info = await transporter.sendMail(mailOptions);
+            console.log(`[EMAIL DEBUG] Reset confirmation email sent successfully: ${JSON.stringify(info)}`);
         } catch (emailError) {
-            console.error('Failed to send confirmation email:', emailError);
+            console.error('[EMAIL DEBUG] Failed to send confirmation email:', emailError);
             // Don't fail the request if confirmation email fails
         }
 
@@ -493,80 +570,83 @@ async function changePassword(req, res) {
  */
 async function register(req, res) {
     try {
-        const { email, password, confirmPassword, fullName } = req.body;
-
-        // Validate inputs
-        if (!email || !password || !confirmPassword || !fullName) {
-            return res.status(400).json({
-                error: 'Email, password, confirm password, and full name are required'
-            });
-        }
-
-        // Validate email format
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(email)) {
-            return res.status(400).json({
-                error: 'Invalid email format'
-            });
-        }
-
-        // Check if passwords match
-        if (password !== confirmPassword) {
-            return res.status(400).json({
-                error: 'Passwords do not match'
-            });
-        }
-
-        // Check password strength
-        if (password.length < 6) {
-            return res.status(400).json({
-                error: 'Password must be at least 6 characters long'
-            });
-        }
+        const { email, password, familyName, givenName } = req.body;
+        console.log(`[REGISTER] Registration attempt for email: ${email}`);
 
         // Check if user already exists
-        const existingUser = await User.findByEmail(email);
-        if (existingUser) {
-            return res.status(409).json({
-                error: 'Email already registered'
-            });
+        try {
+            const existingUser = await User.findByEmail(email);
+            if (existingUser) {
+                console.log(`[REGISTER] Email already registered: ${email}`);
+                return res.status(409).json({
+                    success: false,
+                    message: 'Email already registered'
+                });
+            }
+        } catch (lookupError) {
+            console.error(`[REGISTER] Error checking for existing user: ${lookupError.message}`);
+            // Continue with registration attempt
         }
+
+        console.log(`[REGISTER] Creating new user with email: ${email}`);
 
         // Create new user
         const userData = {
             email,
             password,
-            full_name: fullName,
+            familyName,
+            givenName,
             role: 'Regular',
             notification_prefs: {}
         };
 
-        const newUser = new User(userData);
-        await newUser.save();
+        // Save with explicit error handling
+        try {
+            const newUser = new User(userData);
+            const savedUser = await newUser.save();
+            console.log(`[REGISTER] User successfully saved with ID: ${savedUser.user_id}`);
 
-        // Generate JWT token
-        const token = generateToken(newUser);
+            // Generate JWT token
+            const token = generateToken(savedUser);
 
-        // Send welcome email
-        await sendWelcomeEmail(newUser);
+            // Send welcome email asynchronously (don't await to avoid blocking)
+            sendWelcomeEmail(savedUser).catch(emailError => {
+                console.error('[REGISTER] Welcome email could not be sent:', emailError.message);
+            });
 
-        res.status(201).json({
-            success: true,
-            message: 'Registration successful',
-            data: {
-                user: {
-                    user_id: newUser.user_id,
-                    email: newUser.email,
-                    full_name: newUser.full_name,
-                    role: newUser.role
-                },
-                token
+            return res.status(201).json({
+                success: true,
+                message: 'Registration successful',
+                data: {
+                    user: {
+                        user_id: savedUser.user_id,
+                        email: savedUser.email,
+                        family_name: savedUser.family_name,
+                        given_name: savedUser.given_name,
+                        role: savedUser.role
+                    },
+                    token
+                }
+            });
+        } catch (saveError) {
+            console.error(`[REGISTER] Database error during user creation: ${saveError.message}`);
+
+            // Handle specific error cases
+            if (saveError.status === 409 || saveError.code === '23505') {
+                return res.status(409).json({
+                    success: false,
+                    message: 'Email already registered'
+                });
             }
-        });
+
+            throw saveError; // Re-throw to be caught by outer try-catch
+        }
     } catch (error) {
-        console.error('Registration error:', error);
-        res.status(500).json({
-            error: 'Registration failed. Please try again later.'
+        console.error('[REGISTER] Registration error:', error);
+
+        return res.status(500).json({
+            success: false,
+            message: 'Registration failed. Please try again later.'
         });
     }
 }
@@ -583,7 +663,7 @@ async function sendWelcomeEmail(user) {
             to: user.email,
             subject: 'Welcome to Plant Monitoring System',
             text: `
-                Hello ${user.full_name},
+                Hello ${user.family_name},
 
                 Thank you for registering with the Plant Monitoring System!
 
@@ -596,10 +676,14 @@ async function sendWelcomeEmail(user) {
             `,
         };
 
-        await transporter.sendMail(mailOptions);
-        console.log('Welcome email sent to:', user.email);
+        console.log(`[EMAIL DEBUG] Attempting to send welcome email to: ${user.email}`);
+        console.log('[EMAIL DEBUG] Welcome email transporter created successfully');
+        
+        const info = await transporter.sendMail(mailOptions);
+        console.log(`[EMAIL DEBUG] Welcome email sent successfully: ${JSON.stringify(info)}`);
     } catch (error) {
-        console.error('Error sending welcome email:', error);
+        console.error('[EMAIL DEBUG] Error sending welcome email:', error.message);
+        console.error('[EMAIL DEBUG] Full error:', error);
         // We don't throw the error as this shouldn't stop registration
     }
 }
@@ -630,9 +714,11 @@ async function sendWelcomeEmail(user) {
 async function login(req, res) {
     try {
         const { email, password } = req.body;
+        console.log(`[LOGIN] Attempt for email: ${email}`);
 
         // Validate inputs
         if (!email || !password) {
+            console.log('[LOGIN] Missing email or password');
             return res.status(400).json({
                 error: 'Email and password are required'
             });
@@ -641,13 +727,23 @@ async function login(req, res) {
         // Find user by email
         const user = await User.findByEmail(email);
         if (!user) {
+            console.log(`[LOGIN] User not found: ${email}`);
             return res.status(401).json({
                 error: 'Invalid email or password'
             });
         }
 
+        console.log(`[LOGIN] User found: ${user.email}, checking password...`);
+        // Improved safer debug logging without exposing passwords
+        console.log(`[LOGIN] User object has password hash: ${!!user.password}`);
+        console.log(`[LOGIN] Password hash type: ${typeof user.password}`);
+        console.log(`[LOGIN] Password hash length: ${user.password ? user.password.length : 'N/A'}`);
+        console.log(`[LOGIN] Input password provided: ${!!password}`);
+
         // Validate password
         const isPasswordValid = await user.validatePassword(password);
+        console.log(`[LOGIN] Password validation result: ${isPasswordValid}`);
+
         if (!isPasswordValid) {
             return res.status(401).json({
                 error: 'Invalid email or password'
@@ -656,17 +752,32 @@ async function login(req, res) {
 
         // Generate JWT token
         const token = generateToken(user);
+        console.log(`[LOGIN] Success for user: ${user.email}`);
+        
+        // Include both name fields for proper display
+        const fullName = user.givenName && user.familyName 
+            ? `${user.givenName} ${user.familyName}`
+            : user.familyName || user.givenName || 'User';
+            
+        console.log(`[LOGIN] User name fields: given_name=${user.givenName}, family_name=${user.familyName}, fullName=${fullName}`);
+        
+        // Create user response object
+        const userData = {
+            user_id: user.user_id,
+            email: user.email,
+            family_name: user.familyName,
+            given_name: user.givenName,
+            full_name: fullName,
+            role: user.role
+        };
+        
+        console.log(`[LOGIN] User data being sent to client:`, JSON.stringify(userData));
 
         res.status(200).json({
             success: true,
             message: 'Login successful',
             data: {
-                user: {
-                    user_id: user.user_id,
-                    email: user.email,
-                    full_name: user.full_name,
-                    role: user.role
-                },
+                user: userData,
                 token
             }
         });
@@ -733,35 +844,74 @@ async function logout(req, res) {
  */
 async function googleLogin(req, res) {
     try {
-        const { googleToken, googleUserData } = req.body;
+        const { credential } = req.body;
 
-        // In a real implementation, we would verify the Google token
-        // For now, we'll assume it's valid and use the provided data
-
-        if (!googleUserData || !googleUserData.email) {
+        if (!credential) {
             return res.status(400).json({
-                error: 'Invalid Google user data'
+                success: false,
+                error: 'Missing Google credential token'
+            });
+        }
+
+        // Decode the JWT to extract basic information (without verification)
+        // In production, you should verify this token with Google's OAuth2 API
+        // This is a simplified approach
+        const tokenParts = credential.split('.');
+        if (tokenParts.length !== 3) {
+            return res.status(400).json({
+                success: false,
+                error: 'Invalid token format'
+            });
+        }
+
+        // Decode the payload part (second part) of the JWT
+        const payload = JSON.parse(Buffer.from(tokenParts[1], 'base64').toString());
+
+        // Log token information for debugging
+        console.log('[GOOGLE AUTH] Token payload:', payload);
+
+        // Extract user information from token
+        const { email, name, sub: googleId, picture, family_name: familyName, given_name: givenName } = payload;
+
+        if (!email) {
+            return res.status(400).json({
+                success: false,
+                error: 'Email not found in Google token'
             });
         }
 
         // Check if user exists
-        let user = await User.findByEmail(googleUserData.email);
+        let user = await User.findByEmail(email);
 
         // If user doesn't exist, create a new one
         if (!user) {
+            console.log('[GOOGLE AUTH] Creating new user from Google login:', email);
+
             // Generate a random password (user won't need this as they'll use Google to sign in)
             const randomPassword = crypto.randomBytes(16).toString('hex');
 
             const userData = {
-                email: googleUserData.email,
+                email: email,
                 password: randomPassword,
-                full_name: googleUserData.name || googleUserData.email.split('@')[0],
+                family_name: familyName,
+                given_name: givenName,
                 role: 'Regular',
-                notification_prefs: {}
+                notification_prefs: {},
+                google_id: googleId, // Store Google ID for future logins
+                profile_picture: picture // Store profile picture URL if available
             };
 
             user = new User(userData);
             await user.save();
+
+            console.log('[GOOGLE AUTH] New user created:', user.user_id);
+        } else {
+            console.log('[GOOGLE AUTH] User already exists:', user.user_id);
+
+            // Update Google ID if not already set
+            if (!user.google_id) {
+                await user.update({ google_id: googleId });
+            }
         }
 
         // Generate JWT token
@@ -774,15 +924,17 @@ async function googleLogin(req, res) {
                 user: {
                     user_id: user.user_id,
                     email: user.email,
-                    full_name: user.full_name,
-                    role: user.role
+                    family_name: user.family_name,
+                    role: user.role,
+                    profile_picture: user.profile_picture || picture
                 },
                 token
             }
         });
     } catch (error) {
-        console.error('Google login error:', error);
+        console.error('[GOOGLE AUTH] Login error:', error);
         res.status(500).json({
+            success: false,
             error: 'Google login failed. Please try again later.'
         });
     }

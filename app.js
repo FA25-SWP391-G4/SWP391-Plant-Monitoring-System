@@ -3,6 +3,8 @@
  * PLANT MONITORING SYSTEM - MAIN APPLICATION ENTRY POINT
  * ============================================================================
  * 
+ * Load environment variables validation
+ * 
  * 🌱 COMPREHENSIVE USE CASE IMPLEMENTATION ROADMAP - ALL 31 USE CASES
  * 
  * CURRENT IMPLEMENTATION STATUS:
@@ -143,11 +145,10 @@
  * 🔄 Monitoring: Winston logging + PM2 + Prometheus metrics
  */
 
-require('dotenv').config();
+const path = require('path');
 
 var createError = require('http-errors');
 var express = require('express');
-var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
@@ -157,6 +158,12 @@ connectAwsIoT().catch(console.error);
 
 //initialize MQTT client
 const mqttClient = require('./mqtt/mqttClient');
+
+// Import environment variable validation
+const validateEnvVariables = require('./config/validateEnv');
+
+// Validate environment variables before proceeding
+validateEnvVariables();
 
 // Import PostgreSQL database connection
 const { connectDB } = require('./config/db');
@@ -183,7 +190,25 @@ var sensorRouter = require('./routes/sensor');      // 🔄 Sensor data manageme
 var app = express();
 
 // Connect to PostgreSQL database
+connectDB().catch(err => {
+  console.error('Failed to connect to database:', err);
+  process.exit(1);
+});
 
+// Add CORS middleware for cross-origin requests
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', process.env.FRONTEND_URL);
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+  res.header('Access-Control-Allow-Credentials', true);
+  
+  // Handle preflight requests
+  if (req.method === 'OPTIONS') {
+    res.sendStatus(200);
+  } else {
+    next();
+  }
+});
 
 // view engine setup
 // app.set('views', path.join(__dirname, 'views'));
@@ -196,6 +221,21 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 // Serve the React client build files
 app.use(express.static(path.join(__dirname, 'client/build')));
+
+// Add health check endpoint to verify server is running
+app.get('/health', (req, res) => {
+  res.status(200).json({ 
+    status: 'ok', 
+    message: 'Server is running correctly',
+    timestamp: new Date().toISOString(),
+    environment: process.env.NODE_ENV || 'development'
+  });
+});
+
+// Add direct payment result page (fallback for testing)
+app.get('/payment/result', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'payment-result.html'));
+});
 
 // Mount route handlers
 app.use('/', indexRouter);                          // Basic routes
