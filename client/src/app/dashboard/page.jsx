@@ -14,7 +14,7 @@ import AIInsightsWidget from '@/components/dashboard/AIInsightsWidget';
 import AIPredictionsWidget from '@/components/dashboard/AIPredictionsWidget';
 import AIHistoryWidget from '@/components/dashboard/AIHistoryWidget';
 import { AIProvider } from '@/providers/AIProvider';
-import { AIProvider } from '@/providers/AIProvider';
+import Navbar from '@/components/Navbar';
 
 // Mock data for development - would come from API in real app
 const MOCK_PLANTS = [
@@ -127,11 +127,17 @@ export default function DashboardPage() {
   }
 
   return (
+<<<<<<< HEAD
     <AIProvider>
       <div className="min-h-screen bg-gray-50">
         <DashboardHeader user={user} />
         
         <main className="container mx-auto px-4 py-8">
+=======
+    <div className="min-h-screen bg-gray-50">
+      <Navbar user={user} />
+      <main className="container mx-auto px-4 py-8">
+>>>>>>> 71ef89edbadc5bc62baf2aec2a312ebf64c0e6fc
         {/* Welcome Banner */}
         <div className="bg-gradient-to-r from-emerald-500 to-emerald-700 rounded-xl shadow-lg mb-8 p-6 text-white flex items-center justify-between">
           <div>

@@ -36,6 +36,7 @@
 const { pool } = require('../config/db');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const crypto = require('crypto');
 
 class User {
 /**
@@ -47,8 +48,37 @@ class User {
 constructor(userData) {
     this.user_id = userData.user_id;
     this.email = userData.email;
-    this.password = userData.password_hash || userData.password;
-    this.full_name = userData.full_name;
+
+    // Fix password handling - store hash and plaintext separately
+    // This is critical for differentiating between database retrieval and new user creation
+    if (userData.password_hash) {
+        // When loading from database, password_hash is the bcrypt hash
+        this.password = userData.password_hash; // Store the hash for validation
+        this.plainTextPassword = null; // No plaintext when loading existing user
+
+        console.log('[USER CONSTRUCTOR] Loaded existing user with password hash');
+    } else if (userData.password) {
+        // When creating new user, password is plain text
+        this.plainTextPassword = userData.password; // Store plaintext for hashing during save
+        this.password = null; // No hash yet for new user
+
+        console.log('[USER CONSTRUCTOR] New user with plaintext password (will be hashed on save)');
+    } else {
+        // Neither password nor hash provided
+        this.password = null;
+        this.plainTextPassword = null;
+
+        console.log('[USER CONSTRUCTOR] Warning: No password or hash provided');
+    }
+
+    // Log field diagnostics (safer, without exposing actual values)
+    console.log('[USER CONSTRUCTOR] Available fields in userData:', Object.keys(userData));
+    console.log('[USER CONSTRUCTOR] Password source:',
+        userData.password_hash ? 'password_hash' :
+        userData.password ? 'password' : 'not found');
+
+    this.familyName = userData.family_name;
+    this.givenName = userData.given_name;
     this.role = userData.role || 'Regular'; // Default role for UC1
     this.notification_prefs = userData.notification_prefs || {}; // Notification preferences
     this.fcm_tokens = userData.fcm_tokens || []; // Firebase Cloud Messaging tokens for push notifications
@@ -56,6 +86,10 @@ constructor(userData) {
     this.passwordResetExpires = userData.password_reset_expires;
     this.languagePreference = userData.language_preference || 'en'; // Default language
     this.created_at = userData.created_at;
+
+    // Add support for Google login
+    this.google_id = userData.google_id;
+    this.profile_picture = userData.profile_picture;
 }
 
 /**
@@ -66,15 +100,11 @@ constructor(userData) {
 createPasswordResetToken() {
     try {
         // Generate a random token
-        const resetToken = jwt.sign(
-            { id: this.user_id, email: this.email },
-            process.env.JWT_SECRET,
-            { expiresIn: '1h' }
-        );
+        const resetToken = crypto.randomBytes(32).toString('hex');
         
         // Store the token and expiration
         this.passwordResetToken = resetToken;
-        this.passwordResetExpires = new Date(Date.now() + 60 * 60 * 1000); // 1 hour
+        this.passwordResetExpires = new Date(Date.now() + 900000); // 15 minutes
         
         return resetToken;
     } catch (error) {
@@ -123,15 +153,30 @@ async updatePasswordResetFields(token, expires) {
     // Static method to find user by email
     static async findByEmail(email) {
         try {
+            console.log(`[USER] Finding user by email: ${email}`);
             const query = 'SELECT * FROM Users WHERE email = $1';
             const result = await pool.query(query, [email.toLowerCase()]);
             
             if (result.rows.length === 0) {
+                console.log(`[USER] No user found with email: ${email}`);
                 return null;
             }
             
-            return new User(result.rows[0]);
+            // Debug the retrieved row from database
+            console.log(`[USER] User found with email: ${email}`);
+            console.log(`[USER] Database fields available:`, Object.keys(result.rows[0]));
+
+            // Ensure password hash is correctly mapped
+            const userData = result.rows[0];
+
+            // Create user object and debug password-related fields
+            const user = new User(userData);
+            console.log(`[USER] Password field exists:`, !!user.password);
+            console.log(`[USER] Password hash length:`, user.password ? user.password.length : 'N/A');
+
+            return user;
         } catch (error) {
+            console.error(`[USER] Error finding user by email:`, error);
             throw error;
         }
     }
@@ -233,24 +278,37 @@ async updatePasswordResetFields(token, expires) {
                 // Update existing user
                 const query = `
                     UPDATE Users 
-                    SET email = $1, password_hash = $2, full_name = $3, 
-                        role = $4, notification_prefs = $5, 
-                        password_reset_token = $6, password_reset_expires = $7
-                    WHERE user_id = $8
+                    SET email = $1, password_hash = $2, family_name = $3, given_name = $4,
+                        role = $5, notification_prefs = $6, 
+                        password_reset_token = $7, password_reset_expires = $8,
+                        google_id = $9, profile_picture = $10
+                    WHERE user_id = $11
                     RETURNING *
                 `;
                 
-                const hashedPassword = await this.hashPassword(this.password);
-                
+                // If plainTextPassword exists, hash it. Otherwise, use existing password hash
+                let hashedPassword;
+                if (this.plainTextPassword) {
+                    console.log('[USER UPDATE] Hashing new password for update');
+                    const salt = await bcrypt.genSalt(12);
+                    hashedPassword = await bcrypt.hash(this.plainTextPassword, salt);
+                } else {
+                    console.log('[USER UPDATE] Keeping existing password hash');
+                    hashedPassword = this.password; // Use existing hash
+                }
+
                 const result = await pool.query(query, [
                     this.email.toLowerCase(),
                     hashedPassword,
-                    this.full_name,
+                    this.familyName,
+                    this.givenName,
                     this.role,
                     JSON.stringify(this.notification_prefs),
                     this.passwordResetToken,
                     this.passwordResetExpires,
-                    this.user_id
+                    this.googleId,
+                    this.profilePicture,
+                    this.userId
                 ]);
                 
                 const updatedUser = new User(result.rows[0]);
@@ -258,48 +316,75 @@ async updatePasswordResetFields(token, expires) {
                 return this;
             } else {
                 // Create new user
-                const hashedPassword = await this.hashPassword(this.password);
-                
+                console.log('[USER CREATE] Attempting to create new user:', this.email);
+
+                // Check if email already exists
+                const existingUser = await User.findByEmail(this.email);
+                if (existingUser) {
+                    console.error('[USER CREATE] Email already registered:', this.email);
+                    const error = new Error('Email already exists');
+                    error.code = '23505'; // Simulate PostgreSQL unique violation code
+                    throw error;
+                }
+
+                // Hash the plainTextPassword for new user creation
+                if (!this.plainTextPassword) {
+                    throw new Error('Password is required for new user creation');
+                }
+
+                console.log('[USER CREATE] Hashing password for new user');
+                const salt = await bcrypt.genSalt(12);
+                const hashedPassword = await bcrypt.hash(this.plainTextPassword, salt);
+
                 const query = `
-                    INSERT INTO Users (email, password_hash, full_name, role, notification_prefs)
-                    VALUES ($1, $2, $3, $4, $5)
+                    INSERT INTO Users (
+                        email, password_hash, family_name, given_name, role, 
+                        notification_prefs, google_id, profile_picture
+                    )
+                    VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
                     RETURNING *
                 `;
                 
+                console.log('[USER CREATE] Executing database query for new user');
+
                 const result = await pool.query(query, [
                     this.email.toLowerCase(),
                     hashedPassword,
-                    this.full_name,
+                    this.familyName,
+                    this.givenName,
                     this.role,
-                    JSON.stringify(this.notification_prefs || {})
+                    JSON.stringify(this.notification_prefs || {}),
+                    this.google_id,
+                    this.profile_picture
                 ]);
                 
+                console.log('[USER CREATE] User created successfully:', result.rows[0].user_id);
+
                 const newUser = new User(result.rows[0]);
                 Object.assign(this, newUser);
                 return this;
             }
         } catch (error) {
+            console.error('[USER CREATE ERROR] Failed to save user:', error.message);
+
+            // Add detailed error diagnostics for database issues
+            if (error.code === '42P01') {
+                console.error('[USER CREATE ERROR] Table "Users" does not exist. Database schema may need to be created.');
+            } else if (error.code === '23505') {
+                console.error('[USER CREATE ERROR] Duplicate key violation. Email may already be registered.');
+                const conflictError = new Error('Email already registered');
+                conflictError.status = 409;
+                throw conflictError;
+            } else if (error.code === '23502') {
+                console.error('[USER CREATE ERROR] Not-null constraint violation. Missing required field.');
+            } else if (error.code === '42703') {
+                console.error('[USER CREATE ERROR] Column does not exist. Database schema may be outdated.');
+            }
+
             throw error;
         }
     }
 
-    /**
-     * HASH PASSWORD - SECURE PASSWORD STORAGE
-     * Uses bcrypt with 12 salt rounds for optimal security/performance balance
-     * 
-     * SUPPORTS:
-     * - UC1: User Registration (Other backend member) - New password hashing during signup
-     * - UC11: Reset Password - New password hashing after reset
-     * - UC12: Change Password - Password change hashing
-     * - UC24: Admin user creation/updates
-     * 
-     * REGISTRATION USE (UC1): 
-     * - Called during user account creation
-     * - Ensures passwords never stored in plaintext
-     * - Consistent hashing for all user passwords
-     * 
-     * SECURITY: 12 salt rounds = ~300ms hashing time (OWASP recommended)
-     */
     // Hash password
     async hashPassword(password) {
         if (!password) return this.password; // Return existing password if no new password
@@ -307,29 +392,39 @@ async updatePasswordResetFields(token, expires) {
         return await bcrypt.hash(password, salt);
     }
 
-    /**
-     * VALIDATE PASSWORD - AUTHENTICATION
-     * Compares plaintext password with stored hash for login
-     * 
-     * SUPPORTS:
-     * - UC2: User Login (Other backend member) - Primary authentication method
-     *   └── Process: Email lookup → password validation → JWT generation
-     *   └── Security: Timing attack resistance, rate limiting support
-     *   └── Integration: Works with login controller and middleware
-     * - UC12: Change Password - Current password verification before change
-     * 
-     * LOGIN PROCESS (UC2):
-     * 1. User found via findByEmail(email)
-     * 2. validatePassword(plaintext) called with user input
-     * 3. bcrypt.compare() performs secure hash comparison
-     * 4. Returns boolean for authentication success/failure
-     * 5. JWT token generated on successful validation
-     * 
-     * SECURITY: Uses bcrypt.compare for timing attack resistance
-     */
     // Validate password
     async validatePassword(password) {
-        return await bcrypt.compare(password, this.password);
+        console.log(`[USER] validatePassword called with password length: ${password ? password.length : 0}`);
+        console.log(`[USER] this.password exists: ${!!this.password}`);
+        console.log(`[USER] this.password type: ${typeof this.password}`);
+
+        // Safety check for missing password hash
+        if (!this.password) {
+            console.error('[USER] Cannot validate password: No password hash available');
+            return false;
+        }
+
+        try {
+            // Compare plaintext password with stored hash
+            // Do NOT hash the password again before comparison
+            console.log(`[USER] Comparing plaintext password with stored hash`);
+
+            // Use bcrypt compare with error handling
+            const isValid = await bcrypt.compare(password, this.password);
+            console.log(`[USER] Password validation result: ${isValid}`);
+
+            return isValid;
+        } catch (error) {
+            console.error('[USER] Error validating password:', error);
+            console.error('[USER] Error details:', {
+                message: error.message,
+                passwordProvided: !!password,
+                passwordHashExists: !!this.password,
+                passwordHashFormat: this.password ? `${this.password.substring(0, 10)}...` : 'N/A'
+            });
+
+            return false;
+        }
     }
 
     /**
@@ -450,7 +545,7 @@ createPasswordResetToken() {
     async update(userData) {
         try {
             // Build dynamic query based on provided fields
-            const validFields = ['full_name', 'notification_prefs', 'role', 'language_preference'];
+            const validFields = ['family_name', 'given_name', 'notification_prefs', 'role', 'language_preference'];
             const updates = [];
             const values = [this.user_id]; // First parameter is always user_id
             let paramIndex = 2; // Start parameter index at 2 (user_id is $1)
@@ -458,7 +553,8 @@ createPasswordResetToken() {
             // Construct SET part of query for each provided field
             Object.keys(userData).forEach(key => {
                 if (validFields.includes(key)) {
-                    updates.push(`${key === 'full_name' ? 'full_name' : 
+                    updates.push(`${key === 'family_name' ? 'family_name' : 
+                                  key === 'given_name' ? 'given_name' : 
                                   key === 'notification_prefs' ? 'notification_prefs' : 
                                   key === 'role' ? 'role' : 
                                   key === 'language_preference' ? 'language_preference' : key} = $${paramIndex}`);
@@ -485,7 +581,8 @@ createPasswordResetToken() {
             // Update the user object with new values
             if (result.rows.length > 0) {
                 const updatedUser = result.rows[0];
-                this.full_name = updatedUser.full_name;
+                this.family_name = updatedUser.family_name;
+                this.given_name = updatedUser.given_name;
                 this.notification_prefs = updatedUser.notification_prefs;
                 this.role = updatedUser.role;
                 this.languagePreference = updatedUser.language_preference;

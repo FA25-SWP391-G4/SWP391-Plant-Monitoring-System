@@ -19,12 +19,12 @@
  */
 
 const config = {
-    // VNPay Test Environment Credentials
-    vnp_TmnCode: process.env.VNPAY_TMN_CODE || 'CGW7KJK7',
-    vnp_HashSecret: process.env.VNPAY_HASH_SECRET || 'VGTLQQIUPSSO4ERSSAMGVFS5RRSGBEHT',
-    vnp_Url: process.env.VNPAY_URL || 'https://sandbox.vnpayment.vn/paymentv2/vpcpay.html',
-    vnp_ReturnUrl: process.env.VNPAY_RETURN_URL || 'http://localhost:3000/payment/vnpay-return',
-    vnp_IpnUrl: process.env.VNPAY_IPN_URL || 'http://localhost:3000/payment/vnpay-ipn',
+    // VNPay Environment Credentials from environment variables
+    vnp_TmnCode: process.env.VNPAY_TMN_CODE,
+    vnp_HashSecret: process.env.VNPAY_HASH_SECRET,
+    vnp_Url: process.env.VNPAY_URL,
+    vnp_ReturnUrl: process.env.VNPAY_RETURN_URL,
+    vnp_IpnUrl: process.env.VNPAY_IPN_URL,
     
     // Payment Configuration
     vnp_Version: '2.1.0',

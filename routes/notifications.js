@@ -9,7 +9,7 @@
 
 const express = require('express');
 const router = express.Router();
-const notificationController = require('../__mocks__/notificationController');
+const notificationController = require('../controllers/notificationController');
 const authenticate = require('../middlewares/authMiddleware');
 
 /**
