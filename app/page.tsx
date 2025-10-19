@@ -445,7 +445,7 @@ export default function LandingPage() {
                 </li>
                 <li>
                   <a
-                    href="#pricing"
+                    href="#"
                     className="hover:text-emerald-500 transition-all duration-300 hover:translate-x-1 inline-block"
                   >
                     Pricing

@@ -24,7 +24,9 @@ export default function DashboardPage() {
             <Link href="#benefits" className="text-gray-600 hover:text-emerald-600 transition-colors">
               Benefits
             </Link>
-            <Link href="#pricing" className="text-gray-600 hover:text-emerald-600 transition-colors">
+            <Link 
+                 href="/pricing"
+                 className="text-gray-600 hover:text-emerald-600 transition-colors">
               Pricing
             </Link>
             <Link href="#contact" className="text-gray-600 hover:text-emerald-600 transition-colors">
