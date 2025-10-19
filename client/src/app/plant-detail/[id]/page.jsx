@@ -5,9 +5,12 @@ import { useAuth } from '@/providers/AuthProvider';
 import { useRouter } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
 import PlantDetails from '@/components/plants/PlantDetails';
-// import SensorReadings from '@/components/plants/SensorReadings';
-// import WateringScheduleControl from '@/components/plants/WateringScheduleControl';
-// import ManualWateringControl from '@/components/plants/ManualWateringControl';
+import AIChatbot from '@/components/AIChatbot';
+import AIWateringPrediction from '@/components/AIWateringPrediction';
+import AIImageRecognition from '@/components/AIImageRecognition';
+import SensorReadings from '@/components/plants/SensorReadings';
+import WateringScheduleControl from '@/components/plants/WateringScheduleControl';
+import ManualWateringControl from '@/components/plants/ManualWateringControl';
 import api from '@/api/axiosClient';
 
 export default function PlantDetailPage({ params }) {
@@ -163,6 +166,24 @@ export default function PlantDetailPage({ params }) {
                   {t('plants.tabs.wateringSchedule', 'Watering Schedule')}
                 </button>
               )}
+              <button 
+                className={`px-6 py-3 text-sm font-medium ${activeTab === 'ai-predictions' ? 'border-b-2 border-emerald-500 text-emerald-600' : 'text-gray-500 hover:text-gray-700'}`}
+                onClick={() => setActiveTab('ai-predictions')}
+              >
+                {t('plants.tabs.aiPredictions', 'AI Predictions')}
+              </button>
+              <button 
+                className={`px-6 py-3 text-sm font-medium ${activeTab === 'disease-recognition' ? 'border-b-2 border-emerald-500 text-emerald-600' : 'text-gray-500 hover:text-gray-700'}`}
+                onClick={() => setActiveTab('disease-recognition')}
+              >
+                {t('plants.tabs.diseaseRecognition', 'Disease Recognition')}
+              </button>
+              <button 
+                className={`px-6 py-3 text-sm font-medium ${activeTab === 'ai-assistant' ? 'border-b-2 border-emerald-500 text-emerald-600' : 'text-gray-500 hover:text-gray-700'}`}
+                onClick={() => setActiveTab('ai-assistant')}
+              >
+                {t('plants.tabs.aiAssistant', 'AI Assistant')}
+              </button>
             </div>
             
             {/* Tab content */}
@@ -180,6 +201,30 @@ export default function PlantDetailPage({ params }) {
                   isPremium={isPremiumUser} 
                   onUpdateSchedule={handleWateringScheduleUpdate}
                 />
+              )}
+              {activeTab === 'ai-predictions' && (
+                <div className="max-w-4xl">
+                  <AIWateringPrediction 
+                    plant={plant} 
+                    className="w-full"
+                  />
+                </div>
+              )}
+              {activeTab === 'disease-recognition' && (
+                <div className="max-w-4xl">
+                  <AIImageRecognition 
+                    plant={plant} 
+                    className="w-full"
+                  />
+                </div>
+              )}
+              {activeTab === 'ai-assistant' && (
+                <div className="max-w-4xl">
+                  <AIChatbot 
+                    plant={plant} 
+                    className="w-full"
+                  />
+                </div>
               )}
             </div>
           </div>
