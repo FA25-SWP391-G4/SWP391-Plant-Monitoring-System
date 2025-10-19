@@ -1,7 +1,7 @@
 "use client"
 
 import type React from "react"
-import { Leaf, Sparkles, CheckCircle2 } from "lucide-react"
+
 import { Sprout, Mail, Lock, CheckCircle, Facebook, Apple } from "lucide-react"
 import Link from "next/link"
 import { useState } from "react"
@@ -58,7 +58,12 @@ export default function LoginPage() {
     console.log("Login data:", formData)
 
     setIsLoading(false)
-    router.push("/dashboard")
+
+    if (formData.email === "admin@gmail.com" && formData.password === "123") {
+      router.push("/admin")
+    } else {
+      router.push("/dashboard")
+    }
   }
 
   return (
@@ -66,7 +71,7 @@ export default function LoginPage() {
       <header className="w-full border-b border-emerald-100/60 bg-white/80 backdrop-blur-md">
         <nav className="container mx-auto px-6 py-4 flex items-center justify-between">
           <div className="flex items-center">
-            <Leaf className="h-7 w-7 text-emerald-600 mr-2" />
+            <Sprout className="h-7 w-7 text-emerald-600 mr-2" />
             <span className="text-xl font-bold text-gray-900">PlantSmart</span>
           </div>
           <div className="hidden sm:flex items-center space-x-6">
@@ -160,7 +165,7 @@ export default function LoginPage() {
                       Password
                     </label>
                     <Link
-                      href="/forgotPassword"
+                      href="/forgot-password"
                       className="text-sm text-emerald-700 hover:text-emerald-800 font-medium"
                     >
                       Forgot password?
