@@ -11,6 +11,8 @@ const Alert = require('./Alert');
 const Payment = require('./Payment');
 const SystemLog = require('./SystemLog');
 const ChatHistory = require('./ChatHistory');
+const AIPrediction = require('./AIPrediction');
+const ImageAnalysis = require('./ImageAnalysis');
 
 module.exports = {
     User,
@@ -24,5 +26,7 @@ module.exports = {
     Alert,
     Payment,
     SystemLog,
-    ChatHistory
+    ChatHistory,
+    AIPrediction,
+    ImageAnalysis
 };
