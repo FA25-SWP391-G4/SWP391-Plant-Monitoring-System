@@ -19,6 +19,7 @@ export function login(email, password) {
   if (u && u.password === password) {
     localStorage.setItem('sg_user', JSON.stringify({ id: u.id, name: u.name, email: u.email, role: u.role }));
 <<<<<<< HEAD
+<<<<<<< HEAD
     return { success: true, user: { id: u.id, name: u.name, email: u.email, role: u.role } };
   }
   return { success: false, error: 'Invalid email or password' };
@@ -47,6 +48,8 @@ export function isPremium() {
   return user && (user.role === 'premium' || user.role === 'admin');
 }
 =======
+=======
+>>>>>>> aa9e4b2 (chore: remove mock data and mockApi for production integration)
     return { ok: true, user: u };
   }
   return { ok: false, error: 'Invalid email or password' };
@@ -63,4 +66,36 @@ export function getDeviceWifi() {
 
 /* Utilities */
 export const clamp = (v, min, max) => Math.max(min, Math.min(max, v));
+<<<<<<< HEAD
 >>>>>>> 9cbefc4 (Merge smart-garden-frontend into client folder)
+=======
+=======
+    return { success: true, user: { id: u.id, name: u.name, email: u.email, role: u.role } };
+  }
+  return { success: false, error: 'Invalid email or password' };
+}
+
+export function logout() {
+  localStorage.removeItem('sg_user');
+}
+
+export function getCurrentUser() {
+  const data = localStorage.getItem('sg_user');
+  return data ? JSON.parse(data) : null;
+}
+
+export function isLoggedIn() {
+  return !!getCurrentUser();
+}
+
+export function hasRole(role) {
+  const user = getCurrentUser();
+  return user && user.role === role;
+}
+
+export function isPremium() {
+  const user = getCurrentUser();
+  return user && (user.role === 'premium' || user.role === 'admin');
+}
+>>>>>>> 56df1a6 (chore: remove mock data and mockApi for production integration)
+>>>>>>> aa9e4b2 (chore: remove mock data and mockApi for production integration)

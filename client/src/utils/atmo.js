@@ -19,6 +19,7 @@ export function targetIndoorLightFor(outside, plantName = "") {
   if (/rosemary/i.test(plantName)) base -= 2; // bright lover but avoid overexpose indoors
   if (/fig/i.test(plantName)) base += 2;      // Ficus lyrata likes a touch more
 <<<<<<< HEAD
+<<<<<<< HEAD
   if (/snake|sansevieria/i.test(plantName)) base -= 3; // Snake plants do fine with less
   return base;
 }
@@ -26,3 +27,12 @@ export function targetIndoorLightFor(outside, plantName = "") {
   return Math.max(45, Math.min(75, base));
 }
 >>>>>>> 9cbefc4 (Merge smart-garden-frontend into client folder)
+=======
+  return Math.max(45, Math.min(75, base));
+}
+=======
+  if (/snake|sansevieria/i.test(plantName)) base -= 3; // Snake plants do fine with less
+  return base;
+}
+>>>>>>> 56df1a6 (chore: remove mock data and mockApi for production integration)
+>>>>>>> aa9e4b2 (chore: remove mock data and mockApi for production integration)

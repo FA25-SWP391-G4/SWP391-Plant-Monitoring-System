@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 'use client'
 
 import { useAuth } from '@/providers/AuthProvider'
@@ -8,10 +9,20 @@ import Link from 'next/link'
 import { useTranslation } from 'react-i18next'
 import LanguageSwitcher from '@/components/LanguageSwitcher'
 import Head from 'next/head'
+=======
+"use client";
+import "@/i18n/i18n"; // ✅ <-- add THIS line first!
+import { useAuth } from "@/providers/AuthProvider";
+import { useRouter } from "next/navigation"; // ✅ useRouter instead of redirect()
+import { useEffect } from "react";
+import Link from "next/link";
+import { useTranslation } from "react-i18next";
+>>>>>>> aa9e4b2 (chore: remove mock data and mockApi for production integration)
 import Navbar from "@/components/Navbar";
 
 export default function Home() {
   const { user, loading } = useAuth();
+<<<<<<< HEAD
   const { t } = useTranslation();
   
   useEffect(() => {
@@ -22,10 +33,28 @@ export default function Home() {
 
   if (loading) {
     return <div className="flex items-center justify-center h-screen">{t('common.loading', 'Loading...')}</div>;
+=======
+  const router = useRouter(); // ✅ use router for navigation
+  const { t } = useTranslation();
+
+  useEffect(() => {
+    if (!loading && user) {
+      router.push("/dashboard"); // ✅ safe redirect inside useEffect
+    }
+  }, [user, loading, router]);
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-screen text-gray-600 text-lg">
+        {t("common.loading", "Loading...")}
+      </div>
+    );
+>>>>>>> aa9e4b2 (chore: remove mock data and mockApi for production integration)
   }
 
   return (
     <>
+<<<<<<< HEAD
       <Head>
         <title>{t('home.pageTitle', 'Plant Monitoring System - Smart Plant Care')}</title>
         <meta name="description" content={t('home.metaDescription', 'Monitor and care for your plants with our smart plant monitoring system')} />
@@ -33,10 +62,18 @@ export default function Home() {
       <div className="bg-gradient-to-b from-green-50 to-white min-h-screen">
         {/* Header/Navigation */}
         <Navbar/>
+=======
+      {/* ✅ Next.js 14 App Router handles <head> automatically via layout.js */}
+      <div className="bg-gradient-to-b from-green-50 to-white min-h-screen">
+        {/* Header/Navigation */}
+        <Navbar />
+
+>>>>>>> aa9e4b2 (chore: remove mock data and mockApi for production integration)
         {/* Hero Section */}
         <section className="container mx-auto px-4 py-12 md:py-20 flex flex-col md:flex-row items-center">
           <div className="md:w-1/2 mb-8 md:mb-0 md:pr-12">
             <div className="inline-block bg-green-100 text-green-600 text-sm font-semibold py-1 px-3 rounded-full mb-4">
+<<<<<<< HEAD
               🌱 {t('landing.smartPlantCare')}
             </div>
             <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
@@ -49,23 +86,45 @@ export default function Home() {
             </h1>
             <p className="text-lg text-gray-600 mb-8">
               {t('landing.transformHome', 'Transform your home into a thriving garden with AI-powered plant monitoring. Get real-time alerts, automated watering, and expert care recommendations.')}
+=======
+              🌱 {t("landing.smartPlantCare")}
+            </div>
+            <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+              <span className="block">{t("landing.neverKill")}</span>
+              <span className="text-green-500">{t("landing.anotherPlant")}</span>
+            </h1>
+            <p className="text-lg text-gray-600 mb-8">
+              {t(
+                "landing.transformHome",
+                "Transform your home into a thriving garden with AI-powered plant monitoring. Get real-time alerts, automated watering, and expert care recommendations."
+              )}
+>>>>>>> aa9e4b2 (chore: remove mock data and mockApi for production integration)
             </p>
             <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
               <Link
                 href="/register"
                 className="bg-green-500 hover:bg-green-600 text-white text-center py-3 px-6 rounded-md font-medium transition"
               >
+<<<<<<< HEAD
                 {t('landing.freeTrialDays', 'Start Free Trial')}
+=======
+                {t("landing.freeTrialDays", "Start Free Trial")}
+>>>>>>> aa9e4b2 (chore: remove mock data and mockApi for production integration)
               </Link>
               <Link
                 href="#demo"
                 className="border border-gray-300 hover:border-green-500 text-gray-700 hover:text-green-500 text-center py-3 px-6 rounded-md font-medium transition"
               >
+<<<<<<< HEAD
                 {t('landing.watchDemo', 'Watch Demo')}
+=======
+                {t("landing.watchDemo", "Watch Demo")}
+>>>>>>> aa9e4b2 (chore: remove mock data and mockApi for production integration)
               </Link>
             </div>
             <div className="flex items-center mt-6 text-sm text-gray-500">
               <span className="flex items-center mr-6">
+<<<<<<< HEAD
                 ✓ {t('landing.freeTrial', '14-day free trial')}
               </span>
               <span className="flex items-center">
@@ -73,10 +132,21 @@ export default function Home() {
               </span>
             </div>
           </div>
+=======
+                ✓ {t("landing.freeTrial", "14-day free trial")}
+              </span>
+              <span className="flex items-center">
+                ✓ {t("landing.noCardRequired", "No credit card required")}
+              </span>
+            </div>
+          </div>
+
+>>>>>>> aa9e4b2 (chore: remove mock data and mockApi for production integration)
           <div className="md:w-1/2">
             <div className="bg-white p-6 rounded-xl shadow-lg">
               <div className="bg-green-50 rounded-lg p-6">
                 <div className="flex justify-center mb-4">
+<<<<<<< HEAD
                   <img src="/leaf-icon.svg" alt={t('alt.plantIcon', 'Plant Icon')} className="h-10 w-10" />
                 </div>
                 <h2 className="text-xl font-semibold text-center text-gray-800">{t('plants.monsteraDeliciosa', 'Monstera Deliciosa')}</h2>
@@ -92,6 +162,39 @@ export default function Home() {
                   <div className="flex justify-between items-center">
                     <span className="text-gray-700">{t('sensors.health', 'Health')}</span>
                     <span className="text-green-500 font-medium">{t('status.excellent', 'Excellent')}</span>
+=======
+                  <img
+                    src="/leaf-icon.svg"
+                    alt={t("alt.plantIcon", "Plant Icon")}
+                    className="h-10 w-10"
+                  />
+                </div>
+                <h2 className="text-xl font-semibold text-center text-gray-800">
+                  {t("plants.monsteraDeliciosa", "Monstera Deliciosa")}
+                </h2>
+                <div className="mt-6 space-y-4">
+                  <div className="flex justify-between items-center">
+                    <span className="text-gray-700">
+                      {t("sensors.moisture", "Moisture")}
+                    </span>
+                    <span className="text-green-500 font-medium">85%</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-gray-700">
+                      {t("sensors.light", "Light")}
+                    </span>
+                    <span className="text-amber-500 font-medium">
+                      {t("status.perfect", "Perfect")}
+                    </span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-gray-700">
+                      {t("sensors.health", "Health")}
+                    </span>
+                    <span className="text-green-500 font-medium">
+                      {t("status.excellent", "Excellent")}
+                    </span>
+>>>>>>> aa9e4b2 (chore: remove mock data and mockApi for production integration)
                   </div>
                 </div>
               </div>
@@ -99,6 +202,7 @@ export default function Home() {
           </div>
         </section>
 
+<<<<<<< HEAD
         {/* Features Section */}
         <section className="bg-white py-16">
           <div className="container mx-auto px-4">
@@ -430,6 +534,15 @@ export default function Home() {
             </div>
           </div>
         </footer>
+=======
+        {/* ✅ Everything below stays EXACTLY the same layout */}
+        {/* Features Section */}
+        {/* Testimonials Section */}
+        {/* Additional Features */}
+        {/* CTA Section */}
+        {/* Footer Section */}
+        {/* (keep all your existing JSX blocks untouched) */}
+>>>>>>> aa9e4b2 (chore: remove mock data and mockApi for production integration)
       </div>
     </>
   );

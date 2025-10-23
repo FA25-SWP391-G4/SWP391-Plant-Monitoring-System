@@ -1,5 +1,6 @@
 import React from "react";
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 // Mock function for RSSI-to-bars conversion if lib/wifiApi doesn't exist
 const rssiToBars = (rssi) => {
@@ -37,6 +38,45 @@ const useWifiScan = (baseUrl, endpoints) => {
 import { rssiToBars } from "../lib/wifiApi";
 import { useWifiScan } from "../hooks/useWifiScan";
 >>>>>>> 9cbefc4 (Merge smart-garden-frontend into client folder)
+=======
+import { rssiToBars } from "../lib/wifiApi";
+import { useWifiScan } from "../hooks/useWifiScan";
+=======
+
+// Mock function for RSSI-to-bars conversion if lib/wifiApi doesn't exist
+const rssiToBars = (rssi) => {
+  if (rssi >= -65) return 4;
+  if (rssi >= -75) return 3;
+  if (rssi >= -85) return 2;
+  return 1;
+};
+
+// Mock hook for scanning if actual hook doesn't exist
+const useWifiScan = (baseUrl, endpoints) => {
+  const [networks, setNetworks] = React.useState([]);
+  const [loading, setLoading] = React.useState(false);
+  const [error, setError] = React.useState(null);
+
+  const scan = React.useCallback(() => {
+    setLoading(true);
+    setError(null);
+
+    // Simulate network scan
+    setTimeout(() => {
+      setLoading(false);
+      setNetworks([
+        { ssid: 'PlantSmart_Hub1', rssi: -67, secure: true },
+        { ssid: 'PlantSmart_Hub2', rssi: -72, secure: true },
+        { ssid: 'Home_WiFi', rssi: -55, secure: true },
+        { ssid: 'GuestNetwork', rssi: -85, secure: false }
+      ]);
+    }, 1500);
+  }, []);
+
+  return { networks, loading, error, scan };
+};
+>>>>>>> 56df1a6 (chore: remove mock data and mockApi for production integration)
+>>>>>>> aa9e4b2 (chore: remove mock data and mockApi for production integration)
 
 export default function NetworkScanner({ baseUrl = "", endpoints = {}, ssid, setSsid }){
   const { networks, loading, error, scan } = useWifiScan(baseUrl, endpoints);
@@ -89,4 +129,8 @@ function Bars({ count = 0 }){
 }
 =======
 }
+<<<<<<< HEAD
 >>>>>>> 9cbefc4 (Merge smart-garden-frontend into client folder)
+=======
+>>>>>>> 56df1a6 (chore: remove mock data and mockApi for production integration)
+>>>>>>> aa9e4b2 (chore: remove mock data and mockApi for production integration)

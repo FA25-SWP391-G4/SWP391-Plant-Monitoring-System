@@ -1,8 +1,18 @@
+<<<<<<< HEAD
 import Link from "next/link";
 import { useState } from "react";
 import { useAuth } from "@/providers/AuthProvider";
 import { LanguageSwitcher } from './LanguageSwitcher';
 import { useTranslation } from 'react-i18next';
+=======
+"use client";
+
+import Link from "next/link";
+import { useState } from "react";
+import { useAuth } from "@/providers/AuthProvider";
+import LanguageSwitcher from "./LanguageSwitcher"; // ✅ default import
+import { useTranslation } from "react-i18next";
+>>>>>>> aa9e4b2 (chore: remove mock data and mockApi for production integration)
 
 export default function Navbar() {
   const { user, logout } = useAuth();
@@ -14,6 +24,7 @@ export default function Navbar() {
     <nav className="bg-white shadow-sm border-b border-gray-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
+<<<<<<< HEAD
           <div className="flex items-center">
             <Link href="/" className="flex-shrink-0 flex items-center">
               <span className="text-2xl font-bold text-emerald-600">🌱 SmartFarm</span>
@@ -35,11 +46,48 @@ export default function Navbar() {
                   {t('nav.ai', 'AI Features')}
                   <svg className="ml-1 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+=======
+          {/* Left section */}
+          <div className="flex items-center">
+            <Link href="/" className="flex-shrink-0 flex items-center">
+              <span className="text-2xl font-bold text-emerald-600">
+                🌱 SmartFarm
+              </span>
+            </Link>
+
+            {/* Desktop Nav */}
+            <div className="hidden md:ml-8 md:flex md:space-x-8">
+              <Link
+                href="/dashboard"
+                className="text-gray-900 hover:text-emerald-600 px-3 py-2 text-sm font-medium transition-colors"
+              >
+                {t("nav.dashboard", "Dashboard")}
+              </Link>
+              <Link
+                href="/plants"
+                className="text-gray-900 hover:text-emerald-600 px-3 py-2 text-sm font-medium transition-colors"
+              >
+                {t("nav.plants", "Plants")}
+              </Link>
+
+              {/* AI Dropdown */}
+              <div className="relative group">
+                <button className="text-gray-900 hover:text-emerald-600 px-3 py-2 text-sm font-medium flex items-center">
+                  🤖 {t("nav.ai", "AI Features")}
+                  <svg className="ml-1 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M19 9l-7 7-7-7"
+                    />
+>>>>>>> aa9e4b2 (chore: remove mock data and mockApi for production integration)
                   </svg>
                 </button>
                 <div className="absolute left-0 mt-2 w-48 bg-white rounded-md shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
                   <div className="py-1">
                     <Link href="/ai/chat" className="block px-4 py-2 text-sm text-gray-700 hover:bg-emerald-50 hover:text-emerald-600">
+<<<<<<< HEAD
                       <span className="mr-2">💬</span>
                       {t('nav.aiChat', 'AI Chatbot')}
                     </Link>
@@ -54,10 +102,23 @@ export default function Navbar() {
                     <Link href="/ai/history" className="block px-4 py-2 text-sm text-gray-700 hover:bg-emerald-50 hover:text-emerald-600">
                       <span className="mr-2">📊</span>
                       {t('nav.aiHistory', 'AI History')}
+=======
+                      💬 {t("nav.aiChat", "AI Chatbot")}
+                    </Link>
+                    <Link href="/ai/predictions" className="block px-4 py-2 text-sm text-gray-700 hover:bg-emerald-50 hover:text-emerald-600">
+                      🔮 {t("nav.predictions", "Watering Predictions")}
+                    </Link>
+                    <Link href="/ai/image-analysis" className="block px-4 py-2 text-sm text-gray-700 hover:bg-emerald-50 hover:text-emerald-600">
+                      📸 {t("nav.imageAnalysis", "Disease Detection")}
+                    </Link>
+                    <Link href="/ai/history" className="block px-4 py-2 text-sm text-gray-700 hover:bg-emerald-50 hover:text-emerald-600">
+                      📊 {t("nav.aiHistory", "AI History")}
+>>>>>>> aa9e4b2 (chore: remove mock data and mockApi for production integration)
                     </Link>
                   </div>
                 </div>
               </div>
+<<<<<<< HEAD
               
               {isPremium && (
                 <>
@@ -69,6 +130,19 @@ export default function Navbar() {
                   </Link>
                   <Link href="/thresholds" className="text-gray-900 hover:text-emerald-600 px-3 py-2 text-sm font-medium transition-colors">
                     {t('nav.thresholds', 'Thresholds')}
+=======
+
+              {isPremium && (
+                <>
+                  <Link href="/zones" className="text-gray-900 hover:text-emerald-600 px-3 py-2 text-sm font-medium">
+                    {t("nav.zones", "Zones")}
+                  </Link>
+                  <Link href="/reports" className="text-gray-900 hover:text-emerald-600 px-3 py-2 text-sm font-medium">
+                    {t("nav.reports", "Reports")}
+                  </Link>
+                  <Link href="/thresholds" className="text-gray-900 hover:text-emerald-600 px-3 py-2 text-sm font-medium">
+                    {t("nav.thresholds", "Thresholds")}
+>>>>>>> aa9e4b2 (chore: remove mock data and mockApi for production integration)
                   </Link>
                 </>
               )}
@@ -76,7 +150,11 @@ export default function Navbar() {
 
             {/* Mobile menu button */}
             <div className="md:hidden">
+<<<<<<< HEAD
               <button 
+=======
+              <button
+>>>>>>> aa9e4b2 (chore: remove mock data and mockApi for production integration)
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
                 className="text-gray-500 hover:text-gray-700 p-2"
               >
@@ -87,6 +165,7 @@ export default function Navbar() {
             </div>
           </div>
 
+<<<<<<< HEAD
           {/* Right side */}
           <div className="flex items-center space-x-4">
             <LanguageSwitcher />
@@ -118,11 +197,46 @@ export default function Navbar() {
             ) : (
               <Link href="/login" className="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors">
                 {t('nav.login', 'Login')}
+=======
+          {/* Right section */}
+          <div className="flex items-center space-x-4">
+            <LanguageSwitcher />
+            {user ? (
+              <div className="flex items-center space-x-3">
+                <span className="text-sm text-gray-700">
+                  {user.name}{" "}
+                  <span
+                    className={`ml-1 px-2 py-1 text-xs rounded-full ${
+                      isPremium
+                        ? "bg-emerald-100 text-emerald-800"
+                        : "bg-gray-100 text-gray-800"
+                    }`}
+                  >
+                    {user.role}
+                  </span>
+                </span>
+                {!isPremium && (
+                  <Link href="/upgrade" className="bg-amber-500 hover:bg-amber-600 text-white px-3 py-1 rounded-md text-sm font-medium transition-colors">
+                    {t("nav.upgrade", "Upgrade")}
+                  </Link>
+                )}
+                <button
+                  onClick={logout}
+                  className="text-gray-500 hover:text-gray-700 px-3 py-1 text-sm font-medium transition-colors"
+                >
+                  {t("nav.logout", "Logout")}
+                </button>
+              </div>
+            ) : (
+              <Link href="/login" className="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-md text-sm font-medium">
+                {t("nav.login", "Login")}
+>>>>>>> aa9e4b2 (chore: remove mock data and mockApi for production integration)
               </Link>
             )}
           </div>
         </div>
 
+<<<<<<< HEAD
         {/* Mobile menu */}
         {mobileMenuOpen && (
           <div className="md:hidden">
@@ -204,6 +318,19 @@ export default function Navbar() {
                   </Link>
                 </>
               )}
+=======
+        {/* Mobile Dropdown */}
+        {mobileMenuOpen && (
+          <div className="md:hidden">
+            <div className="px-2 pt-2 pb-3 space-y-1 bg-white border-t border-gray-200">
+              <Link href="/dashboard" className="block px-3 py-2 text-base font-medium text-gray-900 hover:bg-gray-50" onClick={() => setMobileMenuOpen(false)}>
+                {t("nav.dashboard", "Dashboard")}
+              </Link>
+              <Link href="/plants" className="block px-3 py-2 text-base font-medium text-gray-900 hover:bg-gray-50" onClick={() => setMobileMenuOpen(false)}>
+                {t("nav.plants", "Plants")}
+              </Link>
+              {/* AI links, etc. */}
+>>>>>>> aa9e4b2 (chore: remove mock data and mockApi for production integration)
             </div>
           </div>
         )}

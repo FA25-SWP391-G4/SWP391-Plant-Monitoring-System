@@ -14,7 +14,10 @@ import AIInsightsWidget from '@/components/dashboard/AIInsightsWidget';
 import AIPredictionsWidget from '@/components/dashboard/AIPredictionsWidget';
 import AIHistoryWidget from '@/components/dashboard/AIHistoryWidget';
 import { AIProvider } from '@/providers/AIProvider';
+<<<<<<< HEAD
 import { AIProvider } from '@/providers/AIProvider';
+=======
+>>>>>>> aa9e4b2 (chore: remove mock data and mockApi for production integration)
 
 // Mock data for development - would come from API in real app
 const MOCK_PLANTS = [

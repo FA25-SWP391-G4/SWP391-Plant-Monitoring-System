@@ -16,7 +16,11 @@
     "wateringFailed": "Failed to trigger watering. Please try again.",
     "analysisError": "Could not analyze plant condition. Please try again later."
   },
+<<<<<<< HEAD
   
+=======
+
+>>>>>>> aa9e4b2 (chore: remove mock data and mockApi for production integration)
   "common": {
     "submit": "Submit",
     "cancel": "Cancel",
@@ -48,12 +52,20 @@
     "appName": "PlantSmart",
     "plantLover": "Plant Lover"
   },
+<<<<<<< HEAD
   
+=======
+
+>>>>>>> aa9e4b2 (chore: remove mock data and mockApi for production integration)
   "accessibility": {
     "email": "Email",
     "phone": "Phone",
     "location": "Location"
   },
+<<<<<<< HEAD
+=======
+
+>>>>>>> aa9e4b2 (chore: remove mock data and mockApi for production integration)
   "auth": {
     "login": "Login",
     "loginTitle": "Login to your account",
@@ -88,6 +100,10 @@
     "termsOfService": "Terms of Service",
     "privacyPolicy": "Privacy Policy"
   },
+<<<<<<< HEAD
+=======
+
+>>>>>>> aa9e4b2 (chore: remove mock data and mockApi for production integration)
   "navigation": {
     "home": "Home",
     "dashboard": "Dashboard",
@@ -113,6 +129,10 @@
     "pricing": "Pricing",
     "contact": "Contact Us"
   },
+<<<<<<< HEAD
+=======
+
+>>>>>>> aa9e4b2 (chore: remove mock data and mockApi for production integration)
   "dashboard": {
     "wateringHistory": "Watering History",
     "sensorReadings": "Sensor Readings",
@@ -145,6 +165,7 @@
     "errorLoading": "Error Loading Dashboard",
     "loadError": "Failed to load dashboard data. Please try again later."
   },
+<<<<<<< HEAD
 "plants": {
   "myPlants": "My Plants",
   "manage": "Manage and monitor your plant collection",
@@ -174,12 +195,50 @@
     "aiAssistant": "AI Assistant"
   }
 },  "notFound": {
+=======
+
+  "plants": {
+    "myPlants": "My Plants",
+    "manage": "Manage and monitor your plant collection",
+    "addNew": "Add New Plant",
+    "noMatchingPlants": "No plants match your filters",
+    "noPlants": "No plants added yet",
+    "tryDifferentFilter": "Try a different filter or search term",
+    "startAdding": "Start adding plants to your collection",
+    "addFirstPlant": "Add Your First Plant",
+    "errorLoading": "Error Loading Plants",
+    "loadError": "Failed to load plants data. Please try again later.",
+    "notFound": "Plant not found",
+    "manualWatering": "Manual Watering",
+    "deviceStatus": "Device Status",
+    "lastWatered": "Last Watered",
+    "nextScheduled": "Next Scheduled Watering",
+    "notWateredYet": "Not watered yet",
+    "notScheduled": "Not scheduled",
+    "view": "View details",
+    "viewDetails": "View Details",
+    "tabs": {
+      "overview": "Overview",
+      "sensorData": "Sensor Data",
+      "wateringSchedule": "Watering Schedule",
+      "aiPredictions": "AI Predictions",
+      "diseaseRecognition": "Disease Recognition",
+      "aiAssistant": "AI Assistant"
+    }
+  },
+
+  "notFound": {
+>>>>>>> aa9e4b2 (chore: remove mock data and mockApi for production integration)
     "title": "Page Not Found",
     "message": "The page you are looking for doesn't exist or has been moved.",
     "goBack": "Go back to home page",
     "errorCode": "Error 404"
   },
+<<<<<<< HEAD
   
+=======
+
+>>>>>>> aa9e4b2 (chore: remove mock data and mockApi for production integration)
   "forbidden": {
     "title": "Access Denied",
     "message": "You don't have permission to access this page.",
@@ -188,6 +247,10 @@
     "upgradeMessage": "This feature requires a premium subscription.",
     "upgrade": "Upgrade Now"
   },
+<<<<<<< HEAD
+=======
+
+>>>>>>> aa9e4b2 (chore: remove mock data and mockApi for production integration)
   "zones": {
     "title": "Manage Multiple Plant Zones",
     "createZone": "Create Zone",
@@ -211,6 +274,10 @@
     "zone3": "Zone 3: Patio",
     "plantsMonitored": "{{count}} plants monitored"
   },
+<<<<<<< HEAD
+=======
+
+>>>>>>> aa9e4b2 (chore: remove mock data and mockApi for production integration)
   "validation": {
     "emailRequired": "Email is required",
     "invalidEmail": "Invalid email format",
@@ -221,6 +288,10 @@
     "lastNameRequired": "Last name is required",
     "termsRequired": "You must accept the terms and conditions"
   },
+<<<<<<< HEAD
+=======
+
+>>>>>>> aa9e4b2 (chore: remove mock data and mockApi for production integration)
   "landing": {
     "smartPlantCare": "Smart Plant Care",
     "neverKill": "Never Kill",
@@ -244,6 +315,10 @@
     "futurePlantCare": "The future of plant care, today. Smart monitoring for happier, healthier plants.",
     "allRightsReserved": "All rights reserved."
   },
+<<<<<<< HEAD
+=======
+
+>>>>>>> aa9e4b2 (chore: remove mock data and mockApi for production integration)
   "features": {
     "smartWatering": "Smart Watering",
     "smartWateringDesc": "Our sensors monitor soil moisture and automatically water your plants at the perfect time, ensuring they're never over or under-watered.",
@@ -252,6 +327,21 @@
     "healthAlerts": "Health Alerts",
     "healthAlertsDesc": "Get instant notifications about potential health issues, pests, or diseases before they become serious problems."
   },
+<<<<<<< HEAD
+=======
+
+  "contact": {
+    "title": "Contact Us",
+    "description": "Have a question or feedback? We'd love to hear from you.",
+    "name": "Your Name",
+    "email": "Your Email",
+    "message": "Message",
+    "sendMessage": "Send Message",
+    "success": "Your message has been sent successfully!",
+    "error": "Failed to send your message. Please try again later."
+  },
+
+>>>>>>> aa9e4b2 (chore: remove mock data and mockApi for production integration)
   "footer": {
     "product": "Product",
     "company": "Company",
@@ -269,7 +359,11 @@
     "termsOfService": "Terms of Service",
     "cookies": "Cookies"
   },
+<<<<<<< HEAD
   
+=======
+
+>>>>>>> aa9e4b2 (chore: remove mock data and mockApi for production integration)
   "help": {
     "title": "Help Center",
     "searchPlaceholder": "Search for help topics...",
@@ -278,13 +372,17 @@
     "faqTitle": "Frequently Asked Questions",
     "noResults": "No results found for '{{query}}'",
     "tryDifferent": "Try a different search term or browse categories below",
+<<<<<<< HEAD
     
+=======
+>>>>>>> aa9e4b2 (chore: remove mock data and mockApi for production integration)
     "categories": {
       "gettingStarted": "Getting Started",
       "account": "Account & Billing",
       "devices": "Devices & Sensors",
       "plantCare": "Plant Care",
       "troubleshooting": "Troubleshooting"
+<<<<<<< HEAD
     },
     
     "faqs": {
@@ -331,6 +429,11 @@
     }
   },
   
+=======
+    }
+  },
+
+>>>>>>> aa9e4b2 (chore: remove mock data and mockApi for production integration)
   "premium": {
     "title": "Upgrade to Premium",
     "description": "Unlock advanced features and get the most from your plant monitoring system",
@@ -367,6 +470,7 @@
       "aiDiagnostics": "AI Plant Diagnostics",
       "notIncluded": "Not included",
       "included": "Included"
+<<<<<<< HEAD
     },
     "faq": {
       "title": "Frequently Asked Questions",
@@ -416,16 +520,24 @@
     "exportHistory": "Export History"
   },
   
+=======
+    }
+  },
+
+>>>>>>> aa9e4b2 (chore: remove mock data and mockApi for production integration)
   "devices": {
     "online": "Online",
     "offline": "Offline"
   },
+<<<<<<< HEAD
   
   "premium": {
     "unlockFeatures": "Unlock Premium Features",
     "scheduleDescription": "Schedule automatic watering, get detailed analytics, and more with Premium.",
     "upgrade": "Upgrade to Premium"
   },
+=======
+>>>>>>> aa9e4b2 (chore: remove mock data and mockApi for production integration)
 
   "settings": {
     "title": "Settings",
@@ -478,4 +590,8 @@
       "success": "Account successfully deleted"
     }
   }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> aa9e4b2 (chore: remove mock data and mockApi for production integration)

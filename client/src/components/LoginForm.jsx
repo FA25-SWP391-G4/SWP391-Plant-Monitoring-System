@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useTranslation } from 'react-i18next';
@@ -459,11 +460,124 @@ export function LoginForm() {
                 <rect x="2" y="4" width="20" height="16" rx="2"></rect>
               </svg>
             </div>
+=======
+"use client";
+
+import { useState } from "react";
+import Link from "next/link";
+import Head from "next/head";
+import { useTranslation } from "react-i18next";
+
+// ✅ mock login data
+const mockUsers = [
+  { email: "admin@plantsmart.com", password: "admin123", role: "Admin" },
+  { email: "user@plantsmart.com", password: "user123", role: "Regular" },
+  { email: "premium@plantsmart.com", password: "premium123", role: "Premium" },
+];
+
+export default function LoginForm() {
+  const { t } = useTranslation();
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+    rememberMe: false,
+  });
+  const [errors, setErrors] = useState({});
+  const [loading, setLoading] = useState(false);
+  const [info, setInfo] = useState("");
+
+  const handleChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: type === "checkbox" ? checked : value,
+    }));
+    setErrors({});
+  };
+
+  // ✅ mock login function
+  async function mockLogin(email, password) {
+    await new Promise((r) => setTimeout(r, 800));
+
+    // Uncomment next line to test "Network error"
+    // throw new Error("Network Error");
+
+    const found = mockUsers.find(
+      (u) => u.email === email && u.password === password
+    );
+    if (!found) throw new Error("Invalid email or password.");
+    return found;
+  }
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setErrors({});
+    setInfo("");
+    const { email, password } = formData;
+
+    if (!email || !password) {
+      setErrors({ form: "Please fill all fields." });
+      return;
+    }
+
+    try {
+      setLoading(true);
+      const user = await mockLogin(email, password);
+      setInfo(`✅ Login success — ${user.role} user`);
+      console.log("Redirecting to /dashboard (mock)");
+    } catch (err) {
+      if (err.message.includes("Network")) {
+        setErrors({ form: "Network error. Please check your connection." });
+      } else {
+        setErrors({ form: "Invalid email or password." });
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <>
+      <Head>
+        <title>PlantSmart — Login (Mock Mode)</title>
+      </Head>
+      <section className="bg-white rounded-2xl shadow-xl border border-emerald-100/70 p-6 sm:p-8">
+        <div className="bg-yellow-100 text-yellow-800 text-sm py-2 px-4 rounded mb-4">
+          ⚠️ Offline Test Mode — using mock credentials (no backend)
+        </div>
+
+        <h2 className="text-xl font-semibold text-gray-900 mb-6">
+          {t("auth.loginTitle", "Sign in to your account")}
+        </h2>
+
+        {errors.form && (
+          <div className="bg-red-50 text-red-600 border border-red-200 text-sm px-4 py-2 rounded mb-4">
+            {errors.form}
+          </div>
+        )}
+
+        {info && (
+          <div className="bg-green-50 text-green-700 border border-green-200 text-sm px-4 py-2 rounded mb-4">
+            {info}
+          </div>
+        )}
+
+        <form className="space-y-5" onSubmit={handleSubmit}>
+          {/* Email */}
+          <div>
+            <label
+              htmlFor="email"
+              className="block text-sm font-medium text-gray-700 mb-2"
+            >
+              {t("common.email", "Email address")}
+            </label>
+>>>>>>> aa9e4b2 (chore: remove mock data and mockApi for production integration)
             <input
               id="email"
               name="email"
               type="email"
               value={formData.email}
+<<<<<<< HEAD
               onChange={handleInputChange}
               autoComplete="email"
               required
@@ -494,12 +608,36 @@ export function LoginForm() {
                 <rect width="18" height="11" x="3" y="11" rx="2" ry="2"></rect>
                 <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
               </svg>
+=======
+              onChange={handleChange}
+              placeholder="you@plantsmart.com"
+              className="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-emerald-500 focus:border-emerald-500"
+            />
+          </div>
+
+          {/* Password */}
+          <div>
+            <div className="flex justify-between items-center mb-2">
+              <label
+                htmlFor="password"
+                className="block text-sm font-medium text-gray-700"
+              >
+                {t("common.password", "Password")}
+              </label>
+              <Link
+                href="/forgot-password"
+                className="text-sm text-emerald-700 hover:text-emerald-800 font-medium"
+              >
+                Forgot password?
+              </Link>
+>>>>>>> aa9e4b2 (chore: remove mock data and mockApi for production integration)
             </div>
             <input
               id="password"
               name="password"
               type="password"
               value={formData.password}
+<<<<<<< HEAD
               onChange={handleInputChange}
               autoComplete="current-password"
               required
@@ -604,3 +742,87 @@ export function LoginForm() {
 }
 
 export default LoginForm;
+=======
+              onChange={handleChange}
+              placeholder="••••••••"
+              className="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-emerald-500 focus:border-emerald-500"
+            />
+          </div>
+
+          {/* Remember Me */}
+          <div className="flex items-center justify-between">
+            <label className="flex items-center text-sm text-gray-700">
+              <input
+                type="checkbox"
+                name="rememberMe"
+                checked={formData.rememberMe}
+                onChange={handleChange}
+                className="h-4 w-4 text-emerald-600 border-gray-300 rounded focus:ring-emerald-500"
+              />
+              <span className="ml-2">Remember me</span>
+            </label>
+            <Link
+              href="/register"
+              className="text-sm text-emerald-700 hover:text-emerald-800 font-medium"
+            >
+              Create account
+            </Link>
+          </div>
+
+          {/* Submit */}
+          <button
+            type="submit"
+            disabled={loading}
+            className={`w-full py-3 rounded-md font-semibold text-white ${
+              loading
+                ? "bg-emerald-400 cursor-not-allowed"
+                : "bg-emerald-600 hover:bg-emerald-700"
+            }`}
+          >
+            {loading ? "Signing in..." : "Sign In"}
+          </button>
+
+          {/* Divider */}
+          <div className="flex items-center my-4">
+            <div className="flex-1 h-px bg-gray-200"></div>
+            <span className="px-3 text-xs uppercase tracking-wider text-gray-500">
+              OR
+            </span>
+            <div className="flex-1 h-px bg-gray-200"></div>
+          </div>
+
+          {/* Fake Google Button */}
+          <button
+            type="button"
+            disabled={loading}
+            className="w-full inline-flex items-center justify-center gap-2 border border-gray-200 hover:border-emerald-300 text-gray-700 hover:text-emerald-800 rounded-lg py-2.5 transition-colors bg-white"
+            onClick={() => alert("⚙️ Google login (mock)")}
+          >
+            Continue with Google
+          </button>
+
+          {/* Footer Buttons */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+            <Link
+              href="/register"
+              className="w-full px-4 py-3 border-2 border-emerald-600 text-emerald-700 rounded-lg font-semibold hover:bg-emerald-50 transition-colors text-center"
+            >
+              Create Account
+            </Link>
+            <Link
+              href="/"
+              className="w-full px-4 py-3 bg-teal-600 text-white rounded-lg font-semibold hover:bg-teal-700 transition-colors text-center"
+            >
+              Back to Site
+            </Link>
+          </div>
+
+          <p className="text-center text-xs text-gray-500 mt-3">
+            By continuing, you agree to our Terms of Service and Privacy Policy.
+          </p>
+        </form>
+      </section>
+    </>
+  );
+}
+>>>>>>> aa9e4b2 (chore: remove mock data and mockApi for production integration)

@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import React from 'react';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
@@ -17,28 +18,79 @@ export default function Sidebar({ isSidebarOpen, toggleSidebar }) {
       icon: (
         <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+=======
+"use client";
+
+import { usePathname } from "next/navigation";
+import Link from "next/link";
+import { useAuth } from "@/providers/AuthProvider";
+import { useTranslation } from "react-i18next";
+
+/**
+ * Sidebar component for SmartGarden Dashboard
+ * - Supports AuthProvider context
+ * - Supports Premium/Admin role visibility
+ * - Fully client-side (hooks and transitions)
+ */
+export default function Sidebar({ isSidebarOpen, toggleSidebar }) {
+  const { t } = useTranslation();
+  const { user, logout } = useAuth();
+  const pathname = usePathname();
+
+  const isPremium = user?.role === "Premium" || user?.role === "Admin";
+  const showPremiumPromo = !isPremium;
+
+  // 🌿 Main navigation
+  const navItems = [
+    {
+      name: t("navigation.dashboard", "Dashboard"),
+      href: "/dashboard",
+      icon: (
+        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+            d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0h6" />
+>>>>>>> aa9e4b2 (chore: remove mock data and mockApi for production integration)
         </svg>
       ),
     },
     {
+<<<<<<< HEAD
       name: t('navigation.plants', 'Plants'),
       href: '/plants',
       icon: (
         <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+=======
+      name: t("navigation.plants", "Plants"),
+      href: "/plants",
+      icon: (
+        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+            d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+>>>>>>> aa9e4b2 (chore: remove mock data and mockApi for production integration)
         </svg>
       ),
     },
     {
+<<<<<<< HEAD
       name: t('navigation.devices', 'Devices'),
       href: '/devices',
       icon: (
         <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z" />
+=======
+      name: t("navigation.devices", "Devices"),
+      href: "/devices",
+      icon: (
+        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+            d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10zM9 9h6v6H9V9z" />
+>>>>>>> aa9e4b2 (chore: remove mock data and mockApi for production integration)
         </svg>
       ),
     },
     {
+<<<<<<< HEAD
       name: t('navigation.notifications', 'Notifications'),
       href: '/notifications',
       icon: (
@@ -132,6 +184,75 @@ export default function Sidebar({ isSidebarOpen, toggleSidebar }) {
               <span className="ml-2 text-xl font-semibold text-gray-800">PlantSmart</span>
             </div>
             <button 
+=======
+      name: t("navigation.notifications", "Notifications"),
+      href: "/notifications",
+      icon: (
+        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+            d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+        </svg>
+      ),
+    },
+  ];
+
+  // 🌟 Premium-only items
+  const premiumItems = isPremium
+    ? [
+        {
+          name: t("navigation.reports", "Reports & Analytics"),
+          href: "/reports",
+          icon: (
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                d="M9 19v-6a2 2 0 00-2-2H5v8a2 2 0 002 2h2zM9 9a2 2 0 012-2h2v14h-2a2 2 0 01-2-2V9zm6 0V5a2 2 0 012-2h2v18h-2a2 2 0 01-2-2V9z" />
+            </svg>
+          ),
+        },
+      ]
+    : [];
+
+  // 🧍 Bottom navigation
+  const bottomNavItems = [
+    { name: t("navigation.profile", "Profile"), href: "/profile" },
+    { name: t("navigation.settings", "Settings"), href: "/settings" },
+    { name: t("navigation.help", "Help & Support"), href: "/help" },
+  ];
+
+  const allNavItems = [...navItems, ...premiumItems];
+
+  return (
+    <>
+      {/* Dark overlay on mobile */}
+      {isSidebarOpen && (
+        <div
+          className="fixed inset-0 bg-black bg-opacity-50 z-20 lg:hidden"
+          onClick={toggleSidebar}
+        />
+      )}
+
+      {/* Sidebar Container */}
+      <aside
+        className={`fixed inset-y-0 left-0 z-30 w-64 bg-white border-r border-gray-200 transform transition-transform duration-200 ease-in-out ${
+          isSidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
+        }`}
+      >
+        <div className="flex flex-col h-full">
+          {/* Header with Logo */}
+          <div className="px-4 py-5 flex items-center justify-between border-b border-gray-200">
+            <div className="flex items-center">
+              <svg className="h-8 w-8 text-green-600" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                <path d="M7,17.2C5.4,16.5,4,14.9,4,12c0-3.9,3.1-7,7-7c3.9,0,7,3.1,7,7c0,2.9-2.1,5.3-4.8,6.4" />
+                <path d="M12,22c-1.6,0-3-1.3-3-3c0-1.1,0.6-2,1.5-2.5c-0.3-0.5-0.5-1-0.5-1.6c0-1.8,1.5-3.3,3.3-3.3
+                c1.8,0,3.3,1.5,3.3,3.3" />
+              </svg>
+              <span className="ml-2 text-xl font-semibold text-gray-800">
+                SmartGarden
+              </span>
+            </div>
+
+            <button
+>>>>>>> aa9e4b2 (chore: remove mock data and mockApi for production integration)
               className="lg:hidden p-2 rounded-md text-gray-500 hover:text-gray-700 hover:bg-gray-100"
               onClick={toggleSidebar}
             >
@@ -140,6 +261,7 @@ export default function Sidebar({ isSidebarOpen, toggleSidebar }) {
               </svg>
             </button>
           </div>
+<<<<<<< HEAD
           
           {/* User info */}
           <div className="p-4 border-b border-gray-200">
@@ -152,19 +274,36 @@ export default function Sidebar({ isSidebarOpen, toggleSidebar }) {
               <div className="ml-3">
                 <p className="text-sm font-medium text-gray-700 truncate">{user?.name || 'User'}</p>
                 <p className="text-xs text-gray-500 truncate">{user?.email || 'user@example.com'}</p>
+=======
+
+          {/* User Info */}
+          <div className="p-4 border-b border-gray-200">
+            <div className="flex items-center">
+              <div className="flex-shrink-0 h-10 w-10 rounded-full bg-green-100 flex items-center justify-center text-green-600 font-medium">
+                {user?.name ? user.name.charAt(0).toUpperCase() : "U"}
+              </div>
+              <div className="ml-3">
+                <p className="text-sm font-medium text-gray-700 truncate">{user?.name || "User"}</p>
+                <p className="text-xs text-gray-500 truncate">{user?.email || "user@example.com"}</p>
+>>>>>>> aa9e4b2 (chore: remove mock data and mockApi for production integration)
               </div>
             </div>
             {isPremium && (
               <div className="mt-2">
                 <span className="inline-flex items-center rounded-full bg-amber-100 px-2.5 py-0.5 text-xs font-medium text-amber-800">
+<<<<<<< HEAD
                   <svg className="-ml-0.5 mr-1.5 h-3 w-3 text-amber-500" fill="currentColor" viewBox="0 0 8 8">
                     <circle cx="4" cy="4" r="3" />
                   </svg>
                   {t('premium.badge', 'Premium')}
+=======
+                  {t("premium.badge", "Premium")}
+>>>>>>> aa9e4b2 (chore: remove mock data and mockApi for production integration)
                 </span>
               </div>
             )}
           </div>
+<<<<<<< HEAD
           
           {/* Navigation */}
           <div className="flex-grow overflow-y-auto">
@@ -254,3 +393,72 @@ export default function Sidebar({ isSidebarOpen, toggleSidebar }) {
     </>
   );
 }
+=======
+
+          {/* Navigation */}
+          <nav className="flex-1 overflow-y-auto p-4 space-y-1">
+            {allNavItems.map((item) => {
+              const isActive = pathname === item.href;
+              return (
+                <Link
+                  key={item.name}
+                  href={item.href}
+                  className={`flex items-center px-3 py-2 rounded-md transition-colors ${
+                    isActive
+                      ? "bg-green-50 text-green-700"
+                      : "text-gray-700 hover:bg-gray-100"
+                  }`}
+                >
+                  <div className={`${isActive ? "text-green-600" : "text-gray-500"}`}>
+                    {item.icon}
+                  </div>
+                  <span className="ml-3">{item.name}</span>
+                </Link>
+              );
+            })}
+
+            {/* Premium Promo */}
+            {showPremiumPromo && (
+              <div className="mt-6 p-4 bg-gradient-to-r from-green-600 to-emerald-500 rounded-lg text-white">
+                <h4 className="font-medium mb-1">{t("premium.unlockPremium", "Unlock Premium")}</h4>
+                <p className="text-sm opacity-80 mb-3">
+                  {t("premium.sidebarPromo", "Get advanced features and analytics")}
+                </p>
+                <Link href="/premium" className="block text-center py-1.5 bg-white text-green-600 rounded text-sm font-medium">
+                  {t("premium.upgrade", "Upgrade Now")}
+                </Link>
+              </div>
+            )}
+          </nav>
+
+          {/* Bottom Actions */}
+          <div className="border-t border-gray-200 p-4">
+            {bottomNavItems.map((item) => {
+              const isActive = pathname === item.href;
+              return (
+                <Link
+                  key={item.name}
+                  href={item.href}
+                  className={`flex items-center px-3 py-2 rounded-md transition-colors ${
+                    isActive
+                      ? "bg-green-50 text-green-700"
+                      : "text-gray-700 hover:bg-gray-100"
+                  }`}
+                >
+                  <span className="ml-3">{item.name}</span>
+                </Link>
+              );
+            })}
+            <button
+              onClick={logout}
+              className="flex items-center w-full px-3 py-2 mt-2 text-gray-700 hover:bg-gray-100 rounded-md transition-colors"
+            >
+              <span className="ml-3">{t("auth.logout", "Log Out")}</span>
+            </button>
+          </div>
+        </div>
+      </aside>
+    </>
+  );
+}
+>>>>>>> aa9e4b2 (chore: remove mock data and mockApi for production integration)

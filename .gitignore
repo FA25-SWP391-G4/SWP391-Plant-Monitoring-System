@@ -1,5 +1,10 @@
 # Environment variables
 .env
+<<<<<<< HEAD
+=======
+# Environment variables
+.env
+>>>>>>> aa9e4b2 (chore: remove mock data and mockApi for production integration)
 .env.local
 .env.development
 .env.test

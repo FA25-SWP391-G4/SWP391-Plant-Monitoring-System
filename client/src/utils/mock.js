@@ -22,6 +22,7 @@ export function computeAlerts({ soil, water }) {
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 // Return the pretty name for a plant type
 export function formatPlantType(type) {
   return {
@@ -36,3 +37,19 @@ export function formatPlantType(type) {
 export const fmtPct = (n) => `${n.toFixed(0)}%`;
 export const fmtTemp = (n) => `${n.toFixed(1)}°C`;
 >>>>>>> 9cbefc4 (Merge smart-garden-frontend into client folder)
+=======
+export const fmtPct = (n) => `${n.toFixed(0)}%`;
+export const fmtTemp = (n) => `${n.toFixed(1)}°C`;
+=======
+// Return the pretty name for a plant type
+export function formatPlantType(type) {
+  return {
+    'monstera': 'Monstera Deliciosa',
+    'succulent': 'Succulent',
+    'fern': 'Fern',
+    'orchid': 'Orchid',
+    'ficus': 'Fiddle Leaf Fig',
+  }[type.toLowerCase()] || type;
+}
+>>>>>>> 56df1a6 (chore: remove mock data and mockApi for production integration)
+>>>>>>> aa9e4b2 (chore: remove mock data and mockApi for production integration)
