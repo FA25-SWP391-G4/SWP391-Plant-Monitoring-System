@@ -1,12 +1,17 @@
 import axios from "axios";
 import Cookies from "js-cookie";
+import { setupRedirectInterceptor } from "@/utils/redirectHandler";
 
 // Ensure the API URL has the correct structure with protocol and no trailing slash
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
-// Debug information
-console.log(`[AXIOS DEBUG] Initializing axios with base URL: ${API_URL}`);
-console.log(`[AXIOS DEBUG] Current date: ${new Date().toISOString()}`);
+// Only log in development mode
+const isDev = process.env.NODE_ENV === 'development';
+
+if (isDev) {
+  console.log(`[AXIOS DEBUG] Initializing axios with base URL: ${API_URL}`);
+  console.log(`[AXIOS DEBUG] Current date: ${new Date().toISOString()}`);
+}
 
 const axiosClient = axios.create({
   baseURL: API_URL,
@@ -14,6 +19,8 @@ const axiosClient = axios.create({
   headers: {
     "Content-Type": "application/json",
   },
+  // Do not automatically follow redirects, we'll handle them manually
+  maxRedirects: 0,
 });
 
 // Request interceptor for API calls
@@ -22,14 +29,16 @@ axiosClient.interceptors.request.use(
     // Get the JWT token from cookies
     const token = Cookies.get("token");
     
-    // Debug logging
-    console.log(`[AXIOS DEBUG] Making ${config.method.toUpperCase()} request to: ${config.baseURL}${config.url}`);
-    console.log(`[AXIOS DEBUG] Request headers:`, config.headers);
+    // Debug logging only in development mode
+    if (isDev) {
+      console.log(`[AXIOS DEBUG] Making ${config.method.toUpperCase()} request to: ${config.baseURL}${config.url}`);
+      console.log(`[AXIOS DEBUG] Request headers:`, config.headers);
+    }
 
     // Add explicit origin header for CORS
     config.headers["Origin"] = window.location.origin;
 
-    if (config.data) {
+    if (isDev && config.data) {
       // Log data but mask passwords
       const sanitizedData = { ...config.data };
       if (sanitizedData.password) sanitizedData.password = '********';
@@ -39,19 +48,23 @@ axiosClient.interceptors.request.use(
     // If token exists, add it to Authorization header
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
-      // Show a truncated version of the token for debugging
-      const truncatedToken = token.length > 20 ? `${token.substring(0, 10)}...${token.substring(token.length - 5)}` : token;
-      console.log(`[AXIOS DEBUG] Token found, added to Authorization header: ${truncatedToken}`);
+      
+      if (isDev) {
+        // Show a truncated version of the token for debugging
+        const truncatedToken = token.length > 20 ? `${token.substring(0, 10)}...${token.substring(token.length - 5)}` : token;
+        console.log(`[AXIOS DEBUG] Token found, added to Authorization header: ${truncatedToken}`);
+      }
       
       // Add special logging for payment-related requests
-      if (config.url.includes('/payment/')) {
+      if (isDev && config.url.includes('/payment/')) {
+        const truncatedToken = token.length > 20 ? `${token.substring(0, 10)}...${token.substring(token.length - 5)}` : token;
         console.log(`[PAYMENT DEBUG] Payment request with auth token: ${truncatedToken}`);
       }
-    } else {
+    } else if (isDev) {
       console.log(`[AXIOS DEBUG] No token found in cookies`);
       
       // Warn about payment requests without authentication
-      if (config.url.includes('/payment/')) {
+      if (isDev && config.url.includes('/payment/')) {
         console.warn(`[PAYMENT DEBUG] WARNING: Making payment request without authentication token!`);
       }
     }
@@ -59,7 +72,9 @@ axiosClient.interceptors.request.use(
   },
   (error) => {
     // Handle request errors
-    console.error("[AXIOS DEBUG] Request error:", error);
+    if (isDev) {
+      console.error("[AXIOS DEBUG] Request error:", error);
+    }
     return Promise.reject(error);
   }
 );
@@ -67,16 +82,18 @@ axiosClient.interceptors.request.use(
 // Response interceptor for API calls
 axiosClient.interceptors.response.use(
   (response) => {
-    console.log(`[AXIOS DEBUG] Response received from ${response.config.url}:`, {
-      status: response.status,
-      statusText: response.statusText,
-      data: response.data
-    });
+    if (isDev) {
+      console.log(`[AXIOS DEBUG] Response received from ${response.config.url}:`, {
+        status: response.status,
+        statusText: response.statusText,
+        data: response.data
+      });
+    }
     return response;
   },
   async (error) => {
     // Enhanced error logging
-    if (error.response) {
+    if (error.response && isDev) {
       // The request was made and the server responded with a status code
       // that falls out of the range of 2xx
       console.error(`[AXIOS DEBUG] Response error (${error.response.status}):`, {
@@ -135,5 +152,8 @@ axiosClient.interceptors.response.use(
     return Promise.reject(error);
   }
 );
+
+// Set up the redirect interceptor to handle x-direct-redirect headers
+setupRedirectInterceptor(axiosClient);
 
 export default axiosClient;

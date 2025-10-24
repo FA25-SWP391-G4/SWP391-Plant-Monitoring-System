@@ -12,7 +12,12 @@
  * 🔄 UC13: Manage Profile - save() method for profile updates
  * 🔄 UC16: Upgrade to Premium - role field for Premium status
  * 🔄 UC19, UC22: Make Payment - user_id for payment association
- * 🔄 UC24: Manage Users (Admin) - Full CRUD operations ready
+ * 🔄 UC24: Manage Users (Admin) -    static async findById(user_id) {
+        try {
+            console.log(`[USER] Finding user by ID: ${user_id}`);
+            
+            const query = 'SELECT * FROM users WHERE user_id = $1';
+            const result = await pool.query(query, [user_id]);CRUD operations ready
  * 
  * USER ROLES SUPPORTED:
  * - 'Regular': Basic features (UC1-13)
@@ -54,19 +59,19 @@ constructor(userData) {
     if (userData.password_hash) {
         // When loading from database, password_hash is the bcrypt hash
         this.password = userData.password_hash; // Store the hash for validation
-        this.plainTextPassword = null; // No plaintext when loading existing user
+        this.plain_text_password = null; // No plaintext when loading existing user
 
         console.log('[USER CONSTRUCTOR] Loaded existing user with password hash');
     } else if (userData.password) {
         // When creating new user, password is plain text
-        this.plainTextPassword = userData.password; // Store plaintext for hashing during save
+        this.plain_text_password = userData.password; // Store plaintext for hashing during save
         this.password = null; // No hash yet for new user
 
         console.log('[USER CONSTRUCTOR] New user with plaintext password (will be hashed on save)');
     } else {
         // Neither password nor hash provided
         this.password = null;
-        this.plainTextPassword = null;
+        this.plain_text_password = null;
 
         console.log('[USER CONSTRUCTOR] Warning: No password or hash provided');
     }
@@ -77,19 +82,20 @@ constructor(userData) {
         userData.password_hash ? 'password_hash' :
         userData.password ? 'password' : 'not found');
 
-    this.familyName = userData.family_name;
-    this.givenName = userData.given_name;
+    this.family_name = userData.family_name || userData.familyName;
+    this.given_name = userData.given_name || userData.givenName;
     this.role = userData.role || 'Regular'; // Default role for UC1
     this.notification_prefs = userData.notification_prefs || {}; // Notification preferences
     this.fcm_tokens = userData.fcm_tokens || []; // Firebase Cloud Messaging tokens for push notifications
-    this.passwordResetToken = userData.password_reset_token;
-    this.passwordResetExpires = userData.password_reset_expires;
-    this.languagePreference = userData.language_preference || 'en'; // Default language
+    this.password_reset_token = userData.password_reset_token;
+    this.password_reset_expires = userData.password_reset_expires;
+    this.language_preference = userData.language_preference || 'en'; // Default language
     this.created_at = userData.created_at;
 
     // Add support for Google login
-    this.google_id = userData.google_id;
-    this.profile_picture = userData.profile_picture;
+    this.google_id = userData.google_id || userData.googleId;
+    this.google_refresh_token = userData.google_refresh_token || userData.googleRefreshToken;
+    this.profile_picture = userData.profile_picture || userData.profilePicture;
 }
 
 /**
@@ -103,8 +109,8 @@ createPasswordResetToken() {
         const resetToken = crypto.randomBytes(32).toString('hex');
         
         // Store the token and expiration
-        this.passwordResetToken = resetToken;
-        this.passwordResetExpires = new Date(Date.now() + 900000); // 15 minutes
+        this.password_reset_token = resetToken;
+        this.password_reset_expires = new Date(Date.now() + 900000); // 15 minutes
         
         return resetToken;
     } catch (error) {
@@ -129,19 +135,21 @@ async updatePasswordResetFields(token, expires) {
                 `;
         await pool.query(query, [token, expires, this.user_id]);
         
-        this.passwordResetToken = token;
-        this.passwordResetExpires = expires;
+        this.password_reset_token = token;
+        this.password_reset_expires = expires;
         
         return true;
     } catch (error) {
         throw new Error('Error updating password reset fields: ' + error.message);
     }
-}    /**
-     * FIND USER BY EMAIL - AUTHENTICATION & SECURITY
-     * Critical for login, password reset, and user identification
-     * 
-     * SUPPORTS:
-     * - UC1: User Registration (Other backend member) - Email uniqueness validation
+}   
+
+/**
+ * FIND USER BY EMAIL - AUTHENTICATION & SECURITY
+ * Critical for login, password reset, and user identification
+ *
+ * SUPPORTS:
+ * - UC1: User Registration (Other backend member) - Email uniqueness validation
      * - UC2: User Login (Other backend member) - Email lookup for authentication
      * - UC11: Reset Password - Email validation before sending reset token
      * - UC24: Admin user management - User lookup by email
@@ -286,12 +294,12 @@ async updatePasswordResetFields(token, expires) {
                     RETURNING *
                 `;
                 
-                // If plainTextPassword exists, hash it. Otherwise, use existing password hash
+                // If plain_text_password exists, hash it. Otherwise, use existing password hash
                 let hashedPassword;
-                if (this.plainTextPassword) {
+                if (this.plain_text_password) {
                     console.log('[USER UPDATE] Hashing new password for update');
                     const salt = await bcrypt.genSalt(12);
-                    hashedPassword = await bcrypt.hash(this.plainTextPassword, salt);
+                    hashedPassword = await bcrypt.hash(this.plain_text_password, salt);
                 } else {
                     console.log('[USER UPDATE] Keeping existing password hash');
                     hashedPassword = this.password; // Use existing hash
@@ -300,15 +308,15 @@ async updatePasswordResetFields(token, expires) {
                 const result = await pool.query(query, [
                     this.email.toLowerCase(),
                     hashedPassword,
-                    this.familyName,
-                    this.givenName,
+                    this.family_name ,
+                    this.given_name,
                     this.role,
                     JSON.stringify(this.notification_prefs),
-                    this.passwordResetToken,
-                    this.passwordResetExpires,
-                    this.googleId,
-                    this.profilePicture,
-                    this.userId
+                    this.password_reset_token,
+                    this.password_reset_expires,
+                    this.google_id,
+                    this.profile_picture,
+                    this.user_id
                 ]);
                 
                 const updatedUser = new User(result.rows[0]);
@@ -327,14 +335,22 @@ async updatePasswordResetFields(token, expires) {
                     throw error;
                 }
 
-                // Hash the plainTextPassword for new user creation
-                if (!this.plainTextPassword) {
+                // Hash the plain_text_password for new user creation (unless Google account)
+                let hashedPassword = null;
+                
+                // If Google account, allow null password
+                if (this.google_id && !this.plain_text_password) {
+                    console.log('[USER CREATE] Creating Google user with null password');
+                    hashedPassword = null;
+                } else if (!this.plain_text_password) {
+                    // Normal accounts require password
                     throw new Error('Password is required for new user creation');
+                } else {
+                    // Hash password for normal accounts
+                    console.log('[USER CREATE] Hashing password for new user');
+                    const salt = await bcrypt.genSalt(12);
+                    hashedPassword = await bcrypt.hash(this.plain_text_password, salt);
                 }
-
-                console.log('[USER CREATE] Hashing password for new user');
-                const salt = await bcrypt.genSalt(12);
-                const hashedPassword = await bcrypt.hash(this.plainTextPassword, salt);
 
                 const query = `
                     INSERT INTO Users (
@@ -344,14 +360,15 @@ async updatePasswordResetFields(token, expires) {
                     VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
                     RETURNING *
                 `;
-                
-                console.log('[USER CREATE] Executing database query for new user');
+
+                console.log(`[USER CREATE] Executing database query for new user: ${this.family_name} ${this.given_name} ${this.google_id}`);
+
 
                 const result = await pool.query(query, [
                     this.email.toLowerCase(),
                     hashedPassword,
-                    this.familyName,
-                    this.givenName,
+                    this.family_name,
+                    this.given_name,
                     this.role,
                     JSON.stringify(this.notification_prefs || {}),
                     this.google_id,
@@ -397,6 +414,13 @@ async updatePasswordResetFields(token, expires) {
         console.log(`[USER] validatePassword called with password length: ${password ? password.length : 0}`);
         console.log(`[USER] this.password exists: ${!!this.password}`);
         console.log(`[USER] this.password type: ${typeof this.password}`);
+        console.log(`[USER] this.google_id exists: ${!!this.google_id}`);
+
+        // Safety check for Google-registered users (they have no password)
+        if (this.google_id && !this.password) {
+            console.error('[USER] Cannot validate password: User registered via Google with no password');
+            return false;
+        }
 
         // Safety check for missing password hash
         if (!this.password) {
@@ -544,8 +568,15 @@ createPasswordResetToken() {
     // Update user profile
     async update(userData) {
         try {
+            console.log('[USER UPDATE] Starting update for user:', this.user_id);
+            console.log('[USER UPDATE] Update data received:', JSON.stringify({
+                ...userData,
+                password: userData.password ? '[MASKED]' : undefined,
+                google_refresh_token: userData.google_refresh_token ? '[MASKED]' : undefined
+            }));
+            
             // Build dynamic query based on provided fields
-            const validFields = ['family_name', 'given_name', 'notification_prefs', 'role', 'language_preference'];
+            const validFields = ['family_name', 'given_name', 'notification_prefs', 'role', 'language_preference', 'google_id', 'google_refresh_token', 'profile_picture'];
             const updates = [];
             const values = [this.user_id]; // First parameter is always user_id
             let paramIndex = 2; // Start parameter index at 2 (user_id is $1)
@@ -553,11 +584,17 @@ createPasswordResetToken() {
             // Construct SET part of query for each provided field
             Object.keys(userData).forEach(key => {
                 if (validFields.includes(key)) {
-                    updates.push(`${key === 'family_name' ? 'family_name' : 
-                                  key === 'given_name' ? 'given_name' : 
-                                  key === 'notification_prefs' ? 'notification_prefs' : 
-                                  key === 'role' ? 'role' : 
-                                  key === 'language_preference' ? 'language_preference' : key} = $${paramIndex}`);
+                    // Map JavaScript camelCase fields to database snake_case if needed
+                    const dbField = key === 'family_name' ? 'family_name' : 
+                                   key === 'given_name' ? 'given_name' : 
+                                   key === 'notification_prefs' ? 'notification_prefs' : 
+                                   key === 'role' ? 'role' : 
+                                   key === 'language_preference' ? 'language_preference' :
+                                   key === 'google_id' ? 'google_id' :
+                                   key === 'google_refresh_token' ? 'google_refresh_token' :
+                                   key === 'profile_picture' ? 'profile_picture' : key;
+                    
+                    updates.push(`${dbField} = $${paramIndex}`);
                     values.push(userData[key]);
                     paramIndex++;
                 }
@@ -576,6 +613,11 @@ createPasswordResetToken() {
                 RETURNING *
             `;
             
+            console.log('[USER UPDATE] Executing SQL:', query.replace(/\s+/g, ' '));
+            console.log('[USER UPDATE] With values:', values.map((v, i) => 
+                i === 0 ? v : (typeof v === 'object' ? JSON.stringify(v) : v)
+            ));
+            
             const result = await pool.query(query, values);
             
             // Update the user object with new values
@@ -585,7 +627,28 @@ createPasswordResetToken() {
                 this.given_name = updatedUser.given_name;
                 this.notification_prefs = updatedUser.notification_prefs;
                 this.role = updatedUser.role;
-                this.languagePreference = updatedUser.language_preference;
+                this.language_preference = updatedUser.language_preference;
+                
+                // Update Google-specific fields
+                if ('google_id' in userData) {
+                    this.google_id = updatedUser.google_id;
+                }
+                if ('google_refresh_token' in userData) {
+                    this.google_refresh_token = updatedUser.google_refresh_token;
+                }
+                if ('profile_picture' in userData) {
+                    this.profile_picture = updatedUser.profile_picture;
+                }
+                
+                console.log('[USER UPDATE] User updated successfully:', {
+                    user_id: this.user_id,
+                    email: this.email,
+                    has_google_id: !!this.google_id,
+                    has_refresh_token: !!this.google_refresh_token,
+                    has_profile_pic: !!this.profile_picture
+                });
+            } else {
+                console.log('[USER UPDATE] No rows returned from update query');
             }
             
             return this;
@@ -640,6 +703,104 @@ createPasswordResetToken() {
     toJSON() {
         const { password, passwordResetToken, ...publicData } = this;
         return publicData;
+    }
+
+    /**
+     * FIND USER BY EMAIL
+     * Static method to retrieve user by email address
+     * 
+     * SUPPORTS:
+     * - UC1: User Registration - Email uniqueness check
+     * - UC2: User Login - Email-based authentication
+     * - UC11: Reset Password - Finding user for password reset
+     * - UC12: Google OAuth Authentication - Finding existing users
+     * 
+     * @param {string} email - The email address to search for
+     * @returns {Promise<User|null>} - User object if found, null otherwise
+     */
+    static async findByEmail(email) {
+        try {
+            console.log('[USER] Finding user by email:', email);
+            
+            const query = 'SELECT * FROM users WHERE email = $1';
+            const result = await pool.query(query, [email]);
+            
+            if (result.rows.length === 0) {
+                return null;
+            }
+            
+            const userData = result.rows[0];
+            console.log('[USER] User found with email:', email);
+            console.log('[USER] Database fields available:', Object.keys(userData));
+            
+            return new User(userData);
+        } catch (error) {
+            console.error('[USER ERROR] Error finding user by email:', error.message);
+            throw error;
+        }
+    }
+    
+    /**
+     * FIND USER BY GOOGLE ID
+     * Static method to retrieve user by Google ID for OAuth authentication
+     * 
+     * SUPPORTS:
+     * - UC12: Google OAuth Authentication - Finding existing users by Google ID
+     * 
+     * @param {string} googleId - The Google ID to search for
+     * @returns {Promise<User|null>} - User object if found, null otherwise
+     */
+    static async findByGoogleId(google_id) {
+        try {
+            console.log('[USER] Finding user by Google ID:', google_id);
+            
+            const query = 'SELECT * FROM users WHERE google_id = $1';
+            const result = await pool.query(query, [google_id]);
+            
+            if (result.rows.length === 0) {
+                return null;
+            }
+            
+            const userData = result.rows[0];
+            console.log('[USER] User found with Google ID:', google_id);
+            console.log('[USER] Database fields available:', Object.keys(userData));
+            
+            return new User(userData);
+        } catch (error) {
+            console.error('[USER ERROR] Error finding user by Google ID:', error.message);
+            throw error;
+        }
+    }
+    
+    /**
+     * FIND USER BY ID
+     * Static method to retrieve user by user ID
+     * 
+     * SUPPORTS:
+     * - UC2: User authentication - Validating user from token
+     * - UC13: Profile management - Retrieving user data
+     * - UC24: User management - Admin access to user data
+     * 
+     * @param {number} userId - The user ID to search for
+     * @returns {Promise<User|null>} - User object if found, null otherwise
+     */
+    static async findById(userId) {
+        try {
+            console.log('[USER] Finding user by ID:', userId);
+            
+            const query = 'SELECT * FROM users WHERE user_id = $1';
+            const result = await pool.query(query, [userId]);
+            
+            if (result.rows.length === 0) {
+                return null;
+            }
+            
+            const userData = result.rows[0];
+            return new User(userData);
+        } catch (error) {
+            console.error('[USER ERROR] Error finding user by ID:', error.message);
+            throw error;
+        }
     }
 }
 

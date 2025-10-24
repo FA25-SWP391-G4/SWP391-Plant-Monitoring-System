@@ -147,7 +147,31 @@
 "recentActivity": "Activité récente",
 "wateringSchedule": "Programme d'arrosage",
 "errorLoading": "Erreur de chargement du tableau de bord",
-"loadError": "Impossible de charger les données du tableau de bord. Veuillez réessayer ultérieurement."
+"loadError": "Impossible de charger les données du tableau de bord. Veuillez réessayer ultérieurement.",
+"weather": "Météo actuelle"
+},
+
+"weather": {
+"title": "Météo locale",
+"today": "Aujourd'hui",
+"forecast": "Prévisions",
+"precipitation": "Précipitations",
+"humidity": "Humidité",
+"wind": "Vent",
+"sunrise": "Lever du soleil",
+"sunset": "Coucher du soleil",
+"highTemp": "Température maximale",
+"lowTemp": "Température minimale",
+"feels": "Ressenti",
+"indoor": "Intérieur",
+"outdoor": "Extérieur",
+"tip": {
+  "hot": "Température élevée. Arrosez les plantes tôt le matin ou tard le soir pour éviter l'évaporation.",
+  "rainy": "Il pleut. Vérifiez les plantes d'intérieur pour vous assurer qu'elles sont correctement drainées et éviter la pourriture des racines.",
+  "dry": "Humidité faible. Envisagez de vaporiser vos plantes tropicales pour augmenter l'humidité.",
+  "windy": "Il y a beaucoup de vent. Déplacez les plantes sensibles dans des endroits abrités.",
+  "default": "Surveillez l'humidité du sol quotidiennement en fonction des conditions météorologiques actuelles."
+}
 },
 
 "plants": {
@@ -422,22 +446,6 @@
     "fungalInfection": "Infection fongique"
   }
 }
-},
-
-"weather": {
-"title": "Météo locale",
-"today": "Aujourd'hui",
-"forecast": "Prévisions",
-"precipitation": "Précipitations",
-"humidity": "Humidité",
-"wind": "Vent",
-"sunrise": "Lever du soleil",
-"sunset": "Coucher du soleil",
-"highTemp": "Maximum",
-"lowTemp": "Minimum",
-"feels": "Ressenti",
-"indoor": "Intérieur",
-"outdoor": "Extérieur"
 },
 
 "reviews": {

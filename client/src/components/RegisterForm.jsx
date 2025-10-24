@@ -35,6 +35,66 @@ export function RegisterForm() {
       statusRef.current.scrollIntoView({ behavior: 'smooth' });
     }
   }, [registerStatus]);
+  
+  // Check for Google profile data on mount
+  useEffect(() => {
+    // First check URL parameters for Google profile data
+    const params = new URLSearchParams(window.location.search);
+    const source = params.get('source');
+    const encodedData = params.get('data');
+    
+    if (source === 'google' && encodedData) {
+      try {
+        // Decode the base64 encoded data from URL
+        const decodedData = Buffer.from(encodedData, 'base64').toString();
+        const profileData = JSON.parse(decodedData);
+        console.log('Found Google profile data from URL:', profileData);
+        
+        // Pre-fill the form with Google data
+        setFormData(prevData => ({
+          ...prevData,
+          firstName: profileData.given_name || '',
+          lastName: profileData.family_name || '',
+          email: profileData.email || '',
+          // Don't pre-fill password fields for security reasons
+          googleId: profileData.google_id || '',
+          profilePicture: profileData.profile_picture || '',
+          // Automatically check the terms for Google registration
+          terms: true
+        }));
+        
+        // Store in localStorage temporarily in case page is refreshed
+        localStorage.setItem('googleProfileData', JSON.stringify(profileData));
+      } catch (error) {
+        console.error('Error parsing Google profile data from URL:', error);
+      }
+    } else {
+      // Fallback to localStorage (in case of page refresh)
+      const googleProfileData = localStorage.getItem('googleProfileData');
+      
+      if (googleProfileData) {
+        try {
+          const profileData = JSON.parse(googleProfileData);
+          console.log('Found Google profile data from localStorage:', profileData);
+          
+          // Pre-fill the form with Google data
+          setFormData(prevData => ({
+            ...prevData,
+            firstName: profileData.given_name || '',
+            lastName: profileData.family_name || '',
+            email: profileData.email || '',
+            // Don't pre-fill password fields for security reasons
+            googleId: profileData.google_id || '',
+            profilePicture: profileData.profile_picture || '',
+            // Automatically check the terms for Google registration
+            terms: true
+          }));
+        } catch (error) {
+          console.error('Error parsing Google profile data:', error);
+        }
+      }
+    }
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -56,14 +116,17 @@ export function RegisterForm() {
       validationErrors.email = t('validation.invalidEmail', 'Email is invalid');
     }
     
-    if (!formData.password.trim()) {
-      validationErrors.password = t('validation.passwordRequired', 'Password is required');
-    } else if (formData.password.length < 8) {
-      validationErrors.password = t('validation.passwordLength', 'Password must be at least 8 characters');
-    }
-    
-    if (formData.password !== formData.confirmPassword) {
-      validationErrors.confirmPassword = t('validation.passwordsDoNotMatch', 'Passwords do not match');
+    // Skip password validation for Google registrations
+    if (!formData.googleId) {
+      if (!formData.password.trim()) {
+        validationErrors.password = t('validation.passwordRequired', 'Password is required');
+      } else if (formData.password.length < 8) {
+        validationErrors.password = t('validation.passwordLength', 'Password must be at least 8 characters');
+      }
+      
+      if (formData.password !== formData.confirmPassword) {
+        validationErrors.confirmPassword = t('validation.passwordsDoNotMatch', 'Passwords do not match');
+      }
     }
     
     if (!formData.terms) {
@@ -78,16 +141,29 @@ export function RegisterForm() {
     setIsLoading(true);
     setRegisterStatus("Status: Starting registration process..."); // Update status
 
-    // Create API payload
+    // Create API payload with proper field names for backend
     const apiPayload = {
-      firstName: formData.firstName,
-      lastName: formData.lastName,
       email: formData.email,
+      password: formData.password || null,
+      familyName: formData.lastName,
+      givenName: formData.firstName,
+      family_name: formData.lastName,  // Support both naming conventions
+      given_name: formData.firstName,
       phoneNumber: formData.phoneNumber || null,
-      password: formData.password,
-      confirmPassword: formData.confirmPassword,
       newsletter: formData.newsletter
     };
+    
+    // Add Google data if available
+    if (formData.googleId) {
+      apiPayload.google_id = formData.googleId;
+      apiPayload.profile_picture = formData.profilePicture;
+      
+      // For Google registrations, password can be null
+      if (!formData.password || formData.password.length < 8) {
+        // Google users don't need a password initially
+        apiPayload.password = null;
+      }
+    }
 
     try {
       console.log('Registration data to send:', apiPayload);
@@ -303,57 +379,90 @@ export function RegisterForm() {
           </div>
         </div>
         
-        <div>
-          <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
-            {t('common.password', 'Password')}
-          </label>
-          <div className="relative">
-            <div className="pointer-events-none absolute inset-y-0 left-3 flex items-center" aria-hidden="true">
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-lock h-5 w-5 text-gray-400" aria-hidden="true">
-                <rect width="18" height="11" x="3" y="11" rx="2" ry="2"></rect>
-                <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+        {/* Password fields section - conditional rendering based on Google registration */}
+        {formData.googleId ? (
+          <div className="p-4 bg-blue-50 rounded-lg border border-blue-100">
+            <div className="flex items-center mb-3">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-blue-500 mr-2">
+                <circle cx="12" cy="12" r="10"></circle>
+                <path d="M12 16v-4"></path>
+                <path d="M12 8h.01"></path>
               </svg>
+              <h3 className="text-sm font-medium text-blue-800">{t('auth.googleAccountLinked', 'Google Account Linked')}</h3>
             </div>
-            <input
-              id="password"
-              name="password"
-              type="password"
-              placeholder="••••••••"
-              value={formData.password}
-              onChange={handleInputChange}
-              autoComplete="new-password"
-              required
-              className={`w-full rounded-lg border ${errors.password ? 'border-red-300' : 'border-gray-200'} pl-10 pr-3 py-3 text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-colors`}
+            <p className="text-sm text-blue-700">
+              {t('auth.googleAccountInfo', 'You\'re registering with your Google account. You can set a custom password after registration in your profile settings.')}
+            </p>
+            
+            {/* Hidden password fields that will auto-generate secure passwords */}
+            <input 
+              type="hidden" 
+              name="password" 
+              value={formData.password || Math.random().toString(36).slice(-10) + Math.random().toString(36).toUpperCase().slice(-2) + "!2"} 
+              onChange={handleInputChange} 
+            />
+            <input 
+              type="hidden" 
+              name="confirmPassword" 
+              value={formData.confirmPassword || formData.password || Math.random().toString(36).slice(-10) + Math.random().toString(36).toUpperCase().slice(-2) + "!2"} 
+              onChange={handleInputChange} 
             />
           </div>
-          {errors.password && <p className="mt-1 text-sm text-red-600">{errors.password}</p>}
-        </div>
-        
-        <div>
-          <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 mb-2">
-            {t('common.confirmPassword', 'Confirm password')}
-          </label>
-          <div className="relative">
-            <div className="pointer-events-none absolute inset-y-0 left-3 flex items-center" aria-hidden="true">
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-check-circle h-5 w-5 text-gray-400" aria-hidden="true">
-                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-                <path d="m9 11 3 3L22 4"></path>
-              </svg>
+        ) : (
+          <>
+            <div>
+              <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
+                {t('common.password', 'Password')}
+              </label>
+              <div className="relative">
+                <div className="pointer-events-none absolute inset-y-0 left-3 flex items-center" aria-hidden="true">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-lock h-5 w-5 text-gray-400" aria-hidden="true">
+                    <rect width="18" height="11" x="3" y="11" rx="2" ry="2"></rect>
+                    <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                  </svg>
+                </div>
+                <input
+                  id="password"
+                  name="password"
+                  type="password"
+                  placeholder="••••••••"
+                  value={formData.password}
+                  onChange={handleInputChange}
+                  autoComplete="new-password"
+                  required
+                  className={`w-full rounded-lg border ${errors.password ? 'border-red-300' : 'border-gray-200'} pl-10 pr-3 py-3 text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-colors`}
+                />
+              </div>
+              {errors.password && <p className="mt-1 text-sm text-red-600">{errors.password}</p>}
             </div>
-            <input
-              id="confirmPassword"
-              name="confirmPassword"
-              type="password"
-              placeholder="••••••••"
-              value={formData.confirmPassword}
-              onChange={handleInputChange}
-              autoComplete="new-password"
-              required
-              className={`w-full rounded-lg border ${errors.confirmPassword ? 'border-red-300' : 'border-gray-200'} pl-10 pr-3 py-3 text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-colors`}
-            />
-          </div>
-          {errors.confirmPassword && <p className="mt-1 text-sm text-red-600">{errors.confirmPassword}</p>}
-        </div>
+            
+            <div>
+              <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 mb-2">
+                {t('common.confirmPassword', 'Confirm password')}
+              </label>
+              <div className="relative">
+                <div className="pointer-events-none absolute inset-y-0 left-3 flex items-center" aria-hidden="true">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-check-circle h-5 w-5 text-gray-400" aria-hidden="true">
+                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                    <path d="m9 11 3 3L22 4"></path>
+                  </svg>
+                </div>
+                <input
+                  id="confirmPassword"
+                  name="confirmPassword"
+                  type="password"
+                  placeholder="••••••••"
+                  value={formData.confirmPassword}
+                  onChange={handleInputChange}
+                  autoComplete="new-password"
+                  required
+                  className={`w-full rounded-lg border ${errors.confirmPassword ? 'border-red-300' : 'border-gray-200'} pl-10 pr-3 py-3 text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-colors`}
+                />
+              </div>
+              {errors.confirmPassword && <p className="mt-1 text-sm text-red-600">{errors.confirmPassword}</p>}
+            </div>
+          </>
+        )}
         
         <div className="space-y-2">
           <div className="flex items-center">

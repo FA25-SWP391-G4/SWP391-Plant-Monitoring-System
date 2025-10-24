@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useAuth } from '@/providers/AuthProvider';
 import { useRouter } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
@@ -11,43 +11,8 @@ import RecentActivity from '@/components/dashboard/RecentActivity';
 import WateringSchedule from '@/components/dashboard/WateringSchedule';
 import PremiumFeaturePrompt from '@/components/dashboard/PremiumFeaturePrompt';
 import Navbar from '@/components/Navbar';
-
-// Mock data for development - would come from API in real app
-const MOCK_PLANTS = [
-  {
-    plant_id: 1,
-    name: 'Snake Plant',
-    species: 'Sansevieria trifasciata',
-    image: '/images/plants/snake-plant.jpg',
-    location: 'Living Room',
-    status: 'healthy',
-    lastWatered: '2023-11-15T10:30:00Z',
-  },
-  {
-    plant_id: 2,
-    name: 'Monstera',
-    species: 'Monstera deliciosa',
-    image: '/images/plants/monstera.jpg',
-    location: 'Office',
-    status: 'needs_attention',
-    lastWatered: '2023-11-10T08:15:00Z',
-  },
-  {
-    plant_id: 3,
-    name: 'Peace Lily',
-    species: 'Spathiphyllum',
-    image: '/images/plants/peace-lily.jpg',
-    location: 'Bedroom',
-    status: 'needs_water',
-    lastWatered: '2023-11-08T14:45:00Z',
-  },
-];
-
-const MOCK_SENSOR_DATA = {
-  1: { moisture: 72, temperature: 22.5, light: 85 },
-  2: { moisture: 43, temperature: 24.1, light: 65 },
-  3: { moisture: 28, temperature: 21.8, light: 55 },
-};
+import useMemoizedData from '@/hooks/useMemoizedData';
+import axiosClient from '@/api/axiosClient';
 
 export default function DashboardPage() {
   const { user, loading, isPremium } = useAuth();
@@ -65,31 +30,82 @@ export default function DashboardPage() {
     }
   }, [user, loading, router]);
 
-  // Fetch dashboard data
-  useEffect(() => {
-    if (user) {
-      // In a real app, we would fetch from the API here
-      // For now, using mock data with a timeout to simulate API call
-      const fetchData = async () => {
-        setIsLoading(true);
-        try {
-          // Simulate API call
-          await new Promise(resolve => setTimeout(resolve, 800));
-          
-          // Set mock data
-          setPlants(MOCK_PLANTS);
-          setSensorData(MOCK_SENSOR_DATA);
-        } catch (err) {
-          console.error('Error fetching dashboard data:', err);
-          setError(t('dashboard.loadError', 'Failed to load dashboard data. Please try again later.'));
-        } finally {
-          setIsLoading(false);
-        }
-      };
-
-      fetchData();
+  // Fetch plants data using the custom hook
+  const fetchPlants = async () => {
+    const response = await axiosClient.get('/api/plants');
+    return response.data;
+  };
+  
+  // Fetch sensor data using the custom hook
+  const fetchSensorData = async () => {
+    const response = await axiosClient.get('/api/sensors/latest');
+    return response.data;
+  };
+  
+  // Use the memoized data hook for plants only when user is authenticated
+  const { 
+    data: plantsData, 
+    isLoading: plantsLoading, 
+    error: plantsError 
+  } = useMemoizedData(
+    // Only fetch data if user is authenticated
+    async () => {
+      if (!user) return [];
+      return await fetchPlants();
+    },
+    [user], // Only re-fetch when user changes
+    {
+      cacheKey: user ? `dashboard_plants_${user.user_id}` : null,
+      cacheDuration: 5 * 60 * 1000, // 5 minutes
+      onSuccess: (data) => {
+        if (data) setPlants(data);
+      },
+      onError: (err) => {
+        console.error('Error fetching plants:', err);
+        setError(t('dashboard.loadError', 'Failed to load plant data. Please try again later.'));
+      }
     }
-  }, [user]);
+  );
+  
+  // Use the memoized data hook for sensor data only when user is authenticated
+  const {
+    data: sensorDataResponse,
+    isLoading: sensorsLoading,
+    error: sensorsError
+  } = useMemoizedData(
+    // Only fetch data if user is authenticated
+    async () => {
+      if (!user) return {};
+      return await fetchSensorData();
+    },
+    [user], // Only re-fetch when user changes
+    {
+      cacheKey: user ? `dashboard_sensors_${user.user_id}` : null,
+      cacheDuration: 60 * 1000, // 1 minute
+      onSuccess: (data) => {
+        if (data) setSensorData(data);
+      },
+      onError: (err) => {
+        console.error('Error fetching sensor data:', err);
+        // Don't show error for sensors as we can fall back to last known values
+      }
+    }
+  );
+  
+  // Update loading state based on authentication and data fetches
+  useEffect(() => {
+    setIsLoading(loading || (user && (plantsLoading || sensorsLoading)));
+  }, [loading, user, plantsLoading, sensorsLoading]);
+  
+  // Update error state if plants fetch fails
+  useEffect(() => {
+    if (plantsError) {
+      setError(t('dashboard.loadError', 'Failed to load plant data. Please try again later.'));
+    }
+  }, [plantsError, t]);
+  
+  // Check if no plants or sensor data are available
+  const noData = user && !isLoading && !error && (!plants || plants.length === 0);
 
   if (loading || isLoading) {
     return (
@@ -123,14 +139,33 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+       <div className="min-h-screen bg-gray-50">
       <Navbar user={user} />
       <main className="container mx-auto px-4 py-8">
+        {/* No Data Message */}
+        {noData && (
+          <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-8 text-center my-8">
+            <div className="flex justify-center mb-4">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+            <h3 className="text-lg font-medium mb-2">{t('dashboard.noData', 'No dashboard data found')}</h3>
+            <p className="text-gray-500 mb-4">{t('dashboard.noDataDescription', 'We couldn\'t find any plants or sensor data. Add your first plant to get started.')}</p>
+            <button 
+              onClick={() => router.push('/plants')}
+              className="px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors"
+            >
+              {t('dashboard.addFirstPlant', 'Add Your First Plant')}
+            </button>
+          </div>
+        )}
+        
         {/* Welcome Banner */}
         <div className="bg-gradient-to-r from-emerald-500 to-emerald-700 rounded-xl shadow-lg mb-8 p-6 text-white flex items-center justify-between">
           <div>
             <h1 className="text-2xl font-bold mb-2">
-              {t('dashboard.welcome', 'Welcome back')}, {user?.firstName || t('common.plantLover', 'Plant Lover')}!
+              {t('dashboard.welcome', 'Welcome back')}, {user?.family_name || t('common.plantLover', 'Plant Lover')}!
             </h1>
             <p className="opacity-90">
               {t('dashboard.overview', 'Here\'s an overview of your plant collection')}
@@ -144,19 +179,19 @@ export default function DashboardPage() {
         </div>
         
         {/* Summary Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-          <div className="bg-white p-5 rounded-xl shadow-sm border border-gray-100 flex items-center">
-            <div className="bg-emerald-100 p-3 rounded-full mr-4">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
-              </svg>
-            </div>
-            <div>
-              <p className="text-gray-500 text-sm">{t('dashboard.totalPlants', 'Total Plants')}</p>
-              <p className="text-xl font-semibold">{plants.length}</p>
-            </div>
-          </div>
-          
+        {!noData && (
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+            <div className="bg-white p-5 rounded-xl shadow-sm border border-gray-100 flex items-center">
+              <div className="bg-emerald-100 p-3 rounded-full mr-4">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+                </svg>
+              </div>
+              <div>
+                <p className="text-gray-500 text-sm">{t('dashboard.totalPlants', 'Total Plants')}</p>
+                <p className="text-xl font-semibold">{plants.length}</p>
+              </div>
+          </div>    
           <div className="bg-white p-5 rounded-xl shadow-sm border border-gray-100 flex items-center">
             <div className="bg-blue-100 p-3 rounded-full mr-4">
               <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -185,6 +220,7 @@ export default function DashboardPage() {
             </div>
           </div>
         </div>
+        )}
         
         {/* Main Content Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">

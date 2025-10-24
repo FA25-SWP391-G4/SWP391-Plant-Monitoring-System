@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/Button';
 import axiosClient from '@/api/axiosClient';
 import Head from 'next/head';
 import { useGoogleAuth } from '@/hooks/useGoogleAuth';
+import GoogleLoginButton from '@/components/GoogleLoginButton';
 
 // API URL for redirect purposes
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
@@ -265,8 +266,6 @@ export function LoginForm() {
             return;
           }
           
-          console.log('[GOOGLE AUTH] Using client ID:', clientId);
-          
           // Initialize Google accounts with explicit popup mode and FedCM support
           window.google.accounts.id.initialize({
             client_id: clientId,
@@ -371,6 +370,7 @@ export function LoginForm() {
           // Process successful authentication
           if (result.data && result.data.token) {
             login(result.data.token, result.data.user);
+            console.log(result.data.user, result.data.token);
 
             // Redirect to dashboard or stored redirect path
             const redirectUrl = localStorage.getItem('redirectAfterLogin') || '/dashboard';
@@ -566,19 +566,11 @@ export function LoginForm() {
         <div className="items-center justify-between">
           {/* Google Sign-In Button */}
           <div className="w-full flex justify-center">
-            {/* Custom button for when Google API is not loaded */}
-            <button 
-              type="button" 
-              className="w-full inline-flex items-center justify-center gap-2 border border-gray-200 hover:border-emerald-300 text-gray-700 hover:text-emerald-800 rounded-lg py-2.5 transition-colors bg-white"
-              onClick={handleGoogleLogin}
-              disabled={isGoogleLoading}
-              id="custom-google-btn"
-            >
-              <span className="sr-only">Continue with Google</span>
-              <span className="text-sm font-medium">
-                {isGoogleLoading ? t('common.loading', 'Loading...') : t('auth.continueWithGoogle', 'Google')}
-              </span>
-            </button>
+            <GoogleLoginButton 
+              flowType="redirect" 
+              variant="outline"
+              className="bg-white"
+            />
             
             {/* Google's rendered button (hidden at first, shows when API loads) */}
             <div className="g-signin2" data-onsuccess="onSignIn" style={{display: 'none'}} id="google-signin-button"></div>

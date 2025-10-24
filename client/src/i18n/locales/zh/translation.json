@@ -147,7 +147,8 @@
 		"recentActivity": "近期活动",
 		"wateringSchedule": "浇水计划",
 		"errorLoading": "加载仪表盘出错",
-		"loadError": "无法加载仪表盘数据。请稍后重试。"
+		"loadError": "无法加载仪表盘数据。请稍后重试。",
+		"weather": "当前天气"
 	},
 
 	"plants": {
@@ -437,7 +438,14 @@
 		"lowTemp": "低温",
 		"feels": "体感温度",
 		"indoor": "室内",
-		"outdoor": "室外"
+		"outdoor": "室外",
+				"tip": {
+			"hot": "高温。请在清晨或傍晚浇水，以减少蒸发。",
+			"rainy": "下雨天。请检查室内植物，确保排水良好，以防根部腐烂。",
+			"dry": "湿度低。考虑为热带植物喷雾，以增加湿度。",
+			"windy": "有很多风。将敏感植物移到有庇护的地方。",
+		"default": "根据当前天气条件，每天监测土壤湿度。"
+		}
 	},
 
 	"reviews": {

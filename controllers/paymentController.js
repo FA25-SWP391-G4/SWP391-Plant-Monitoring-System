@@ -25,6 +25,7 @@ const User = require('../models/User');
 const SystemLog = require('../models/SystemLog');
 const VNPayService = require('../services/vnpayService');
 const vnpayConfig = require('../config/vnpay');
+const { handleRedirect } = require('./paymentUtils');
 
 class PaymentController {
     
@@ -128,12 +129,31 @@ class PaymentController {
                 );
             }
             
-            // Check if direct redirect is requested
-            const directRedirect = req.body.directRedirect === true;
+            // Check if direct redirect is requested - check both header and body parameter
+            const directRedirectHeader = req.headers['x-direct-redirect'] === 'true';
+            const directRedirectBody = req.body.directRedirect === true;
+            const directRedirect = directRedirectHeader || directRedirectBody;
             
             if (directRedirect) {
-                console.log('Redirecting directly to VNPay URL');
-                return res.redirect(paymentResult.paymentUrl);
+                console.log('Direct redirect requested - sending URL in X-Direct-Redirect header');
+                
+                // Instead of redirecting directly (which can cause CORS issues),
+                // send the URL in a header and let the client handle the redirect
+                res.setHeader('X-Direct-Redirect', paymentResult.paymentUrl);
+                
+                // Also send in JSON response for clients that can handle it that way
+                return res.status(200).json({
+                    success: true,
+                    message: 'Payment URL created successfully',
+                    data: {
+                        paymentUrl: paymentResult.paymentUrl,
+                        orderId: paymentResult.orderId,
+                        amount: paymentResult.amount,
+                        expireTime: paymentResult.expireDate,
+                        paymentId: payment.payment_id,
+                        directRedirect: true
+                    }
+                });
             } else {
                 // Return JSON response with payment URL for frontend handling
                 res.status(200).json({
@@ -183,7 +203,7 @@ class PaymentController {
             // If the signature is invalid, redirect to frontend with error code
             if (!verificationResult.isValid) {
                 console.error('Invalid VNPay signature in return URL');
-                return res.redirect(`${frontendUrl}?code=97&message=Invalid%20payment%20signature`);
+                return handleRedirect(res, `${frontendUrl}?code=97&message=Invalid%20payment%20signature`);
             }
             
             // Use the fallback URL defined above
@@ -193,7 +213,7 @@ class PaymentController {
             
             if (!payment) {
                 console.error(`Payment not found for orderId: ${verificationResult.orderId}`);
-                return res.redirect(`${frontendUrl}?code=91&message=Payment%20not%20found&orderId=${verificationResult.orderId}`);
+                return handleRedirect(res, `${frontendUrl}?code=91&message=Payment%20not%20found&orderId=${verificationResult.orderId}`);
             }
             
             // Update payment status based on VNPay response
@@ -249,12 +269,12 @@ class PaymentController {
                 redirectUrl.searchParams.append('message', verificationResult.message);
                 
                 console.log(`Redirecting to payment result page: ${redirectUrl.toString()}`);
-                return res.redirect(redirectUrl.toString());
+                return handleRedirect(res, redirectUrl.toString());
             } catch (urlError) {
                 console.error('Error building redirect URL:', urlError);
                 
                 // Fallback to basic redirect if URL construction fails
-                return res.redirect(`${frontendUrl}?code=${verificationResult.responseCode}&status=${payment.status}`);
+                return handleRedirect(res, `${frontendUrl}?code=${verificationResult.responseCode}&status=${payment.status}`);
             }
             
         } catch (error) {
@@ -262,7 +282,7 @@ class PaymentController {
             
             // Even if there's an error, redirect to frontend with error code
             try {
-                return res.redirect(`${frontendUrl}?code=99&message=Server%20error&error=${encodeURIComponent(error.message)}`);
+                return handleRedirect(res, `${frontendUrl}?code=99&message=Server%20error&error=${encodeURIComponent(error.message)}`);
             } catch (redirectError) {
                 console.error('Failed to redirect after error:', redirectError);
                 

@@ -129,6 +129,7 @@ const isAdmin = (req, res, next) => {
 // Export the middleware functions
 const auth = authMiddleware;
 module.exports = auth;
+module.exports.verifyToken = authMiddleware; // Add this alias for compatibility
 module.exports.authMiddleware = authMiddleware;
 module.exports.isAdmin = isAdmin;
 
