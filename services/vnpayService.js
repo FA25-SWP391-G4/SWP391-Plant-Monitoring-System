@@ -40,18 +40,27 @@ try {
 class VNPayService {
     /**
      * Sort object by key for consistent hash generation
+     * This is the official VNPay implementation for sorting and encoding parameters
      */
     static sortObject(obj) {
-        const sorted = {};
-        const keys = Object.keys(obj).sort();
+        // Create an array of the object's keys
+        const keys = Object.keys(obj);
         
-        for (const key of keys) {
-            if (obj[key] !== null && obj[key] !== undefined) {
-                if (typeof obj[key] === 'object' && !Array.isArray(obj[key]) && obj[key] !== null) {
-                    sorted[key] = this.sortObject(obj[key]);
-                } else {
-                    sorted[key] = obj[key];
-                }
+        // Sort the keys alphabetically
+        keys.sort();
+        
+        // Create a new sorted object
+        const sorted = {};
+        
+        // Add each key-value pair to the new object in sorted order
+        for (let i = 0; i < keys.length; i++) {
+            const key = keys[i];
+            // Ensure we're using the non-URL-encoded key name for accessing the original object
+            // But use URL encoding for the values as required by VNPay
+            if (obj[key] !== undefined && obj[key] !== null) {
+                const encodedValue = encodeURIComponent(obj[key]).replace(/%20/g, "+");
+                sorted[key] = encodedValue;
+                console.log(`[VNPAY] Sorted param: ${key}=${encodedValue}`);
             }
         }
         
@@ -113,30 +122,39 @@ class VNPayService {
             vnp_ExpireDate: expireDate
         };
         
-        // Add bank code if provided
-        if (bankCode && bankCode !== '') {
-            vnp_Params.vnp_BankCode = bankCode;
+        // Add bank code (payment method) if provided
+        if(bankCode !== null && bankCode !== ''){
+            vnp_Params['vnp_BankCode'] = bankCode;
+            console.log('[VNPAY] Adding bank code:', bankCode);
+        }
+        // Get the real public IP address instead of using localhost
+        if (ipAddr === '127.0.0.1' || ipAddr === 'localhost' || ipAddr === '::1') {
+            console.log('[VNPAY] Warning: Using localhost IP address. Consider using real IP for production.');
+            // In production, you should use a service to get the real public IP
         }
         
-        // Sort the parameters and create the signed query string
+        console.log('[VNPAY] Parameters before sorting:', JSON.stringify(vnp_Params));
+        
+        // Sort the parameters using VNPay's specific sorting algorithm
         vnp_Params = this.sortObject(vnp_Params);
         
-        // Use qs module instead of querystring for better compatibility with VNPay
-        const signData = qs.stringify(vnp_Params, { encode: false });
-        console.log('Sign data:', signData);
+        console.log('[VNPAY] Parameters after sorting:', JSON.stringify(vnp_Params));
         
-        // Create secure hash
+        // Create the signed query string (using qs with encode=true as required by VNPay)
+        const signData = qs.stringify(vnp_Params, { encode: false });
+        console.log('[VNPAY] Sign data:', signData);
+        
+        // Create secure hash using SHA512 as required by VNPay 2.1.0
         const hmac = crypto.createHmac('sha512', vnpayConfig.vnp_HashSecret);
         const secureHash = hmac.update(Buffer.from(signData, 'utf-8')).digest('hex');
-        console.log('Secure hash:', secureHash);
+        console.log('[VNPAY] Secure hash:', secureHash);
         
-        // Add secure hash to params
+        // Add secure hash to original params (not the encoded ones)
         vnp_Params.vnp_SecureHash = secureHash;
         
-        // Build the complete payment URL - IMPORTANT: Don't encode the parameters in the final URL
-        // Using qs.stringify with encode: false ensures spaces are not encoded as %20
+        // Build the complete payment URL with proper encoding for VNPay
         const paymentUrl = `${vnpayConfig.vnp_Url}?${qs.stringify(vnp_Params, { encode: false })}`;
-        console.log('Payment URL created (first 100 chars):', paymentUrl.substring(0, 100) + '...');
+        console.log('[VNPAY] Payment URL created (first 100 chars):', paymentUrl.substring(0, 100) + '...');
         
         return {
             paymentUrl,
@@ -152,6 +170,8 @@ class VNPayService {
      * Verify Instant Payment Notification from VNPay
      */
     static verifyIPN(vnpParams) {
+        console.log('[VNPAY] Verifying IPN with params:', vnpParams);
+        
         // Extract the secure hash from the params
         const secureHash = vnpParams.vnp_SecureHash;
         delete vnpParams.vnp_SecureHash;
@@ -159,15 +179,19 @@ class VNPayService {
             delete vnpParams.vnp_SecureHashType;
         }
         
-        // Sort the parameters exactly as in the demo
-        vnpParams = this.sortObject(vnpParams);
+        // Sort the parameters using VNPay's required algorithm
+        const sortedParams = this.sortObject(vnpParams);
         
-        // Create signature string
-        const signData = querystring.stringify(vnpParams, { encode: false });
+        // Create signature string using qs (not querystring) with encode: true
+        const signData = qs.stringify(sortedParams, { encode: true });
+        console.log('[VNPAY] IPN verification sign data:', signData);
         
-        // Create secure hash
+        // Create secure hash with SHA512 as required by VNPay 2.1.0
         const hmac = crypto.createHmac('sha512', vnpayConfig.vnp_HashSecret);
         const calculatedHash = hmac.update(Buffer.from(signData, 'utf-8')).digest('hex');
+        
+        console.log('[VNPAY] Received hash:', secureHash);
+        console.log('[VNPAY] Calculated hash:', calculatedHash);
         
         // Check if the calculated hash matches the secure hash from VNPay
         const isValidSignature = secureHash === calculatedHash;
@@ -236,13 +260,29 @@ class VNPayService {
     
     /**
      * Get client IP address from request
+     * This method extracts the real client IP address, considering proxy headers
      */
     static getClientIpAddress(req) {
-        const ipAddr = req.headers['x-forwarded-for'] ||
-            req.connection.remoteAddress ||
-            req.socket.remoteAddress ||
-            req.connection.socket?.remoteAddress ||
-            '127.0.0.1';
+        // Check for forwarded IP from proxy
+        let ipAddr = req.headers['x-forwarded-for'] || 
+                     req.headers['x-real-ip'] || 
+                     req.connection.remoteAddress ||
+                     req.socket.remoteAddress ||
+                     req.connection.socket?.remoteAddress ||
+                     '127.0.0.1';
+        
+        // Handle x-forwarded-for potentially having multiple IPs (client, proxy1, proxy2)
+        if (ipAddr && ipAddr.includes(',')) {
+            // The first IP is the client's real IP
+            ipAddr = ipAddr.split(',')[0].trim();
+        }
+        
+        // Remove IPv6 prefix if present
+        if (ipAddr && ipAddr.startsWith('::ffff:')) {
+            ipAddr = ipAddr.substring(7);
+        }
+        
+        console.log('[VNPAY] Client IP address:', ipAddr);
             
         return ipAddr;
     }
@@ -268,16 +308,7 @@ class VNPayService {
         return true;
     }
     
-    /**
-     * Get client IP address
-     */
-    static getClientIpAddress(req) {
-        return req.headers['x-forwarded-for'] ||
-               req.connection.remoteAddress ||
-               req.socket.remoteAddress ||
-               (req.connection.socket ? req.connection.socket.remoteAddress : null) ||
-               '127.0.0.1';
-    }
+    // The getClientIpAddress method is now implemented above
     
     /**
      * Parse VNPay query parameters from return URL or IPN

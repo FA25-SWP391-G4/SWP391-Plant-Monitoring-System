@@ -233,4 +233,50 @@ router.post('/models/:id/test',
     aiController.testModelPerformance
 );
 
+/**
+ * @route POST /api/ai/analyze-health
+ * @desc Analyze plant health from image
+ * @access Private (Premium)
+ */
+router.post('/analyze-health', 
+  authenticate, 
+  upload.single('image'), 
+  aiController.analyzeHealth
+);
+
+/**
+ * @route POST /api/ai/identify-plant
+ * @desc Identify plant species from image
+ * @access Private (Premium)
+ */
+router.post('/identify-plant', 
+  authenticate, 
+  upload.single('image'), 
+  aiController.identifyPlant
+);
+
+/**
+ * @route GET /api/ai/analysis-history/:plantId
+ * @desc Get analysis history for a plant
+ * @access Private
+ */
+router.get('/analysis-history/:plantId',
+  [
+    authenticate,
+    param('plantId').isNumeric().withMessage('Invalid plant ID')
+  ],
+  aiController.getAnalysisHistory
+);
+
+/**
+ * @route POST /api/ai/detect-disease
+ * @desc Detect disease from plant image
+ * @access Private (Premium)
+ */
+router.post('/detect-disease',
+  authenticate,
+  upload.single('image'),
+  aiController.detectDisease
+);
+
 module.exports = router;

@@ -23,13 +23,18 @@ DROP TABLE IF EXISTS Users;
 CREATE TABLE Users (
   user_id SERIAL PRIMARY KEY,
   email VARCHAR(100) NOT NULL UNIQUE,
-  password_hash VARCHAR(255) NOT NULL,
-  full_name VARCHAR(100) NULL,
+  password_hash VARCHAR(255) NULL, -- NULL allowed for Google-only accounts
+  given_name VARCHAR(100) NULL,
+  family_name VARCHAR(100) NULL,
   role VARCHAR(30) NOT NULL DEFAULT 'Regular' CHECK (role IN ('Regular', 'Premium', 'Admin')),
   notification_prefs JSONB NULL,
   created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   password_reset_token VARCHAR(255),
-  password_reset_expires TIMESTAMP
+  password_reset_expires TIMESTAMP,
+  google_id VARCHAR(255) NULL UNIQUE,
+  google_refresh_token TEXT NULL,
+  profile_picture TEXT NULL,
+  language_preference VARCHAR(10) NOT NULL DEFAULT 'en'
 );
 -- Create index for performance on password reset token lookup
 CREATE INDEX idx_users_password_reset_token ON Users(password_reset_token);

@@ -1,9 +1,12 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
 import { useTranslation } from 'react-i18next';
+import PlantHistoryChart from './PlantHistoryChart';
 
 export default function PlantCard({ plant, sensorData = {} }) {
   const { t } = useTranslation();
+  const [showHistory, setShowHistory] = useState(false);
+  const [activeChart, setActiveChart] = useState('moisture');
   
   // Calculate health status and water status
   const getStatusInfo = () => {
@@ -94,9 +97,12 @@ export default function PlantCard({ plant, sensorData = {} }) {
         </div>
         
         {/* Sensor data */}
-        <div className="grid grid-cols-3 gap-2 mb-4">
+        <div className="grid grid-cols-3 gap-2 mb-2">
           {/* Moisture level */}
-          <div className="flex flex-col">
+          <div 
+            className={`flex flex-col ${activeChart === 'moisture' ? 'bg-blue-50 rounded p-1' : ''} cursor-pointer`}
+            onClick={() => { setActiveChart('moisture'); setShowHistory(true); }}
+          >
             <span className="text-xs text-gray-500 mb-1">{t('metrics.moisture', 'Moisture')}</span>
             <div className="flex items-center">
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-blue-500 mr-1">
@@ -107,7 +113,10 @@ export default function PlantCard({ plant, sensorData = {} }) {
           </div>
           
           {/* Temperature */}
-          <div className="flex flex-col">
+          <div 
+            className={`flex flex-col ${activeChart === 'temperature' ? 'bg-red-50 rounded p-1' : ''} cursor-pointer`}
+            onClick={() => { setActiveChart('temperature'); setShowHistory(true); }}
+          >
             <span className="text-xs text-gray-500 mb-1">{t('metrics.temperature', 'Temperature')}</span>
             <div className="flex items-center">
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-red-500 mr-1">
@@ -118,7 +127,10 @@ export default function PlantCard({ plant, sensorData = {} }) {
           </div>
           
           {/* Light level */}
-          <div className="flex flex-col">
+          <div 
+            className={`flex flex-col ${activeChart === 'light' ? 'bg-amber-50 rounded p-1' : ''} cursor-pointer`}
+            onClick={() => { setActiveChart('light'); setShowHistory(true); }}
+          >
             <span className="text-xs text-gray-500 mb-1">{t('metrics.light', 'Light')}</span>
             <div className="flex items-center">
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-amber-500 mr-1">
@@ -132,10 +144,30 @@ export default function PlantCard({ plant, sensorData = {} }) {
                 <path d="m6.34 17.66-1.41 1.41"></path>
                 <path d="m19.07 4.93-1.41 1.41"></path>
               </svg>
-              <span className="font-medium">{sensorData?.light || 'N/A'}%</span>
+              <span className="font-medium">{sensorData?.light || 'N/A'} lux</span>
             </div>
           </div>
         </div>
+        
+        {/* History chart - conditionally shown */}
+        {showHistory && sensorData && sensorData.history && (
+          <div className="mt-2 mb-4">
+            <div className="flex justify-between items-center mb-2">
+              <h4 className="text-sm font-medium">{t('charts.history', 'Sensor History')}</h4>
+              <button 
+                onClick={() => setShowHistory(false)}
+                className="text-xs text-gray-500 hover:text-gray-700"
+              >
+                {t('common.hide', 'Hide')}
+              </button>
+            </div>
+            <PlantHistoryChart 
+              data={(sensorData.history && sensorData.history[activeChart]) || []} 
+              dataType={activeChart}
+              timeRange="day"
+            />
+          </div>
+        )}
         
         {/* Last watered */}
         <div className="flex items-center text-sm text-gray-500 mb-4">

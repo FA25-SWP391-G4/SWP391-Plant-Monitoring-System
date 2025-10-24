@@ -55,7 +55,7 @@ export default function PremiumPage() {
   };
   
   // Process payment
-  const handlePayment = async (paymentType) => {
+  const handlePayment = async (paymentType, bankCode = '') => {
     setIsProcessing(true);
     setPaymentError(null);
     
@@ -68,7 +68,7 @@ export default function PremiumPage() {
         return;
       }
       
-      console.log(`Processing payment for user ID: ${user.user_id}, Name: ${user.full_name || 'Not set'}`);
+      console.log(`Processing payment for user ID: ${user.user_id}, Name: ${user.full_name || 'Not set'}, Bank Code: ${bankCode || 'Not specified'}`);
       
       // Determine amount based on selected plan and payment type
       let amount = 0;
@@ -76,22 +76,23 @@ export default function PremiumPage() {
       
       if (paymentType === 'monthly') {
         amount = 20000; // 20,000 VND per month
-        description = t('payment.monthlySubscription', 'Monthly Premium Subscription');
+        description = 'Monthly Premium Subscription';
       } else if (paymentType === 'annual') {
         amount = 200000; // 200,000 VND per year (20% off)
-        description = t('payment.annualSubscription', 'Annual Premium Subscription (20% off)');
+        description = 'Annual Premium Subscription (20% off)';
       } else if (paymentType === 'lifetime') {
         amount = 399000; // 399,000 VND one-time payment
-        description = t('payment.lifetimeSubscription', 'Lifetime Premium Subscription');
+        description = 'Lifetime Premium Subscription';
       }
       
       // Create payment URL through backend
-      console.log(`Sending payment request: amount=${amount}, user_id=${user.user_id}`);
+      console.log(`Sending payment request: amount=${amount}, user_id=${user.user_id}, bankCode=${bankCode}`);
       const response = await paymentApi.createPaymentUrl({
         amount,
         orderInfo: description,
-        orderType: 'premium_subscription',
+        orderType: 190004,
         planType: paymentType,
+        bankCode: bankCode, // Pass the selected payment method
         directRedirect: true // Use direct server-side redirection for better compatibility
       });
       
@@ -429,56 +430,83 @@ export default function PremiumPage() {
             <h3 className="text-xl font-bold mb-4">{t('payment.confirmPayment', 'Confirm Payment')}</h3>
             
             <div className="mb-6">
-              <p className="mb-2">{t('payment.selectPlan', 'Please confirm your payment:')}</p>
+              <p className="mb-4">{t('payment.selectPaymentMethod', 'Please select your payment method:')}</p>
               
-              <div className="space-y-3">
-                {selectedPlan === 'monthly' && (
-                  <button 
-                    className="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-3 px-4 rounded-lg font-medium transition-colors flex items-center justify-center"
-                    onClick={() => handlePayment('monthly')}
-                    disabled={isProcessing}
-                  >
-                    {isProcessing ? t('payment.processing', 'Processing...') : t('payment.payMonthly', 'Pay 20,000₫ for Monthly Plan')}
-                  </button>
-                )}
-                
-                {selectedPlan === 'annual' && (
-                  <button 
-                    className="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-3 px-4 rounded-lg font-medium transition-colors flex items-center justify-center"
-                    onClick={() => handlePayment('annual')}
-                    disabled={isProcessing}
-                  >
-                    {isProcessing ? t('payment.processing', 'Processing...') : t('payment.payAnnual', 'Pay 200,000₫ for Annual Plan')}
-                  </button>
-                )}
-                
-                {selectedPlan === 'lifetime' && (
-                  <button 
-                    className="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-3 px-4 rounded-lg font-medium transition-colors flex items-center justify-center"
-                    onClick={() => handlePayment('lifetime')}
-                    disabled={isProcessing}
-                  >
-                    {isProcessing ? t('payment.processing', 'Processing...') : t('payment.payLifetime', 'Pay 399,000₫ for Lifetime Access')}
-                  </button>
-                )}
-              </div>
-              
-              {paymentError && (
-                <p className="text-red-500 mt-3 text-sm">{paymentError}</p>
-              )}
-              
-              <div className="mt-6 text-center">
-                <p className="text-xs text-gray-500 mb-3">
-                  {t('payment.securePayment', 'Secure payment processed by VNPay')}
-                </p>
-                <button
-                  className="text-gray-500 hover:text-gray-700 text-sm"
-                  onClick={() => setPaymentDialogOpen(false)}
+              {/* Payment Method Selection */}
+              <div className="space-y-4 mb-6">
+                <button 
+                  className="w-full bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 py-3 px-4 rounded-lg font-medium transition-colors flex items-center justify-between"
+                  onClick={() => handlePayment(selectedPlan, 'VNPAYQR')}
                   disabled={isProcessing}
                 >
-                  {t('common.cancel', 'Cancel')}
+                  <span className="flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 mr-3 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z" />
+                    </svg>
+                    {t('payment.vnpayQR', 'Thanh toán quét mã QR')}
+                  </span>
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
+                </button>
+                
+                <button 
+                  className="w-full bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 py-3 px-4 rounded-lg font-medium transition-colors flex items-center justify-between"
+                  onClick={() => handlePayment(selectedPlan, 'VNBANK')}
+                  disabled={isProcessing}
+                >
+                  <span className="flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 mr-3 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+                    </svg>
+                    {t('payment.vnbank', 'Thẻ ATM - Tài khoản ngân hàng nội địa')}
+                  </span>
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
+                </button>
+                
+                <button 
+                  className="w-full bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 py-3 px-4 rounded-lg font-medium transition-colors flex items-center justify-between"
+                  onClick={() => handlePayment(selectedPlan, 'INTCARD')}
+                  disabled={isProcessing}
+                >
+                  <span className="flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 mr-3 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+                    </svg>
+                    {t('payment.intcard', 'Thẻ thanh toán quốc tế')}
+                  </span>
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
                 </button>
               </div>
+              
+              {isProcessing && (
+                <div className="flex items-center justify-center">
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-emerald-600"></div>
+                  <span className="ml-2">{t('payment.processing', 'Processing...')}</span>
+                </div>
+              )}
+              
+              {/* Payment Error Message */}
+              {paymentError && (
+                <div className="mt-4 p-3 bg-red-50 text-red-700 rounded-md">
+                  {paymentError}
+                </div>
+              )}
+            </div>
+            
+            {/* Close Button */}
+            <div className="mt-4 flex justify-end">
+              <button
+                className="px-4 py-2 text-gray-600 hover:text-gray-800"
+                onClick={() => setPaymentDialogOpen(false)}
+                disabled={isProcessing}
+              >
+                {t('common.close', 'Close')}
+              </button>
             </div>
           </div>
         </div>

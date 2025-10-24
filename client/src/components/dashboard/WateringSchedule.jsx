@@ -1,18 +1,20 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
 export default function WateringSchedule({ plants = [] }) {
   const { t } = useTranslation();
   
-  // Sort plants by those needing water first
-  const sortedPlants = [...plants].sort((a, b) => {
-    // Plants that need water go first
-    if (a.status === 'needs_water' && b.status !== 'needs_water') return -1;
-    if (a.status !== 'needs_water' && b.status === 'needs_water') return 1;
-    
-    // Then sort by last watered date (oldest first)
-    return new Date(a.lastWatered) - new Date(b.lastWatered);
-  });
+  // Sort plants by those needing water first - memoized to avoid unnecessary re-sorting
+  const sortedPlants = useMemo(() => {
+    return [...plants].sort((a, b) => {
+      // Plants that need water go first
+      if (a.status === 'needs_water' && b.status !== 'needs_water') return -1;
+      if (a.status !== 'needs_water' && b.status === 'needs_water') return 1;
+      
+      // Then sort by last watered date (oldest first)
+      return new Date(a.lastWatered) - new Date(b.lastWatered);
+    });
+  }, [plants]);
   
   // Get days since last watered
   const getDaysSinceLastWatered = (lastWateredDate) => {

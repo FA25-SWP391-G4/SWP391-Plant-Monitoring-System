@@ -147,7 +147,8 @@
 "recentActivity": "Hoạt động gần đây",
 "wateringSchedule": "Lịch tưới",
 "errorLoading": "Lỗi tải bảng điều khiển",
-"loadError": "Không thể tải dữ liệu bảng điều khiển. Vui lòng thử lại sau."
+"loadError": "Không thể tải dữ liệu bảng điều khiển. Vui lòng thử lại sau.",
+"weather": "Thời tiết hiện tại"
 },
 
 "plants": {
@@ -437,7 +438,14 @@
 "lowTemp": "Thấp",
 "feels": "Cảm giác như",
 "indoor": "Trong nhà",
-"outdoor": "Ngoài trời"
+"outdoor": "Ngoài trời",
+"tip": {
+  "hot": "Nhiệt độ cao. Tưới cây vào buổi sáng sớm hoặc buổi tối để tránh bay hơi.",
+  "rainy": "Trời có mưa. Kiểm tra cây trong nhà để đảm bảo thoát nước đúng cách và tránh thối rễ.",
+  "dry": "Độ ẩm thấp. Cân nhắc phun sương cho cây nhiệt đới của bạn để tăng độ ẩm.",
+  "windy": "Có nhiều gió. Di chuyển các chậu cây nhạy cảm đến những nơi có chỗ trú ẩn.",
+  "default": "Theo dõi độ ẩm đất hàng ngày dựa trên điều kiện thời tiết hiện tại."
+}
 },
 
 "reviews": {

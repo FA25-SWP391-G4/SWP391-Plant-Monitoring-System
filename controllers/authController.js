@@ -115,6 +115,7 @@ const crypto = require('crypto');
 const bcrypt = require('bcryptjs');
 const { User, SystemLog } = require('../models');
 const emailService = require('../services/emailService');
+const { profile } = require('console');
 
 // Create email transporter
 const createTransporter = () => {
@@ -136,8 +137,8 @@ const createTransporter = () => {
     // Use direct SMTP configuration instead of service
     const transporterConfig = {
         host: process.env.EMAIL_HOST || 'smtp.gmail.com',
-        port: process.env.EMAIL_PORT || 587,
-        secure: false, // MUST be false for port 587, true only for port 465
+        port: 465,
+        secure: true, // MUST be false for port 587, true only for port 465
         auth: {
             user: process.env.EMAIL_USER,
             pass: process.env.EMAIL_PASS,
@@ -191,6 +192,306 @@ const generateToken = (user) => {
         { expiresIn: '1d' }
     );
 };
+
+/**
+ * UC1: USER REGISTRATION CONTROLLER
+ * =====================================
+ * Implements user account creation with email verification
+ * 
+ * Flow:
+ * 1. Validate user input (email, password, fullName)
+ * 2. Check if email already exists
+ * 3. Create new user with hashed password
+ * 4. Send welcome email with verification link
+ * 5. Return success with user data and token
+ * 
+ * Security Features:
+ * - Password hashing with bcrypt
+ * - Email format validation
+ * - Password strength requirements
+ * - SQL injection protection via parameterized queries
+ * 
+ * Error Handling:
+ * - Input validation
+ * - Email uniqueness check
+ * - Database errors
+ * - Email sending failures
+ */
+async function register(req, res) {
+    try {
+        const { email, password, googleId, profile_picture, family_name, given_name } = req.body;
+        
+        // Initialize userData with defaults - handle both naming conventions
+        let userData = {
+            email,
+            password,
+            familyName: family_name,
+            givenName: given_name,
+            role: 'Regular',
+            google_id: googleId || null,
+            profile_picture: profile_picture || null,
+            notification_prefs: null
+        };
+        
+        console.log(`[REGISTER] Registration attempt for email: ${email}, google_id: ${userData.google_id || 'none'}`);
+        console.log(`[REGISTER] Received data:`, JSON.stringify(req.body, null, 2));
+
+        // Check if user already exists
+        try {
+            const existingUser = await User.findByEmail(userData.email);
+            if (existingUser) {
+                console.log(`[REGISTER] Email already registered: ${userData.email}`);
+                return res.status(409).json({
+                    success: false,
+                    message: 'Email already registered'
+                });
+            }
+        } catch (lookupError) {
+            console.error(`[REGISTER] Error checking for existing user: ${lookupError.message}`);
+            // Continue with registration attempt
+        }
+
+        console.log(`[REGISTER] Creating new user with email: ${userData.email}, given name: ${userData.givenName || 'none'}, google_id: ${userData.google_id || 'none'}`);
+
+        // Save with explicit error handling
+        try {
+            const newUser = new User(userData);
+            const savedUser = await newUser.save();
+            console.log(`[REGISTER] User successfully saved with ID: ${savedUser.user_id}`);
+
+            // Generate JWT token
+            const token = generateToken(savedUser);
+
+            // Send welcome email asynchronously (don't await to avoid blocking)
+            sendWelcomeEmail(savedUser).catch(emailError => {
+                console.error('[REGISTER] Welcome email could not be sent:', emailError.message);
+            });
+
+            return res.status(201).json({
+                success: true,
+                message: 'Registration successful',
+                data: {
+                    user: {
+                        user_id: savedUser.user_id,
+                        email: savedUser.email,
+                        family_name: savedUser.family_name,
+                        given_name: savedUser.given_name,
+                        role: savedUser.role
+
+                    },
+                    token
+                }
+            });
+        } catch (saveError) {
+            console.error(`[REGISTER] Database error during user creation: ${saveError.message}`);
+
+            // Handle specific error cases
+            if (saveError.status === 409 || saveError.code === '23505') {
+                return res.status(409).json({
+                    success: false,
+                    message: 'Email already registered'
+                });
+            }
+
+            throw saveError; // Re-throw to be caught by outer try-catch
+        }
+    } catch (error) {
+        console.error('[REGISTER] Registration error:', error);
+
+        return res.status(500).json({
+            success: false,
+            message: 'Registration failed. Please try again later.'
+        });
+    }
+}
+
+/**
+ * Send welcome email to newly registered user
+ */
+async function sendWelcomeEmail(user) {
+    try {
+        const transporter = createTransporter();
+
+        const mailOptions = {
+            from: process.env.EMAIL_USER,
+            to: user.email,
+            subject: 'Welcome to Plant Monitoring System',
+            text: `
+                Hello ${user.family_name},
+
+                Thank you for registering with the Plant Monitoring System!
+
+                Your account has been successfully created.
+
+                You can now log in to access all features of our platform.
+
+                Best regards,
+                The Plant Monitoring System Team
+            `,
+        };
+
+        console.log(`[EMAIL DEBUG] Attempting to send welcome email to: ${user.email}`);
+        console.log('[EMAIL DEBUG] Welcome email transporter created successfully');
+        
+        const info = await transporter.sendMail(mailOptions);
+        console.log(`[EMAIL DEBUG] Welcome email sent successfully: ${JSON.stringify(info)}`);
+    } catch (error) {
+        console.error('[EMAIL DEBUG] Error sending welcome email:', error.message);
+        console.error('[EMAIL DEBUG] Full error:', error);
+        // We don't throw the error as this shouldn't stop registration
+    }
+}
+
+/**
+ * UC2: USER LOGIN CONTROLLER
+ * =====================================
+ * Implements user authentication with JWT token generation
+ * 
+ * Flow:
+ * 1. Validate user input (email, password)
+ * 2. Find user by email
+ * 3. Validate password
+ * 4. Generate JWT token
+ * 5. Return success with user data and token
+ * 
+ * Security Features:
+ * - Secure password comparison with bcrypt
+ * - JWT token with user ID and role
+ * - No sensitive data exposure
+ * 
+ * Error Handling:
+ * - Input validation
+ * - User not found
+ * - Invalid credentials
+ * - Database errors
+ */
+async function login(req, res) {
+    try {
+        const { email, password } = req.body;
+        console.log(`[LOGIN] Attempt for email: ${email}`);
+
+        // Validate inputs
+        if (!email || !password) {
+            console.log('[LOGIN] Missing email or password');
+            return res.status(400).json({
+                error: 'Email and password are required'
+            });
+        }
+
+        // Find user by email
+        const user = await User.findByEmail(email);
+        if (!user) {
+            console.log(`[LOGIN] User not found: ${email}`);
+            return res.status(401).json({
+                error: 'Invalid email or password'
+            });
+        }
+
+        console.log(`[LOGIN] User found: ${user.email}, checking password...`);
+        
+        // Check if user is Google-registered (has google_id but no password)
+        if (user.google_id && !user.password) {
+            console.log(`[LOGIN] User ${user.email} is registered via Google and has no password`);
+            return res.status(401).json({
+                error: 'This account was created with Google. Please log in with Google.',
+                googleAccount: true
+            });
+        }
+        
+        // Improved safer debug logging without exposing passwords
+        console.log(`[LOGIN] User object has password hash: ${!!user.password}`);
+        console.log(`[LOGIN] Password hash type: ${typeof user.password}`);
+        console.log(`[LOGIN] Password hash length: ${user.password ? user.password.length : 'N/A'}`);
+        console.log(`[LOGIN] Input password provided: ${!!password}`);
+
+        // Validate password
+        const isPasswordValid = await user.validatePassword(password);
+        console.log(`[LOGIN] Password validation result: ${isPasswordValid}`);
+
+        if (!isPasswordValid) {
+            return res.status(401).json({
+                error: 'Invalid email or password'
+            });
+        }
+
+        // Generate JWT token
+        const token = generateToken(user);
+        console.log(`[LOGIN] Success for user: ${user.email}`);
+
+        // Set session cookie with proper settings for better persistence
+        res.cookie('auth_token', token, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'lax', // Changed to 'lax' for better cross-site compatibility
+            path: '/',       // Ensure cookie is available across all paths
+            maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days - explicit expiration
+        });
+        
+        // Include both name fields for proper display
+        const fullName = user.givenName && user.familyName 
+            ? `${user.givenName} ${user.familyName}`
+            : user.familyName || user.givenName || 'User';
+            
+        console.log(`[LOGIN] User name fields: given_name=${user.givenName}, family_name=${user.familyName}, fullName=${fullName}`);
+        
+        // Create user response object
+        const userData = {
+            user_id: user.user_id,
+            email: user.email,
+            family_name: user.familyName,
+            given_name: user.givenName,
+            full_name: fullName,
+            role: user.role
+        };
+        
+        console.log(`[LOGIN] User data being sent to client:`, JSON.stringify(userData));
+
+        res.status(200).json({
+            success: true,
+            message: 'Login successful',
+            data: {
+                user: userData,
+                token
+            }
+        });
+    } catch (error) {
+        console.error('Login error:', error);
+        res.status(500).json({
+            error: 'Login failed. Please try again later.'
+        });
+    }
+}
+
+/**
+ * UC3: USER LOGOUT CONTROLLER
+ * =====================================
+ * Implements user logout functionality
+ * 
+ * Note: Since we're using JWT tokens which are stateless,
+ * actual token invalidation would require additional infrastructure
+ * like a token blacklist in Redis or similar.
+ * 
+ * This function serves mainly as a hook for client-side logout.
+ */
+async function logout(req, res) {
+    try {
+        // Since JWT is stateless, we can't invalidate tokens server-side without additional infrastructure
+        // In a production app, we would maintain a blacklist of tokens in Redis or similar
+
+        // Log the logout action (could be saved to SystemLog in a real implementation)
+        console.log(`User logged out: ${req.user ? req.user.user_id : 'Unknown'}`);
+
+        res.status(200).json({
+            success: true,
+            message: 'Logout successful'
+        });
+    } catch (error) {
+        console.error('Logout error:', error);
+        res.status(500).json({
+            error: 'Logout failed. Please try again later.'
+        });
+    }
+}
 
 /**
  * UC11: FORGOT PASSWORD CONTROLLER
@@ -545,282 +846,6 @@ async function changePassword(req, res) {
 }
 
 /**
- * UC1: USER REGISTRATION CONTROLLER
- * =====================================
- * Implements user account creation with email verification
- * 
- * Flow:
- * 1. Validate user input (email, password, fullName)
- * 2. Check if email already exists
- * 3. Create new user with hashed password
- * 4. Send welcome email with verification link
- * 5. Return success with user data and token
- * 
- * Security Features:
- * - Password hashing with bcrypt
- * - Email format validation
- * - Password strength requirements
- * - SQL injection protection via parameterized queries
- * 
- * Error Handling:
- * - Input validation
- * - Email uniqueness check
- * - Database errors
- * - Email sending failures
- */
-async function register(req, res) {
-    try {
-        const { email, password, familyName, givenName } = req.body;
-        console.log(`[REGISTER] Registration attempt for email: ${email}`);
-
-        // Check if user already exists
-        try {
-            const existingUser = await User.findByEmail(email);
-            if (existingUser) {
-                console.log(`[REGISTER] Email already registered: ${email}`);
-                return res.status(409).json({
-                    success: false,
-                    message: 'Email already registered'
-                });
-            }
-        } catch (lookupError) {
-            console.error(`[REGISTER] Error checking for existing user: ${lookupError.message}`);
-            // Continue with registration attempt
-        }
-
-        console.log(`[REGISTER] Creating new user with email: ${email}`);
-
-        // Create new user
-        const userData = {
-            email,
-            password,
-            familyName,
-            givenName,
-            role: 'Regular',
-            notification_prefs: {}
-        };
-
-        // Save with explicit error handling
-        try {
-            const newUser = new User(userData);
-            const savedUser = await newUser.save();
-            console.log(`[REGISTER] User successfully saved with ID: ${savedUser.user_id}`);
-
-            // Generate JWT token
-            const token = generateToken(savedUser);
-
-            // Send welcome email asynchronously (don't await to avoid blocking)
-            sendWelcomeEmail(savedUser).catch(emailError => {
-                console.error('[REGISTER] Welcome email could not be sent:', emailError.message);
-            });
-
-            return res.status(201).json({
-                success: true,
-                message: 'Registration successful',
-                data: {
-                    user: {
-                        user_id: savedUser.user_id,
-                        email: savedUser.email,
-                        family_name: savedUser.family_name,
-                        given_name: savedUser.given_name,
-                        role: savedUser.role
-                    },
-                    token
-                }
-            });
-        } catch (saveError) {
-            console.error(`[REGISTER] Database error during user creation: ${saveError.message}`);
-
-            // Handle specific error cases
-            if (saveError.status === 409 || saveError.code === '23505') {
-                return res.status(409).json({
-                    success: false,
-                    message: 'Email already registered'
-                });
-            }
-
-            throw saveError; // Re-throw to be caught by outer try-catch
-        }
-    } catch (error) {
-        console.error('[REGISTER] Registration error:', error);
-
-        return res.status(500).json({
-            success: false,
-            message: 'Registration failed. Please try again later.'
-        });
-    }
-}
-
-/**
- * Send welcome email to newly registered user
- */
-async function sendWelcomeEmail(user) {
-    try {
-        const transporter = createTransporter();
-
-        const mailOptions = {
-            from: process.env.EMAIL_USER,
-            to: user.email,
-            subject: 'Welcome to Plant Monitoring System',
-            text: `
-                Hello ${user.family_name},
-
-                Thank you for registering with the Plant Monitoring System!
-
-                Your account has been successfully created.
-
-                You can now log in to access all features of our platform.
-
-                Best regards,
-                The Plant Monitoring System Team
-            `,
-        };
-
-        console.log(`[EMAIL DEBUG] Attempting to send welcome email to: ${user.email}`);
-        console.log('[EMAIL DEBUG] Welcome email transporter created successfully');
-        
-        const info = await transporter.sendMail(mailOptions);
-        console.log(`[EMAIL DEBUG] Welcome email sent successfully: ${JSON.stringify(info)}`);
-    } catch (error) {
-        console.error('[EMAIL DEBUG] Error sending welcome email:', error.message);
-        console.error('[EMAIL DEBUG] Full error:', error);
-        // We don't throw the error as this shouldn't stop registration
-    }
-}
-
-/**
- * UC2: USER LOGIN CONTROLLER
- * =====================================
- * Implements user authentication with JWT token generation
- * 
- * Flow:
- * 1. Validate user input (email, password)
- * 2. Find user by email
- * 3. Validate password
- * 4. Generate JWT token
- * 5. Return success with user data and token
- * 
- * Security Features:
- * - Secure password comparison with bcrypt
- * - JWT token with user ID and role
- * - No sensitive data exposure
- * 
- * Error Handling:
- * - Input validation
- * - User not found
- * - Invalid credentials
- * - Database errors
- */
-async function login(req, res) {
-    try {
-        const { email, password } = req.body;
-        console.log(`[LOGIN] Attempt for email: ${email}`);
-
-        // Validate inputs
-        if (!email || !password) {
-            console.log('[LOGIN] Missing email or password');
-            return res.status(400).json({
-                error: 'Email and password are required'
-            });
-        }
-
-        // Find user by email
-        const user = await User.findByEmail(email);
-        if (!user) {
-            console.log(`[LOGIN] User not found: ${email}`);
-            return res.status(401).json({
-                error: 'Invalid email or password'
-            });
-        }
-
-        console.log(`[LOGIN] User found: ${user.email}, checking password...`);
-        // Improved safer debug logging without exposing passwords
-        console.log(`[LOGIN] User object has password hash: ${!!user.password}`);
-        console.log(`[LOGIN] Password hash type: ${typeof user.password}`);
-        console.log(`[LOGIN] Password hash length: ${user.password ? user.password.length : 'N/A'}`);
-        console.log(`[LOGIN] Input password provided: ${!!password}`);
-
-        // Validate password
-        const isPasswordValid = await user.validatePassword(password);
-        console.log(`[LOGIN] Password validation result: ${isPasswordValid}`);
-
-        if (!isPasswordValid) {
-            return res.status(401).json({
-                error: 'Invalid email or password'
-            });
-        }
-
-        // Generate JWT token
-        const token = generateToken(user);
-        console.log(`[LOGIN] Success for user: ${user.email}`);
-        
-        // Include both name fields for proper display
-        const fullName = user.givenName && user.familyName 
-            ? `${user.givenName} ${user.familyName}`
-            : user.familyName || user.givenName || 'User';
-            
-        console.log(`[LOGIN] User name fields: given_name=${user.givenName}, family_name=${user.familyName}, fullName=${fullName}`);
-        
-        // Create user response object
-        const userData = {
-            user_id: user.user_id,
-            email: user.email,
-            family_name: user.familyName,
-            given_name: user.givenName,
-            full_name: fullName,
-            role: user.role
-        };
-        
-        console.log(`[LOGIN] User data being sent to client:`, JSON.stringify(userData));
-
-        res.status(200).json({
-            success: true,
-            message: 'Login successful',
-            data: {
-                user: userData,
-                token
-            }
-        });
-    } catch (error) {
-        console.error('Login error:', error);
-        res.status(500).json({
-            error: 'Login failed. Please try again later.'
-        });
-    }
-}
-
-/**
- * UC3: USER LOGOUT CONTROLLER
- * =====================================
- * Implements user logout functionality
- * 
- * Note: Since we're using JWT tokens which are stateless,
- * actual token invalidation would require additional infrastructure
- * like a token blacklist in Redis or similar.
- * 
- * This function serves mainly as a hook for client-side logout.
- */
-async function logout(req, res) {
-    try {
-        // Since JWT is stateless, we can't invalidate tokens server-side without additional infrastructure
-        // In a production app, we would maintain a blacklist of tokens in Redis or similar
-
-        // Log the logout action (could be saved to SystemLog in a real implementation)
-        console.log(`User logged out: ${req.user ? req.user.user_id : 'Unknown'}`);
-
-        res.status(200).json({
-            success: true,
-            message: 'Logout successful'
-        });
-    } catch (error) {
-        console.error('Logout error:', error);
-        res.status(500).json({
-            error: 'Logout failed. Please try again later.'
-        });
-    }
-}
-
-/**
  * GOOGLE LOGIN CONTROLLER
  * =====================================
  * Implements OAuth login using Google credentials
@@ -842,100 +867,179 @@ async function logout(req, res) {
  * - User creation failures
  * - Database errors
  */
-async function googleLogin(req, res) {
+
+/**
+ * Get current authenticated user profile
+ * Used by client to check authentication status
+ */
+async function getCurrentUser(req, res) {
     try {
-        const { credential } = req.body;
-
-        if (!credential) {
-            return res.status(400).json({
+        // User is attached by the auth middleware
+        if (!req.user) {
+            return res.status(401).json({
                 success: false,
-                error: 'Missing Google credential token'
+                message: 'Not authenticated'
             });
         }
-
-        // Decode the JWT to extract basic information (without verification)
-        // In production, you should verify this token with Google's OAuth2 API
-        // This is a simplified approach
-        const tokenParts = credential.split('.');
-        if (tokenParts.length !== 3) {
-            return res.status(400).json({
-                success: false,
-                error: 'Invalid token format'
-            });
-        }
-
-        // Decode the payload part (second part) of the JWT
-        const payload = JSON.parse(Buffer.from(tokenParts[1], 'base64').toString());
-
-        // Log token information for debugging
-        console.log('[GOOGLE AUTH] Token payload:', payload);
-
-        // Extract user information from token
-        const { email, name, sub: googleId, picture, family_name: familyName, given_name: givenName } = payload;
-
-        if (!email) {
-            return res.status(400).json({
-                success: false,
-                error: 'Email not found in Google token'
-            });
-        }
-
-        // Check if user exists
-        let user = await User.findByEmail(email);
-
-        // If user doesn't exist, create a new one
-        if (!user) {
-            console.log('[GOOGLE AUTH] Creating new user from Google login:', email);
-
-            // Generate a random password (user won't need this as they'll use Google to sign in)
-            const randomPassword = crypto.randomBytes(16).toString('hex');
-
-            const userData = {
-                email: email,
-                password: randomPassword,
-                family_name: familyName,
-                given_name: givenName,
-                role: 'Regular',
-                notification_prefs: {},
-                google_id: googleId, // Store Google ID for future logins
-                profile_picture: picture // Store profile picture URL if available
-            };
-
-            user = new User(userData);
-            await user.save();
-
-            console.log('[GOOGLE AUTH] New user created:', user.user_id);
-        } else {
-            console.log('[GOOGLE AUTH] User already exists:', user.user_id);
-
-            // Update Google ID if not already set
-            if (!user.google_id) {
-                await user.update({ google_id: googleId });
-            }
-        }
-
-        // Generate JWT token
-        const token = generateToken(user);
-
-        res.status(200).json({
+        
+        // Return the user data without sensitive fields
+        const userData = {
+            user_id: req.user.user_id,
+            email: req.user.email,
+            givenName: req.user.givenName,
+            familyName: req.user.familyName,
+            role: req.user.role,
+            profile_picture: req.user.profile_picture,
+            language: req.user.language || 'en',
+            created_at: req.user.created_at
+        };
+        
+        res.json({
             success: true,
-            message: 'Google login successful',
-            data: {
-                user: {
-                    user_id: user.user_id,
-                    email: user.email,
-                    family_name: user.family_name,
-                    role: user.role,
-                    profile_picture: user.profile_picture || picture
-                },
-                token
-            }
+            user: userData
         });
     } catch (error) {
-        console.error('[GOOGLE AUTH] Login error:', error);
+        console.error('[AUTH] Get current user error:', error);
         res.status(500).json({
             success: false,
-            error: 'Google login failed. Please try again later.'
+            message: 'Failed to get user profile'
+        });
+    }
+}
+
+/**
+ * Link Google account to existing user account
+ * Only to be called after user is authenticated
+ */
+async function linkGoogleAccount(req, res) {
+    try {
+        const userId = req.user.user_id; // From auth middleware
+        const { googleId, email, refreshToken, givenName, familyName, picture } = req.body;
+        
+        // Find the user
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(404).json({ 
+                success: false,
+                error: 'User not found' 
+            });
+        }
+        
+        // Validate the email matches to prevent linking unrelated accounts
+        if (email !== user.email) {
+            return res.status(400).json({
+                success: false,
+                error: 'The Google account email does not match your account email'
+            });
+        }
+        
+        // Check if user already has a linked Google account
+        if (user.google_id) {
+            return res.status(400).json({
+                success: false,
+                error: 'Your account is already linked to a Google account'
+            });
+        }
+        
+        // Check if google account is already linked to another account
+        const existingGoogleUser = await User.findByGoogleId(googleId);
+        if (existingGoogleUser && existingGoogleUser.user_id !== userId) {
+            return res.status(400).json({
+                success: false,
+                error: 'This Google account is already linked to another user'
+            });
+        }
+        
+        // Update user with Google information
+        const updateData = {
+            google_id: googleId
+        };
+        
+        // Store refresh token if provided
+        if (refreshToken) {
+            updateData.google_refresh_token = refreshToken;
+        }
+        
+        // Always update profile picture from Google when linking
+        if (picture) {
+            updateData.profile_picture = picture;
+        }
+        
+        // Update names if provided from Google
+        if (givenName) {
+            updateData.given_name = givenName;
+        }
+        
+        if (familyName) {
+            updateData.family_name = familyName;
+        }
+        
+        console.log('[AUTH] Linking Google account with data:', updateData);
+        await user.update(updateData);
+        
+        res.status(200).json({
+            success: true,
+            message: 'Google account linked successfully'
+        });
+    } catch (error) {
+        console.error('[AUTH] Link Google account error:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Failed to link Google account'
+        });
+    }
+}
+
+/**
+ * Unlink Google account from user account
+ * Only to be called after user is authenticated
+ */
+async function unlinkGoogleAccount(req, res) {
+    try {
+        const userId = req.user.user_id; // From auth middleware
+        
+        // Find the user
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(404).json({ 
+                success: false,
+                error: 'User not found' 
+            });
+        }
+        
+        // Check if user has a password set (required for unlinking)
+        if (!user.password) {
+            return res.status(400).json({
+                success: false,
+                error: 'You must set a password before unlinking your Google account'
+            });
+        }
+        
+        // Check if user has a Google account linked
+        if (!user.google_id) {
+            return res.status(400).json({
+                success: false,
+                error: 'No Google account is linked to your account'
+            });
+        }
+        
+        // Update user to remove Google information
+        const updateData = {
+            google_id: null,
+            google_refresh_token: null
+        };
+        
+        await user.update(updateData);
+        
+        res.status(200).json({
+            success: true,
+            message: 'Google account unlinked successfully'
+        });
+    } catch (error) {
+        console.error('[AUTH] Unlink Google account error:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Failed to unlink Google account'
         });
     }
 }
@@ -944,8 +1048,11 @@ module.exports = {
     register,
     login,
     logout,
-    googleLogin,
     forgotPassword,
     resetPassword,
     changePassword,
+    generateToken,
+    getCurrentUser,
+    linkGoogleAccount,
+    unlinkGoogleAccount
 };

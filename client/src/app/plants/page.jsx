@@ -4,13 +4,16 @@ import { useState, useEffect } from 'react';
 import { useAuth } from '@/providers/AuthProvider';
 import { useRouter } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
+import AppLayout from '@/components/layout/AppLayout';
 import DashboardHeader from '@/components/dashboard/DashboardHeader';
 import PlantListItem from '@/components/plants/PlantListItem';
 import AddPlantModal from '@/components/plants/AddPlantModal';
 import FilterBar from '@/components/plants/FilterBar';
+import plantApi from '@/api/plantApi';
+import { toast } from 'react-toastify';
 
-// Mock data for development - would come from API in real app
-const MOCK_PLANTS = [
+// Fallback data in case API fails
+const FALLBACK_PLANTS = [
   {
     plant_id: 1,
     name: 'Snake Plant',
@@ -102,20 +105,24 @@ export default function PlantsPage() {
   // Fetch plants data
   useEffect(() => {
     if (user) {
-      // In a real app, we would fetch from the API here
-      // For now, using mock data with a timeout to simulate API call
       const fetchData = async () => {
         setIsLoading(true);
         try {
-          // Simulate API call
-          await new Promise(resolve => setTimeout(resolve, 800));
-          
-          // Set mock data
-          setPlants(MOCK_PLANTS);
-          setFilteredPlants(MOCK_PLANTS);
+          // Fetch from API
+          const plantData = await plantApi.getAll();
+          setPlants(plantData);
+          setFilteredPlants(plantData);
         } catch (err) {
           console.error('Error fetching plants data:', err);
           setError(t('plants.loadError', 'Failed to load plants data. Please try again later.'));
+          toast.error(t('plants.loadError', 'Failed to load plants data. Please try again later.'));
+          
+          // Use fallback data in development
+          if (process.env.NODE_ENV === 'development') {
+            console.log('Using fallback plant data');
+            setPlants(FALLBACK_PLANTS);
+            setFilteredPlants(FALLBACK_PLANTS);
+          }
         } finally {
           setIsLoading(false);
         }
@@ -123,7 +130,7 @@ export default function PlantsPage() {
 
       fetchData();
     }
-  }, [user]);
+  }, [user, t]);
 
   // Handle search and filtering
   useEffect(() => {
@@ -148,19 +155,26 @@ export default function PlantsPage() {
     }
   }, [searchTerm, activeFilter, plants]);
 
-  const handleAddPlant = (newPlant) => {
-    // In a real app, we would send this to the API
-    // For now, just add it to our local state
-    const plantWithId = {
-      ...newPlant,
-      plant_id: plants.length + 1,
-      status: 'healthy',
-      lastWatered: new Date().toISOString()
-    };
-    
-    setPlants([...plants, plantWithId]);
-    setFilteredPlants([...filteredPlants, plantWithId]);
-    setShowAddModal(false);
+  const handleAddPlant = async (newPlant) => {
+    try {
+      // In a real implementation, we would send this to the API
+      // For now, just add it to our local state since the endpoint is not implemented
+      const plantWithId = {
+        ...newPlant,
+        plant_id: `local-${Date.now()}`,
+        status: 'healthy',
+        lastWatered: new Date().toISOString()
+      };
+      
+      setPlants([...plants, plantWithId]);
+      setFilteredPlants([...filteredPlants, plantWithId]);
+      toast.success(t('plants.addSuccess', 'Plant added successfully!'));
+    } catch (error) {
+      console.error('Error adding plant:', error);
+      toast.error(t('plants.addError', 'Failed to add plant. Please try again.'));
+    } finally {
+      setShowAddModal(false);
+    }
   };
 
   if (loading || isLoading) {
@@ -195,10 +209,8 @@ export default function PlantsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <DashboardHeader user={user} />
-      
-      <main className="container mx-auto px-4 py-8">
+    <AppLayout>
+      <div className="flex flex-col flex-1 p-4 lg:p-8">
         {/* Header and Add Plant Button */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6">
           <div>
@@ -268,7 +280,7 @@ export default function PlantsPage() {
             </div>
           )}
         </div>
-      </main>
+      </div>
       
       {/* Add Plant Modal */}
       {showAddModal && (
@@ -278,6 +290,6 @@ export default function PlantsPage() {
           isPremium={isPremium}
         />
       )}
-    </div>
+    </AppLayout>
   );
 }

@@ -27,6 +27,7 @@
  * - Rate limiting on payment creation
  * - Input validation and sanitization
  * - VNPay signature verification
+ * - CORS headers for cross-domain requests
  */
 
 const express = require('express');
@@ -37,6 +38,42 @@ const PaymentController = require('../controllers/paymentController');
 // const { requireAuth, requireAdmin } = require('../middleware/auth');
 // const { rateLimitPayment } = require('../middleware/rateLimit');
 // const { validatePayment } = require('../middleware/validation');
+
+/**
+ * CORS Middleware for Payment Endpoints
+ * Sets appropriate headers to allow cross-origin requests
+ */
+const corsMiddleware = (req, res, next) => {
+  const origin = req.headers.origin;
+  const allowedOrigins = [
+    process.env.FRONTEND_URL || 'http://localhost:3000',
+    'http://localhost:3001',
+    'http://localhost:19006', // Expo
+    'http://localhost'
+  ];
+
+  // Must set specific origin for requests with credentials
+  if (origin && allowedOrigins.includes(origin)) {
+    res.setHeader("Access-Control-Allow-Origin", origin);
+    res.setHeader("Access-Control-Allow-Credentials", "true");
+  } else {
+    res.setHeader("Access-Control-Allow-Origin", "*");
+  }
+
+  res.setHeader("Access-Control-Allow-Methods", "GET,HEAD,OPTIONS,POST,PUT");
+  res.setHeader("Access-Control-Allow-Headers", "Access-Control-Allow-Headers, Origin, Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers, X-Direct-Redirect, Authorization");
+  res.setHeader("Access-Control-Expose-Headers", "X-Direct-Redirect, Location");
+  
+  // Handle OPTIONS preflight requests
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
+  
+  next();
+};
+
+// Apply CORS middleware to all payment routes
+router.use(corsMiddleware);
 
 /**
  * UC19 & UC22: CREATE PAYMENT URL
@@ -96,7 +133,11 @@ router.post('/create',
  *   }
  * }
  */
-router.get('/vnpay-return', PaymentController.handleVNPayReturn);
+router.get('/vnpay-return', (req, res, next) => {
+  // Set additional redirect headers for VNPay return
+  res.setHeader("Access-Control-Expose-Headers", "x-direct-redirect");
+  next();
+}, PaymentController.handleVNPayReturn);
 
 /**
  * UC19 & UC22: VNPAY IPN (INSTANT PAYMENT NOTIFICATION)
@@ -272,6 +313,113 @@ router.get('/test/config', (req, res) => {
             environment: 'sandbox'
         }
     });
+});
+
+/**
+ * PAYMENT RESULT PAGE
+ * GET /payment/result
+ * 
+ * A server-rendered result page that can handle redirects
+ * This helps with cross-domain redirects when frontend can't access cookies
+ */
+router.get('/result', (req, res) => {
+    const { code, message, orderId, amount, transactionNo } = req.query;
+    
+    // Create a simple HTML result page
+    const resultPage = `
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Payment Result</title>
+        <style>
+            body {
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                line-height: 1.6;
+                color: #333;
+                max-width: 600px;
+                margin: 50px auto;
+                padding: 20px;
+                text-align: center;
+                border-radius: 10px;
+                box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+                background-color: ${code === '00' ? '#f0fff4' : '#fff5f5'};
+            }
+            .status {
+                font-size: 24px;
+                font-weight: bold;
+                margin-bottom: 20px;
+                color: ${code === '00' ? '#38a169' : '#e53e3e'};
+            }
+            .details {
+                margin: 30px 0;
+                text-align: left;
+                padding: 15px;
+                background: #f9f9f9;
+                border-radius: 5px;
+            }
+            .redirect-message {
+                margin: 20px 0;
+                font-style: italic;
+                color: #666;
+            }
+            .countdown {
+                font-weight: bold;
+            }
+            .btn {
+                display: inline-block;
+                padding: 10px 20px;
+                background-color: #3182ce;
+                color: white;
+                text-decoration: none;
+                border-radius: 5px;
+                font-weight: 500;
+                transition: background-color 0.2s;
+            }
+            .btn:hover {
+                background-color: #2c5282;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="status">${code === '00' ? 'Payment Successful' : 'Payment Failed'}</div>
+        <p>${message || (code === '00' ? 'Your payment has been processed successfully.' : 'There was an issue processing your payment.')}</p>
+        
+        ${orderId ? `
+        <div class="details">
+            ${orderId ? `<p><strong>Order ID:</strong> ${orderId}</p>` : ''}
+            ${amount ? `<p><strong>Amount:</strong> ${parseInt(amount).toLocaleString()} VND</p>` : ''}
+            ${transactionNo ? `<p><strong>Transaction:</strong> ${transactionNo}</p>` : ''}
+        </div>
+        ` : ''}
+        
+        <p class="redirect-message">
+            You will be redirected back to the application in <span class="countdown" id="countdown">5</span> seconds.
+        </p>
+        
+        <a href="${process.env.FRONTEND_URL || 'http://localhost:3000'}/payment/result?${new URLSearchParams(req.query).toString()}" class="btn">
+            Continue Now
+        </a>
+
+        <script>
+            let seconds = 5;
+            const countdownEl = document.getElementById('countdown');
+            const interval = setInterval(() => {
+                seconds--;
+                countdownEl.textContent = seconds;
+                if (seconds <= 0) {
+                    clearInterval(interval);
+                    window.location.href = '${process.env.FRONTEND_URL || 'http://localhost:3000'}/payment/result?${new URLSearchParams(req.query).toString()}';
+                }
+            }, 1000);
+        </script>
+    </body>
+    </html>
+    `;
+    
+    res.setHeader('Content-Type', 'text/html');
+    res.send(resultPage);
 });
 
 module.exports = router;

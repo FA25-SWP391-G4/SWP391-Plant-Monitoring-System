@@ -32,11 +32,19 @@ const config = {
     vnp_CurrCode: 'VND',
     vnp_Locale: 'vn',
     
-    // Order Types
+    // Order Types - Using official VNPay category codes from their documentation
     ORDER_TYPES: {
-        PREMIUM_UPGRADE: 'premium_upgrade',
-        SUBSCRIPTION: 'subscription',
-        FEATURE_ACCESS: 'feature_access'
+        PREMIUM_UPGRADE: '190004', // Thẻ học trực tuyến/Thẻ hội viên
+        SUBSCRIPTION: '190004', // Thẻ học trực tuyến/Thẻ hội viên
+        FEATURE_ACCESS: '190004', // Thẻ học trực tuyến/Thẻ hội viên
+        OTHER: '190000' // Giải trí & Đào tạo (parent category)
+    },
+    
+    // Payment Methods
+    PAYMENT_METHODS: {
+        VNPAYQR: 'VNPAYQR',  // Thanh toán quét mã QR
+        VNBANK: 'VNBANK',    // Thẻ ATM - Tài khoản ngân hàng nội địa
+        INTCARD: 'INTCARD'   // Thẻ thanh toán quốc tế
     },
     
     // Response Codes
