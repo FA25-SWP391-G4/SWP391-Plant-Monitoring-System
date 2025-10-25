@@ -1,0 +1,662 @@
+{
+"errors": {
+"genericError": "エラーが発生しました。しばらくしてからもう一度お試しください。",
+"loginFailed": "ログインに失敗しました。認証情報をご確認ください。",
+"registrationFailed": "登録に失敗しました。もう一度お試しください。",
+"unauthorized": "不正アクセスです。ログインしてください。",
+"forbidden": "このリソースにアクセスする権限がありません。",
+"notFound": "リソースが見つかりません。",
+"serverError": "サーバーエラーが発生しました。しばらくしてからもう一度お試しください。",
+"validationError": "入力内容を確認して、もう一度お試しください。",
+"connectionError": "サーバーに接続できませんでした。インターネット接続をご確認ください。",
+"timeoutError": "リクエストがタイムアウトしました。もう一度お試しください。",
+"unsupportedBrowser": "お使いのブラウザはサポートされていません。新しいバージョンに更新してください。",
+"fetchFailed": "データの取得に失敗しました。しばらくしてからもう一度お試しください。",
+"updateFailed": "データの更新に失敗しました。もう一度お試しください。",
+"wateringFailed": "水やりの実行に失敗しました。もう一度お試しください。",
+"analysisError": "植物の状態分析ができませんでした。しばらくしてからもう一度お試しください。"
+},
+
+"common": {
+"submit": "送信",
+"cancel": "キャンセル",
+"delete": "削除",
+"add": "追加",
+"edit": "編集",
+"save": "保存",
+"close": "閉じる",
+"back": "戻る",
+"next": "次へ",
+"upgrade": "アップグレード",
+"email": "メールアドレス",
+"password": "パスワード",
+"confirmPassword": "パスワードの確認",
+"fullName": "氏名",
+"firstName": "名",
+"lastName": "姓",
+"phoneNumber": "電話番号（任意）",
+"and": "と",
+"required": "必須項目",
+"success": "成功",
+"error": "エラー",
+"loading": "読み込み中...",
+"sending": "送信中...",
+"getStarted": "始める",
+"learnMore": "詳細を見る",
+"retry": "再試行",
+"expand": "展開",
+"collapse": "折りたたむ",
+"appName": "PlantSmart",
+"plantLover": "植物愛好家"
+},
+
+"accessibility": {
+  "email": "メールアドレス",
+  "phone": "電話",
+  "location": "場所"
+},
+
+"auth": {
+"login": "ログイン",
+"loginTitle": "アカウントにログイン",
+"register": "登録",
+"registerTitle": "アカウント作成",
+"forgotPassword": "パスワードをお忘れですか",
+"forgotPasswordTitle": "パスワードをリセット",
+"forgotPasswordDescription": "メールアドレスを入力すると、パスワードをリセットするためのリンクをお送りします。",
+"resetPassword": "パスワードをリセット",
+"resetPasswordTitle": "新しいパスワードを作成",
+"changePassword": "パスワードを変更",
+"changePasswordTitle": "パスワードを更新",
+"logout": "ログアウト",
+"rememberMe": "ログイン情報を保存",
+"passwordRequirements": "パスワードは6文字以上である必要があります",
+"passwordMatch": "パスワードが一致する必要があります",
+"passwordChanged": "パスワードが正常に変更されました",
+"resetEmailSent": "パスワードリセットメールが送信されました",
+"resetLinkSent": "パスワードリセットリンクを {{email}} に送信しました",
+"resetSuccess": "パスワードのリセットに成功しました",
+"registerSuccess": "登録に成功しました",
+"continueWithGoogle": "Googleで続ける",
+"orLoginWith": "またはログイン方法",
+"alreadyHaveAccount": "すでにアカウントをお持ちですか？",
+"dontHaveAccount": "アカウントをお持ちでないですか？",
+"goToLogin": "ログインに戻る",
+"checkYourEmail": "メールを確認してください",
+"checkSpamFolder": "メールが見つからない場合は、スパムフォルダをご確認ください。",
+"sendResetLink": "リセットリンクを送信",
+"newsletter": "植物のお手入れのヒントとアップデートのメールを送ってください",
+"acceptTerms": "私は以下に同意します",
+"termsOfService": "利用規約",
+"privacyPolicy": "プライバシーポリシー"
+},
+
+"navigation": {
+"home": "ホーム",
+"dashboard": "ダッシュボード",
+"zones": "ゾーン",
+"reports": "レポート",
+"searchReports": "レポート検索",
+"thresholds": "しきい値",
+"upgrade": "アップグレード",
+"login": "ログイン",
+"logout": "ログアウト",
+"profile": "プロフィール",
+"register": "登録",
+"changePassword": "パスワード変更",
+"forgotPassword": "パスワードを忘れた",
+"plants": "植物",
+"sensors": "センサー",
+"chat": "チャット",
+"support": "サポート",
+"admin": "管理",
+"settings": "設定",
+"features": "機能",
+"benefits": "メリット",
+"pricing": "価格",
+"contact": "お問い合わせ"
+},
+
+"dashboard": {
+"wateringHistory": "水やり履歴",
+"sensorReadings": "センサー読み取り",
+"plantHealth": "植物の健康状態",
+"recentActivities": "最近の活動",
+"systemStatus": "システム状態",
+"waterNow": "今すぐ水やり",
+"soilMoisture": "土壌水分",
+"temperature": "温度",
+"humidity": "湿度",
+"sunlight": "日光",
+"lastWatered": "前回の水やり",
+"nextScheduled": "次回の水やり予定",
+"title": "ダッシュボード",
+"plantStatus": "植物の状態",
+"allHealthy": "すべての植物は健康です",
+"nextWatering": "次回の水やり",
+"welcome": "おかえりなさい",
+"overview": "植物コレクションの概要です",
+"addPlant": "新しい植物を追加",
+"totalPlants": "植物総数",
+"needsWatering": "水やりが必要",
+"needsAttention": "注意が必要",
+"yourPlants": "あなたの植物",
+"noPlants": "まだ植物が追加されていません",
+"startAdding": "コレクションに植物の追加を始めましょう",
+"addFirstPlant": "最初の植物を追加する",
+"recentActivity": "最近の活動",
+"wateringSchedule": "水やりスケジュール",
+"errorLoading": "ダッシュボードの読み込みエラー",
+"loadError": "ダッシュボードデータを読み込めませんでした。しばらくしてからもう一度お試しください。"
+},
+
+"plants": {
+"myPlants": "私の植物",
+"manage": "植物コレクションを管理・監視する",
+"addNew": "新しい植物を追加",
+"noMatchingPlants": "フィルターに一致する植物はありません",
+"noPlants": "まだ植物が追加されていません",
+"tryDifferentFilter": "別のフィルターや検索語を試してください",
+"startAdding": "コレクションに植物の追加を始めましょう",
+"addFirstPlant": "最初の植物を追加する",
+"errorLoading": "植物の読み込みエラー",
+"loadError": "植物データを読み込めませんでした。しばらくしてからもう一度お試しください。",
+"notFound": "植物が見つかりません",
+"manualWatering": "手動水やり",
+"tabs": {
+  "overview": "概要",
+  "sensorData": "センサーデータ",
+  "wateringSchedule": "水やりスケジュール"
+}
+},
+
+"notFound": {
+"title": "ページが見つかりません",
+"message": "お探しのページは存在しないか、移動しました。",
+"goBack": "ホームページに戻る",
+"errorCode": "エラー 404"
+},
+
+"forbidden": {
+"title": "アクセス拒否",
+"message": "このページへのアクセス権限がありません。",
+"goBack": "ホームページに戻る",
+"errorCode": "エラー 403",
+"upgradeMessage": "この機能にはプレミアムサブスクリプションが必要です。",
+"upgrade": "今すぐアップグレード"
+},
+
+"zones": {
+"title": "複数の植物ゾーンを管理",
+"createZone": "ゾーン作成",
+"zoneName": "名前",
+"zoneDescription": "説明",
+"devices": "デバイス",
+"unassignedDevices": "未割り当てのデバイス",
+"device": "デバイス",
+"deviceType": "タイプ",
+"assignTo": "割り当て先",
+"noDevices": "利用可能な未割り当てのデバイスはありません",
+"selectPump": "ゾーン用のポンプを選択",
+"assignPump": "-- {{zone}}のポンプを割り当て --",
+"deleteZoneConfirm": "このゾーンを削除しますか？",
+"deleteZone": "ゾーンを削除",
+"zoneDevices": "ゾーン内のデバイス",
+"unassign": "割り当て解除",
+"noZoneDevices": "このゾーンにデバイスがありません",
+"zone1": "ゾーン1：リビングルーム",
+"zone2": "ゾーン2：庭",
+"zone3": "ゾーン3：パティオ",
+"plantsMonitored": "{{count}}の植物が監視されています"
+},
+
+"validation": {
+"emailRequired": "メールアドレスは必須です",
+"invalidEmail": "無効なメールアドレス形式です",
+"passwordRequired": "パスワードは必須です",
+"passwordLength": "パスワードは8文字以上である必要があります",
+"passwordsDoNotMatch": "パスワードが一致しません",
+"firstNameRequired": "名は必須です",
+"lastNameRequired": "姓は必須です",
+"termsRequired": "利用規約に同意する必要があります"
+},
+
+"landing": {
+"smartPlantCare": "スマートな植物のお手入れ",
+"neverKill": "二度と",
+"anotherPlant": "植物を枯らさない",
+"transformHome": "私たちのインテリジェントな監視システムとパーソナライズされたケアの推奨事項で、あなたの家を繁栄する植物の楽園に変えましょう。",
+"startFreeTrial": "無料トライアルを開始",
+"watchDemo": "デモを見る",
+"freeTrialDays": "14日間の無料トライアル",
+"noCardRequired": "クレジットカード不要",
+"everythingYouNeed": "完璧な植物のお手入れに",
+"perfectPlantCare": "必要なものすべて",
+"comprehensiveSystem": "当社の包括的な植物監視システムは、どのような環境でも植物が繁栄することを保証するためのすべてのツールを提供します。",
+"happyPlantParents": "幸せな植物の親たち",
+"lovedByThousands": "世界中の何千もの",
+"plantEnthusiasts": "植物愛好家から愛されています",
+"testimonialDescription": "PlantSmartが植物のお手入れ体験をどのように変えたかについて、私たちのコミュニティが言っていることを聞いてください。",
+"readyToTransform": "植物のお手入れを変える準備はできましたか？",
+"joinThousands": "PlantSmartで植物をより幸せで健康にした何千もの植物愛好家に加わりましょう。",
+"startYourFreeTrial": "無料トライアルを開始する",
+"scheduleDemo": "デモをスケジュール",
+"futurePlantCare": "植物のお手入れの未来、今日。より幸せで健康な植物のためのスマートな監視。",
+"allRightsReserved": "All rights reserved."
+},
+
+"features": {
+"smartWatering": {
+  "title": "スマート水やり",
+  "description": "土壌水分、植物の種類、環境条件に基づいて、完璧な水量を提供する自動水やりシステム。"
+},
+"smartWateringDesc": "センサーが土壌水分を監視し、完璧なタイミングで植物に自動的に水をやり、過剰または不足な水やりがないことを保証します。",
+"lightOptimization": {
+  "title": "光の最適化",
+  "description": "先進的な光センサーが照明条件を監視および最適化し、植物が理想的なスペクトルと強度を受け取ることを保証します。"
+},
+"lightOptimizationDesc": "一日を通して光の露出を追跡し、各植物の特定のニーズに最適な配置に関する推奨事項を受け取ります。",
+"healthAlerts": {
+  "title": "健康アラート"
+},
+"healthAlertsDesc": "潜在的な健康問題、害虫、または深刻な問題になる前の病気について即時通知を受け取ります。",
+"mobileDashboard": {
+  "title": "モバイルダッシュボード",
+  "description": "リアルタイムの監視、お手入れスケジュール、成長追跡を備えたスマートフォンからの完全な植物管理。",
+  "cta": "詳細を見る"
+},
+"aiDoctor": {
+  "title": "AI植物ドクター",
+  "description": "機械学習アルゴリズムが植物データを分析して、パーソナライズされたケア推奨事項を提供し、潜在的な問題を予測します。",
+  "cta": "詳細を見る"
+},
+"iotSensors": {
+  "title": "IoTセンサー",
+  "description": "温度、湿度、土壌のpH、栄養素を監視するワイヤレスセンサーのネットワークで、包括的な植物ケアを提供します。",
+  "cta": "詳細を見る"
+}
+},
+
+"cta": {
+"heading": "植物のお手入れを変える準備はできましたか？",
+"subheading": "緑の友達をもう心配することのない何千もの植物の親に加わりましょう。",
+"startTrial": "無料トライアルを開始",
+"scheduleDemo": "デモをスケジュール"
+},
+
+"footer": {
+"companyDescription": "スマートで簡単かつ効果的な植物のお手入れ。",
+"product": "製品",
+"features": "機能",
+"pricing": "価格",
+"security": "セキュリティ",
+"integrations": "連携",
+"company": "会社",
+"about": "会社概要",
+"blog": "ブログ",
+"careers": "採用情報",
+"contact": "お問い合わせ",
+"support": "サポート",
+"helpCenter": "ヘルプセンター",
+"documentation": "ドキュメント",
+"community": "コミュニティ",
+"status": "システムステータス",
+"copyright": "© {{year}} PlantSmart. All rights reserved.",
+"privacyPolicy": "プライバシーポリシー",
+"termsOfService": "利用規約",
+"cookies": "クッキー"
+},
+
+"testimonials": {
+"heading": "私たちの言葉だけを信じないでください。植物愛好家のコミュニティがPlantSmart体験について言っていることをご覧ください。",
+"verified": "認証済みレビュー",
+"plantsThriving": "{{count}}の植物が繁栄中",
+"plantsSaved": "{{count}}の植物を救いました",
+"plantsMonitored": "{{count}}の植物を監視中",
+"testimonial1": {
+  "quote": "PlantSmartは私の植物のお手入れルーティンを完全に変えました。以前は触れた植物をすべて枯らしていましたが、今はマンションが繁栄するジャングルになりました！AIの推奨事項は非常に正確です。",
+  "name": "Sarah Chen",
+  "location": "San Francisco, CA",
+  "count": "12"
+},
+"testimonial2": {
+  "quote": "忙しい起業家として、植物の適切なケアの時間がありませんでした。自動水やりシステムはゲームチェンジャーです。植物の見栄えが今までになく良くなり、安心感が得られます。",
+  "name": "Marcus Rodriguez",
+  "location": "Austin, TX",
+  "count": "8"
+},
+"testimonial3": {
+  "quote": "健康アラートが、私が早期に発見できなかった害虫の侵入からフィドルリーフフィグを救いました。モバイルアプリはモニタリングを非常に便利で実際に楽しいものにしています！",
+  "name": "Emily Watson",
+  "location": "Portland, OR",
+  "count": "15"
+}
+},
+
+"ui": {
+"buttons": {
+  "save": "保存",
+  "cancel": "キャンセル",
+  "delete": "削除",
+  "edit": "編集",
+  "apply": "適用",
+  "confirm": "確認",
+  "continue": "続ける",
+  "goBack": "戻る",
+  "seeAll": "すべて表示",
+  "viewMore": "もっと見る",
+  "viewLess": "表示を減らす",
+  "addToCollection": "コレクションに追加",
+  "removeFromCollection": "コレクションから削除",
+  "uploadPhoto": "写真をアップロード",
+  "takePhoto": "写真を撮る",
+  "scanPlant": "植物をスキャン",
+  "analyze": "分析",
+  "share": "共有",
+  "download": "ダウンロード"
+},
+"alerts": {
+  "success": "成功！",
+  "error": "エラー！",
+  "warning": "警告！",
+  "info": "情報",
+  "saved": "変更が正常に保存されました",
+  "deleted": "正常に削除されました",
+  "updated": "正常に更新されました",
+  "copied": "クリップボードにコピーされました"
+},
+"modals": {
+  "confirm": "よろしいですか？",
+  "confirmDelete": "これを削除してもよろしいですか？",
+  "confirmAction": "このアクションは元に戻せません。",
+  "closeButton": "閉じる",
+  "cancelButton": "キャンセル",
+  "confirmButton": "確認"
+},
+"placeholders": {
+  "search": "検索...",
+  "email": "メールアドレスを入力",
+  "password": "パスワードを入力",
+  "name": "名前を入力",
+  "notes": "メモをここに追加..."
+}
+},
+
+"ai": {
+"chatbot": {
+  "title": "植物アシスタント",
+  "placeholder": "植物について質問してください...",
+  "greeting": "こんにちは！今日はどのように植物のお手伝いができますか？",
+  "loading": "考え中...",
+  "error": "申し訳ありません、リクエストを処理できませんでした。もう一度お試しください。"
+},
+"imageRecognition": {
+  "title": "植物識別",
+  "upload": "写真をアップロード",
+  "capture": "写真を撮る",
+  "analyzing": "植物を分析中...",
+  "results": "結果",
+  "accuracy": "信頼度：{{percent}}%",
+  "noMatch": "一致するものが見つかりません。より良い照明で別の写真を試してください。",
+  "matchFound": "一致するものが見つかりました！",
+  "plantDetails": "植物の詳細を表示",
+  "tips": "最良の結果を得るために、葉と茎の鮮明な写真を撮ってください。"
+},
+"plantAnalysis": {
+  "title": "植物健康分析",
+  "healthy": "健康",
+  "unhealthy": "注意が必要",
+  "critical": "危険な状態",
+  "analyzeButton": "健康状態を分析",
+  "issuesDetected": "検出された問題",
+  "noIssues": "問題は検出されませんでした",
+  "recommendations": "推奨事項",
+  "moreInfo": "詳細情報",
+  "commonIssues": {
+    "overwatering": "水やり過剰",
+    "underwatering": "水やり不足",
+    "pestInfestation": "害虫の侵入",
+    "nutrientDeficiency": "栄養不足",
+    "poorLighting": "照明不足",
+    "rootRot": "根腐れ",
+    "fungalInfection": "真菌感染"
+  }
+}
+},
+
+"weather": {
+"title": "地域の天気",
+"today": "今日",
+"forecast": "予報",
+"precipitation": "降水量",
+"humidity": "湿度",
+"wind": "風",
+"sunrise": "日の出",
+"sunset": "日の入り",
+"highTemp": "最高",
+"lowTemp": "最低",
+"feels": "体感温度",
+"indoor": "室内",
+"outdoor": "屋外"
+},
+
+"reviews": {
+"title": "カスタマーレビュー",
+"averageRating": "平均評価",
+"basedOn": "{{count}}件のレビューに基づく",
+"writeReview": "レビューを書く",
+"reviewPlaceholder": "PlantSmartでの体験を共有してください...",
+"yourRating": "あなたの評価",
+"filterBy": "フィルター条件",
+"sortBy": "並べ替え",
+"newest": "最新",
+"oldest": "古い順",
+"highestRated": "評価が高い順",
+"lowestRated": "評価が低い順",
+"helpful": "役に立つ",
+"notHelpful": "役に立たない",
+"wasHelpful": "このレビューは役に立ちましたか？",
+"verified": "認証済み購入"
+},
+
+"notifications": {
+"title": "通知",
+"markAllRead": "すべて既読にする",
+"clearAll": "すべてクリア",
+"noNotifications": "新しい通知はありません",
+"watering": "{{plantName}}に水やりの時間です",
+"moistureLow": "{{plantName}}の土壌水分が低くなっています",
+"temperatureHigh": "{{plantName}}の温度が高すぎます",
+"temperatureLow": "{{plantName}}の温度が低すぎます",
+"lightLow": "{{plantName}}はもっと光が必要です",
+"lightHigh": "{{plantName}}は光が強すぎています",
+"batteryLow": "{{plantName}}のセンサーバッテリーが低下しています",
+"systemUpdate": "システムアップデートが利用可能です",
+"tipOfTheDay": "植物のお手入れのヒント：{{tip}}"
+},
+
+"sensors": {
+"title": "センサー",
+"mySensors": "マイセンサー",
+"addSensor": "センサーを追加",
+"pairSensor": "新しいセンサーをペアリング",
+"sensorStatus": "センサーの状態",
+"lastReading": "最新の読み取り",
+"batteryLevel": "バッテリーレベル",
+"signalStrength": "信号強度",
+"calibrate": "センサーを校正",
+"firmwareUpdate": "ファームウェアアップデート",
+"updateAvailable": "アップデートが利用可能",
+"upToDate": "最新の状態",
+"disconnected": "切断",
+"connected": "接続済み",
+"lowBattery": "バッテリー低下",
+"sensorType": {
+  "moisture": "水分センサー",
+  "temperature": "温度センサー",
+  "light": "光センサー",
+  "humidity": "湿度センサー",
+  "combo": "コンボセンサー"
+},
+"readingFrequency": {
+  "title": "読み取り頻度",
+  "realTime": "リアルタイム",
+  "minutes15": "15分ごと",
+  "hourly": "1時間ごと",
+  "hours2": "2時間ごと",
+  "hours6": "6時間ごと",
+  "daily": "毎日"
+},
+"noSensors": "センサーが見つかりません",
+"addFirstSensor": "最初のセンサーを追加する",
+"calibration": {
+  "title": "センサー校正",
+  "instructions": "センサーを校正するには以下の手順に従ってください",
+  "step1": "センサーを乾燥条件に置く",
+  "step2": "'乾燥校正'ボタンを押す",
+  "step3": "センサーを水に置く",
+  "step4": "'湿潤校正'ボタンを押す",
+  "calibrateDry": "乾燥校正",
+  "calibrateWet": "湿潤校正",
+  "success": "校正成功"
+}
+},
+
+"reports": {
+"title": "レポート",
+"wateringReport": "水やりレポート",
+"soilMoistureReport": "土壌水分レポート",
+"temperatureReport": "温度レポート",
+"humidityReport": "湿度レポート",
+"lightReport": "光レポート",
+"generateReport": "レポート生成",
+"exportReport": "レポートをエクスポート",
+"dateRange": "日付範囲",
+"lastWeek": "先週",
+"lastMonth": "先月",
+"lastYear": "昨年",
+"customRange": "カスタム範囲",
+"from": "開始日",
+"to": "終了日",
+"applyRange": "適用",
+"noData": "選択期間のデータはありません",
+"downloadAs": "ダウンロード形式",
+"pdf": "PDF",
+"csv": "CSV",
+"excel": "Excel",
+"summary": "概要",
+"details": "詳細"
+},
+
+"thresholds": {
+"title": "植物のしきい値",
+"soilMoisture": "土壌水分",
+"temperature": "温度",
+"humidity": "湿度",
+"light": "光レベル",
+"minimum": "最小",
+"maximum": "最大",
+"optimal": "最適",
+"current": "現在",
+"setThresholds": "しきい値を設定",
+"resetDefaults": "デフォルトにリセット",
+"saveChanges": "変更を保存",
+"thresholdsUpdated": "しきい値が正常に更新されました",
+"presets": {
+  "title": "プリセット",
+  "tropical": "熱帯植物",
+  "succulents": "多肉植物",
+  "herbs": "ハーブ",
+  "vegetables": "野菜",
+  "indoor": "室内植物",
+  "custom": "カスタム"
+},
+"alertSettings": {
+  "title": "アラート設定",
+  "enableAlerts": "アラートを有効にする",
+  "belowMinimum": "最小値以下",
+  "aboveMaximum": "最大値以上",
+  "outOfRange": "範囲外"
+}
+},
+
+"profile": {
+"title": "マイプロフィール",
+"personalInfo": "個人情報",
+"accountSettings": "アカウント設定",
+"subscription": "サブスクリプション",
+"planDetails": "プラン詳細",
+"billingHistory": "請求履歴",
+"changePassword": "パスワード変更",
+"notifications": "通知",
+"preferences": "設定",
+"saveChanges": "変更を保存",
+"cancelChanges": "キャンセル",
+"updateSuccess": "プロフィールが正常に更新されました",
+"updateError": "プロフィールの更新に失敗しました",
+"uploadPhoto": "写真をアップロード",
+"removePhoto": "写真を削除",
+"currentSubscription": "現在のサブスクリプション：{{plan}}",
+"subscriptionStatus": "ステータス：{{status}}",
+"nextBilling": "次回請求日：{{date}}",
+"upgradeAccount": "アカウントをアップグレード",
+"manageSubscription": "サブスクリプション管理",
+"cancelSubscription": "サブスクリプションをキャンセル",
+"deleteAccount": "アカウントを削除",
+"confirmDelete": "本当にアカウントを削除しますか？このアクションは元に戻せません。"
+},
+
+"network": {
+"title": "ネットワーク設定",
+"wifiSetup": "WiFi設定",
+"availableNetworks": "利用可能なネットワーク",
+"noNetworksFound": "ネットワークが見つかりません",
+"refreshNetworks": "更新",
+"networkName": "ネットワーク名",
+"password": "パスワード",
+"connect": "接続",
+"disconnect": "切断",
+"connecting": "接続中...",
+"connected": "接続済み",
+"connectionFailed": "接続に失敗しました",
+"security": {
+  "none": "なし",
+  "wep": "WEP",
+  "wpa": "WPA",
+  "wpa2": "WPA2"
+},
+"advancedSettings": "詳細設定",
+"ipAddress": "IPアドレス",
+"subnetMask": "サブネットマスク",
+"gateway": "ゲートウェイ",
+"dns": "DNS",
+"useDhcp": "DHCPを使用",
+"staticIp": "静的IP",
+"applySettings": "設定を適用"
+},
+
+"feature": {
+"healthAlerts": {
+  "title": "健康アラート",
+  "description": "植物の健康問題、病気、またはケア要件に関する即時通知がスマートフォンに直接送信されます。"
+},
+"lightOptimization": {
+  "title": "光の最適化",
+  "description": "先進的な光センサーが照明条件を監視および最適化し、植物が理想的なスペクトルと強度を受け取ることを保証します。"
+},
+"smartWatering": {
+  "title": "スマート水やり",
+  "description": "土壌水分、植物の種類、環境条件に基づいて、完璧な水量を提供する自動水やりシステム。"
+}
+},
+  "settings": {
+    "appearance": "外観",
+    "language": "言語",
+    "moreLanguages": "その他の言語",
+    "theme": {
+      "system": "システム",
+      "light": "ライトモード",
+      "dark": "ダークモード"
+    }
+  }
+}
