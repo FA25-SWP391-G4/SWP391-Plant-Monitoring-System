@@ -1,0 +1,229 @@
+/**
+ * ============================================================================
+ * NOTIFICATION SYSTEM CSS - FRONTEND STYLING
+ * ============================================================================
+ * 
+ * Styles for the notification components
+ * 
+ * Place this file in the client/src/styles/ directory
+ */
+
+/* Notification Bell */
+.notification-bell {
+  position: relative;
+  cursor: pointer;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #666;
+  transition: color 0.2s;
+}
+
+.notification-bell:hover {
+  color: #4caf50;
+}
+
+.notification-badge {
+  position: absolute;
+  top: 0;
+  right: 0;
+  background-color: #ff5252;
+  color: white;
+  border-radius: 50%;
+  width: 18px;
+  height: 18px;
+  font-size: 11px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+}
+
+/* Notification Panel */
+.notification-panel-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.3);
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-end;
+  z-index: 1000;
+}
+
+.notification-panel {
+  position: absolute;
+  top: 60px;
+  right: 20px;
+  width: 350px;
+  max-height: 500px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateY(-20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.notification-panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 20px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.notification-panel-header h3 {
+  margin: 0;
+  font-size: 18px;
+  color: #333;
+}
+
+.notification-panel-content {
+  overflow-y: auto;
+  max-height: 450px;
+  padding: 10px 0;
+}
+
+.notification-loading,
+.notification-error,
+.notification-empty {
+  padding: 20px;
+  text-align: center;
+  color: #888;
+}
+
+.notification-error {
+  color: #ff5252;
+}
+
+/* Notification Item */
+.notification-item {
+  display: flex;
+  padding: 12px 20px;
+  border-bottom: 1px solid #f0f0f0;
+  transition: background-color 0.2s;
+  cursor: pointer;
+}
+
+.notification-item:hover {
+  background-color: #f9f9f9;
+}
+
+.notification-item.unread {
+  background-color: #f0f7ff;
+}
+
+.notification-item.unread:hover {
+  background-color: #e0f0ff;
+}
+
+.notification-icon {
+  font-size: 22px;
+  margin-right: 12px;
+  display: flex;
+  align-items: center;
+}
+
+.notification-content {
+  flex: 1;
+}
+
+.notification-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
+.notification-title {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: #333;
+}
+
+.notification-delete {
+  background: none;
+  border: none;
+  font-size: 18px;
+  color: #aaa;
+  cursor: pointer;
+  padding: 0 5px;
+  line-height: 1;
+}
+
+.notification-delete:hover {
+  color: #ff5252;
+}
+
+.notification-message {
+  margin: 0 0 5px 0;
+  font-size: 14px;
+  color: #555;
+  word-break: break-word;
+}
+
+.notification-time {
+  font-size: 11px;
+  color: #999;
+}
+
+/* Button Styles */
+.mark-all-read {
+  background: none;
+  border: none;
+  color: #4caf50;
+  font-size: 12px;
+  cursor: pointer;
+  margin-right: 10px;
+  padding: 0;
+}
+
+.mark-all-read:hover {
+  text-decoration: underline;
+}
+
+.close-panel {
+  background: none;
+  border: none;
+  font-size: 20px;
+  color: #888;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+}
+
+.close-panel:hover {
+  color: #333;
+}
+
+/* Media Queries */
+@media (max-width: 480px) {
+  .notification-panel {
+    width: calc(100% - 40px);
+    right: 10px;
+    left: 10px;
+    max-height: 80vh;
+  }
+}

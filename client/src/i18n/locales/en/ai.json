@@ -1,0 +1,25 @@
+{
+  "ai": {
+    "plantAnalysis": "Smart Plant Analysis",
+    "analyzing": "Analyzing...",
+    "analyzePlant": "Analyze Plant Condition",
+    "overallCondition": "Overall Condition",
+    "warnings": "Warnings",
+    "careRecommendations": "Care Recommendations",
+    "good": "Good",
+    "moderate": "Moderate",
+    "poor": "Poor"
+  },
+  "chatbot": {
+    "title": "AI Plant Care Assistant",
+    "welcome": "Hello! I'm your AI plant care assistant. I can help you with plant care questions. What would you like to know?",
+    "welcomeWithPlant": "Hello! I'm your AI plant care assistant. I can help you with questions about {{plantName}}. What would you like to know?",
+    "helpingWith": "Helping with {{plantName}}",
+    "placeholder": "Ask me about plant care...",
+    "clear": "Clear",
+    "error": "I'm sorry, I'm having trouble connecting right now. Please try again in a moment.",
+    "connectionError": "Connection error. Please check your internet connection.",
+    "suggestions": "Suggestions:",
+    "contextActive": "Plant context active: {{plantName}}"
+  }
+}

@@ -1,27 +1,56 @@
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+# Environment variables
+.env
+.env.local
+.env.development
+.env.test
+.env.production
 
-# dependencies
-/node_modules
+# Dependency directories
+node_modules/
+jspm_packages/
+*.rar
+backup/
 
-# next.js
-/.next/
-/out/
-
-# production
+# Build output
+/dist
 /build
 
-# debug
+# Logs
+logs
+*.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-.pnpm-debug.log*
+lerna-debug.log*
 
-# env files
-.env*
+# Tests
+/coverage
+/.nyc_output
 
-# vercel
-.vercel
+# IDEs and editors
+/.idea
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
 
-# typescript
-*.tsbuildinfo
-next-env.d.ts
+# OS
+.DS_Store
+Thumbs.db
+
+# AI Models and uploads
+/ai_models/**/*.bin
+/ai_models/**/*.json
+!/ai_models/config.json
+!/ai_models/**/README.md
+/uploads/images/*
+!/uploads/images/.gitkeep
+
+/certs
