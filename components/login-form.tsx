@@ -9,11 +9,13 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Checkbox } from "@/components/ui/checkbox"
 import { Mail, Lock, Sprout } from "lucide-react"
 import { useRouter } from "next/navigation"
+import { useUser } from "@/app/context/user-context"
 import Link from "next/link"
 
 export function LoginForm() {
   const [isLoading, setIsLoading] = useState(false)
   const router = useRouter()
+  const { setUser } = useUser()
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -27,10 +29,30 @@ export function LoginForm() {
     // Simulate API call
     await new Promise((resolve) => setTimeout(resolve, 2000))
 
+    const userRole: "normal" | "premium" = "normal"
+    if (formData.email === "admin@gmail.com" && formData.password === "123") {
+      router.push("/admin")
+      setIsLoading(false)
+      return
+    }
+
+    // Create user object and store in context
+    const newUser = {
+      id: Math.random().toString(36).substr(2, 9),
+      email: formData.email,
+      name: formData.email.split("@")[0],
+      role: userRole,
+      subscriptionStatus: "none" as const,
+      createdAt: new Date().toISOString(),
+    }
+
+    setUser(newUser)
+    localStorage.setItem("plantsmart_user", JSON.stringify(newUser))
+
     console.log("Login data:", formData)
     setIsLoading(false)
 
-    router.push("/dashboard")
+    router.push("/user-dashboard")
   }
 
   const handleInputChange = (field: string, value: string | boolean) => {
