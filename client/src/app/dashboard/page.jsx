@@ -10,43 +10,8 @@ import WeatherWidget from '@/components/dashboard/WeatherWidget';
 import RecentActivity from '@/components/dashboard/RecentActivity';
 import WateringSchedule from '@/components/dashboard/WateringSchedule';
 import PremiumFeaturePrompt from '@/components/dashboard/PremiumFeaturePrompt';
+import { set } from 'date-fns';
 
-// Mock data for development - would come from API in real app
-const MOCK_PLANTS = [
-  {
-    plant_id: 1,
-    name: 'Snake Plant',
-    species: 'Sansevieria trifasciata',
-    image: '/images/plants/snake-plant.jpg',
-    location: 'Living Room',
-    status: 'healthy',
-    lastWatered: '2023-11-15T10:30:00Z',
-  },
-  {
-    plant_id: 2,
-    name: 'Monstera',
-    species: 'Monstera deliciosa',
-    image: '/images/plants/monstera.jpg',
-    location: 'Office',
-    status: 'needs_attention',
-    lastWatered: '2023-11-10T08:15:00Z',
-  },
-  {
-    plant_id: 3,
-    name: 'Peace Lily',
-    species: 'Spathiphyllum',
-    image: '/images/plants/peace-lily.jpg',
-    location: 'Bedroom',
-    status: 'needs_water',
-    lastWatered: '2023-11-08T14:45:00Z',
-  },
-];
-
-const MOCK_SENSOR_DATA = {
-  1: { moisture: 72, temperature: 22.5, light: 85 },
-  2: { moisture: 43, temperature: 24.1, light: 65 },
-  3: { moisture: 28, temperature: 21.8, light: 55 },
-};
 
 export default function DashboardPage() {
   const { user, loading, isPremium } = useAuth();
@@ -60,24 +25,39 @@ export default function DashboardPage() {
   // Redirect if not logged in
   useEffect(() => {
     if (!loading && !user) {
+      // If auth finished and there's no user, stop dashboard loading spinner
+      // and redirect to login. This prevents a stuck spinner when AuthProvider
+      // reports loading=false but dashboard's internal isLoading remains true.
+      console.debug('[dashboard] auth finished: no user, redirecting to /login');
+      setIsLoading(false);
       router.push('/login');
     }
   }, [user, loading, router]);
 
   // Fetch dashboard data
   useEffect(() => {
+    console.log('[dashboard] useEffect triggered with user:', user);
     if (user) {
-      // In a real app, we would fetch from the API here
-      // For now, using mock data with a timeout to simulate API call
-      const fetchData = async () => {
+      const fetchDashboardData = async () => {
         setIsLoading(true);
         try {
-          // Simulate API call
-          await new Promise(resolve => setTimeout(resolve, 800));
-          
-          // Set mock data
-          setPlants(MOCK_PLANTS);
-          setSensorData(MOCK_SENSOR_DATA);
+          const res = await fetch(`http://localhost:3000/api/dashboard`, {
+            credentials: 'include',
+            headers: { 
+              'Authorization': `Bearer ${user.token}`,
+              'Content-Type': 'application/json' },
+            cache: 'no-store'
+          });
+          const data = await res.json();
+          console.log('Dashboard data response:', data);
+
+          if (res.ok && data.success) {
+            console.log('Dashboard data:', data.data.plants);
+            setPlants(data.data.plants);
+            setSensorData(data.data.latestReadings);
+          } else {
+            throw new Error(data.error || 'Failed to fetch devices');
+          }
         } catch (err) {
           console.error('Error fetching dashboard data:', err);
           setError(t('dashboard.loadError', 'Failed to load dashboard data. Please try again later.'));
@@ -86,9 +66,9 @@ export default function DashboardPage() {
         }
       };
 
-      fetchData();
+      fetchDashboardData();
     }
-  }, [user]);
+  },[user]);
 
   if (loading || isLoading) {
     return (

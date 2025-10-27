@@ -14,6 +14,7 @@ import { Button } from '@/components/ui/Button';
 export function LoginForm() {
   const { t } = useTranslation();
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -26,25 +27,53 @@ export function LoginForm() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
+    // client-side validation
+    if (!formData.email.trim() || !formData.password) {
+      setError(t('auth.loginValidation', 'Please enter both email and password'));
+      setIsLoading(false);
+      return;
+    }
 
     try {
-      // In a real implementation, this would call the authentication API
-      console.log('Login data:', formData);
-      
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      // Example login - replace with actual API call
-      const fakeToken = 'fake-jwt-token';
-      const fakeUser = { id: 1, email: formData.email, name: 'Test User', role: 'Premium' };
-      
-      // Call login function from auth provider
-      login(fakeToken, fakeUser);
-      
-      // Redirect to dashboard after successful login
-      router.push('/');
-    } catch (error) {
-      console.error('Login error:', error);
+      // backend runs on port 3010 by default in this project
+      const url = 'http://localhost:3010/auth/login';
+      const payload = { email: formData.email, password: formData.password };
+      const debug = process.env.NEXT_PUBLIC_DEBUG_LOGIN === 'true';
+      if (debug) console.debug('[Login] Request URL:', url, 'payload:', payload);
+
+      const res = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+
+      const contentType = res.headers.get('content-type') || '';
+      let data = null;
+      if (contentType.includes('application/json')) {
+        data = await res.json();
+      } else {
+        data = await res.text();
+      }
+
+      if (debug) {
+        console.debug('[Login] Response status:', res.status);
+        console.debug('[Login] Response headers:', Array.from(res.headers.entries()));
+        console.debug('[Login] Response body:', data);
+      }
+
+      if (!res.ok) {
+        const message = (data && data.message) || (typeof data === 'string' && data) || 'Login failed';
+        setError(`${t('auth.loginError', 'Login failed. Please check your credentials and try again.')}` + (debug ? ` — ${message}` : ` - ${message}`));
+        console.error('[Login] server error:', message);
+        return;
+      }
+
+      // success
+      login(data.data.token, data.data.user);
+      router.push('/dashboard');
+    } catch (err) {
+      console.error('[Login] Network or unexpected error:', err);
+      setError(t('auth.loginNetworkError', 'Network error during login. Check server and try again.'));
     } finally {
       setIsLoading(false);
     }
@@ -65,6 +94,11 @@ export function LoginForm() {
       </h2>
       
       <form className="space-y-5" onSubmit={handleSubmit} noValidate>
+        {error && (
+          <div className="text-sm text-red-600 bg-red-50 border border-red-100 p-2 rounded">
+            {error}
+          </div>
+        )}
         <div>
           <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
             {t('common.email', 'Email address')}
