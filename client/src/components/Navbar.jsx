@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { useAuth } from "@/providers/AuthProvider";
-import { LanguageSwitcher } from './LanguageSwitcher';
+import LanguageSwitcher from './LanguageSwitcher';
 
 export default function Navbar() {
   const { user, logout } = useAuth();

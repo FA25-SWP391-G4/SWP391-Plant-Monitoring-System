@@ -7,6 +7,7 @@ import { useEffect } from 'react';
 import Link from 'next/link';
 import { useTranslation } from 'react-i18next';
 
+
 export default function LoginPage() {
   const { user, loading } = useAuth();
   const router = useRouter();
