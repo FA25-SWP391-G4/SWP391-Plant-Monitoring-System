@@ -21,7 +21,7 @@ DROP TABLE IF EXISTS Users;
 
 -- Table for Users
 CREATE TABLE Users (
-  user_id SERIAL PRIMARY KEY,
+  user_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   email VARCHAR(100) NOT NULL UNIQUE,
   password_hash VARCHAR(255) NULL, -- NULL allowed for Google-only accounts
   given_name VARCHAR(100) NULL,
@@ -62,7 +62,7 @@ CREATE TABLE AI_Models (
 -- Table for Devices (IoT hardware)
 CREATE TABLE Devices (
   device_id SERIAL PRIMARY KEY,
-  user_id INT NOT NULL,
+  user_id UUID NOT NULL,
   device_key CHAR(36) NOT NULL UNIQUE, -- UUID for secure API communication
   device_name VARCHAR(100) NULL,
   status VARCHAR(30) NOT NULL DEFAULT 'offline' CHECK (status IN ('online', 'offline', 'error')),
@@ -74,8 +74,8 @@ CREATE TABLE Devices (
 -- Table for Plants (User's specific plants)
 CREATE TABLE Plants (
   plant_id SERIAL PRIMARY KEY,
-  user_id INT NOT NULL,
-  device_id INT NOT NULL,
+  user_id UUID NOT NULL,
+  device_id CHAR(36) NOT NULL,
   profile_id INT NULL,
   custom_name VARCHAR(100) NOT NULL,
   moisture_threshold INT NOT NULL, -- The specific moisture % to trigger watering
@@ -89,7 +89,7 @@ CREATE TABLE Plants (
 -- Table for Sensors_Data
 CREATE TABLE Sensors_Data (
   data_id BIGSERIAL PRIMARY KEY,
-  device_id INT NOT NULL,
+  device_id CHAR(36) NOT NULL,
   timestamp TIMESTAMP NOT NULL,
   soil_moisture DOUBLE PRECISION NULL,
   temperature DOUBLE PRECISION NULL,
@@ -120,7 +120,7 @@ CREATE TABLE Pump_Schedules (
 -- Table for Alerts
 CREATE TABLE Alerts (
   alert_id SERIAL PRIMARY KEY,
-  user_id INT NOT NULL,
+  user_id UUID NOT NULL,
   message TEXT NOT NULL,
   status VARCHAR(30) NOT NULL DEFAULT 'unread' CHECK (status IN ('unread', 'read')),
   created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -130,7 +130,7 @@ CREATE TABLE Alerts (
 -- Table for Payments
 CREATE TABLE Payments (
   payment_id SERIAL PRIMARY KEY,
-  user_id INT NOT NULL,
+  user_id UUID NOT NULL,
   vnpay_txn_ref VARCHAR(255) NULL UNIQUE,
   amount DECIMAL(10, 2) NOT NULL,
   status VARCHAR(30) NOT NULL CHECK (status IN ('completed', 'failed', 'pending')),
@@ -150,7 +150,7 @@ CREATE TABLE System_Logs (
 -- Table for Chat_History
 CREATE TABLE Chat_History (
   chat_id SERIAL PRIMARY KEY,
-  user_id INT NOT NULL,
+  user_id UUID NOT NULL,
   timestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   user_message TEXT NULL,
   ai_response TEXT NULL,

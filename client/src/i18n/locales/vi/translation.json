@@ -47,13 +47,21 @@
 "expand": "Mở rộng",
 "collapse": "Thu gọn",
 "appName": "PlantSmart",
-"plantLover": "Người yêu cây"
+"plantLover": "Người yêu cây",
+"search": "Tìm kiếm cây, thiết bị hoặc trang...",
+"user": "Người dùng",
+"viewDetails": "Xem chi tiết",
+"days": "ngày",
+"ago": "trước"
 },
+
+"locale": "vi-VN",
 
 "accessibility": {
   "email": "Email",
   "phone": "Điện thoại",
-  "location": "Vị trí"
+  "location": "Vị trí",
+  "userMenu": "Menu người dùng"
 },
 
 "auth": {
@@ -114,7 +122,15 @@
 "features": "Tính năng",
 "benefits": "Lợi ích",
 "pricing": "Giá cả",
-"contact": "Liên hệ"
+"contact": "Liên hệ",
+"aiAssistant": "Trợ lý AI",
+"reporting": "Báo cáo",
+"checkIns": "Kiểm tra",
+"objectives": "Mục tiêu",
+"careerHub": "Trung tâm nghề nghiệp",
+"documentation": "Tài liệu",
+"notifications": "Thông báo",
+"tasks": "Nhiệm vụ"
 },
 
 "dashboard": {
@@ -148,7 +164,8 @@
 "wateringSchedule": "Lịch tưới",
 "errorLoading": "Lỗi tải bảng điều khiển",
 "loadError": "Không thể tải dữ liệu bảng điều khiển. Vui lòng thử lại sau.",
-"weather": "Thời tiết hiện tại"
+"weather": "Thời tiết hiện tại",
+"redirecting": "Đang chuyển hướng đến bảng điều khiển..."
 },
 
 "plants": {
@@ -164,6 +181,9 @@
 "loadError": "Không thể tải dữ liệu cây. Vui lòng thử lại sau.",
 "notFound": "Không tìm thấy cây",
 "manualWatering": "Tưới thủ công",
+"lastWatered": "Lần tưới cuối",
+"water": "Tưới ngay",
+"log": "Ghi nhật ký hoạt động",
 "tabs": {
   "overview": "Tổng quan",
   "sensorData": "Dữ liệu cảm biến",
@@ -389,7 +409,17 @@
   "placeholder": "Hỏi tôi bất cứ điều gì về cây của bạn...",
   "greeting": "Xin chào! Tôi có thể giúp gì cho cây của bạn hôm nay?",
   "loading": "Đang suy nghĩ...",
-  "error": "Xin lỗi, tôi không thể xử lý yêu cầu của bạn. Vui lòng thử lại."
+  "error": "Xin lỗi, tôi không thể xử lý yêu cầu của bạn. Vui lòng thử lại.",
+  "welcomeMessage": "Xin chào! Tôi là trợ lý AI chăm sóc cây của bạn. Tôi có thể giúp gì cho bạn hôm nay?",
+  "quickQuestions": {
+    "watering": "Khi nào tôi nên tưới cây?",
+    "light": "Cây của tôi có đủ ánh sáng không?",
+    "yellowing": "Tại sao lá của tôi lại vàng?",
+    "fertilizer": "Khi nào tôi nên bón phân?",
+    "title": "Câu hỏi nhanh:"
+  },
+  "tooltip": "Trợ lý Cây AI",
+  "subtitle": "Tính năng Premium"
 },
 "imageRecognition": {
   "title": "Nhận dạng cây",
@@ -428,6 +458,7 @@
 "weather": {
 "title": "Thời tiết địa phương",
 "today": "Hôm nay",
+"tomorrow": "Ngày mai",
 "forecast": "Dự báo",
 "precipitation": "Lượng mưa",
 "humidity": "Độ ẩm",
@@ -439,13 +470,17 @@
 "feels": "Cảm giác như",
 "indoor": "Trong nhà",
 "outdoor": "Ngoài trời",
+"weekdays": {
+  "short": ["CN", "T2", "T3", "T4", "T5", "T6", "T7"]
+},
 "tip": {
   "hot": "Nhiệt độ cao. Tưới cây vào buổi sáng sớm hoặc buổi tối để tránh bay hơi.",
   "rainy": "Trời có mưa. Kiểm tra cây trong nhà để đảm bảo thoát nước đúng cách và tránh thối rễ.",
   "dry": "Độ ẩm thấp. Cân nhắc phun sương cho cây nhiệt đới của bạn để tăng độ ẩm.",
   "windy": "Có nhiều gió. Di chuyển các chậu cây nhạy cảm đến những nơi có chỗ trú ẩn.",
   "default": "Theo dõi độ ẩm đất hàng ngày dựa trên điều kiện thời tiết hiện tại."
-}
+},
+"updatedAt": "Cập nhật lúc "
 },
 
 "reviews": {
@@ -666,5 +701,42 @@
       "light": "Sáng",
       "dark": "Tối"
     }
+  },
+
+  "status": {
+    "healthy": "Khỏe mạnh",
+    "needsWater": "Cần tưới nước",
+    "needsAttention": "Cần chú ý"
+  },
+
+  "metrics": {
+    "moisture": "Độ ẩm",
+    "temperature": "Nhiệt độ",
+    "light": "Ánh sáng"
+  },
+
+  "activity": {
+    "watered": "Đã tưới",
+    "fertilized": "Đã bón phân",
+    "repotted": "Đã thay chậu",
+    "pruned": "Đã cắt tỉa"
+  },
+
+  "watering": {
+    "needsWater": "Cần tưới ngay",
+    "lastWatered": "Lần tưới cuối",
+    "waterNow": "Tưới",
+    "soon": "Sắp tưới",
+    "ok": "Vừa tưới",
+    "addPlant": "Thêm cây vào lịch"
+  },
+
+  "premium": {
+    "unlockPremium": "Mở khóa tính năng Premium",
+    "upgradeMessage": "Nâng cấp để truy cập phân tích nâng cao, tưới tự động và nhiều hơn nữa!",
+    "feature1": "Phân tích sức khỏe cây bằng AI",
+    "feature2": "Theo dõi cây không giới hạn",
+    "feature3": "Widget bảng điều khiển tùy chỉnh",
+    "upgradeNow": "Nâng cấp ngay"
   }
 }

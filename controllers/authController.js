@@ -109,11 +109,13 @@
  * 🔄 Security testing for authentication flows
  */
 
-const jwt = require('jsonwebtoken');
+const User = require('../models/User');
 const nodemailer = require('nodemailer');
+const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
 const bcrypt = require('bcryptjs');
-const { User, SystemLog } = require('../models');
+const { SystemLog } = require('../models/SystemLog');
+const { generateUUID, isValidUUID } = require('../utils/uuidGenerator');
 const emailService = require('../services/emailService');
 const { profile } = require('console');
 
@@ -171,21 +173,34 @@ const createTransporter = () => {
 
 /**
  * Generate JWT token for authentication
- * @param {Object} user - User object
+ * @param {Object} user - User object with UUID user_id
  * @returns {String} JWT token
+ * 
+ * UPDATED FOR UUID MIGRATION:
+ * - user.user_id is now UUID (not integer)
+ * - Validates UUID format before token generation
+ * - Logs UUID for debugging authentication issues
  */
 const generateToken = (user) => {
-    const fullName = user.givenName && user.familyName 
-        ? `${user.givenName} ${user.familyName}`
-        : user.familyName || user.givenName || '';
+    // Validate UUID format
+    if (!isValidUUID(user.user_id)) {
+        console.error('[AUTH] Invalid user_id UUID format:', user.user_id);
+        throw new Error('Invalid user ID format');
+    }
+
+    const fullName = user.given_name && user.family_name
+        ? `${user.given_name} ${user.family_name}`
+        : user.family_name || user.given_name || '';
+
+    console.log('[AUTH] Generating JWT token for user UUID:', user.user_id);
         
     return jwt.sign(
         { 
-            user_id: user.user_id, 
+            user_id: user.user_id,  // Now UUID instead of integer
             email: user.email, 
             role: user.role,
-            family_name: user.familyName,
-            given_name: user.givenName,
+            family_name: user.family_name,
+            given_name: user.given_name,
             full_name: fullName
         },
         process.env.JWT_SECRET,
@@ -219,7 +234,7 @@ const generateToken = (user) => {
  */
 async function register(req, res) {
     try {
-        const { email, password, googleId, profile_picture, family_name, given_name } = req.body;
+        const { email, password, google_id, given_name, family_name, phoneNumber, profile_picture, newsletter } = req.body;
         
         // Initialize userData with defaults - handle both naming conventions
         let userData = {
@@ -228,9 +243,10 @@ async function register(req, res) {
             familyName: family_name,
             givenName: given_name,
             role: 'Regular',
-            google_id: googleId || null,
+            google_id: google_id || null,
+            phone_number: phoneNumber || null,
             profile_picture: profile_picture || null,
-            notification_prefs: null
+            notification_prefs: newsletter ?  true : false
         };
         
         console.log(`[REGISTER] Registration attempt for email: ${email}, google_id: ${userData.google_id || 'none'}`);
@@ -367,93 +383,163 @@ async function sendWelcomeEmail(user) {
  */
 async function login(req, res) {
     try {
-        const { email, password } = req.body;
-        console.log(`[LOGIN] Attempt for email: ${email}`);
+        const { email, password, googleId, refreshToken, loginMethod } = req.body;
+        console.log(`[LOGIN] Attempt for email: ${email}, googleId: ${googleId || 'none'}, method: ${loginMethod || 'password'}`);
 
-        // Validate inputs
-        if (!email || !password) {
-            console.log('[LOGIN] Missing email or password');
+        // Validate inputs for regular login
+        if (!googleId && (!email || !password)) {
+            console.log('[LOGIN] Missing email or password for regular login');
             return res.status(400).json({
                 error: 'Email and password are required'
             });
         }
 
         // Find user by email
-        const user = await User.findByEmail(email);
+        let user = await User.findByEmail(email);
         if (!user) {
             console.log(`[LOGIN] User not found: ${email}`);
+            
+            // If this is a Google login and user doesn't exist, redirect to registration
+            if (loginMethod === 'google') {
+                console.log('[LOGIN] New Google user, redirecting to registration');
+                const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
+                
+                // Redirect to registration page with Google data indicator
+                return res.redirect(`${frontendUrl}/register?error=account_not_found&email=${encodeURIComponent(email)}&google=true`);
+            }
+            
             return res.status(401).json({
                 error: 'Invalid email or password'
             });
         }
 
-        console.log(`[LOGIN] User found: ${user.email}, checking password...`);
-        
-        // Check if user is Google-registered (has google_id but no password)
-        if (user.google_id && !user.password) {
-            console.log(`[LOGIN] User ${user.email} is registered via Google and has no password`);
-            return res.status(401).json({
-                error: 'This account was created with Google. Please log in with Google.',
-                googleAccount: true
-            });
-        }
-        
-        // Improved safer debug logging without exposing passwords
-        console.log(`[LOGIN] User object has password hash: ${!!user.password}`);
-        console.log(`[LOGIN] Password hash type: ${typeof user.password}`);
-        console.log(`[LOGIN] Password hash length: ${user.password ? user.password.length : 'N/A'}`);
-        console.log(`[LOGIN] Input password provided: ${!!password}`);
+        // Handle Google login
+        if (loginMethod === 'google' || googleId) {
+            console.log(`[LOGIN] Google login attempt for user: ${email}`);
+            
+            // Only proceed if user already has a google_id
+            if (user.google_id) {
+                console.log('[GOOGLE AUTH] User already has Google ID, proceeding with Google auth');
+                
+                // Store refresh token if provided
+                if (refreshToken) {
+                    await user.update({
+                        google_refresh_token: refreshToken
+                    });
+                    
+                    // Refresh user object to get updated data
+                    user = await User.findById(user.user_id);
+                }
+            } else {
+                console.log('[GOOGLE AUTH] User exists but does not have Google ID');
+                
+                // For OAuth flow, redirect to frontend with error
+                if (loginMethod === 'google') {
+                    const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
+                    return res.redirect(`${frontendUrl}/login?error=account_not_linked&email=${encodeURIComponent(email)}`);
+                }
+                
+                // For API calls, return JSON
+                return res.status(401).json({
+                    error: 'This email is registered without Google. Please login with password or link your Google account.',
+                    requiresLinking: true
+                });
+            }
 
-        // Validate password
-        const isPasswordValid = await user.validatePassword(password);
-        console.log(`[LOGIN] Password validation result: ${isPasswordValid}`);
+            // Verify matching Google IDs if provided
+            if (googleId && user.google_id !== googleId) {
+                console.log('[GOOGLE AUTH] Google ID mismatch');
+                
+                // For OAuth flow, redirect to frontend with error
+                if (loginMethod === 'google') {
+                    const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
+                    return res.redirect(`${frontendUrl}/login?error=google_id_mismatch`);
+                }
+                
+                // For API calls, return JSON
+                return res.status(401).json({
+                    error: 'Google account mismatch'
+                });
+            }
+        } else {
+            // Regular password login
+            console.log(`[LOGIN] Regular login attempt for user: ${email}`);
+            
+            // Check for Google-only account
+            if (user.google_id && !user.password) {
+                return res.status(401).json({
+                    error: 'This account uses Google login. Please sign in with Google.',
+                    googleOnly: true
+                });
+            }
 
-        if (!isPasswordValid) {
-            return res.status(401).json({
-                error: 'Invalid email or password'
-            });
+            // Validate password
+            const isPasswordValid = await user.validatePassword(password);
+            if (!isPasswordValid) {
+                console.log(`[LOGIN] Invalid password for user: ${email}`);
+                return res.status(401).json({
+                    error: 'Invalid email or password'
+                });
+            }
         }
 
         // Generate JWT token
         const token = generateToken(user);
         console.log(`[LOGIN] Success for user: ${user.email}`);
 
-        // Set session cookie with proper settings for better persistence
-        res.cookie('auth_token', token, {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',
-            sameSite: 'lax', // Changed to 'lax' for better cross-site compatibility
-            path: '/',       // Ensure cookie is available across all paths
-            maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days - explicit expiration
-        });
-        
         // Include both name fields for proper display
-        const fullName = user.givenName && user.familyName 
-            ? `${user.givenName} ${user.familyName}`
-            : user.familyName || user.givenName || 'User';
-            
-        console.log(`[LOGIN] User name fields: given_name=${user.givenName}, family_name=${user.familyName}, fullName=${fullName}`);
-        
+        const fullName = user.given_name && user.family_name
+            ? `${user.given_name} ${user.family_name}`
+            : user.family_name || user.given_name || 'User';
+
+        console.log(`[LOGIN] User name fields: given_name=${user.given_name}, family_name=${user.family_name}, fullName=${fullName}`);
+
         // Create user response object
         const userData = {
             user_id: user.user_id,
             email: user.email,
-            family_name: user.familyName,
-            given_name: user.givenName,
+            family_name: user.family_name,
+            given_name: user.given_name,
             full_name: fullName,
             role: user.role
         };
         
         console.log(`[LOGIN] User data being sent to client:`, JSON.stringify(userData));
 
+        // For Google login via OAuth controller, redirect to frontend callback
+        if (loginMethod === 'google') {
+            const redirectUrl = req.session.redirectAfterLogin || '/dashboard';
+            const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
+            
+            console.log(`[LOGIN] Google OAuth flow - redirecting to frontend callback`);
+            console.log(`[LOGIN] Frontend URL: ${frontendUrl}`);
+            console.log(`[LOGIN] Redirect destination: ${redirectUrl}`);
+            
+            // Redirect to frontend auth callback with token
+            // Frontend will store token in its own cookie
+            console.log(`${frontendUrl}/auth/callback?token=${token}&redirect=${encodeURIComponent(redirectUrl)}`);
+            return res.redirect(`${frontendUrl}/auth/callback?token=${token}&redirect=${encodeURIComponent(redirectUrl)}`);
+        }
+
+        // For regular login, send JSON response with cookie
+        // Set session cookie for browser-based clients
+        res.cookie('auth_token', token, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'lax',
+            path: '/',
+            maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
+        });
+        
         res.status(200).json({
             success: true,
-            message: 'Login successful',
+            message: 'Login successful', 
             data: {
                 user: userData,
                 token
             }
         });
+        
     } catch (error) {
         console.error('Login error:', error);
         res.status(500).json({

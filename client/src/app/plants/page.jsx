@@ -134,24 +134,29 @@ export default function PlantsPage() {
 
   // Handle search and filtering
   useEffect(() => {
-    if (plants.length > 0) {
-      let result = [...plants];
+    // Ensure plants is an array before processing
+    const plantsArray = Array.isArray(plants) ? plants : [];
+    
+    if (plantsArray.length > 0) {
+      let result = [...plantsArray];
       
       // Apply search term filter
       if (searchTerm) {
         result = result.filter(plant => 
-          plant.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          plant.species.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          plant.location.toLowerCase().includes(searchTerm.toLowerCase())
+          plant?.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          plant?.species?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          plant?.location?.toLowerCase().includes(searchTerm.toLowerCase())
         );
       }
       
       // Apply status filter
       if (activeFilter !== 'all') {
-        result = result.filter(plant => plant.status === activeFilter);
+        result = result.filter(plant => plant?.status === activeFilter);
       }
       
       setFilteredPlants(result);
+    } else {
+      setFilteredPlants([]);
     }
   }, [searchTerm, activeFilter, plants]);
 
@@ -270,7 +275,7 @@ export default function PlantsPage() {
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {filteredPlants.map(plant => (
+              {Array.isArray(filteredPlants) && filteredPlants.map(plant => (
                 <PlantListItem 
                   key={plant.plant_id} 
                   plant={plant} 

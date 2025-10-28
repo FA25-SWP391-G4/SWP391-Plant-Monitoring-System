@@ -46,6 +46,7 @@
     "react-toastify": "^11.0.5",
     "request": "^2.88.2",
     "socket.io": "^4.7.5",
+    "vnpay": "^2.4.4",
     "winston": "^3.13.0"
   },
   "scripts": {
@@ -62,7 +63,9 @@
     "test:i18n": "node scripts/i18n-integrity-checker.js",
     "test:sensor": "jest tests/sensor.test.js",
     "test:mqtt": "jest tests/mqtt.test.js",
-    "test:aws": "jest tests/aws-iot.test.js"
+    "test:aws": "jest tests/aws-iot.test.js",
+    "test:payment": "node run-payment-tests.js",
+    "test:payment:watch": "jest tests/payment*.test.js --watch"
   },
   "engines": {
     "node": ">=14.0.0"

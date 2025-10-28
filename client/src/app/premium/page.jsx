@@ -14,8 +14,6 @@ export default function PremiumPage() {
   const [selectedPlan, setSelectedPlan] = useState('monthly');
   const [isProcessing, setIsProcessing] = useState(false);
   const [paymentError, setPaymentError] = useState(null);
-  const [paymentDialogOpen, setPaymentDialogOpen] = useState(false);
-  const [paymentInfo, setPaymentInfo] = useState(null);
   
   // Redirect if not logged in
   useEffect(() => {
@@ -43,19 +41,20 @@ export default function PremiumPage() {
     cleanupPendingPayments();
   }, []);
   
-  // Handle upgrade button click
+  // Handle upgrade button click - go directly to payment
   const handleUpgradeClick = async (planType) => {
     if (!user) {
       router.push('/login?redirect=premium');
       return;
     }
     
-    setPaymentDialogOpen(true);
+    // Go directly to payment without showing dialog
     setSelectedPlan(planType);
+    await handlePayment(planType);
   };
   
-  // Process payment
-  const handlePayment = async (paymentType, bankCode = '') => {
+  // Process payment - simplified without payment method selection
+  const handlePayment = async (paymentType) => {
     setIsProcessing(true);
     setPaymentError(null);
     
@@ -68,7 +67,7 @@ export default function PremiumPage() {
         return;
       }
       
-      console.log(`Processing payment for user ID: ${user.user_id}, Name: ${user.full_name || 'Not set'}, Bank Code: ${bankCode || 'Not specified'}`);
+      console.log(`Processing payment for user ID: ${user.user_id}, Name: ${user.full_name || 'Not set'}`);
       
       // Determine amount based on selected plan and payment type
       let amount = 0;
@@ -76,25 +75,25 @@ export default function PremiumPage() {
       
       if (paymentType === 'monthly') {
         amount = 20000; // 20,000 VND per month
-        description = 'Monthly Premium Subscription';
+        description = 'Monthly Premium Subscription - Plant Monitoring System';
       } else if (paymentType === 'annual') {
         amount = 200000; // 200,000 VND per year (20% off)
-        description = 'Annual Premium Subscription (20% off)';
+        description = 'Annual Premium Subscription - Plant Monitoring System (20% off)';
       } else if (paymentType === 'lifetime') {
         amount = 399000; // 399,000 VND one-time payment
-        description = 'Lifetime Premium Subscription';
+        description = 'Lifetime Premium Subscription - Plant Monitoring System';
       }
       
-      // Create payment URL through backend
-      console.log(`Sending payment request: amount=${amount}, user_id=${user.user_id}, bankCode=${bankCode}`);
-      const response = await paymentApi.createPaymentUrl({
+      // Create payment data without bankCode to allow all payment methods
+      const paymentData = {
         amount,
         orderInfo: description,
-        orderType: 190004,
-        planType: paymentType,
-        bankCode: bankCode, // Pass the selected payment method
-        directRedirect: true // Use direct server-side redirection for better compatibility
-      });
+        planType: paymentType
+      };
+      
+      // Create payment URL through backend
+      console.log(`Sending payment request: amount=${amount}, user_id=${user.user_id}`);
+      const response = await paymentApi.createPaymentUrl(paymentData);
       
       // For server-side redirection, the browser will be redirected by the server
       // This client-side code should not execute if server-side redirect works
@@ -423,87 +422,36 @@ export default function PremiumPage() {
         </p>
       </div>
       
-      {/* Payment Dialog */}
-      {paymentDialogOpen && (
+      {/* Processing and Error Display */}
+      {isProcessing && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 max-w-md w-full text-center">
+            <div className="flex items-center justify-center mb-4">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-emerald-600"></div>
+              <span className="ml-2 text-lg font-medium">{t('payment.processing', 'Processing payment...')}</span>
+            </div>
+            <p className="text-gray-600">{t('payment.redirecting', 'Redirecting to VNPay payment gateway...')}</p>
+          </div>
+        </div>
+      )}
+      
+      {/* Payment Error Message */}
+      {paymentError && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white rounded-lg p-6 max-w-md w-full">
-            <h3 className="text-xl font-bold mb-4">{t('payment.confirmPayment', 'Confirm Payment')}</h3>
-            
-            <div className="mb-6">
-              <p className="mb-4">{t('payment.selectPaymentMethod', 'Please select your payment method:')}</p>
-              
-              {/* Payment Method Selection */}
-              <div className="space-y-4 mb-6">
-                <button 
-                  className="w-full bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 py-3 px-4 rounded-lg font-medium transition-colors flex items-center justify-between"
-                  onClick={() => handlePayment(selectedPlan, 'VNPAYQR')}
-                  disabled={isProcessing}
-                >
-                  <span className="flex items-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 mr-3 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z" />
-                    </svg>
-                    {t('payment.vnpayQR', 'Thanh toán quét mã QR')}
-                  </span>
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                  </svg>
-                </button>
-                
-                <button 
-                  className="w-full bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 py-3 px-4 rounded-lg font-medium transition-colors flex items-center justify-between"
-                  onClick={() => handlePayment(selectedPlan, 'VNBANK')}
-                  disabled={isProcessing}
-                >
-                  <span className="flex items-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 mr-3 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
-                    </svg>
-                    {t('payment.vnbank', 'Thẻ ATM - Tài khoản ngân hàng nội địa')}
-                  </span>
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                  </svg>
-                </button>
-                
-                <button 
-                  className="w-full bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 py-3 px-4 rounded-lg font-medium transition-colors flex items-center justify-between"
-                  onClick={() => handlePayment(selectedPlan, 'INTCARD')}
-                  disabled={isProcessing}
-                >
-                  <span className="flex items-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 mr-3 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
-                    </svg>
-                    {t('payment.intcard', 'Thẻ thanh toán quốc tế')}
-                  </span>
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                  </svg>
-                </button>
+            <div className="text-center mb-4">
+              <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100 mb-4">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.82 16.5c-.77.833.192 2.5 1.732 2.5z" />
+                </svg>
               </div>
-              
-              {isProcessing && (
-                <div className="flex items-center justify-center">
-                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-emerald-600"></div>
-                  <span className="ml-2">{t('payment.processing', 'Processing...')}</span>
-                </div>
-              )}
-              
-              {/* Payment Error Message */}
-              {paymentError && (
-                <div className="mt-4 p-3 bg-red-50 text-red-700 rounded-md">
-                  {paymentError}
-                </div>
-              )}
+              <h3 className="text-lg font-medium text-gray-900 mb-2">{t('payment.error', 'Payment Error')}</h3>
+              <p className="text-sm text-gray-600 mb-4">{paymentError}</p>
             </div>
-            
-            {/* Close Button */}
-            <div className="mt-4 flex justify-end">
+            <div className="flex justify-center">
               <button
-                className="px-4 py-2 text-gray-600 hover:text-gray-800"
-                onClick={() => setPaymentDialogOpen(false)}
-                disabled={isProcessing}
+                className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200"
+                onClick={() => setPaymentError(null)}
               >
                 {t('common.close', 'Close')}
               </button>

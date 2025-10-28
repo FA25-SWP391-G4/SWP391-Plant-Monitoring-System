@@ -50,6 +50,28 @@ const AIChatbot = () => {
         }))
       });
       
+      // Handle authentication errors
+      if (!response.success) {
+        let errorMessage = response.error || 'Sorry, I encountered an error. Please try again.';
+        
+        if (response.requiresLogin) {
+          errorMessage = 'Please log in to use the AI chatbot.';
+        } else if (response.requiresPremium) {
+          errorMessage = 'Premium subscription required to use the AI chatbot.';
+        }
+        
+        const errorBotMessage = {
+          id: messages.length + 2,
+          text: errorMessage,
+          sender: 'bot',
+          isError: true
+        };
+        
+        setMessages(prev => [...prev, errorBotMessage]);
+        setIsLoading(false);
+        return;
+      }
+      
       // Add bot response
       const botMessage = {
         id: messages.length + 2,

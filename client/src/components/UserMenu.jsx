@@ -3,7 +3,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "@/providers/AuthProvider";
-import { useTheme } from "next-themes"
+import { useTheme } from "@/contexts/ThemeContext"
 import { useRouter } from 'next/navigation'; // For redirecting to profile page
 
 /**
@@ -16,7 +16,7 @@ import { useRouter } from 'next/navigation'; // For redirecting to profile page
 const UserMenu = () => {
   const { t, i18n } = useTranslation();
   const { user, logout } = useAuth();
-  const { theme, toggleTheme, setTheme } = useTheme();
+  const { currentTheme, theme, toggleTheme, setLightTheme, setDarkTheme, setSystemTheme } = useTheme();
   const [isOpen, setIsOpen] = useState(false);
   const [showingAppearanceMenu, setShowingAppearanceMenu] = useState(false);
   const [showingLanguageMenu, setShowingLanguageMenu] = useState(false);
@@ -139,8 +139,22 @@ const UserMenu = () => {
         aria-expanded={isOpen}
         aria-label={t('accessibility.userMenu', 'User menu')}
       >
-        <div className="w-8 h-8 bg-green-100 text-green-700 rounded-full flex items-center justify-center">
-          {user?.name?.charAt(0) || 'U'}
+        <div>
+          {user?.profile_picture ? (
+            <div className="w-10 h-10 rounded-full overflow-hidden mr-3">
+            <Image 
+              src={user.profile_picture}
+              alt={user.name || t('common.user', 'User')}
+              width={40}
+              height={40}
+              className="object-cover w-full h-full"
+            />
+            </div>
+          ) : (
+            <div className="w-10 h-10 bg-green-100 text-green-700 rounded-full flex items-center justify-center mr-3">
+            {(user?.given_name?.charAt(0) || user?.family_name?.charAt(0) || 'U')}
+            </div>
+          )}
         </div>
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-gray-500">
           <path d="m6 9 6 6 6-6"></path>
@@ -151,25 +165,37 @@ const UserMenu = () => {
       {isOpen && (
         <div className="absolute right-0 mt-2 w-60 bg-white rounded-md shadow-lg border border-gray-100 z-50 overflow-hidden">
           {/* User info section */}
-          {user && (
-            <div className="p-4 border-b border-gray-100">
-              <div className="flex items-center">
-                <div className="w-10 h-10 bg-green-100 text-green-700 rounded-full flex items-center justify-center mr-3">
-                  {(user?.given_name?.charAt(0) || user?.family_name?.charAt(0) || 'U')}
-                </div>
-                <div>
-                  <p className="font-medium text-gray-800">
+                {user && (
+                <div className="p-4 border-b border-gray-100">
+                  <div className="flex items-center">
+                  {user?.profile_picture ? (
+                    <div className="w-10 h-10 rounded-full overflow-hidden mr-3">
+                    <Image 
+                      src={user.profile_picture}
+                      alt={user.name || t('common.user', 'User')}
+                      width={40}
+                      height={40}
+                      className="object-cover w-full h-full"
+                    />
+                    </div>
+                  ) : (
+                    <div className="w-10 h-10 bg-green-100 text-green-700 rounded-full flex items-center justify-center mr-3">
+                    {(user?.given_name?.charAt(0) || user?.family_name?.charAt(0) || 'U')}
+                    </div>
+                  )}
+                  <div>
+                    <p className="font-medium text-gray-800">
                     {user?.given_name && user?.family_name 
                       ? `${user.given_name} ${user.family_name}` 
                       : user?.family_name || user?.given_name || user?.full_name || user?.name || t('common.user', 'User')}
-                  </p>
-                  <p className="text-xs text-gray-500 truncate max-w-[160px]">{truncateEmail(user.email)}</p>
+                    </p>
+                    <p className="text-xs text-gray-500 truncate max-w-[160px]">{truncateEmail(user.email)}</p>
+                  </div>
+                  </div>
                 </div>
-              </div>
-            </div>
-          )}
-          
-          {/* Profile section */}
+                )}
+                
+                {/* Profile section */}
           {user && !showingAppearanceMenu && !showingLanguageMenu && (
             <div className="py-1 border-b border-gray-100">
               <button
@@ -274,7 +300,7 @@ const UserMenu = () => {
               {/* System theme option */}
               <button 
                 onClick={() => {
-                  setTheme('system');
+                  setSystemTheme();
                   goBackToMainMenu();
                 }}
                 className="w-full flex items-center justify-between px-4 py-2 text-gray-700 hover:bg-gray-50"
@@ -301,7 +327,7 @@ const UserMenu = () => {
               {/* Light theme option */}
               <button 
                 onClick={() => {
-                  setTheme('light');
+                  setLightTheme();
                   goBackToMainMenu();
                 }}
                 className="w-full flex items-center justify-between px-4 py-2 text-gray-700 hover:bg-gray-50"
@@ -332,7 +358,7 @@ const UserMenu = () => {
               {/* Dark theme option */}
               <button 
                 onClick={() => {
-                  setTheme('dark');
+                  setDarkTheme();
                   goBackToMainMenu();
                 }}
                 className="w-full flex items-center justify-between px-4 py-2 text-gray-700 hover:bg-gray-50"

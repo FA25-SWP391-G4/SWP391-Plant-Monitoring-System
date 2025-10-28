@@ -5,7 +5,12 @@ const path = require('path');
 const fs = require('fs');
 const { exec } = require('child_process');
 const util = require('util');
+const axios = require('axios');
+const FormData = require('form-data');
 const execPromise = util.promisify(exec);
+
+// AI Service configuration
+const AI_SERVICE_URL = process.env.AI_SERVICE_URL || 'http://localhost:3001';
 
 // AI Service methods
 const runPrediction = async (plantId, sensorData) => {
@@ -1188,6 +1193,97 @@ const detectDisease = async (req, res) => {
 // Alias for setModelActive to match route naming in mock
 const activateModel = setModelActive;
 
+// AI Service Proxy Methods
+const proxyChatbotRequest = async (req, res) => {
+    try {
+        const response = await axios.post(`${AI_SERVICE_URL}/api/test/chatbot`, req.body, {
+            timeout: 30000,
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+        
+        res.json(response.data);
+    } catch (error) {
+        console.error('AI Service chatbot proxy error:', error.message);
+        res.status(500).json({
+            success: false,
+            error: 'AI service unavailable',
+            message: 'Could not connect to AI service'
+        });
+    }
+};
+
+const proxyImageAnalysis = async (req, res) => {
+    try {
+        const formData = new FormData();
+        if (req.file) {
+            formData.append('image', fs.createReadStream(req.file.path));
+        }
+        
+        // Add other form fields
+        Object.keys(req.body).forEach(key => {
+            formData.append(key, req.body[key]);
+        });
+        
+        const response = await axios.post(`${AI_SERVICE_URL}/api/test/plant-analysis`, formData, {
+            timeout: 30000,
+            headers: {
+                ...formData.getHeaders()
+            }
+        });
+        
+        res.json(response.data);
+    } catch (error) {
+        console.error('AI Service image analysis proxy error:', error.message);
+        res.status(500).json({
+            success: false,
+            error: 'AI service unavailable',
+            message: 'Could not connect to AI service'
+        });
+    }
+};
+
+const proxyWateringPrediction = async (req, res) => {
+    try {
+        const response = await axios.post(`${AI_SERVICE_URL}/api/irrigation`, req.body, {
+            timeout: 30000,
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+        
+        res.json(response.data);
+    } catch (error) {
+        console.error('AI Service watering prediction proxy error:', error.message);
+        res.status(500).json({
+            success: false,
+            error: 'AI service unavailable',
+            message: 'Could not connect to AI service'
+        });
+    }
+};
+
+const proxyHistoricalAnalysis = async (req, res) => {
+    try {
+        const response = await axios.post(`${AI_SERVICE_URL}/api/historical-analysis`, req.body, {
+            timeout: 30000,
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+        
+        res.json(response.data);
+    } catch (error) {
+        console.error('AI Service historical analysis proxy error:', error.message);
+        res.status(500).json({
+            success: false,
+            error: 'AI service unavailable',
+            message: 'Could not connect to AI service'
+        });
+    }
+};
+
 module.exports = {
     // Service methods exported for use in other parts of the application
     runPrediction,
@@ -1214,5 +1310,11 @@ module.exports = {
     analyzeHealth,
     identifyPlant,
     getAnalysisHistory,
-    detectDisease
+    detectDisease,
+    
+    // AI Service proxy methods
+    proxyChatbotRequest,
+    proxyImageAnalysis,
+    proxyWateringPrediction,
+    proxyHistoricalAnalysis
 };

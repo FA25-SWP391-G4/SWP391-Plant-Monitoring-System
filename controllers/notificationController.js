@@ -11,6 +11,10 @@
  * - Email notifications for critical alerts
  * - WebSocket for real-time in-app notifications
  * - Notification preferences management
+ * 
+ * UPDATED FOR UUID MIGRATION:
+ * - user_id is now UUID format
+ * - Validates UUID parameters before database queries
  */
 
 const admin = require('firebase-admin');
@@ -18,6 +22,7 @@ const nodemailer = require('nodemailer');
 const Alert = require('../models/Alert');
 const User = require('../models/User');
 const SystemLog = require('../models/SystemLog');
+const { isValidUUID } = require('../utils/uuidGenerator');
 
 // Initialize Firebase Admin for FCM if not already initialized
 let firebaseInitialized = false;
@@ -59,13 +64,26 @@ const transporter = nodemailer.createTransport({
  * @route GET /api/notifications
  * @access Private - Requires authentication
  * @returns {Object} User notifications
+ * 
+ * UPDATED FOR UUID MIGRATION:
+ * - user_id from JWT is now UUID
+ * - Alert queries use UUID user_id
  */
 async function getUserNotifications(req, res) {
     try {
-        // Get user_id from authenticated request
+        // Get user_id from authenticated request (now UUID)
         const userId = req.user.user_id;
 
-        // Get notifications
+        // Validate UUID (should already be validated by auth middleware)
+        if (!isValidUUID(userId)) {
+            console.error('[NOTIFICATIONS] Invalid user_id UUID:', userId);
+            return res.status(400).json({
+                success: false,
+                error: 'Invalid user ID format'
+            });
+        }
+
+        // Get notifications (Alert model already validates UUID)
         const notifications = await Alert.findByUserId(userId);
 
         res.status(200).json({
@@ -90,13 +108,25 @@ async function getUserNotifications(req, res) {
  * @route GET /api/notifications/unread
  * @access Private - Requires authentication
  * @returns {Object} Unread notifications
+ * 
+ * UPDATED FOR UUID MIGRATION:
+ * - user_id from JWT is now UUID
  */
 async function getUnreadNotifications(req, res) {
     try {
-        // Get user_id from authenticated request
+        // Get user_id from authenticated request (now UUID)
         const userId = req.user.user_id;
 
-        // Get unread notifications
+        // Validate UUID
+        if (!isValidUUID(userId)) {
+            console.error('[UNREAD NOTIFICATIONS] Invalid user_id UUID:', userId);
+            return res.status(400).json({
+                success: false,
+                error: 'Invalid user ID format'
+            });
+        }
+
+        // Get unread notifications (Alert model already validates UUID)
         const notifications = await Alert.findUnreadByUserId(userId);
 
         res.status(200).json({
@@ -122,6 +152,9 @@ async function getUnreadNotifications(req, res) {
  * @access Private - Requires authentication
  * @param {number} notificationId - ID of the notification to mark as read
  * @returns {Object} Updated notification
+ * 
+ * UPDATED FOR UUID MIGRATION:
+ * - user_id comparison uses UUID format
  */
 async function markNotificationAsRead(req, res) {
     try {
@@ -138,7 +171,7 @@ async function markNotificationAsRead(req, res) {
             });
         }
 
-        // Check if notification belongs to user
+        // Check if notification belongs to user (UUID comparison)
         if (notification.user_id !== req.user.user_id) {
             return res.status(403).json({
                 success: false,

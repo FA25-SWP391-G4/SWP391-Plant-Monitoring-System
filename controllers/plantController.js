@@ -24,6 +24,7 @@ const SystemLog = require('../models/SystemLog');
 const { pool } = require('../config/db.js');
 const { connectAwsIoT } = require('../services/awsIOTClient');
 const { mqtt } = require('aws-iot-device-sdk-v2');
+const { isValidUUID } = require('../utils/uuidGenerator');
 
 // AWS IoT connection for device communication
 let awsIoTConnection = null;
@@ -49,15 +50,29 @@ async function getAwsIoTConnection() {
  * 
  * @route POST /api/plants/:plantId/water
  * @access Private - Requires authentication
- * @param {number} plantId - ID of the plant to water
+ * @param {string} plantId - UUID of the plant to water
  * @param {number} duration - Watering duration in seconds (default: 10)
  * @returns {Object} Watering confirmation
+ * 
+ * UPDATED FOR UUID MIGRATION:
+ * - plantId parameter is now UUID (not integer)
+ * - user_id comparison uses UUID format
+ * - Validates UUID format before database operations
  */
 async function waterPlant(req, res) {
     try {
-        // Get plant ID from route params
+        // Get plant ID from route params (now UUID)
         const { plantId } = req.params;
         const { duration = 10 } = req.body; // Default 10 seconds if not provided
+
+        // Validate UUID format
+        if (!isValidUUID(plantId)) {
+            console.error('[WATER PLANT] Invalid plant UUID:', plantId);
+            return res.status(400).json({
+                success: false,
+                error: 'Invalid plant ID format'
+            });
+        }
 
         // Validate duration
         if (duration < 1 || duration > 300) { // Limit to 5 minutes max
@@ -66,6 +81,8 @@ async function waterPlant(req, res) {
                 error: 'Duration must be between 1 and 300 seconds'
             });
         }
+
+        console.log('[WATER PLANT] Watering plant UUID:', plantId, 'for', duration, 'seconds');
 
         // Find the plant
         const plant = await Plant.findById(plantId);
@@ -77,8 +94,9 @@ async function waterPlant(req, res) {
             });
         }
 
-        // Check if user owns this plant
+        // Check if user owns this plant (both are now UUIDs)
         if (plant.user_id !== req.user.user_id) {
+            console.error('[WATER PLANT] Permission denied. Plant owner:', plant.user_id, 'Request user:', req.user.user_id);
             return res.status(403).json({
                 success: false,
                 error: 'You do not have permission to water this plant'
@@ -184,13 +202,26 @@ function calculateWaterAmount(duration) {
  * 
  * @route GET /api/plants/:plantId/schedule
  * @access Private - Requires authentication
- * @param {number} plantId - ID of the plant
+ * @param {string} plantId - UUID of the plant
  * @returns {Object} Watering schedule
+ * 
+ * UPDATED FOR UUID MIGRATION:
+ * - plantId parameter is now UUID
+ * - Validates UUID format before operations
  */
 async function getWateringSchedule(req, res) {
     try {
-        // Get plant ID from route params
+        // Get plant ID from route params (now UUID)
         const { plantId } = req.params;
+
+        // Validate UUID format
+        if (!isValidUUID(plantId)) {
+            console.error('[GET SCHEDULE] Invalid plant UUID:', plantId);
+            return res.status(400).json({
+                success: false,
+                error: 'Invalid plant ID format'
+            });
+        }
 
         // Find the plant
         const plant = await Plant.findById(plantId);
@@ -202,7 +233,7 @@ async function getWateringSchedule(req, res) {
             });
         }
 
-        // Check if user owns this plant
+        // Check if user owns this plant (UUID comparison)
         if (plant.user_id !== req.user.user_id) {
             return res.status(403).json({
                 success: false,
@@ -234,15 +265,28 @@ async function getWateringSchedule(req, res) {
  * 
  * @route POST /api/plants/:plantId/schedule
  * @access Private - Requires authentication
- * @param {number} plantId - ID of the plant
+ * @param {string} plantId - UUID of the plant
  * @param {Array} schedule - Array of schedule entries
  * @returns {Object} Updated watering schedule
+ * 
+ * UPDATED FOR UUID MIGRATION:
+ * - plantId parameter is now UUID
+ * - Validates UUID format before operations
  */
 async function setWateringSchedule(req, res) {
     try {
-        // Get plant ID from route params
+        // Get plant ID from route params (now UUID)
         const { plantId } = req.params;
         const { schedule } = req.body;
+
+        // Validate UUID format
+        if (!isValidUUID(plantId)) {
+            console.error('[SET SCHEDULE] Invalid plant UUID:', plantId);
+            return res.status(400).json({
+                success: false,
+                error: 'Invalid plant ID format'
+            });
+        }
 
         // Validate schedule
         if (!schedule || !Array.isArray(schedule)) {
@@ -262,7 +306,7 @@ async function setWateringSchedule(req, res) {
             });
         }
 
-        // Check if user owns this plant
+        // Check if user owns this plant (UUID comparison)
         if (plant.user_id !== req.user.user_id) {
             return res.status(403).json({
                 success: false,
@@ -316,15 +360,28 @@ async function setWateringSchedule(req, res) {
  * 
  * @route PUT /api/plants/:plantId/auto-watering
  * @access Private - Requires authentication
- * @param {number} plantId - ID of the plant
+ * @param {string} plantId - UUID of the plant
  * @param {boolean} enabled - Whether auto-watering should be enabled
  * @returns {Object} Updated plant status
+ * 
+ * UPDATED FOR UUID MIGRATION:
+ * - plantId parameter is now UUID
+ * - Validates UUID format before operations
  */
 async function toggleAutoWatering(req, res) {
     try {
-        // Get plant ID from route params
+        // Get plant ID from route params (now UUID)
         const { plantId } = req.params;
         const { enabled } = req.body;
+
+        // Validate UUID format
+        if (!isValidUUID(plantId)) {
+            console.error('[TOGGLE AUTO WATERING] Invalid plant UUID:', plantId);
+            return res.status(400).json({
+                success: false,
+                error: 'Invalid plant ID format'
+            });
+        }
 
         // Validate input
         if (typeof enabled !== 'boolean') {
@@ -344,7 +401,7 @@ async function toggleAutoWatering(req, res) {
             });
         }
 
-        // Check if user owns this plant
+        // Check if user owns this plant (UUID comparison)
         if (plant.user_id !== req.user.user_id) {
             return res.status(403).json({
                 success: false,
@@ -388,15 +445,28 @@ async function toggleAutoWatering(req, res) {
  * 
  * @route PUT /api/plants/:plantId/thresholds
  * @access Private - Requires authentication and premium
- * @param {number} plantId - ID of the plant
+ * @param {string} plantId - UUID of the plant
  * @param {Object} thresholds - Sensor thresholds
  * @returns {Object} Updated thresholds
+ * 
+ * UPDATED FOR UUID MIGRATION:
+ * - plantId parameter is now UUID
+ * - Validates UUID format before operations
  */
 async function setSensorThresholds(req, res) {
     try {
-        // Get plant ID from route params
+        // Get plant ID from route params (now UUID)
         const { plantId } = req.params;
         const { thresholds } = req.body;
+
+        // Validate UUID format
+        if (!isValidUUID(plantId)) {
+            console.error('[SET THRESHOLDS] Invalid plant UUID:', plantId);
+            return res.status(400).json({
+                success: false,
+                error: 'Invalid plant ID format'
+            });
+        }
 
         // Check if user is premium
         if (req.user.role !== 'Premium' && req.user.role !== 'Admin') {
@@ -424,7 +494,7 @@ async function setSensorThresholds(req, res) {
             });
         }
 
-        // Check if user owns this plant
+        // Check if user owns this plant (UUID comparison)
         if (plant.user_id !== req.user.user_id) {
             return res.status(403).json({
                 success: false,
