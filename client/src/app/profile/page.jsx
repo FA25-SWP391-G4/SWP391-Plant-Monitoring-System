@@ -1,22 +1,39 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { useTranslation } from 'react-i18next';
 import { useAuth } from '@/providers/AuthProvider';
 import { useRouter } from 'next/navigation';
-import Image from 'next/image';
-import Link from 'next/link';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/Card';
+import { Input } from '@/components/ui/Input';
+import { Button } from '@/components/ui/Button';
+import PhoneInput from '@/components/PhoneInput';
+import { toast } from 'sonner';
+import { Loader2, Edit, Save, X, Lock, User as UserIcon } from 'lucide-react';
+import axios from 'axios';
+import { getAuthToken } from '@/utils/auth';;
 
 /**
  * User Profile Page
- * Displays user information and account details
+ * Displays and allows editing of user information
  */
 const ProfilePage = () => {
-  const { t } = useTranslation();
-  const { user, isLoading } = useAuth();
+  const { user, loading: isLoading, updateUser } = useAuth();
   const router = useRouter();
-  const [userProfile, setUserProfile] = useState(null);
-  const [isLoadingProfile, setIsLoadingProfile] = useState(true);
+  const [isEditing, setIsEditing] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+  const [isChangingPassword, setIsChangingPassword] = useState(false);
+  const [formData, setFormData] = useState({
+    given_name: '',
+    family_name: '',
+    email: '',
+    phone_number: '',
+    country_code: '+84',
+  });
+  const [passwordData, setPasswordData] = useState({
+    currentPassword: '',
+    newPassword: '',
+    confirmPassword: '',
+  });
 
   // Redirect if user is not authenticated
   useEffect(() => {
@@ -25,146 +42,358 @@ const ProfilePage = () => {
     }
   }, [user, isLoading, router]);
 
-  // Fetch user profile data
+  // Initialize form data when user is loaded
   useEffect(() => {
-    const fetchUserProfile = async () => {
-      if (!user) return;
-      
-      try {
-        setIsLoadingProfile(true);
-        
-        // If we have a profileApi, use it
-        if (typeof window !== 'undefined' && window.profileApi) {
-          const response = await window.profileApi.getUserProfile();
-          if (response.data) {
-            setUserProfile(response.data);
-          } else {
-            // Fallback to current user data if API doesn't return anything
-            setUserProfile(user);
-          }
-        } else {
-          // Fallback to current user data if API is not available
-          setUserProfile(user);
-        }
-      } catch (error) {
-        console.error('Error fetching user profile:', error);
-        setUserProfile(user); // Fallback to current user data
-      } finally {
-        setIsLoadingProfile(false);
-      }
-    };
-
-    fetchUserProfile();
+    if (user) {
+      setFormData({
+        given_name: user.given_name || '',
+        family_name: user.family_name || '',
+        email: user.email || '',
+        phone_number: user.phone_number || '',
+        country_code: user.country_code || '+84',
+      });
+    }
   }, [user]);
 
+  const handleSave = async () => {
+    setIsSaving(true);
+    try {
+      const API_URL = process.env.NEXT_PUBLIC_API_URL;
+      const token = getAuthToken();
+
+      const response = await axios.put(
+        `${API_URL}/users/profile`,
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+
+      if (response.data.success) {
+        toast.success('Profile updated successfully');
+        setIsEditing(false);
+        // Update user in context
+        if (updateUser) {
+          updateUser({ ...user, ...formData });
+        }
+      }
+    } catch (error) {
+      console.error('Failed to update profile:', error);
+      toast.error(error.response?.data?.error || 'Failed to update profile');
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  const handleChangePassword = async () => {
+    if (passwordData.newPassword !== passwordData.confirmPassword) {
+      toast.error('Passwords do not match');
+      return;
+    }
+
+    if (passwordData.newPassword.length < 8) {
+      toast.error('Password must be at least 8 characters');
+      return;
+    }
+
+    setIsSaving(true);
+    try {
+      const API_URL = process.env.NEXT_PUBLIC_API_URL;
+      const token = getAuthToken();
+
+      const response = await axios.put(
+        `${API_URL}/users/change-password`,
+        {
+          currentPassword: passwordData.currentPassword,
+          newPassword: passwordData.newPassword,
+          confirmPassword: passwordData.confirmPassword,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+
+      if (response.data.success) {
+        toast.success('Password changed successfully');
+        setIsChangingPassword(false);
+        setPasswordData({
+          currentPassword: '',
+          newPassword: '',
+          confirmPassword: '',
+        });
+      }
+    } catch (error) {
+      console.error('Failed to change password:', error);
+      toast.error(error.response?.data?.error || 'Failed to change password');
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  const handleCancel = () => {
+    if (user) {
+      setFormData({
+        given_name: user.given_name || '',
+        family_name: user.family_name || '',
+        email: user.email || '',
+        phone_number: user.phone_number || '',
+        country_code: user.country_code || '+84',
+      });
+    }
+    setIsEditing(false);
+  };
+
   // Show loading state while checking authentication
-  if (isLoading || isLoadingProfile) {
+  if (isLoading) {
     return (
-      <div className="flex justify-center items-center min-h-[80vh]">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-green-500 mx-auto"></div>
-          <p className="mt-4 text-gray-600">{t('common.loading', 'Loading...')}</p>
-        </div>
+      <div className="flex items-center justify-center min-h-screen">
+        <Loader2 className="h-8 w-8 animate-spin text-emerald-600" />
       </div>
     );
   }
 
-  // User profile content
+  if (!user) {
+    return null;
+  }
+
   return (
     <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-8">{t('profile.title', 'User Profile')}</h1>
-      
-      {userProfile && (
-        <div className="bg-white rounded-lg shadow-md overflow-hidden">
-          {/* Profile header */}
-          <div className="bg-gradient-to-r from-green-500 to-green-600 px-6 py-8 text-white">
-            <div className="flex flex-col md:flex-row items-center">
-              <div className="w-24 h-24 bg-white rounded-full flex items-center justify-center text-green-600 text-4xl font-bold mb-4 md:mb-0 md:mr-6">
-                {userProfile.name?.charAt(0) || 'U'}
-              </div>
-              <div>
-                <h2 className="text-2xl font-bold">{userProfile.name || t('common.user', 'User')}</h2>
-                <p className="opacity-90">{userProfile.email}</p>
-                {userProfile.role && (
-                  <div className="mt-2">
-                    <span className={`inline-block px-3 py-1 text-sm rounded-full ${
-                      userProfile.role === 'Premium' ? 'bg-amber-400 text-amber-900' :
-                      userProfile.role === 'Admin' ? 'bg-purple-400 text-purple-900' :
-                      'bg-white/20 text-white'
-                    }`}>
-                      {userProfile.role === 'Premium' ? t('profile.premiumUser', 'Premium User') :
-                       userProfile.role === 'Admin' ? t('profile.adminUser', 'Administrator') :
-                       t('profile.standardUser', 'Standard User')}
-                    </span>
-                  </div>
-                )}
-              </div>
-              <div className="md:ml-auto mt-4 md:mt-0">
-                <Link
-                  href="/profile/edit"
-                  className="bg-white text-green-600 hover:bg-green-50 py-2 px-4 rounded-md font-medium"
-                >
-                  {t('profile.editProfile', 'Edit Profile')}
-                </Link>
-              </div>
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold text-gray-900">User Profile</h1>
+        <p className="mt-2 text-gray-600">Manage your account information</p>
+      </div>
+
+      {/* Profile Information Card */}
+      <Card className="mb-6">
+        <CardHeader>
+          <div className="flex justify-between items-center">
+            <div>
+              <CardTitle className="flex items-center gap-2">
+                <UserIcon className="h-5 w-5" />
+                Profile Information
+              </CardTitle>
+              <CardDescription>Update your personal details</CardDescription>
             </div>
-          </div>
-          
-          {/* Profile content */}
-          <div className="p-6">
-            {/* Account Information */}
-            <div className="mb-8">
-              <h3 className="text-xl font-semibold mb-4 border-b pb-2">{t('profile.accountInfo', 'Account Information')}</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <p className="text-sm text-gray-500">{t('common.fullName', 'Full Name')}</p>
-                  <p className="font-medium">{userProfile.name || '-'}</p>
-                </div>
-                <div>
-                  <p className="text-sm text-gray-500">{t('common.email', 'Email')}</p>
-                  <p className="font-medium">{userProfile.email || '-'}</p>
-                </div>
-                <div>
-                  <p className="text-sm text-gray-500">{t('common.phoneNumber', 'Phone Number')}</p>
-                  <p className="font-medium">{userProfile.phone || '-'}</p>
-                </div>
-                <div>
-                  <p className="text-sm text-gray-500">{t('profile.memberSince', 'Member Since')}</p>
-                  <p className="font-medium">
-                    {userProfile.createdAt ? new Date(userProfile.createdAt).toLocaleDateString() : '-'}
-                  </p>
-                </div>
-              </div>
-            </div>
-            
-            {/* Account Actions */}
-            <div className="flex flex-wrap gap-3">
-              <Link
-                href="/profile/change-password"
-                className="text-sm bg-gray-100 hover:bg-gray-200 text-gray-800 py-2 px-4 rounded transition-colors"
-              >
-                {t('auth.changePassword', 'Change Password')}
-              </Link>
-              
-              {userProfile.role === 'Regular' && (
-                <Link
-                  href="/premium"
-                  className="text-sm bg-gradient-to-r from-amber-500 to-amber-600 text-white py-2 px-4 rounded hover:from-amber-600 hover:to-amber-700 transition-colors"
+            <div>
+              {!isEditing ? (
+                <Button
+                  onClick={() => setIsEditing(true)}
+                  className="flex items-center gap-2"
                 >
-                  {t('common.upgrade', 'Upgrade to Premium')}
-                </Link>
+                  <Edit className="h-4 w-4" />
+                  Edit Profile
+                </Button>
+              ) : (
+                <div className="flex gap-2">
+                  <Button
+                    onClick={handleSave}
+                    disabled={isSaving}
+                    className="flex items-center gap-2"
+                  >
+                    {isSaving ? (
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                    ) : (
+                      <Save className="h-4 w-4" />
+                    )}
+                    Save
+                  </Button>
+                  <Button
+                    variant="outline"
+                    onClick={handleCancel}
+                    disabled={isSaving}
+                    className="flex items-center gap-2"
+                  >
+                    <X className="h-4 w-4" />
+                    Cancel
+                  </Button>
+                </div>
               )}
-              
-              <Link
-                href="/settings"
-                className="text-sm bg-gray-100 hover:bg-gray-200 text-gray-800 py-2 px-4 rounded transition-colors"
-              >
-                {t('navigation.settings', 'Settings')}
-              </Link>
             </div>
           </div>
-        </div>
-      )}
+        </CardHeader>
+        <CardContent className="space-y-6">
+          {/* Role Badge */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Role</label>
+            <span className={`inline-flex px-3 py-1 rounded-full text-sm font-medium ${
+              user.role === 'Admin' ? 'bg-red-100 text-red-800' :
+              user.role === 'Premium' ? 'bg-purple-100 text-purple-800' :
+              'bg-gray-100 text-gray-800'
+            }`}>
+              {user.role}
+            </span>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* First Name */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">First Name</label>
+              {isEditing ? (
+                <Input
+                  value={formData.given_name}
+                  onChange={(e) => setFormData({ ...formData, given_name: e.target.value })}
+                  placeholder="Enter first name"
+                />
+              ) : (
+                <p className="text-gray-900">{user.given_name || '-'}</p>
+              )}
+            </div>
+
+            {/* Last Name */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Last Name</label>
+              {isEditing ? (
+                <Input
+                  value={formData.family_name}
+                  onChange={(e) => setFormData({ ...formData, family_name: e.target.value })}
+                  placeholder="Enter last name"
+                />
+              ) : (
+                <p className="text-gray-900">{user.family_name || '-'}</p>
+              )}
+            </div>
+
+            {/* Email */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Email</label>
+              {isEditing ? (
+                <Input
+                  type="email"
+                  value={formData.email}
+                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                  placeholder="Enter email"
+                />
+              ) : (
+                <p className="text-gray-900">{user.email || '-'}</p>
+              )}
+            </div>
+
+            {/* Phone Number */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Phone Number</label>
+              {isEditing ? (
+                <PhoneInput
+                  value={formData.phone_number}
+                  countryCode={formData.country_code}
+                  onChange={(phone) => setFormData({ ...formData, phone_number: phone })}
+                  onCountryChange={(code) => setFormData({ ...formData, country_code: code })}
+                />
+              ) : (
+                <p className="text-gray-900">
+                  {user.country_code && user.phone_number
+                    ? `${user.country_code} ${user.phone_number}`
+                    : '-'}
+                </p>
+              )}
+            </div>
+          </div>
+
+          {/* Account Created Date */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Member Since</label>
+            <p className="text-gray-900">
+              {user.created_at ? new Date(user.created_at).toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+              }) : '-'}
+            </p>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Password Change Card */}
+      <Card>
+        <CardHeader>
+          <div className="flex justify-between items-center">
+            <div>
+              <CardTitle className="flex items-center gap-2">
+                <Lock className="h-5 w-5" />
+                Password
+              </CardTitle>
+              <CardDescription>Update your password</CardDescription>
+            </div>
+            <div>
+              {!isChangingPassword && (
+                <Button
+                  variant="outline"
+                  onClick={() => setIsChangingPassword(true)}
+                >
+                  Change Password
+                </Button>
+              )}
+            </div>
+          </div>
+        </CardHeader>
+        {isChangingPassword && (
+          <CardContent className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Current Password</label>
+              <Input
+                type="password"
+                value={passwordData.currentPassword}
+                onChange={(e) => setPasswordData({ ...passwordData, currentPassword: e.target.value })}
+                placeholder="Enter current password"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">New Password</label>
+              <Input
+                type="password"
+                value={passwordData.newPassword}
+                onChange={(e) => setPasswordData({ ...passwordData, newPassword: e.target.value })}
+                placeholder="Enter new password"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Confirm New Password</label>
+              <Input
+                type="password"
+                value={passwordData.confirmPassword}
+                onChange={(e) => setPasswordData({ ...passwordData, confirmPassword: e.target.value })}
+                placeholder="Confirm new password"
+              />
+            </div>
+
+            <div className="flex gap-3 pt-4">
+              <Button
+                onClick={handleChangePassword}
+                disabled={isSaving}
+                className="flex items-center gap-2"
+              >
+                {isSaving ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : (
+                  <Lock className="h-4 w-4" />
+                )}
+                Update Password
+              </Button>
+              <Button
+                variant="outline"
+                onClick={() => {
+                  setIsChangingPassword(false);
+                  setPasswordData({
+                    currentPassword: '',
+                    newPassword: '',
+                    confirmPassword: '',
+                  });
+                }}
+                disabled={isSaving}
+              >
+                Cancel
+              </Button>
+            </div>
+          </CardContent>
+        )}
+      </Card>
     </div>
   );
 };

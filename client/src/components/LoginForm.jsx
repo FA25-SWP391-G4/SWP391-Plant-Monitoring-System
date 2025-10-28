@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '@/providers/AuthProvider';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/Card';
 import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
@@ -10,6 +10,7 @@ import axiosClient from '@/api/axiosClient';
 import Head from 'next/head';
 import { useGoogleAuth } from '@/hooks/useGoogleAuth';
 import GoogleLoginButton from '@/components/GoogleLoginButton';
+import { toast } from 'sonner';
 
 // API URL for redirect purposes
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
@@ -31,7 +32,8 @@ export function LoginForm() {
   const [errors, setErrors] = useState({
     email: '',
     password: '',
-    form: ''
+    form: '',
+    oauth: '' // OAuth error from URL parameters
   });
   // New state for debugging information
   const [debugInfo, setDebugInfo] = useState({
@@ -43,11 +45,45 @@ export function LoginForm() {
 
   const { login } = useAuth();
   const router = useRouter();
+  const searchParams = useSearchParams();
 
   // Toggle debug info visibility
   const toggleDebugInfo = () => {
     setDebugInfo(prev => ({ ...prev, visible: !prev.visible }));
   };
+
+  // Handle OAuth errors from URL parameters
+  useEffect(() => {
+    const error = searchParams.get('error');
+    const email = searchParams.get('email');
+    
+    if (error) {
+      console.log('[LOGIN FORM] OAuth error detected:', error);
+      
+      if (error === 'account_not_linked') {
+        const message = `This email (${email}) is already registered with a password. Please log in with your password, or link your Google account in settings.`;
+        setErrors(prev => ({ ...prev, oauth: message }));
+        toast.error('Account not linked to Google');
+      } else if (error === 'google_id_mismatch') {
+        const message = 'Google account mismatch. This email is linked to a different Google account.';
+        setErrors(prev => ({ ...prev, oauth: message }));
+        toast.error('Google account mismatch');
+      } else if (error === 'account_not_found') {
+        const message = 'No account found with this Google email. Please register first.';
+        setErrors(prev => ({ ...prev, oauth: message }));
+        toast.error('Account not found');
+        
+        // Optionally redirect to register page
+        setTimeout(() => {
+          router.push(`/register?email=${encodeURIComponent(email || '')}&google=true`);
+        }, 2000);
+      } else {
+        const message = `Authentication error: ${error}`;
+        setErrors(prev => ({ ...prev, oauth: message }));
+        toast.error(`Login failed: ${error}`);
+      }
+    }
+  }, [searchParams, router]);
 
   // Check connection to backend server
   useEffect(() => {
@@ -76,11 +112,12 @@ export function LoginForm() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    // Clear previous errors
+    // Clear previous errors (including OAuth errors)
     setErrors({
       email: '',
       password: '',
-      form: ''
+      form: '',
+      oauth: ''
     });
     
     // Reset debug info
@@ -96,7 +133,8 @@ export function LoginForm() {
     const newErrors = {
       email: '',
       password: '',
-      form: ''
+      form: '',
+      oauth: '' // Keep oauth cleared during validation
     };
     
     // Check email
@@ -357,29 +395,26 @@ export function LoginForm() {
 
     // Function to handle the credential response
     const handleCredentialResponse = async (response) => {
-      console.log('Google Sign-In response received');
+      console.log('[GOOGLE AUTH] Google Sign-In response received');
 
       try {
         setIsGoogleLoading(true);
 
         if (response.credential) {
-          // Send the credential to your backend
-          const authApi = (await import('@/api/authApi')).default;
-          const result = await authApi.loginWithGoogle(response.credential);
-
-          // Process successful authentication
-          if (result.data && result.data.token) {
-            login(result.data.token, result.data.user);
-            console.log(result.data.user, result.data.token);
-
-            // Redirect to dashboard or stored redirect path
-            const redirectUrl = localStorage.getItem('redirectAfterLogin') || '/dashboard';
-            router.push(redirectUrl);
-            localStorage.removeItem('redirectAfterLogin');
-          }
+          console.log('[GOOGLE AUTH] Google credential token received, redirecting to backend OAuth flow');
+          
+          // Instead of calling the login API, redirect to backend Google OAuth endpoint
+          // The backend will handle the full OAuth flow
+          // Store redirect URL before redirecting
+          const redirectUrl = localStorage.getItem('redirectAfterLogin') || '/dashboard';
+          localStorage.setItem('googleOAuthRedirect', redirectUrl);
+          
+          // Redirect to backend Google OAuth endpoint
+          // The backend will verify the token, create/login user, and redirect back
+          window.location.href = `${API_URL}/auth/google/login`;
         }
       } catch (error) {
-        console.error('Google authentication error:', error);
+        console.error('[GOOGLE AUTH] Google authentication error:', error);
         setErrors({
           ...errors,
           form: t('errors.googleLoginFailed', 'Failed to authenticate with Google. Please try again.')
@@ -532,6 +567,25 @@ export function LoginForm() {
             {t('auth.createAccount', 'Create account')}
           </Link>
         </div>
+        
+          {/* Display OAuth errors from URL parameters */}
+          {errors.oauth && (
+            <div className="rounded-md bg-red-50 border border-red-200 p-4 mb-4">
+              <div className="flex items-start">
+                <div className="flex-shrink-0">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-5 w-5 text-red-600 mt-0.5">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="12" y1="8" x2="12" y2="12"></line>
+                    <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                  </svg>
+                </div>
+                <div className="ml-3">
+                  <h4 className="text-sm font-semibold text-red-900 mb-1">Authentication Error</h4>
+                  <p className="text-sm text-red-800">{errors.oauth}</p>
+                </div>
+              </div>
+            </div>
+          )}
         
           {/* Display form-level errors */}
           {errors.form && (

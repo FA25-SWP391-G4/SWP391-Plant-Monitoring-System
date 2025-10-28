@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { useTranslation } from 'react-i18next';
+import { useTheme } from '@/contexts/ThemeContext';
 import PlantHistoryChart from './PlantHistoryChart';
 
 export default function PlantCard({ plant, sensorData = {} }) {
   const { t } = useTranslation();
+  const { isDark, themeColors } = useTheme();
   const [showHistory, setShowHistory] = useState(false);
   const [activeChart, setActiveChart] = useState('moisture');
   
@@ -55,9 +57,15 @@ export default function PlantCard({ plant, sensorData = {} }) {
   const lastWateredDate = new Date(plant.lastWatered).toLocaleDateString();
   
   return (
-    <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4 flex flex-col sm:flex-row hover:shadow-md transition-shadow">
+    <div className={`rounded-xl shadow-sm border p-4 flex flex-col sm:flex-row hover:shadow-md transition-shadow ${
+      isDark
+        ? 'bg-gray-800 border-gray-700'
+        : 'bg-white border-gray-100'
+    }`}>
       {/* Plant Image */}
-      <div className="w-full sm:w-40 h-40 rounded-lg bg-gray-100 flex items-center justify-center overflow-hidden mb-4 sm:mb-0 sm:mr-6">
+      <div className={`w-full sm:w-40 h-40 rounded-lg flex items-center justify-center overflow-hidden mb-4 sm:mb-0 sm:mr-6 ${
+        isDark ? 'bg-gray-700' : 'bg-gray-100'
+      }`}>
         {plant.image ? (
           <img 
             src={plant.image} 
@@ -65,7 +73,9 @@ export default function PlantCard({ plant, sensorData = {} }) {
             className="w-full h-full object-cover" 
           />
         ) : (
-          <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" className="text-gray-300">
+          <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" className={
+            isDark ? 'text-gray-500' : 'text-gray-300'
+          }>
             <path d="M12 10a6 6 0 0 0-6-6H4v12h2a6 6 0 0 0 6-6Z"></path>
             <path d="M12 10a6 6 0 0 1 6-6h2v12h-2a6 6 0 0 1-6-6Z"></path>
             <path d="M12 22v-8.3"></path>
@@ -78,8 +88,12 @@ export default function PlantCard({ plant, sensorData = {} }) {
         {/* Plant name and status */}
         <div className="flex justify-between items-start mb-2">
           <div>
-            <h3 className="text-xl font-semibold text-gray-900">{plant.name}</h3>
-            <p className="text-sm text-gray-500">{plant.species}</p>
+            <h3 className={`text-xl font-semibold ${
+              isDark ? 'text-white' : 'text-gray-900'
+            }`}>{plant.name}</h3>
+            <p className={`text-sm ${
+              isDark ? 'text-gray-400' : 'text-gray-500'
+            }`}>{plant.species}</p>
           </div>
           <div className={`${statusInfo.bgColor} ${statusInfo.color} px-2 py-1 rounded-full flex items-center text-xs font-medium`}>
             {statusInfo.icon}
@@ -88,7 +102,9 @@ export default function PlantCard({ plant, sensorData = {} }) {
         </div>
         
         {/* Plant Location */}
-        <div className="flex items-center text-sm text-gray-500 mb-4">
+        <div className={`flex items-center text-sm mb-4 ${
+          isDark ? 'text-gray-400' : 'text-gray-500'
+        }`}>
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-1">
             <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"></path>
             <circle cx="12" cy="10" r="3"></circle>

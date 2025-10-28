@@ -1,10 +1,12 @@
 'use client'
 
 import { useAuth } from '@/providers/AuthProvider'
+import { useTheme } from '@/contexts/ThemeContext'
 import { redirect } from 'next/navigation'
 import { useEffect } from 'react'
 import MainLayout from '@/components/MainLayout'
 import Link from 'next/link'
+import Image from 'next/image'
 import { useTranslation } from 'react-i18next'
 import LanguageSwitcher from '@/components/LanguageSwitcher'
 import Head from 'next/head'
@@ -13,6 +15,7 @@ import Navbar from "@/components/Navbar";
 export default function Home() {
   const { user, loading } = useAuth();
   const { t } = useTranslation();
+  const { isDark, isLight, themeColors, getThemeColor } = useTheme();
   
   useEffect(() => {
     if (!loading && user) {
@@ -21,7 +24,17 @@ export default function Home() {
   }, [user, loading]);
 
   if (loading) {
-    return <div className="flex items-center justify-center h-screen">{t('common.loading', 'Loading...')}</div>;
+    return (
+      <div 
+        className="flex items-center justify-center h-screen transition-colors duration-300"
+        style={{ 
+          backgroundColor: themeColors.background,
+          color: themeColors.foreground 
+        }}
+      >
+        {t('common.loading', 'Loading...')}
+      </div>
+    );
   }
 
   return (
@@ -30,16 +43,27 @@ export default function Home() {
         <title>{t('home.pageTitle', 'Plant Monitoring System - Smart Plant Care')}</title>
         <meta name="description" content={t('home.metaDescription', 'Monitor and care for your plants with our smart plant monitoring system')} />
       </Head>
-      <div className="bg-gradient-to-b from-green-50 to-white min-h-screen">
+      <div 
+        className={`min-h-screen transition-colors duration-300 ${
+          isDark 
+            ? 'bg-gradient-to-b from-gray-900 to-gray-800' 
+            : 'bg-gradient-to-b from-green-50 to-white'
+        }`}
+      >
         {/* Header/Navigation */}
-        <Navbar/>
         {/* Hero Section */}
         <section className="container mx-auto px-4 py-12 md:py-20 flex flex-col md:flex-row items-center">
           <div className="md:w-1/2 mb-8 md:mb-0 md:pr-12">
-            <div className="inline-block bg-green-100 text-green-600 text-sm font-semibold py-1 px-3 rounded-full mb-4">
+            <div className={`inline-block text-sm font-semibold py-1 px-3 rounded-full mb-4 transition-colors duration-300 ${
+              isDark 
+                ? 'bg-green-900/30 text-green-400' 
+                : 'bg-green-100 text-green-600'
+            }`}>
               🌱 {t('landing.smartPlantCare')}
             </div>
-            <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+            <h1 className={`text-4xl md:text-5xl font-bold mb-4 transition-colors duration-300 ${
+              isDark ? 'text-white' : 'text-gray-900'
+            }`}>
               <span className="block">
                 {t('landing.neverKill')}
               </span>
@@ -47,24 +71,32 @@ export default function Home() {
                 {t('landing.anotherPlant')}
               </span>
             </h1>
-            <p className="text-lg text-gray-600 mb-8">
+            <p className={`text-lg mb-8 transition-colors duration-300 ${
+              isDark ? 'text-gray-300' : 'text-gray-600'
+            }`}>
               {t('landing.transformHome', 'Transform your home into a thriving garden with AI-powered plant monitoring. Get real-time alerts, automated watering, and expert care recommendations.')}
             </p>
             <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
               <Link
                 href="/register"
-                className="bg-green-500 hover:bg-green-600 text-white text-center py-3 px-6 rounded-md font-medium transition"
+                className="bg-green-500 hover:bg-green-600 text-white text-center py-3 px-6 rounded-md font-medium transition-all duration-300"
               >
                 {t('landing.freeTrialDays', 'Start Free Trial')}
               </Link>
               <Link
                 href="#demo"
-                className="border border-gray-300 hover:border-green-500 text-gray-700 hover:text-green-500 text-center py-3 px-6 rounded-md font-medium transition"
+                className={`text-center py-3 px-6 rounded-md font-medium transition-all duration-300 ${
+                  isDark 
+                    ? 'border border-gray-600 text-gray-300 hover:border-green-500 hover:text-green-400' 
+                    : 'border border-gray-300 text-gray-700 hover:border-green-500 hover:text-green-500'
+                }`}
               >
                 {t('landing.watchDemo', 'Watch Demo')}
               </Link>
             </div>
-            <div className="flex items-center mt-6 text-sm text-gray-500">
+            <div className={`flex items-center mt-6 text-sm transition-colors duration-300 ${
+              isDark ? 'text-gray-400' : 'text-gray-500'
+            }`}>
               <span className="flex items-center mr-6">
                 ✓ {t('landing.freeTrial', '14-day free trial')}
               </span>
@@ -74,24 +106,36 @@ export default function Home() {
             </div>
           </div>
           <div className="md:w-1/2">
-            <div className="bg-white p-6 rounded-xl shadow-lg">
-              <div className="bg-green-50 rounded-lg p-6">
-                <div className="flex justify-center mb-4">
-                  <img src="/leaf-icon.svg" alt={t('alt.plantIcon', 'Plant Icon')} className="h-10 w-10" />
-                </div>
-                <h2 className="text-xl font-semibold text-center text-gray-800">{t('plants.monsteraDeliciosa', 'Monstera Deliciosa')}</h2>
-                <div className="mt-6 space-y-4">
+            <div className={`relative rounded-3xl p-8 shadow-2xl transition-all duration-300 hover:scale-105 hover:shadow-2xl ${
+              isDark 
+                ? 'bg-gradient-to-br from-emerald-600 to-teal-700' 
+                : 'bg-gradient-to-br from-emerald-400 to-teal-500'
+            }`}>
+              <div className={`rounded-2xl p-6 shadow-lg animate-float backdrop-blur-md transition-colors duration-300 ${
+                isDark ? 'bg-gray-800/90' : 'bg-white'
+              }`}>
+                <div className="text-6xl mb-4 text-center">🌿</div>
+                <h3 className={`text-xl font-bold text-center mb-2 transition-colors duration-300 ${
+                  isDark ? 'text-white' : 'text-gray-900'
+                }`}>{t('plants.monsteraDeliciosa', 'Monstera Deliciosa')}</h3>
+                <div className="space-y-3">
                   <div className="flex justify-between items-center">
-                    <span className="text-gray-700">{t('sensors.moisture', 'Moisture')}</span>
-                    <span className="text-green-500 font-medium">85%</span>
+                    <span className={`transition-colors duration-300 ${
+                      isDark ? 'text-gray-300' : 'text-gray-600'
+                    }`}>{t('sensors.moisture', 'Moisture')}</span>
+                    <span className="text-emerald-600 font-semibold">85%</span>
                   </div>
                   <div className="flex justify-between items-center">
-                    <span className="text-gray-700">{t('sensors.light', 'Light')}</span>
-                    <span className="text-amber-500 font-medium">{t('status.perfect', 'Perfect')}</span>
+                    <span className={`transition-colors duration-300 ${
+                      isDark ? 'text-gray-300' : 'text-gray-600'
+                    }`}>{t('sensors.light', 'Light')}</span>
+                    <span className="text-yellow-600 font-semibold">{t('status.perfect', 'Perfect')}</span>
                   </div>
                   <div className="flex justify-between items-center">
-                    <span className="text-gray-700">{t('sensors.health', 'Health')}</span>
-                    <span className="text-green-500 font-medium">{t('status.excellent', 'Excellent')}</span>
+                    <span className={`transition-colors duration-300 ${
+                      isDark ? 'text-gray-300' : 'text-gray-600'
+                    }`}>{t('sensors.health', 'Health')}</span>
+                    <span className="text-green-600 font-semibold">{t('status.excellent', 'Excellent')}</span>
                   </div>
                 </div>
               </div>
@@ -100,64 +144,98 @@ export default function Home() {
         </section>
 
         {/* Features Section */}
-        <section className="bg-white py-16">
+        <section className={`py-16 transition-colors duration-300 ${
+          isDark ? 'bg-gray-800' : 'bg-white'
+        }`}>
           <div className="container mx-auto px-4">
             <div className="text-center mb-16">
-              <div className="inline-block bg-green-100 text-green-600 text-sm font-semibold py-1 px-3 rounded-full mb-4">
+              <div className={`inline-block text-sm font-semibold py-1 px-3 rounded-full mb-4 transition-colors duration-300 ${
+                isDark 
+                  ? 'bg-green-900/30 text-green-400' 
+                  : 'bg-green-100 text-green-600'
+              }`}>
                 ✨ {t('landing.featuredFeatures', 'Featured Features')}
               </div>
-              <h2 className="text-3xl md:text-4xl font-bold mb-4">
+              <h2 className={`text-3xl md:text-4xl font-bold mb-4 transition-colors duration-300 ${
+                isDark ? 'text-white' : 'text-gray-900'
+              }`}>
                 {t('landing.everythingYouNeed', 'Everything You Need for')}
                 <span className="block text-green-500">{t('landing.perfectPlantCare', 'Perfect Plant Care')}</span>
               </h2>
-              <p className="max-w-2xl mx-auto text-lg text-gray-600">
+              <p className={`max-w-2xl mx-auto text-lg transition-colors duration-300 ${
+                isDark ? 'text-gray-300' : 'text-gray-600'
+              }`}>
                 {t('landing.comprehensiveSystem', 'Our comprehensive smart plant management system combines cutting-edge technology with intuitive design to make plant care effortless and enjoyable.')}
               </p>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              <div className="bg-white p-8 rounded-xl shadow-sm">
-                <div className="bg-blue-100 w-16 h-16 rounded-xl flex items-center justify-center mb-6">
+              <div className={`p-8 rounded-xl shadow-sm transition-colors duration-300 ${
+                isDark ? 'bg-gray-700' : 'bg-white'
+              }`}>
+                <div className={`w-16 h-16 rounded-xl flex items-center justify-center mb-6 transition-colors duration-300 ${
+                  isDark ? 'bg-blue-900/30' : 'bg-blue-100'
+                }`}>
                   <svg className="h-8 w-8 text-blue-500" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M12,20A6,6 0 0,1 6,14C6,10 12,3.25 12,3.25C12,3.25 18,10 18,14A6,6 0 0,1 12,20Z" />
                   </svg>
                 </div>
-                <h3 className="text-xl font-semibold mb-3">{t('feature.smartWatering.title', 'Smart Watering')}</h3>
-                <p className="text-gray-600">
+                <h3 className={`text-xl font-semibold mb-3 transition-colors duration-300 ${
+                  isDark ? 'text-white' : 'text-gray-900'
+                }`}>{t('feature.smartWatering.title', 'Smart Watering')}</h3>
+                <p className={`transition-colors duration-300 ${
+                  isDark ? 'text-gray-300' : 'text-gray-600'
+                }`}>
                   {t('feature.smartWatering.description', 'Automated watering system that delivers the perfect amount of water based on soil moisture, plant type, and environmental conditions.')}
                 </p>
-                <Link href="/features" className="inline-flex items-center text-blue-500 mt-4 font-medium">
+                <Link href="/features" className="inline-flex items-center text-blue-500 mt-4 font-medium hover:text-blue-400 transition-colors duration-300">
                   {t('common.learnMore', 'Learn more')} →
                 </Link>
               </div>
 
-              <div className="bg-white p-8 rounded-xl shadow-sm">
-                <div className="bg-amber-100 w-16 h-16 rounded-xl flex items-center justify-center mb-6">
+              <div className={`p-8 rounded-xl shadow-sm transition-colors duration-300 ${
+                isDark ? 'bg-gray-700' : 'bg-white'
+              }`}>
+                <div className={`w-16 h-16 rounded-xl flex items-center justify-center mb-6 transition-colors duration-300 ${
+                  isDark ? 'bg-amber-900/30' : 'bg-amber-100'
+                }`}>
                   <svg className="h-8 w-8 text-amber-500" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M12,7A5,5 0 0,1 17,12A5,5 0 0,1 12,17A5,5 0 0,1 7,12A5,5 0 0,1 12,7M12,9A3,3 0 0,0 9,12A3,3 0 0,0 12,15A3,3 0 0,0 15,12A3,3 0 0,0 12,9Z" />
                     <path d="M12,2L14.39,5.42C13.65,5.15 12.84,5 12,5C11.16,5 10.35,5.15 9.61,5.42L12,2M3.34,7L7.5,6.65C6.9,7.16 6.36,7.78 5.94,8.5C5.5,9.24 5.25,10 5.11,10.79L3.34,7M3.36,17L5.12,13.23C5.26,14 5.53,14.78 5.95,15.5C6.37,16.24 6.91,16.86 7.5,17.37L3.36,17M20.65,7L18.88,10.79C18.74,10 18.47,9.23 18.05,8.5C17.63,7.78 17.1,7.15 16.5,6.64L20.65,7M20.64,17L16.5,17.36C17.09,16.85 17.62,16.22 18.04,15.5C18.46,14.77 18.73,14 18.87,13.21L20.64,17M12,22L9.59,18.56C10.33,18.83 11.14,19 12,19C12.82,19 13.63,18.83 14.37,18.56L12,22Z" />
                 </svg>
                 </div>
-                <h3 className="text-xl font-semibold mb-3">{t('feature.lightOptimization.title', 'Light Optimization')}</h3>
-                <p className="text-gray-600">
+                <h3 className={`text-xl font-semibold mb-3 transition-colors duration-300 ${
+                  isDark ? 'text-white' : 'text-gray-900'
+                }`}>{t('feature.lightOptimization.title', 'Light Optimization')}</h3>
+                <p className={`transition-colors duration-300 ${
+                  isDark ? 'text-gray-300' : 'text-gray-600'
+                }`}>
                   {t('feature.lightOptimization.description', 'Advanced light sensors monitor and optimize lighting conditions, ensuring your plants receive the ideal spectrum and intensity.')}
                 </p>
-                <Link href="/features" className="inline-flex items-center text-amber-500 mt-4 font-medium">
+                <Link href="/features" className="inline-flex items-center text-amber-500 mt-4 font-medium hover:text-amber-400 transition-colors duration-300">
                   {t('common.learnMore', 'Learn more')} →
                 </Link>
               </div>
 
-              <div className="bg-white p-8 rounded-xl shadow-sm">
-                <div className="bg-rose-100 w-16 h-16 rounded-xl flex items-center justify-center mb-6">
+              <div className={`p-8 rounded-xl shadow-sm transition-colors duration-300 ${
+                isDark ? 'bg-gray-700' : 'bg-white'
+              }`}>
+                <div className={`w-16 h-16 rounded-xl flex items-center justify-center mb-6 transition-colors duration-300 ${
+                  isDark ? 'bg-rose-900/30' : 'bg-rose-100'
+                }`}>
                   <svg className="h-8 w-8 text-rose-500" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M10,21H14A2,2 0 0,1 12,23A2,2 0 0,1 10,21M21,19V20H3V19L5,17V11C5,7.9 7.03,5.17 10,4.29C10,4.19 10,4.1 10,4A2,2 0 0,1 12,2A2,2 0 0,1 14,4C14,4.1 14,4.19 14,4.29C16.97,5.17 19,7.9 19,11V17L21,19M17,11A5,5 0 0,0 12,6A5,5 0 0,0 7,11V18H17V11M19.75,3.19L18.33,4.61C20.04,6.3 21,8.6 21,11H23C23,8.07 21.84,5.25 19.75,3.19M1,11H3C3,8.6 3.96,6.3 5.67,4.61L4.25,3.19C2.16,5.25 1,8.07 1,11Z" />
                   </svg>
                 </div>
-                <h3 className="text-xl font-semibold mb-3">{t('feature.healthAlerts.title', 'Health Alerts')}</h3>
-                <p className="text-gray-600">
+                <h3 className={`text-xl font-semibold mb-3 transition-colors duration-300 ${
+                  isDark ? 'text-white' : 'text-gray-900'
+                }`}>{t('feature.healthAlerts.title', 'Health Alerts')}</h3>
+                <p className={`transition-colors duration-300 ${
+                  isDark ? 'text-gray-300' : 'text-gray-600'
+                }`}>
                   {t('feature.healthAlerts.description', 'Instant notifications about plant health issues, diseases, or care requirements sent directly to your smartphone.')}
                 </p>
-                <Link href="/features" className="inline-flex items-center text-rose-500 mt-4 font-medium">
+                <Link href="/features" className="inline-flex items-center text-rose-500 mt-4 font-medium hover:text-rose-400 transition-colors duration-300">
                   {t('common.learnMore', 'Learn more')} →
                 </Link>
               </div>
@@ -166,38 +244,60 @@ export default function Home() {
         </section>
 
         {/* Testimonials Section */}
-        <section className="py-16 bg-white">
+        <section className={`py-16 transition-colors duration-300 ${
+          isDark ? 'bg-gray-800' : 'bg-white'
+        }`}>
           <div className="container mx-auto px-4">
             <div className="text-center mb-16">
-              <div className="inline-block bg-green-100 text-green-600 text-sm font-semibold py-1 px-3 rounded-full mb-4">
+              <div className={`inline-block text-sm font-semibold py-1 px-3 rounded-full mb-4 transition-colors duration-300 ${
+                isDark 
+                  ? 'bg-green-900/30 text-green-400' 
+                  : 'bg-green-100 text-green-600'
+              }`}>
                 ❤️ {t('landing.happyPlantParents', 'Happy Plant Parents')}
               </div>
-              <h2 className="text-3xl md:text-4xl font-bold mb-4">
+              <h2 className={`text-3xl md:text-4xl font-bold mb-4 transition-colors duration-300 ${
+                isDark ? 'text-white' : 'text-gray-900'
+              }`}>
                 {t('landing.lovedByThousands', 'Loved by Thousands of')}
                 <span className="block text-green-500">{t('landing.plantEnthusiasts', 'Plant Enthusiasts')}</span>
               </h2>
-              <p className="max-w-2xl mx-auto text-lg text-gray-600">
+              <p className={`max-w-2xl mx-auto text-lg transition-colors duration-300 ${
+                isDark ? 'text-gray-300' : 'text-gray-600'
+              }`}>
                 {t('landing.testimonialSubheader', 'Don\'t just take our word for it. See what our community of plant lovers has to say about their PlantSmart experience.')}
               </p>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               {/* Testimonial 1 */}
-              <div className="bg-white p-6 rounded-xl border border-gray-100 shadow-sm">
+              <div className={`p-6 rounded-xl shadow-sm transition-colors duration-300 ${
+                isDark 
+                  ? 'bg-gray-700 border border-gray-600' 
+                  : 'bg-white border border-gray-100'
+              }`}>
                 <div className="flex mb-4">
                   <div className="text-green-500 text-4xl mr-2">"</div>
                 </div>
                 <div className="flex text-amber-400 mb-3">★★★★★</div>
-                <p className="text-gray-600 mb-6">
+                <p className={`mb-6 transition-colors duration-300 ${
+                  isDark ? 'text-gray-300' : 'text-gray-600'
+                }`}>
                   {t('testimonials.testimonial1.quote', '"PlantSmart completely transformed my plant care routine. I used to kill every plant I touched, but now my apartment is a thriving jungle! The AI recommendations are incredibly accurate."')}
                 </p>
                 <div className="flex items-center">
-                  <div className="h-12 w-12 bg-green-100 rounded-full flex items-center justify-center mr-4">
+                  <div className={`h-12 w-12 rounded-full flex items-center justify-center mr-4 transition-colors duration-300 ${
+                    isDark ? 'bg-green-900/30' : 'bg-green-100'
+                  }`}>
                     <span className="text-xl">👩</span>
                   </div>
                   <div>
-                    <h4 className="font-semibold">{t('testimonials.testimonial1.name', 'Sarah Chen')}</h4>
-                    <p className="text-sm text-gray-500">{t('testimonials.testimonial1.location', 'San Francisco, CA')}</p>
+                    <h4 className={`font-semibold transition-colors duration-300 ${
+                      isDark ? 'text-white' : 'text-gray-900'
+                    }`}>{t('testimonials.testimonial1.name', 'Sarah Chen')}</h4>
+                    <p className={`text-sm transition-colors duration-300 ${
+                      isDark ? 'text-gray-400' : 'text-gray-500'
+                    }`}>{t('testimonials.testimonial1.location', 'San Francisco, CA')}</p>
                   </div>
                 </div>
                 <div className="mt-4 pt-4 border-t border-gray-100 flex items-center">
@@ -356,16 +456,9 @@ export default function Home() {
             <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
               <div>
                 <div className="flex items-center mb-4">
-                  <svg
-                    className="h-6 w-6 text-green-500"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                  >
-                    <path d="M7,17.2C5.4,16.5,4,14.9,4,12c0-3.9,3.1-7,7-7c3.9,0,7,3.1,7,7c0,2.9-2.1,5.3-4.8,6.4" />
-                    <path d="M12,22c-1.6,0-3-1.3-3-3c0-1.1,0.6-2,1.5-2.5c-0.3-0.5-0.5-1-0.5-1.6c0-1.8,1.5-3.3,3.3-3.3c1.8,0,3.3,1.5,3.3,3.3" />
-                  </svg>
+                  <div className="w-6 h-6 bg-gradient-to-br from-green-400 to-green-600 rounded-lg flex items-center justify-center">
+                    <Image src="/app-icon.png" alt="PlantSmart Logo" width={16} height={16} />
+                  </div>
                   <span className="ml-2 text-lg font-semibold">{t('common.appName', 'PlantSmart')}</span>
                 </div>
                 <p className="text-gray-400 text-sm">

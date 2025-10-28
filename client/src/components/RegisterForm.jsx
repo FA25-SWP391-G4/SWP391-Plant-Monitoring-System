@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/Card';
 import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
+import PhoneInput from '@/components/PhoneInput';
 import axios from 'axios';
 
 /**
@@ -18,6 +19,7 @@ export function RegisterForm() {
     lastName: "",
     email: "",
     phoneNumber: "",
+    countryCode: "+84",
     password: "",
     confirmPassword: "",
     newsletter: false,
@@ -45,8 +47,8 @@ export function RegisterForm() {
     
     if (source === 'google' && encodedData) {
       try {
-        // Decode the base64 encoded data from URL
-        const decodedData = Buffer.from(encodedData, 'base64').toString();
+        // Decode the base64 encoded data from URL (using atob for browser compatibility)
+        const decodedData = atob(encodedData);
         const profileData = JSON.parse(decodedData);
         console.log('Found Google profile data from URL:', profileData);
         
@@ -65,6 +67,9 @@ export function RegisterForm() {
         
         // Store in localStorage temporarily in case page is refreshed
         localStorage.setItem('googleProfileData', JSON.stringify(profileData));
+        
+        // Clear URL parameters to clean up the URL
+        window.history.replaceState({}, document.title, window.location.pathname);
       } catch (error) {
         console.error('Error parsing Google profile data from URL:', error);
       }
@@ -145,11 +150,10 @@ export function RegisterForm() {
     const apiPayload = {
       email: formData.email,
       password: formData.password || null,
-      familyName: formData.lastName,
-      givenName: formData.firstName,
       family_name: formData.lastName,  // Support both naming conventions
       given_name: formData.firstName,
-      phoneNumber: formData.phoneNumber || null,
+      phone_number: formData.phoneNumber || null,
+      country_code: formData.countryCode || '+84',
       newsletter: formData.newsletter
     };
     
@@ -360,23 +364,14 @@ export function RegisterForm() {
           <label htmlFor="phoneNumber" className="block text-sm font-medium text-gray-700 mb-2">
             {t('common.phoneNumber', 'Phone number')} <span className="text-gray-500 text-xs">({t('common.optional', 'optional')})</span>
           </label>
-          <div className="relative">
-            <div className="pointer-events-none absolute inset-y-0 left-3 flex items-center" aria-hidden="true">
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-phone h-5 w-5 text-gray-400" aria-hidden="true">
-                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
-              </svg>
-            </div>
-              <input
-                id="phoneNumber"
-                name="phoneNumber"
-                type="tel"
-                placeholder="(123) 456-7890"
-                value={formData.phoneNumber}
-                onChange={handleInputChange}
-                autoComplete="tel"
-                className="w-full rounded-lg border border-gray-200 pl-10 pr-3 py-3 text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-colors"
-              />
-          </div>
+          <PhoneInput
+            value={formData.phoneNumber}
+            onChange={(value) => setFormData({ ...formData, phoneNumber: value })}
+            countryCode={formData.countryCode}
+            onCountryChange={(code) => setFormData({ ...formData, countryCode: code })}
+            placeholder="123456789"
+            error={errors.phoneNumber}
+          />
         </div>
         
         {/* Password fields section - conditional rendering based on Google registration */}

@@ -11,12 +11,17 @@
  * - Uses WebSocket for real-time data updates
  * - Integration with sensor data collection
  * - Dashboard preferences saved to user profile
+ * 
+ * UPDATED FOR UUID MIGRATION:
+ * - user_id is now UUID format
+ * - Validates UUID parameters before database queries
  */
 
 const Plant = require('../models/Plant');
 const SensorData = require('../models/SensorData');
 const User = require('../models/User');
 const Device = require('../models/Device');
+const { isValidUUID } = require('../utils/uuidGenerator');
 
 /**
  * UC4: GET DASHBOARD DATA
@@ -26,11 +31,24 @@ const Device = require('../models/Device');
  * @route GET /api/dashboard
  * @access Private - Requires authentication
  * @returns {Object} Dashboard data with plant info and latest sensor readings
+ * 
+ * UPDATED FOR UUID MIGRATION:
+ * - user_id from JWT is now UUID
+ * - Plant queries use UUID user_id
  */
 async function getDashboardData(req, res) {
     try {
-        // Get user_id from authenticated request
+        // Get user_id from authenticated request (now UUID)
         const userId = req.user.user_id;
+
+        // Validate UUID (should already be validated by auth middleware, but double-check)
+        if (!isValidUUID(userId)) {
+            console.error('[DASHBOARD] Invalid user_id UUID:', userId);
+            return res.status(400).json({
+                success: false,
+                error: 'Invalid user ID format'
+            });
+        }
 
         // Get all plants owned by this user
         const plants = await Plant.findByUserId(userId);
@@ -84,13 +102,26 @@ async function getDashboardData(req, res) {
  * 
  * @route GET /api/dashboard/real-time/:plantId
  * @access Private - Requires authentication
- * @param {number} plantId - ID of the plant to get data for
+ * @param {string} plantId - UUID of the plant to get data for
  * @returns {Object} Real-time sensor data
+ * 
+ * UPDATED FOR UUID MIGRATION:
+ * - plantId parameter is now UUID
+ * - Validates UUID format before operations
  */
 async function getRealTimeSensorData(req, res) {
     try {
-        // Get plant ID from route params
+        // Get plant ID from route params (now UUID)
         const { plantId } = req.params;
+
+        // Validate UUID format
+        if (!isValidUUID(plantId)) {
+            console.error('[REAL-TIME DATA] Invalid plant UUID:', plantId);
+            return res.status(400).json({
+                success: false,
+                error: 'Invalid plant ID format'
+            });
+        }
 
         // Verify plant ownership
         const plant = await Plant.findById(plantId);
@@ -102,6 +133,7 @@ async function getRealTimeSensorData(req, res) {
             });
         }
 
+        // UUID comparison
         if (plant.user_id !== req.user.user_id) {
             return res.status(403).json({
                 success: false,

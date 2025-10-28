@@ -5,12 +5,8 @@
   "testMatch": [
     "<rootDir>/tests/**/*.test.js"
   ],
-  "transform": {
-    "^.+\\.[t|j]sx?$": "babel-jest"
-  },
-  "transformIgnorePatterns": [
-    "node_modules/(?!(dateformat)/)"
-  ],
+  "transform": {},
+  "transformIgnorePatterns": [],
   "collectCoverageFrom": [
     "controllers/**/*.js",
     "models/**/*.js",

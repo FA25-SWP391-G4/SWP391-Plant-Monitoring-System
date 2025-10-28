@@ -23,6 +23,7 @@
 
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
+const { isValidUUID } = require('../utils/uuidGenerator');
 
 /**
  * Middleware to verify JWT token and attach user to request
@@ -52,10 +53,22 @@ const authMiddleware = async (req, res, next) => {
         // Verify token
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
         
+        // Validate UUID format from token
+        if (!decoded.user_id || !isValidUUID(decoded.user_id)) {
+            console.error('[AUTH MIDDLEWARE] Invalid user_id UUID in token:', decoded.user_id);
+            return res.status(401).json({ 
+                success: false,
+                error: 'Invalid token format. Please log in again.' 
+            });
+        }
+        
+        console.log('[AUTH MIDDLEWARE] Validating token for user UUID:', decoded.user_id);
+        
         // Find user by ID from decoded token
         const user = await User.findById(decoded.user_id);
         
         if (!user) {
+            console.error('[AUTH MIDDLEWARE] User not found for UUID:', decoded.user_id);
             return res.status(404).json({ 
                 success: false,
                 error: 'User not found. Token may be invalid.' 
@@ -116,7 +129,7 @@ const isAdmin = (req, res, next) => {
         });
     }
     
-    if (req.user.role !== 'admin') {
+    if (req.user.role !== 'Admin') {
         return res.status(403).json({ 
             success: false,
             error: 'Admin access required' 

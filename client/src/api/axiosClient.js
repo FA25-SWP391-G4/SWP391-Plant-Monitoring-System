@@ -26,13 +26,17 @@ const axiosClient = axios.create({
 // Request interceptor for API calls
 axiosClient.interceptors.request.use(
   (config) => {
-    // Get the JWT token from cookies
-    const token = Cookies.get("token");
+    // Get the JWT token from localStorage (fallback to cookies for backward compatibility)
+    let token = null;
+    if (typeof window !== 'undefined') {
+      token = localStorage.getItem("auth_token") || Cookies.get("token");
+    }
     
     // Debug logging only in development mode
     if (isDev) {
       console.log(`[AXIOS DEBUG] Making ${config.method.toUpperCase()} request to: ${config.baseURL}${config.url}`);
       console.log(`[AXIOS DEBUG] Request headers:`, config.headers);
+      console.log(`[AXIOS DEBUG] Token found:`, token ? 'Yes' : 'No');
     }
 
     // Add explicit origin header for CORS

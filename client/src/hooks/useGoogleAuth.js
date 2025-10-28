@@ -47,6 +47,7 @@ export function useGoogleAuth() {
         login(result.data.token, result.data.user);
         
         // Redirect to dashboard or stored redirect path
+        
         const redirectUrl = localStorage.getItem('redirectAfterLogin') || '/dashboard';
         router.push(redirectUrl);
         localStorage.removeItem('redirectAfterLogin');

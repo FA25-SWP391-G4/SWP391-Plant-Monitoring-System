@@ -44,6 +44,19 @@ const AIImageRecognition = () => {
       }
       
       const response = await aiApi.analyzeImage(formData);
+      
+      // Handle authentication errors
+      if (!response.success) {
+        if (response.requiresLogin) {
+          setError('Vui lòng đăng nhập để sử dụng tính năng phân tích hình ảnh.');
+        } else if (response.requiresPremium) {
+          setError('Cần nâng cấp tài khoản Premium để sử dụng tính năng phân tích hình ảnh.');
+        } else {
+          setError(response.error || 'Không thể phân tích hình ảnh. Vui lòng thử lại sau.');
+        }
+        return;
+      }
+      
       setAnalysis(response.data);
     } catch (err) {
       console.error('Error analyzing image:', err);

@@ -42,6 +42,7 @@ const { pool } = require('../config/db');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
+const { generateUUID, isValidUUID } = require('../utils/uuidGenerator');
 
 class User {
 /**
@@ -85,7 +86,7 @@ constructor(userData) {
     this.family_name = userData.family_name || userData.familyName;
     this.given_name = userData.given_name || userData.givenName;
     this.role = userData.role || 'Regular'; // Default role for UC1
-    this.notification_prefs = userData.notification_prefs || {}; // Notification preferences
+    this.notification_prefs = userData.notification_prefs; // Notification preferences
     this.fcm_tokens = userData.fcm_tokens || []; // Firebase Cloud Messaging tokens for push notifications
     this.password_reset_token = userData.password_reset_token;
     this.password_reset_expires = userData.password_reset_expires;
@@ -203,10 +204,17 @@ async updatePasswordResetFields(token, expires) {
      * 
      * PERFORMANCE: Direct primary key lookup for optimal speed
      * SESSION MANAGEMENT: Essential for user session tracking and cleanup
+     * UUID VALIDATION: Ensures ID parameter is valid UUID format
      */
-    // Static method to find user by ID
+    // Static method to find user by ID (UUID)
     static async findById(id) {
         try {
+            // Validate UUID format
+            if (!id || !isValidUUID(id)) {
+                console.error('[USER FINDBYID] Invalid UUID format:', id);
+                return null;
+            }
+
             const query = 'SELECT * FROM Users WHERE user_id = $1';
             const result = await pool.query(query, [id]);
             
@@ -311,7 +319,7 @@ async updatePasswordResetFields(token, expires) {
                     this.family_name ,
                     this.given_name,
                     this.role,
-                    JSON.stringify(this.notification_prefs),
+                    this.notification_prefs,
                     this.password_reset_token,
                     this.password_reset_expires,
                     this.google_id,
@@ -325,6 +333,10 @@ async updatePasswordResetFields(token, expires) {
             } else {
                 // Create new user
                 console.log('[USER CREATE] Attempting to create new user:', this.email);
+
+                // Generate UUID for new user
+                const userId = generateUUID();
+                console.log('[USER CREATE] Generated UUID for new user:', userId);
 
                 // Check if email already exists
                 const existingUser = await User.findByEmail(this.email);
@@ -354,10 +366,10 @@ async updatePasswordResetFields(token, expires) {
 
                 const query = `
                     INSERT INTO Users (
-                        email, password_hash, family_name, given_name, role, 
+                        user_id, email, password_hash, family_name, given_name, role, 
                         notification_prefs, google_id, profile_picture
                     )
-                    VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+                    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
                     RETURNING *
                 `;
 
@@ -365,12 +377,13 @@ async updatePasswordResetFields(token, expires) {
 
 
                 const result = await pool.query(query, [
+                    userId,
                     this.email.toLowerCase(),
                     hashedPassword,
                     this.family_name,
                     this.given_name,
                     this.role,
-                    JSON.stringify(this.notification_prefs || {}),
+                    this.notification_prefs,
                     this.google_id,
                     this.profile_picture
                 ]);
@@ -799,6 +812,36 @@ createPasswordResetToken() {
             return new User(userData);
         } catch (error) {
             console.error('[USER ERROR] Error finding user by ID:', error.message);
+            throw error;
+        }
+    }
+
+    // Static method to upgrade user to Premium role
+    static async upgradeToPremium(userId) {
+        // Validate UUID
+        if (!isValidUUID(userId)) {
+            throw new Error('Invalid user_id UUID');
+        }
+
+        try {
+            console.log(`[USER] Upgrading user to Premium: ${userId}`);
+            
+            const query = `
+                UPDATE users 
+                SET role = 'Premium' 
+                WHERE user_id = $1 
+                RETURNING user_id, email, role
+            `;
+            const result = await pool.query(query, [userId]);
+            
+            if (result.rows.length === 0) {
+                throw new Error('User not found');
+            }
+            
+            console.log(`[USER] Successfully upgraded user to Premium:`, result.rows[0]);
+            return result.rows[0];
+        } catch (error) {
+            console.error('[USER ERROR] Error upgrading user to Premium:', error.message);
             throw error;
         }
     }

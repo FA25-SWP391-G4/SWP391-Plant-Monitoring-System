@@ -12,6 +12,7 @@ import {
   Filler
 } from 'chart.js';
 import { useTranslation } from 'react-i18next';
+import { useTheme } from '@/contexts/ThemeContext';
 
 // Register ChartJS components
 ChartJS.register(
@@ -34,6 +35,7 @@ ChartJS.register(
  */
 export default function PlantHistoryChart({ data, dataType, timeRange }) {
   const { t } = useTranslation();
+  const { isDark, themeColors } = useTheme();
   
   if (!data || data.length === 0) {
     return (

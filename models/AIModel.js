@@ -1,4 +1,5 @@
 const { pool } = require('../config/db');
+const { isValidUUID } = require('../utils/uuidGenerator');
 
 class AIModel {
     constructor(modelData) {
@@ -72,6 +73,12 @@ class AIModel {
 
     // Static method to find models by uploader
     static async findByUploader(uploaderId) {
+        // Validate UUID
+        if (!isValidUUID(uploaderId)) {
+            console.error('[AI_MODEL] Invalid uploaded_by UUID:', uploaderId);
+            return [];
+        }
+
         try {
             const query = `
                 SELECT am.*, u.full_name as uploader_name 
@@ -89,6 +96,12 @@ class AIModel {
 
     // Create or update AI model
     async save() {
+        // Validate uploaded_by UUID if provided
+        if (this.uploaded_by && !isValidUUID(this.uploaded_by)) {
+            console.error('[AI_MODEL] Invalid uploaded_by UUID in save:', this.uploaded_by);
+            throw new Error('Valid uploaded_by UUID is required');
+        }
+
         try {
             if (this.model_id) {
                 // Update existing model

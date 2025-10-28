@@ -1,4 +1,5 @@
 {
+  "locale": "en-US",
   "errors": {
     "genericError": "An error occurred. Please try again later.",
     "loginFailed": "Login failed. Please check your credentials.",
@@ -58,9 +59,14 @@
   },
   "auth": {
     "login": "Login",
-    "loginTitle": "Login to your account",
+    "loginTitle": "Welcome Back",
+    "loginDescription": "Sign in to continue your plant care journey",
+    "enterPassword": "Enter your password",
     "register": "Register",
-    "registerTitle": "Create an account",
+    "registerTitle": "Start Your Plant Care Journey",
+    "registerDescription": "Create your account and get instant access to AI-powered plant monitoring, personalized care tips, and a thriving community.",
+    "joinPlantParents": "Join 10,000+ Plant Parents",
+    "getStartedExperience": "Get started with your personalized plant care experience",
     "forgotPassword": "Forgot Password",
     "forgotPasswordTitle": "Reset your password",
     "forgotPasswordDescription": "Enter your email address and we'll send you a link to reset your password.",
@@ -82,13 +88,21 @@
     "alreadyHaveAccount": "Already have an account?",
     "dontHaveAccount": "Don't have an account?",
     "goToLogin": "Back to login",
+    "rememberPassword": "Remember your password?",
     "checkYourEmail": "Check your email",
     "checkSpamFolder": "If you don't see it, please check your spam folder.",
     "sendResetLink": "Send reset link",
     "newsletter": "Send me emails with plant care tips and updates",
+    "newsletterLabel": "Send me plant care tips, seasonal guides, and product updates",
     "acceptTerms": "I accept the",
+    "agreeToTerms": "I agree to the",
     "termsOfService": "Terms of Service",
-    "privacyPolicy": "Privacy Policy"
+    "privacyPolicy": "Privacy Policy",
+    "passwordPlaceholder": "Create a strong password",
+    "confirmPasswordPlaceholder": "Confirm your password",
+    "phoneNumberPlaceholder": "Enter your phone number",
+    "createAccount": "Create Account",
+    "creatingAccount": "Creating Account..."
   },
   "navigation": {
     "home": "Home",
@@ -113,7 +127,15 @@
     "features": "Features",
     "benefits": "Benefits",
     "pricing": "Pricing",
-    "contact": "Contact Us"
+    "contact": "Contact Us",
+    "aiAssistant": "AI Assistant",
+    "documentation": "Documentation",
+    "notifications": "Notifications",
+    "tasks": "Tasks",
+    "reporting": "Reporting",
+    "checkIns": "Check-ins",
+    "objectives": "Objectives",
+    "careerHub": "Career Hub"
   },
   "dashboard": {
     "wateringHistory": "Watering History",
@@ -145,7 +167,9 @@
     "recentActivity": "Recent Activity",
     "wateringSchedule": "Watering Schedule",
     "errorLoading": "Error Loading Dashboard",
-    "loadError": "Failed to load dashboard data. Please try again later."
+    "loadError": "Failed to load dashboard data. Please try again later.",
+    "redirecting": "Redirecting to dashboard...",
+    "weather": "Current Weather"
   },
   "plants": {
     "myPlants": "My Plants",
@@ -370,11 +394,76 @@
   },
   "ai": {
     "chatbot": {
-      "title": "Plant Assistant",
-      "placeholder": "Ask me anything about your plants...",
+      "title": "AI Plant Assistant",
+      "subtitle": "Premium Feature",
+      "placeholder": "Ask about plant care...",
       "greeting": "Hello! How can I help with your plants today?",
+      "welcomeMessage": "Hello! I'm your AI plant care assistant. How can I help you today?",
       "loading": "Thinking...",
-      "error": "Sorry, I couldn't process your request. Please try again."
+      "error": "Sorry, I couldn't process your request. Please try again.",
+      "errorMessage": "Sorry, I'm having trouble connecting. Please try again later.",
+      "send": "Send",
+      "tooltip": "AI Plant Assistant",
+      "quickQuestions": {
+        "title": "Quick Questions:",
+        "watering": "When should I water my plants?",
+        "light": "Is my plant getting enough light?",
+        "yellowing": "Why are my leaves turning yellow?",
+        "fertilizer": "When should I fertilize?"
+      }
+    },
+    "section": {
+      "title": "AI Plant Care Assistant",
+      "subtitle": "Advanced AI-powered plant care insights and recommendations",
+      "premiumRequired": {
+        "title": "Premium Feature",
+        "description": "Unlock advanced AI plant care features with Premium",
+        "upgrade": "Upgrade to Premium"
+      },
+      "tabs": {
+        "analysis": "Plant Analysis",
+        "imageRecognition": "Image Recognition",
+        "predictions": "Predictions",
+        "history": "Analysis History"
+      },
+      "analysis": {
+        "healthScore": "Overall Health",
+        "refresh": "Refresh Analysis",
+        "analyze": "Analyze Plant",
+        "details": "Detailed Analysis"
+      },
+      "imageAnalysis": {
+        "upload": "Upload Plant Image",
+        "selectImage": "Select Plant Image",
+        "changeImage": "Change Image",
+        "analyze": "Analyze",
+        "analyzing": "Analyzing...",
+        "results": "Analysis Results",
+        "healthAssessment": "Health Assessment",
+        "diseaseDetection": "Disease Detection",
+        "diseaseFound": "Disease Detected",
+        "diseaseMessage": "Potential disease detected. Please consult a plant specialist.",
+        "noDiseaseFound": "No Disease Detected",
+        "healthyMessage": "Your plant appears healthy!",
+        "recommendations": "Recommendations"
+      },
+      "predictions": {
+        "watering": "Watering Predictions",
+        "predict": "Generate Predictions",
+        "predicting": "Predicting...",
+        "nextWatering": "Next Watering",
+        "noWateringNeeded": "No watering needed in the next 7 days",
+        "weeklyForecast": "Weekly Forecast",
+        "noPredictions": "No Predictions Available",
+        "generateMessage": "Generate AI predictions for your plants"
+      },
+      "history": {
+        "title": "Analysis History",
+        "refresh": "Refresh",
+        "noHistory": "No Analysis History",
+        "noHistoryMessage": "Run some analyses to see your history here",
+        "analysisDetails": "Analysis Details"
+      }
     },
     "imageRecognition": {
       "title": "Plant Identification",
@@ -412,6 +501,7 @@
   "weather": {
     "title": "Local Weather",
     "today": "Today",
+    "tomorrow": "Tomorrow",
     "forecast": "Forecast",
     "precipitation": "Precipitation",
     "humidity": "Humidity",
@@ -422,7 +512,19 @@
     "lowTemp": "Low",
     "feels": "Feels like",
     "indoor": "Indoor",
-    "outdoor": "Outdoor"
+    "outdoor": "Outdoor",
+    "updatedAt": "Updated at",
+    "error": "Unable to fetch weather data",
+    "weekdays": {
+      "short": ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
+    },
+    "tip": {
+      "default": "Monitor soil moisture daily based on current weather conditions.",
+      "hot": "Hot day ahead. Water your plants early morning or evening to prevent evaporation.",
+      "rainy": "Rainy weather. Check indoor plants for proper drainage to prevent root rot.",
+      "dry": "Low humidity. Consider misting your tropical plants to increase humidity.",
+      "windy": "Windy conditions. Move delicate potted plants to sheltered locations."
+    }
   },
   "reviews": {
     "title": "Customer Reviews",
