@@ -102,7 +102,7 @@ export default function PlantCard({ plant, sensorData = {} }) {
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-blue-500 mr-1">
                 <path d="M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5C6 11.1 5 15 5 15a7 7 0 0 0 7 7z"></path>
               </svg>
-              <span className="font-medium">{sensorData?.moisture || 'N/A'}%</span>
+              <span className="font-medium">{sensorData?.soil_moisture ?? 'N/A'}%</span>
             </div>
           </div>
           
@@ -132,7 +132,7 @@ export default function PlantCard({ plant, sensorData = {} }) {
                 <path d="m6.34 17.66-1.41 1.41"></path>
                 <path d="m19.07 4.93-1.41 1.41"></path>
               </svg>
-              <span className="font-medium">{sensorData?.light || 'N/A'}%</span>
+              <span className="font-medium">{sensorData?.light_intensity ?? 'N/A'}lux</span>
             </div>
           </div>
         </div>

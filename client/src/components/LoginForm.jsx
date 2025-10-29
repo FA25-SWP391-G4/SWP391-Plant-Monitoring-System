@@ -21,7 +21,7 @@ const clientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;
 export function LoginForm() {
   const { t } = useTranslation();
   const [isLoading, setIsLoading] = useState(false);
-  const [isGoogleLoading, setIsGoogleLoading] = useState(false);
+  const [error, setError] = useState(null);
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -120,102 +120,53 @@ export function LoginForm() {
     }
     
     setIsLoading(true);
+    // client-side validation
+    if (!formData.email.trim() || !formData.password) {
+      setError(t('auth.loginValidation', 'Please enter both email and password'));
+      setIsLoading(false);
+      return;
+    }
 
     try {
-      console.log('[DEBUG] Attempting login with:', formData.email);
+      // backend runs on port 3010 by default in this project
+      const url = 'http://localhost:3010/auth/login';
+      const payload = { email: formData.email, password: formData.password };
+      const debug = process.env.NEXT_PUBLIC_DEBUG_LOGIN === 'true';
+      if (debug) console.debug('[Login] Request URL:', url, 'payload:', payload);
 
-      // Create request data for debugging
-      const requestData = {
-        url: `${API_URL}/auth/login`,
+      const res = await fetch(url, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        data: {
-          email: formData.email.trim(),
-          password: '[MASKED]', // Don't log actual password
-          rememberMe: formData.rememberMe
-        }
-      };
-
-      // Store request data for debugging
-      setDebugInfo(prev => ({ ...prev, requestData }));
-
-      console.log('[DEBUG] Login request data:', requestData);
-
-      // Make a real API call to the backend using axiosClient
-      const response = await axiosClient.post(`/auth/login`, {
-        email: formData.email.trim(),
-        password: formData.password,
-        rememberMe: formData.rememberMe
+        body: JSON.stringify(payload),
       });
-      
-      console.log('[DEBUG] Login successful:', response.data);
 
-      // Store response data for debugging (without sensitive info)
-      setDebugInfo(prev => ({ ...prev, responseData: {
-        status: response.status,
-        statusText: response.statusText,
-        data: response.data
-      }}));
-
-      // Extract token and user data from response
-      const { token, user } = response.data.data;
-      
-      // Add debugging for user data
-      console.log('[DEBUG] User data from auth response:', JSON.stringify(user));
-
-      // Store authentication data in context/local storage
-      login(token, user);
-
-      // Redirect to dashboard after successful login
-      const redirectUrl = localStorage.getItem('redirectAfterLogin') || '/dashboard';
-      router.push(redirectUrl);
-      
-      // Clean up localStorage
-      localStorage.removeItem('redirectAfterLogin');
-    } catch (error) {
-      console.error('[DEBUG] Login error:', error);
-
-      // Store error data for debugging
-      setDebugInfo(prev => ({ ...prev, error: {
-        name: error.name,
-        message: error.message,
-        code: error.code,
-        status: error.response?.status,
-        statusText: error.response?.statusText,
-        data: error.response?.data,
-        stack: error.stack
-      }}));
-
-      // Handle specific error cases
-      if (error.response) {
-        // The request was made and the server responded with error
-        console.error('[DEBUG] Server response error:', {
-          status: error.response.status,
-          statusText: error.response.statusText,
-          data: error.response.data
-        });
-
-        if (error.response.status === 401) {
-          setErrors({...errors, form: t('errors.invalidCredentials', 'Invalid email or password')});
-          console.warn('[DEBUG] Authentication failed: Invalid credentials');
-        } else if (error.response.status === 429) {
-          setErrors({...errors, form: t('errors.tooManyAttempts', 'Too many login attempts. Please try again later.')});
-        } else if (error.response.status === 423) {
-          setErrors({...errors, form: t('errors.accountLocked', 'Your account has been temporarily locked. Please contact support.')});
-        } else if (error.response.data && error.response.data.message) {
-          setErrors({...errors, form: error.response.data.message});
-        } else {
-          setErrors({...errors, form: t('errors.loginFailed', 'Login failed. Please try again.')});
-        }
-      } else if (error.request) {
-        // The request was made but no response received
-        console.error('[DEBUG] Network error - no response received:', error.request);
-        setErrors({...errors, form: t('errors.networkError', 'Network error. Please check your connection.')});
+      const contentType = res.headers.get('content-type') || '';
+      let data = null;
+      if (contentType.includes('application/json')) {
+        data = await res.json();
       } else {
-        // Something else happened
-        console.error('[DEBUG] Login error (other):', error.message);
-        setErrors({...errors, form: t('errors.genericError', 'An error occurred. Please try again later.')});
+        data = await res.text();
       }
+
+      if (debug) {
+        console.debug('[Login] Response status:', res.status);
+        console.debug('[Login] Response headers:', Array.from(res.headers.entries()));
+        console.debug('[Login] Response body:', data);
+      }
+
+      if (!res.ok) {
+        const message = (data && data.message) || (typeof data === 'string' && data) || 'Login failed';
+        setError(`${t('auth.loginError', 'Login failed. Please check your credentials and try again.')}` + (debug ? ` — ${message}` : ` - ${message}`));
+        console.error('[Login] server error:', message);
+        return;
+      }
+
+      // success
+      login(data.data.token, data.data.user);
+      router.push('/dashboard');
+    } catch (err) {
+      console.error('[Login] Network or unexpected error:', err);
+      setError(t('auth.loginNetworkError', 'Network error during login. Check server and try again.'));
     } finally {
       setIsLoading(false);
     }
@@ -448,6 +399,11 @@ export function LoginForm() {
         </h2>
       
       <form className="space-y-5" onSubmit={handleSubmit} noValidate>
+        {error && (
+          <div className="text-sm text-red-600 bg-red-50 border border-red-100 p-2 rounded">
+            {error}
+          </div>
+        )}
         <div>
           <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
             {t('common.email', 'Email address')}

@@ -1,11 +1,10 @@
 const express = require('express');
-const getLastestSensorData = require('../controllers/sensorController').getLastestSensorData;
+const { getLastestSensorData } = require('../controllers/sensorController');
 const db = require ('../config/db.js');
 const router = express.Router();
 
 router.get('/latest', getLastestSensorData);
 
-module.exports = router;
 
 // SELECT * FROM 'plant-system/device/+/data'
 
@@ -71,3 +70,5 @@ router.post('/upload', async (req, res) => {
         res.status(500).json({ success: false, message: error.message });
     }
 });
+
+module.exports = router;

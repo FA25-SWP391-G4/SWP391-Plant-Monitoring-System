@@ -1,40 +1,31 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 export default function RecentActivity() {
   const { t } = useTranslation();
-  
-  // Mock activity data - would come from API in a real app
-  const activities = [
-    {
-      id: 1,
-      type: 'watering',
-      plantName: 'Snake Plant',
-      timestamp: '2023-11-15T10:30:00Z',
-      details: { amount: '250ml' }
-    },
-    {
-      id: 2,
-      type: 'fertilizing',
-      plantName: 'Monstera',
-      timestamp: '2023-11-14T15:45:00Z',
-      details: { fertilizer: 'NPK 5-5-5' }
-    },
-    {
-      id: 3,
-      type: 'repotting',
-      plantName: 'Peace Lily',
-      timestamp: '2023-11-10T09:15:00Z',
-      details: { newPotSize: '15cm' }
-    },
-    {
-      id: 4,
-      type: 'pruning',
-      plantName: 'Pothos',
-      timestamp: '2023-11-08T14:20:00Z',
-      details: { notes: 'Removed yellow leaves' }
+  const [activities, setActivities] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    let mounted = true;
+    async function load() {
+      try {
+        setLoading(true);
+        const res = await fetch('/api/activity/recent?limit=10');
+        const json = await res.json();
+        if (!res.ok) throw new Error(json.message || 'Failed to load');
+        if (mounted) setActivities(json.data || []);
+      } catch (err) {
+        console.error('Failed to load activities', err);
+        if (mounted) setError(t('activity.loadError', 'Failed to load recent activity'));
+      } finally {
+        if (mounted) setLoading(false);
+      }
     }
-  ];
+    load();
+    return () => { mounted = false; };
+  }, [t]);
   
   const getActivityIcon = (type) => {
     switch(type) {
@@ -131,6 +122,20 @@ export default function RecentActivity() {
   };
   
   if (activities.length === 0) {
+    if (loading) {
+      return (
+        <div className="text-center py-4">
+          <p className="text-sm text-gray-500">{t('common.loading', 'Loading...')}</p>
+        </div>
+      );
+    }
+    if (error) {
+      return (
+        <div className="text-center py-4">
+          <p className="text-sm text-red-600">{error}</p>
+        </div>
+      );
+    }
     return (
       <div className="text-center py-4">
         <p className="text-sm text-gray-500">{t('activity.noRecent', 'No recent activity')}</p>

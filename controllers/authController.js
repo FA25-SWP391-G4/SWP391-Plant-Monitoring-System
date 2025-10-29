@@ -713,6 +713,8 @@ async function sendWelcomeEmail(user) {
  */
 async function login(req, res) {
     try {
+        // Debug: log incoming request for easier troubleshooting
+        console.debug('[authController.login] incoming request', { method: req.method, path: req.path, body: req.body });
         const { email, password } = req.body;
         console.log(`[LOGIN] Attempt for email: ${email}`);
 
@@ -727,7 +729,10 @@ async function login(req, res) {
         // Find user by email
         const user = await User.findByEmail(email);
         if (!user) {
-            console.log(`[LOGIN] User not found: ${email}`);
+            // Provide a little more debug info in non-production to help trace 404/401 causes
+            if (process.env.NODE_ENV !== 'production') {
+                console.debug('[authController.login] user not found for email:', email);
+            }
             return res.status(401).json({
                 error: 'Invalid email or password'
             });
@@ -745,6 +750,9 @@ async function login(req, res) {
         console.log(`[LOGIN] Password validation result: ${isPasswordValid}`);
 
         if (!isPasswordValid) {
+            if (process.env.NODE_ENV !== 'production') {
+                console.debug('[authController.login] invalid password for user:', user.user_id);
+            }
             return res.status(401).json({
                 error: 'Invalid email or password'
             });
