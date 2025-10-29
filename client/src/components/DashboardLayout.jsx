@@ -8,10 +8,11 @@ import { useEffect } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import { useAuth } from '../providers/AuthProvider';
 import { DashboardProvider, useDashboard } from '../contexts/DashboardContext';
+import { DashboardWidgetProvider } from '../providers/DashboardWidgetProvider';
 import DashboardSidebar from './DashboardSidebar';
 import DashboardTopBar from './DashboardTopBar';
-import Navbar from './Navbar';
-import AIChatbotBubble from './AIChatbotBubble';
+import Navbar from './navigation/Navbar';
+import AIChatbotBubble from './ai/AIChatbotBubble';
 import ThemedLoader from './ThemedLoader';
 
 // Inner component that uses the dashboard context
@@ -81,7 +82,7 @@ const DashboardLayoutInner = ({ children }) => {
   // Check if we're on a public landing page
   const isLandingPage = () => {
     const landingRoutes = ['/', '/features', '/benefits', '/pricing', '/contact'];
-    const authRoutes = ['/login', '/register', '/forgot-password'];
+    const authRoutes = ['/login', '/register', '/forgot-password', '/reset-password'];
     
     return landingRoutes.includes(pathname) || 
            authRoutes.includes(pathname) ||
@@ -157,9 +158,11 @@ const DashboardLayoutInner = ({ children }) => {
 const DashboardLayout = ({ children }) => {
   return (
     <DashboardProvider>
-      <DashboardLayoutInner>
-        {children}
-      </DashboardLayoutInner>
+      <DashboardWidgetProvider>
+        <DashboardLayoutInner>
+          {children}
+        </DashboardLayoutInner>
+      </DashboardWidgetProvider>
     </DashboardProvider>
   );
 };

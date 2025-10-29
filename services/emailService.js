@@ -58,7 +58,7 @@ const createTransporter = () => {
         console.log('[EMAIL DEBUG] Email subject:', mailOptions.subject);
         
         // Log to system log for tracking
-        await SystemLog.warn('emailService', 'sendMail', 
+        await SystemLog.warning('emailService', 'sendMail', 
           `Email sending skipped (missing credentials) - To: ${mailOptions.to}, Subject: ${mailOptions.subject}`).catch(err => {
           console.error('[SYSTEM] Failed to log email skip:', err);
         });

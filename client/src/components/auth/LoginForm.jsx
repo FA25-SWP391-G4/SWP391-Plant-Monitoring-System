@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '@/providers/AuthProvider';
+import { useTheme } from '@/contexts/ThemeContext';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/Card';
 import { Input } from '@/components/ui/Input';
@@ -22,6 +23,7 @@ const clientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;
  */
 export function LoginForm() {
   const { t } = useTranslation();
+  const { getAuthClass, presets } = useTheme();
   const [isLoading, setIsLoading] = useState(false);
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
   const [formData, setFormData] = useState({

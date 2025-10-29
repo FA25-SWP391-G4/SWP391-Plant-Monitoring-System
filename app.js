@@ -3,13 +3,6 @@
  * PLANT MONITORING SYSTEM - MAIN APPLICATION ENTRY POINT
  * ============================================================================
  * 
- * Load environment variables from .env file
- */
-
-// Load environment variables from .env file first
-require('dotenv').config();
-
-/**
  * Load environment variables validation
  * 
  * 🌱 COMPREHENSIVE USE CASE IMPLEMENTATION ROADMAP - ALL 31 USE CASES
@@ -158,7 +151,7 @@ var createError = require('http-errors');
 var express = require('express');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
-var session = require('express-session');
+const fs = require('fs');
 
 // Import AWS IoT client and connect
 const { connectAwsIoT } = require('./services/awsIOTClient');
@@ -167,101 +160,34 @@ connectAwsIoT().catch(console.error);
 //initialize MQTT client
 const mqttClient = require('./mqtt/mqttClient');
 
-// Import environment variable validation
-const validateEnvVariables = require('./config/validateEnv');
-
-// Validate environment variables before proceeding
-validateEnvVariables();
-
-// Import PostgreSQL database connection
-const { connectDB } = require('./config/db');
+// Import PostgreSQL database connection module (it initializes on require)
+require('./config/db');
 
 // Import route modules
 var indexRouter = require('./routes/index');        // Basic homepage routes
 var usersRouter = require('./routes/users');        // User management routes (basic)
 var authRouter = require('./routes/auth');          // ✅ UC11: Password reset routes (implemented)
-var googleAuthRouter = require('./routes/googleAuthRoutes'); // Google OAuth 2.0 enhanced authentication
 var paymentRouter = require('./routes/payment');    // ✅ UC19, UC22: VNPay payment integration (implemented)
-var aiRouter = require('./routes/ai');              // 🔄 UC17-18, UC20-21, UC23, UC30: AI features            // 🔄 UC32-34: IoT device management
-var sensorRouter = require('./routes/sensors');      // 🔄 Sensor data management
+var aiRouter = require('./routes/ai');              // 🔄 UC17-18, UC20-21, UC23, UC30: AI features
+var iotRouter = require('./routes/device');            // 🔄 UC32-34: IoT device management
+var activityRouter = require('./routes/activity');  // Recent activity feed
+var deviceProxyRouter = require('./routes/deviceProxy'); // Device proxy to relay requests to ESP devices
+// console.log('iotRouter type:', typeof iotRouter);
+// console.log('iotRouter keys:', Object.keys(iotRouter));
+var sensorRouter = require('./routes/sensor');      // 🔄 Sensor data management
+var plantRouter = require('./routes/plant');        // ✅ UC5-9: Plant management & watering (implemented)
+var adminRouter = require('./routes/admin');        // 🔄 UC24-31: Admin functions
+var notificationRouter = require('./routes/notifications'); // 🔄 UC10: Real-time notifications
+// var languageRouter = require('./routes/language');  // 🔄 UC31: Multi-language settings (tạm thời vô hiệu hóa)
 
 // TODO: Create additional route modules for remaining use cases:
-// var dashboardRouter = require('./routes/dashboard');  // 🔄 UC4: Plant monitoring dashboard
+var dashboardRouter = require('./routes/dashboardRoutes');  // 🔄 UC4: Plant monitoring dashboard
 // var plantRouter = require('./routes/plant');          // 🔄 UC5-9: Plant management & watering
 // var reportRouter = require('./routes/report');        // 🔄 UC8-9, UC15, UC17: Reports & history
-// var notificationRouter = require('./routes/notification'); // 🔄 UC10: Real-time notifications
 // var premiumRouter = require('./routes/premium');      // 🔄 UC14-23: Premium features
-// var adminRouter = require('./routes/admin');         // 🔄 UC24-31: Admin functions
 
 var app = express();
 
-// Connect to PostgreSQL database
-connectDB().catch(err => {
-  console.error('Failed to connect to database:', err);
-  process.exit(1);
-});
-
-// Add session middleware for CSRF protection in OAuth flow
-// Setup session store with PostgreSQL for persistent sessions
-const pgSession = require('connect-pg-simple')(session);
-// Use proper PostgreSQL config based on environment
-const { pool } = process.env.NODE_ENV === 'test' 
-  ? require('./config/postgresql') 
-  : require('./config/postgresql.prod');
-
-app.use(session({
-  store: new pgSession({
-    pool: pool,
-    tableName: 'user_sessions',
-    createTableIfMissing: true
-  }),
-  secret: process.env.SESSION_SECRET || 'plant-monitoring-secure-session',
-  name: 'plant_sid', // Custom name for the session cookie
-  resave: true, // Changed to true to ensure the session is always saved
-  saveUninitialized: true, // Changed to true to ensure new sessions are saved
-  cookie: { 
-    secure: process.env.NODE_ENV === 'production', // Only use secure cookies in production
-    httpOnly: true,
-    sameSite: 'lax', // Changed back to 'lax' to allow cookies during redirects
-    maxAge: 24 * 60 * 60 * 1000 // 24 hours for OAuth state - doesn't affect auth_token
-  }
-}));
-
-// Add CORS middleware for cross-origin requests
-app.use((req, res, next) => {
-  const origin = req.headers.origin;
-  const allowedOrigins = [
-    process.env.FRONTEND_URL || 'http://localhost:3000',
-    'https://accounts.google.com',
-    // Add any additional origins as needed
-    'http://localhost:19006', // Expo dev server
-    'http://localhost'
-  ];
-  
-  // Set Access-Control-Allow-Origin to the specific requesting origin if allowed
-  if (origin && allowedOrigins.includes(origin)) {
-    res.header('Access-Control-Allow-Origin', origin);
-    // Allow credentials only for specific origins
-    res.header('Access-Control-Allow-Credentials', 'true');
-  } else {
-    // For requests without an origin header or from non-allowed origins
-    // use wildcard (but credentials won't work with wildcard)
-    res.header('Access-Control-Allow-Origin', '*');
-    // No credentials for wildcard origin
-  }
-  
-  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization, X-Direct-Redirect');
-  res.header('Access-Control-Expose-Headers', 'X-Direct-Redirect, Location');
-  res.header('Vary', 'Origin'); // Important for CDNs to respect CORS
-  
-  // Handle preflight requests
-  if (req.method === 'OPTIONS') {
-    res.sendStatus(200);
-  } else {
-    next();
-  }
-});
 
 // view engine setup
 // app.set('views', path.join(__dirname, 'views'));
@@ -271,51 +197,51 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
+// Simple development CORS helper (kept intentionally small to avoid adding a new dependency)
+const DEFAULT_CORS_ORIGIN = process.env.CORS_ORIGIN || 'http://localhost:3000';
+
+app.use(function(req, res, next) {
+  // Allow the configured origin only
+  res.header('Access-Control-Allow-Origin', DEFAULT_CORS_ORIGIN);
+  res.header('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+  res.header('Access-Control-Allow-Credentials', 'true');
+
+  // Preflight request short-circuit
+  if (req.method === 'OPTIONS') {
+    return res.sendStatus(204);
+  }
+
+  next();
+});
 app.use(express.static(path.join(__dirname, 'public')));
 // Serve the React client build files
 app.use(express.static(path.join(__dirname, 'client/build')));
 
-// Add health check endpoint to verify server is running
-app.get('/health', (req, res) => {
-  res.status(200).json({ 
-    status: 'ok', 
-    message: 'Server is running correctly',
-    timestamp: new Date().toISOString(),
-    environment: process.env.NODE_ENV || 'development'
-  });
+// TEMPORARY: Mock authentication for testing dashboard
+app.use((req, res, next) => {
+  req.user = { user_id: 4, role: 'Regular' };  // 👈 pick a valid user_id from your DB
+  next();
 });
 
-// Add direct payment result page (fallback for testing)
-app.get('/payment/result', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'payment-result.html'));
-});
+
 
 // Mount route handlers
 app.use('/', indexRouter);                          // Basic routes
 app.use('/users', usersRouter);                     // User routes (basic)
 app.use('/auth', authRouter);                       // ✅ UC11: Authentication routes (password reset)
-app.use('/auth/google', googleAuthRouter);          // Google OAuth 2.0 enhanced routes
 app.use('/payment', paymentRouter);                 // ✅ UC19, UC22: VNPay payment integration
-app.use('/api/ai', aiRouter);                       // 🔄 UC17-18, UC20-21, UC23, UC30: AI API                   // 🔄 UC32-34: IoT API
+app.use('/api/ai', aiRouter);                       // ✅ UC17-18, UC20-21, UC23, UC30: AI API (implemented)
+app.use('/api/iot', iotRouter);                     // 🔄 UC32-34: IoT API
 app.use('/api/sensor', sensorRouter);               // 🔄 Sensor data management API
-
-// Plant management routes
-const plantRouter = require('./routes/plant');
-app.use('/api/plants', plantRouter);                // 🔄 UC5-9: Plant management API
+app.use('/api/activity', activityRouter);           // Recent activity API
+app.use('/api/device-proxy', deviceProxyRouter);    // Device provisioning proxy
 
 // TODO: Mount additional route handlers as they are implemented:
-// Mock dashboard routes - uses dynamic data for development
-var dashboardMockRouter = require('./routes/dashboardMockRoutes'); 
-var enhancedMockRouter = require('./routes/enhancedMockRoutes'); // Enhanced mock device data API
-
-app.use('/api/mock/dashboard', dashboardMockRouter);      // 🔄 UC4: Dashboard Mock API
-app.use('/api/mock/device', enhancedMockRouter);          // 🔄 Enhanced IoT device mock API
-
-// app.use('/api/dashboard', dashboardRouter);      // 🔄 UC4: Dashboard API
+app.use('/api/dashboard', dashboardRouter);      // 🔄 UC4: Dashboard API
+// app.use('/api/plant', plantRouter);              // 🔄 UC5-9: Plant management API
 // app.use('/api/report', reportRouter);            // 🔄 UC8-9, UC15, UC17: Reports API
-// app.use('/api/notification', notificationRouter); // 🔄 UC10: Notifications API
 // app.use('/api/premium', premiumRouter);          // 🔄 UC14-23: Premium features API
-// app.use('/api/admin', adminRouter);              // 🔄 UC24-31: Admin API
 
 // TODO: Add middleware for future features:
 // - Authentication middleware (JWT verification)
@@ -326,31 +252,26 @@ app.use('/api/mock/device', enhancedMockRouter);          // 🔄 Enhanced IoT d
 // - WebSocket setup for real-time features
 // - MQTT client for IoT communication
 
-// Initialize the dynamic mock service for plant data simulation
-// This will automatically initialize with user 11 and the Common Lantana plant
-console.log('Initializing dynamic plant mock service for user ID 11...');
-const dynamicPlantMock = require('./services/mocks/dynamicPlantMock');
-// Start initialization process - this will run asynchronously
-dynamicPlantMock.setupAsync().then(() => {
-  console.log('Dynamic plant mock service initialized successfully');
-  // No need to call startSimulation() again, it's already called in setupAsync()
-}).catch(error => {
-  console.error('Failed to initialize dynamic plant mock service:', error.message);
-});
-
 
 // Serve React app for client-side routing
 app.get('*', function(req, res, next) {
-  // Skip API routes and existing server routes
+  // Skip API/auth/static routes so they are handled by their routers or the 404 middleware.
+  // Calling next() allows existing route handlers (or the 404 handler) to respond.
   if (req.path.startsWith('/api/') || 
       req.path.startsWith('/auth/') || 
       req.path.startsWith('/users/') ||
       req.path.startsWith('/payment/')) {
-    return next(createError(404));
+    return next();
   }
 
-// Serve the React app for client-side routes
-  res.sendFile(path.join(__dirname, 'client/build/index.html'));
+  // Serve the React app for client-side routes when the build exists.
+  const indexPath = path.join(__dirname, 'client', 'build', 'index.html');
+  if (fs.existsSync(indexPath)) {
+    return res.sendFile(indexPath);
+  }
+
+  // If client build is not available (common in dev), return a helpful 404 instead of ENOENT.
+  return next(createError(404, 'Client build not found. In development run the React dev server (npm start in /client) or build the client with `cd client && npm run build`.'));
 });
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -366,33 +287,5 @@ app.use(function(err, req, res, next) {
   });
 });
 
-// Clean shutdown handlers for proper resource cleanup
-process.on('SIGINT', async () => {
-  console.log('Received SIGINT signal. Shutting down gracefully...');
-  try {
-    // Clean up the mock service
-    if (dynamicPlantMock && typeof dynamicPlantMock.shutdown === 'function') {
-      await dynamicPlantMock.shutdown();
-      console.log('Dynamic plant mock service shut down successfully');
-    }
-  } catch (error) {
-    console.error('Error during shutdown:', error);
-  }
-  process.exit(0);
-});
-
-process.on('SIGTERM', async () => {
-  console.log('Received SIGTERM signal. Shutting down gracefully...');
-  try {
-    // Clean up the mock service
-    if (dynamicPlantMock && typeof dynamicPlantMock.shutdown === 'function') {
-      await dynamicPlantMock.shutdown();
-      console.log('Dynamic plant mock service shut down successfully');
-    }
-  } catch (error) {
-    console.error('Error during shutdown:', error);
-  }
-  process.exit(0);
-});
 
 module.exports = app;

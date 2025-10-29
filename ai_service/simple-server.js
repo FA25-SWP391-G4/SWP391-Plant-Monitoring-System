@@ -20,8 +20,10 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 const aiAuthMiddleware = (req, res, next) => {
   try {
     const authHeader = req.headers.authorization;
+    console.log('[AI Service] Auth header:', authHeader ? 'Bearer ***' : 'None');
     
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      console.log('[AI Service] No auth header or wrong format');
       return res.status(401).json({ 
         success: false,
         error: 'Authentication required',
@@ -30,11 +32,36 @@ const aiAuthMiddleware = (req, res, next) => {
     }
     
     const token = authHeader.split(' ')[1];
-    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'plant-monitoring-secret-key');
+    // Use the same JWT_SECRET as the main backend
+    const jwtSecret = process.env.JWT_SECRET || 'cd9f94297383bffbd6b3f8d7146d1bfb';
+    console.log('[AI Service] JWT Secret being used:', jwtSecret.substring(0, 10) + '...');
+    
+    const decoded = jwt.verify(token, jwtSecret);
+    console.log('[AI Service] Token decoded successfully:', { 
+      user_id: decoded.user_id, 
+      role: decoded.role,
+      exp: new Date(decoded.exp * 1000).toISOString()
+    });
+    
+    // Check if user has premium access
+    const isPremium = decoded.role === 'Premium' || decoded.role === 'Admin' || 
+                     decoded.role === 'premium' || decoded.role === 'admin';
+    
+    if (!isPremium) {
+      console.log('[AI Service] User does not have premium access:', decoded.role);
+      return res.status(403).json({ 
+        success: false,
+        error: 'Premium subscription required for AI features',
+        code: 'PREMIUM_REQUIRED'
+      });
+    }
+    
     req.user = decoded;
     next();
     
   } catch (error) {
+    console.log('[AI Service] Auth error:', error.name, error.message);
+    
     if (error.name === 'TokenExpiredError') {
       return res.status(401).json({ 
         success: false,
@@ -65,7 +92,9 @@ const aiOptionalAuthMiddleware = (req, res, next) => {
     const authHeader = req.headers.authorization;
     if (authHeader && authHeader.startsWith('Bearer ')) {
       const token = authHeader.split(' ')[1];
-      const decoded = jwt.verify(token, process.env.JWT_SECRET || 'plant-monitoring-secret-key');
+      // Use the same JWT_SECRET as the main backend
+      const jwtSecret = process.env.JWT_SECRET || 'cd9f94297383bffbd6b3f8d7146d1bfb';
+      const decoded = jwt.verify(token, jwtSecret);
       req.user = decoded;
     }
     next();
@@ -83,20 +112,11 @@ const upload = multer({
   }
 });
 
-// Simple AI service endpoints (mock implementations for testing)
-app.post('/api/chatbot', aiAuthMiddleware, (req, res) => {
-  const { message, user_id } = req.body;
-  
-  setTimeout(() => {
-    res.json({
-      success: true,
-      response: `AI Response: I understand you said "${message}". As your plant care assistant, I can help you with watering schedules, plant health monitoring, disease identification, and general plant care tips. What would you like to know about your plants?`,
-      confidence: 0.95,
-      conversation_id: `conv_${Date.now()}`,
-      timestamp: new Date().toISOString()
-    });
-  }, 1000);
-});
+// Import the real chatbot controller
+const chatbotController = require('./controllers/chatbotController');
+
+// Real AI service endpoints using OpenRouter
+app.post('/api/chatbot', aiAuthMiddleware, chatbotController.handleMessage);
 
 app.post('/api/image-recognition', aiAuthMiddleware, upload.single('image'), (req, res) => {
   setTimeout(() => {

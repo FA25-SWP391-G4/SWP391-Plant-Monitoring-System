@@ -8,7 +8,7 @@ import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../providers/AuthProvider';
 import aiApi from '../api/aiApi';
-import { Button } from './ui/Button';
+import { Button } from '../ui/Button';
 import { Card } from './ui/Card';
 import { Input } from './ui/Input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
@@ -107,7 +107,7 @@ const PremiumAISection = () => {
       <p className="text-gray-600 mb-6">
         Unlock advanced AI plant care features with Premium
       </p>
-      <Button className="bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600">
+      <Button className="bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600 btn-transition">
         Upgrade to Premium
       </Button>
     </div>
@@ -171,6 +171,7 @@ const PremiumAISection = () => {
                   size="icon"
                   onClick={runPlantAnalysis}
                   disabled={loading}
+                  className="btn-transition"
                 >
                   <RefreshCw className={`h-4 w-4 ${loading ? 'animate-spin' : ''}`} />
                 </Button>
@@ -196,7 +197,7 @@ const PremiumAISection = () => {
                   </div>
                 </div>
               ) : (
-                <Button onClick={runPlantAnalysis} className="w-full">
+                <Button onClick={runPlantAnalysis} className="w-full btn-transition">
                   Analyze Plant
                 </Button>
               )}
@@ -253,14 +254,14 @@ const PremiumAISection = () => {
                       id="image-upload"
                     />
                     <label htmlFor="image-upload">
-                      <Button variant="outline" asChild>
+                      <Button variant="outline" asChild className="btn-transition">
                         <span>Change Image</span>
                       </Button>
                     </label>
                     <Button
                       onClick={analyzeImage}
                       disabled={loading}
-                      className="flex-1"
+                      className="flex-1 btn-transition"
                     >
                       {loading ? (
                         <>
@@ -289,7 +290,7 @@ const PremiumAISection = () => {
                     id="image-upload"
                   />
                   <label htmlFor="image-upload">
-                    <Button asChild>
+                    <Button asChild className="btn-transition">
                       <span>Select Plant Image</span>
                     </Button>
                   </label>
@@ -371,7 +372,7 @@ const PremiumAISection = () => {
               <p className="text-gray-600 mb-4">
                 AI-powered growth predictions and watering schedules will be available soon.
               </p>
-              <Button variant="outline">Generate Predictions</Button>
+              <Button variant="outline" className="btn-transition">Generate Predictions</Button>
             </div>
           </Card>
         </TabsContent>
