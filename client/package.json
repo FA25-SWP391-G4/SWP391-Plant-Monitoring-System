@@ -56,6 +56,7 @@
     "jspdf-autotable": "^3.5.28",
     "lucide-react": "^0.454.0",
     "next": "^14.2.0",
+    "next-auth": "^4.24.5",
     "next-themes": "^0.4.6",
     "qs": "^6.12.0",
     "react": "^18.2.0",
@@ -75,15 +76,16 @@
     "tailwindcss-animate": "^1.0.7",
     "vaul": "^0.9.9",
     "web-vitals": "2.1.4",
-    "xlsx": "^0.18.5",
+    "xlsx": "^0.18.13",
     "zod": "3.25.67"
   },
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "next lint",
-    "test": "jest"
+    "dev": "node -r ./env-loader.js node_modules/next/dist/bin/next dev",
+    "build": "node -r ./env-loader.js node_modules/next/dist/bin/next build",
+    "start": "node -r ./env-loader.js node_modules/next/dist/bin/next start",
+    "lint": "node -r ./env-loader.js node_modules/next/dist/bin/next lint",
+    "test": "node -r ./env-loader.js node_modules/jest/bin/jest.js",
+    "check-env": "node check-env.js"
   },
   "eslintConfig": {
     "extends": [

@@ -60,35 +60,6 @@ export default function ForgotPasswordPage() {
             <p className="text-lg text-gray-600 max-w-xl leading-relaxed">
               <span>{t('auth.forgotPasswordMessage', "We'll help you reset your password and get back to caring for your plants in no time.")}</span>
             </p>
-            
-            {/* Feature List - Hidden on Mobile */}
-            <div className="hidden lg:block mt-10">
-              <div className="bg-white/70 backdrop-blur rounded-2xl p-6 shadow-lg border border-emerald-100">
-                <ul className="space-y-4">
-                  <li className="flex items-center text-gray-700">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-circle-check h-5 w-5 text-emerald-600 mr-3" aria-hidden="true">
-                      <circle cx="12" cy="12" r="10"></circle>
-                      <path d="m9 12 2 2 4-4"></path>
-                    </svg>
-                    <span>{t('auth.simplifiedRecovery', 'Simple and secure password recovery')}</span>
-                  </li>
-                  <li className="flex items-center text-gray-700">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-circle-check h-5 w-5 text-emerald-600 mr-3" aria-hidden="true">
-                      <circle cx="12" cy="12" r="10"></circle>
-                      <path d="m9 12 2 2 4-4"></path>
-                    </svg>
-                    <span>{t('auth.quickReset', 'Quick reset process via email')}</span>
-                  </li>
-                  <li className="flex items-center text-gray-700">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-circle-check h-5 w-5 text-emerald-600 mr-3" aria-hidden="true">
-                      <circle cx="12" cy="12" r="10"></circle>
-                      <path d="m9 12 2 2 4-4"></path>
-                    </svg>
-                    <span>{t('auth.accountSecurity', 'Enhanced account security')}</span>
-                  </li>
-                </ul>
-              </div>
-            </div>
           </div>
           
           {/* Right Column - Forgot Password Form */}
