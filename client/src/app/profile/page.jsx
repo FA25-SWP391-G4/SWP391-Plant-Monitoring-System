@@ -164,7 +164,6 @@ const ProfilePage = () => {
   }
 
   return (
-    <DashboardLayout>
       <div className="container mx-auto px-4 py-8 fade-in">
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900">User Profile</h1>
@@ -399,7 +398,6 @@ const ProfilePage = () => {
         )}
       </Card>
       </div>
-    </DashboardLayout>
   );
 };
 

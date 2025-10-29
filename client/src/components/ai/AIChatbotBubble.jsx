@@ -7,10 +7,10 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useAuth } from '../providers/AuthProvider';
-import aiApi from '../api/aiApi';
-import { Button } from './ui/Button';
-import { Input } from './ui/Input';
+import { useAuth } from '../../providers/AuthProvider';
+import aiApi from '../../api/aiApi';
+import { Button } from '../ui/Button';
+import { Input } from '../ui/Input';
 import {
   MessageCircle,
   Send,
