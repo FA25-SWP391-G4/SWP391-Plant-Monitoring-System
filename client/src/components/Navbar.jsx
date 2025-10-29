@@ -1,8 +1,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import { useAuth } from "@/providers/AuthProvider";
-import { LanguageSwitcher } from './LanguageSwitcher';
-import { useTranslation } from 'react-i18next';
+import LanguageSwitcher from './LanguageSwitcher';
 
 export default function Navbar() {
   const { user, logout } = useAuth();

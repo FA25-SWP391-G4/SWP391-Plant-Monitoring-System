@@ -166,6 +166,36 @@ class Device {
         }
     }
 
+    // Static method to get device status for multiple plants
+    static async getStatusForPlants(plants) {
+        if (!plants || plants.length === 0) {
+            return {};
+        }
+
+        const deviceIds = plants.map(p => p.device_id);
+        const placeholders = deviceIds.map((_, idx) => `$${idx + 1}`).join(', ');
+        
+        const query = `
+            SELECT device_id, status, last_seen
+            FROM devices
+            WHERE device_id IN (${placeholders})
+        `;
+        try {
+            const result = await pool.query(query, deviceIds);
+            const statusMap = {};
+            result.rows.forEach(row => {
+                statusMap[row.device_id] = {
+                    status: row.status,
+                    last_seen: row.last_seen
+                };
+            });
+            return statusMap;
+        } catch (error) {
+            console.error('Error getting device status for plants:', error);
+            throw error;
+        }
+    }
+
     // Generate a unique device key (UUID)
     static generateDeviceKey() {
         return crypto.randomUUID();

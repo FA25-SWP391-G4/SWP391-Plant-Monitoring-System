@@ -21,6 +21,10 @@ export default function AuthProvider({ children }) {
   const router = useRouter();
 
   useEffect(() => {
+  console.log('[auth] current user:', user);
+}, [user]);
+
+  useEffect(() => {
     const t = Cookies.get('token');
     const u = Cookies.get('user');
     if (t && u) { 
@@ -36,8 +40,11 @@ export default function AuthProvider({ children }) {
 
   const login = (t, u) => { 
     // Set cookies with appropriate security settings
-    Cookies.set('token', t, { secure: true, sameSite: 'strict' }); 
-    Cookies.set('user', JSON.stringify(u), { secure: true, sameSite: 'strict' }); 
+    // Cookies.set('token', t, { secure: true, sameSite: 'strict' }); 
+    // Cookies.set('user', JSON.stringify(u), { secure: true, sameSite: 'strict' }); 
+
+    Cookies.set('token', t, {secure : true, sameSite: 'lax' });
+    Cookies.set('user', JSON.stringify(u), {secure : true, sameSite: 'lax' });
     setToken(t); 
     setUser(u); 
   };
