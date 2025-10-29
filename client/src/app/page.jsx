@@ -271,33 +271,21 @@ export default function Home() {
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               {/* Testimonial 1 */}
-              <div className={`p-6 rounded-xl shadow-sm transition-colors duration-300 ${
-                isDark 
-                  ? 'bg-gray-700 border border-gray-600' 
-                  : 'bg-white border border-gray-100'
-              }`}>
+              <div className="bg-white p-6 rounded-xl border border-gray-100 shadow-sm">
                 <div className="flex mb-4">
                   <div className="text-green-500 text-4xl mr-2">"</div>
                 </div>
                 <div className="flex text-amber-400 mb-3">★★★★★</div>
-                <p className={`mb-6 transition-colors duration-300 ${
-                  isDark ? 'text-gray-300' : 'text-gray-600'
-                }`}>
+                <p className="text-gray-600 mb-6">
                   {t('testimonials.testimonial1.quote', '"PlantSmart completely transformed my plant care routine. I used to kill every plant I touched, but now my apartment is a thriving jungle! The AI recommendations are incredibly accurate."')}
                 </p>
                 <div className="flex items-center">
-                  <div className={`h-12 w-12 rounded-full flex items-center justify-center mr-4 transition-colors duration-300 ${
-                    isDark ? 'bg-green-900/30' : 'bg-green-100'
-                  }`}>
+                  <div className="h-12 w-12 bg-green-100 rounded-full flex items-center justify-center mr-4">
                     <span className="text-xl">👩</span>
                   </div>
                   <div>
-                    <h4 className={`font-semibold transition-colors duration-300 ${
-                      isDark ? 'text-white' : 'text-gray-900'
-                    }`}>{t('testimonials.testimonial1.name', 'Sarah Chen')}</h4>
-                    <p className={`text-sm transition-colors duration-300 ${
-                      isDark ? 'text-gray-400' : 'text-gray-500'
-                    }`}>{t('testimonials.testimonial1.location', 'San Francisco, CA')}</p>
+                    <h4 className="font-semibold">{t('testimonials.testimonial1.name', 'Sarah Chen')}</h4>
+                    <p className="text-sm text-gray-500">{t('testimonials.testimonial1.location', 'San Francisco, CA')}</p>
                   </div>
                 </div>
                 <div className="mt-4 pt-4 border-t border-gray-100 flex items-center">
@@ -451,33 +439,33 @@ export default function Home() {
         </section>
 
         {/* Footer */}
-        <footer className="bg-gray-900 text-white py-12">
+        <footer className={`py-12 transition-colors duration-300 ${isDark ? 'bg-gray-900 text-gray-100' : 'bg-gray-50 text-gray-800'}`}>
           <div className="container mx-auto px-4">
             <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
               <div>
                 <div className="flex items-center mb-4">
-                  <div className="w-6 h-6 bg-gradient-to-br from-green-400 to-green-600 rounded-lg flex items-center justify-center">
+                  <div className="w-6 h-6 rounded-lg flex items-center justify-center" style={{ background: isDark ? 'linear-gradient(135deg,#16a34a,#059669)' : undefined }}>
                     <Image src="/app-icon.png" alt="PlantSmart Logo" width={16} height={16} />
                   </div>
                   <span className="ml-2 text-lg font-semibold">{t('common.appName', 'PlantSmart')}</span>
                 </div>
-                <p className="text-gray-400 text-sm">
+                <p className={`text-sm transition-colors duration-300 ${isDark ? 'text-gray-300' : 'text-gray-500'}`}>
                   {t('footer.tagline', 'The future of intelligent plant care. Never let your plants suffer again.')}
                 </p>
                 <div className="flex space-x-4 mt-4">
-                  <a href="#" className="text-gray-400 hover:text-white">
+                  <a href="#" className={`hover:text-current transition-colors ${isDark ? 'text-gray-400 hover:text-white' : 'text-gray-500 hover:text-gray-800'}`}>
                     <span className="sr-only">{t('accessibility.email', 'Email')}</span>
                     <svg className="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
                       <path d="M20,4H4C2.9,4 2,4.9 2,6V18C2,19.1 2.9,20 4,20H20C21.1,20 22,19.1 22,18V6C22,4.9 21.1,4 20,4M20,18H4V8L12,13L20,8V18M20,6L12,11L4,6V6H20V6Z" />
                     </svg>
                   </a>
-                  <a href="#" className="text-gray-400 hover:text-white">
+                  <a href="#" className={`hover:text-current transition-colors ${isDark ? 'text-gray-400 hover:text-white' : 'text-gray-500 hover:text-gray-800'}`}>
                     <span className="sr-only">{t('accessibility.phone', 'Phone')}</span>
                     <svg className="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
                       <path d="M6.62,10.79C8.06,13.62 10.38,15.94 13.21,17.38L15.41,15.18C15.69,14.9 16.08,14.82 16.43,14.93C17.55,15.3 18.75,15.5 20,15.5A1,1 0 0,1 21,16.5V20A1,1 0 0,1 20,21A17,17 0 0,1 3,4A1,1 0 0,1 4,3H7.5A1,1 0 0,1 8.5,4C8.5,5.25 8.7,6.45 9.07,7.57C9.18,7.92 9.1,8.31 8.82,8.59L6.62,10.79Z" />
                     </svg>
                   </a>
-                  <a href="#" className="text-gray-400 hover:text-white">
+                  <a href="#" className={`hover:text-current transition-colors ${isDark ? 'text-gray-400 hover:text-white' : 'text-gray-500 hover:text-gray-800'}`}>
                     <span className="sr-only">{t('accessibility.location', 'Location')}</span>
                     <svg className="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
                       <path d="M12,11.5A2.5,2.5 0 0,1 9.5,9A2.5,2.5 0 0,1 12,6.5A2.5,2.5 0 0,1 14.5,9A2.5,2.5 0 0,1 12,11.5M12,2A7,7 0 0,0 5,9C5,14.25 12,22 12,22C12,22 19,14.25 19,9A7,7 0 0,0 12,2Z" />
@@ -488,37 +476,37 @@ export default function Home() {
               <div>
                 <h3 className="font-semibold mb-4">{t('footer.product')}</h3>
                 <ul className="space-y-2">
-                  <li><Link href="/features" className="text-gray-400 hover:text-green-500 transition">{t('navigation.features')}</Link></li>
-                  <li><Link href="/pricing" className="text-gray-400 hover:text-green-500 transition">{t('navigation.pricing')}</Link></li>
-                  <li><Link href="/security" className="text-gray-400 hover:text-green-500 transition">{t('footer.security')}</Link></li>
-                  <li><Link href="/integrations" className="text-gray-400 hover:text-green-500 transition">{t('footer.integrations')}</Link></li>
+                  <li><Link href="/features" className={`transition-colors ${isDark ? 'text-gray-300 hover:text-green-400' : 'text-gray-600 hover:text-green-500'}`}>{t('navigation.features')}</Link></li>
+                  <li><Link href="/pricing" className={`transition-colors ${isDark ? 'text-gray-300 hover:text-green-400' : 'text-gray-600 hover:text-green-500'}`}>{t('navigation.pricing')}</Link></li>
+                  <li><Link href="/security" className={`transition-colors ${isDark ? 'text-gray-300 hover:text-green-400' : 'text-gray-600 hover:text-green-500'}`}>{t('footer.security')}</Link></li>
+                  <li><Link href="/integrations" className={`transition-colors ${isDark ? 'text-gray-300 hover:text-green-400' : 'text-gray-600 hover:text-green-500'}`}>{t('footer.integrations')}</Link></li>
                 </ul>
               </div>
               <div>
                 <h3 className="font-semibold mb-4">{t('footer.company')}</h3>
                 <ul className="space-y-2">
-                  <li><Link href="/about" className="text-gray-400 hover:text-green-500 transition">{t('footer.about')}</Link></li>
-                  <li><Link href="/blog" className="text-gray-400 hover:text-green-500 transition">{t('footer.blog')}</Link></li>
-                  <li><Link href="/careers" className="text-gray-400 hover:text-green-500 transition">{t('footer.careers')}</Link></li>
-                  <li><Link href="/contact" className="text-gray-400 hover:text-green-500 transition">{t('navigation.contact')}</Link></li>
+                  <li><Link href="/about" className={`transition-colors ${isDark ? 'text-gray-300 hover:text-green-400' : 'text-gray-600 hover:text-green-500'}`}>{t('footer.about')}</Link></li>
+                  <li><Link href="/blog" className={`transition-colors ${isDark ? 'text-gray-300 hover:text-green-400' : 'text-gray-600 hover:text-green-500'}`}>{t('footer.blog')}</Link></li>
+                  <li><Link href="/careers" className={`transition-colors ${isDark ? 'text-gray-300 hover:text-green-400' : 'text-gray-600 hover:text-green-500'}`}>{t('footer.careers')}</Link></li>
+                  <li><Link href="/contact" className={`transition-colors ${isDark ? 'text-gray-300 hover:text-green-400' : 'text-gray-600 hover:text-green-500'}`}>{t('navigation.contact')}</Link></li>
                 </ul>
               </div>
               <div>
                 <h3 className="font-semibold mb-4">{t('footer.support')}</h3>
                 <ul className="space-y-2">
-                  <li><Link href="/help-center" className="text-gray-400 hover:text-green-500 transition">{t('footer.helpCenter')}</Link></li>
-                  <li><Link href="/documentation" className="text-gray-400 hover:text-green-500 transition">{t('footer.documentation')}</Link></li>
-                  <li><Link href="/community" className="text-gray-400 hover:text-green-500 transition">{t('footer.community')}</Link></li>
-                  <li><Link href="/status" className="text-gray-400 hover:text-green-500 transition">{t('footer.status')}</Link></li>
+                  <li><Link href="/help-center" className={`transition-colors ${isDark ? 'text-gray-300 hover:text-green-400' : 'text-gray-600 hover:text-green-500'}`}>{t('footer.helpCenter')}</Link></li>
+                  <li><Link href="/documentation" className={`transition-colors ${isDark ? 'text-gray-300 hover:text-green-400' : 'text-gray-600 hover:text-green-500'}`}>{t('footer.documentation')}</Link></li>
+                  <li><Link href="/community" className={`transition-colors ${isDark ? 'text-gray-300 hover:text-green-400' : 'text-gray-600 hover:text-green-500'}`}>{t('footer.community')}</Link></li>
+                  <li><Link href="/status" className={`transition-colors ${isDark ? 'text-gray-300 hover:text-green-400' : 'text-gray-600 hover:text-green-500'}`}>{t('footer.status')}</Link></li>
                 </ul>
               </div>
             </div>
-            <div className="pt-8 border-t border-gray-800 text-sm text-gray-400 flex flex-col md:flex-row justify-between items-center">
+            <div className={`pt-8 border-t text-sm flex flex-col md:flex-row justify-between items-center transition-colors duration-300 ${isDark ? 'border-gray-800 text-gray-400' : 'border-gray-200 text-gray-600'}`}>
               <p>© {new Date().getFullYear()} {t('common.appName')}. {t('landing.allRightsReserved')}</p>
               <div className="flex space-x-6 mt-4 md:mt-0">
-                <Link href="/privacy" className="hover:text-green-500 transition">{t('footer.privacyPolicy')}</Link>
-                <Link href="/terms" className="hover:text-green-500 transition">{t('footer.termsOfService')}</Link>
-                <Link href="/cookies" className="hover:text-green-500 transition">{t('footer.cookies')}</Link>
+                <Link href="/privacy" className={`transition-colors ${isDark ? 'hover:text-green-400' : 'hover:text-green-500'}`}>{t('footer.privacyPolicy')}</Link>
+                <Link href="/terms" className={`transition-colors ${isDark ? 'hover:text-green-400' : 'hover:text-green-500'}`}>{t('footer.termsOfService')}</Link>
+                <Link href="/cookies" className={`transition-colors ${isDark ? 'hover:text-green-400' : 'hover:text-green-500'}`}>{t('footer.cookies')}</Link>
               </div>
             </div>
           </div>

@@ -3,10 +3,11 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/providers/AuthProvider';
 import { useRouter } from 'next/navigation';
+import DashboardLayout from '@/components/DashboardLayout';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/Card';
 import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
-import PhoneInput from '@/components/PhoneInput';
+import PhoneInput from '@/components/forms/PhoneInput';
 import { toast } from 'sonner';
 import { Loader2, Edit, Save, X, Lock, User as UserIcon } from 'lucide-react';
 import axios from 'axios';
@@ -163,11 +164,12 @@ const ProfilePage = () => {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900">User Profile</h1>
-        <p className="mt-2 text-gray-600">Manage your account information</p>
-      </div>
+    <DashboardLayout>
+      <div className="container mx-auto px-4 py-8 fade-in">
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold text-gray-900">User Profile</h1>
+          <p className="mt-2 text-gray-600">Manage your account information</p>
+        </div>
 
       {/* Profile Information Card */}
       <Card className="mb-6">
@@ -184,7 +186,7 @@ const ProfilePage = () => {
               {!isEditing ? (
                 <Button
                   onClick={() => setIsEditing(true)}
-                  className="flex items-center gap-2"
+                  className="flex items-center gap-2 btn-transition"
                 >
                   <Edit className="h-4 w-4" />
                   Edit Profile
@@ -194,7 +196,7 @@ const ProfilePage = () => {
                   <Button
                     onClick={handleSave}
                     disabled={isSaving}
-                    className="flex items-center gap-2"
+                    className="flex items-center gap-2 btn-transition"
                   >
                     {isSaving ? (
                       <Loader2 className="h-4 w-4 animate-spin" />
@@ -207,7 +209,7 @@ const ProfilePage = () => {
                     variant="outline"
                     onClick={handleCancel}
                     disabled={isSaving}
-                    className="flex items-center gap-2"
+                    className="flex items-center gap-2 btn-transition"
                   >
                     <X className="h-4 w-4" />
                     Cancel
@@ -324,6 +326,7 @@ const ProfilePage = () => {
                 <Button
                   variant="outline"
                   onClick={() => setIsChangingPassword(true)}
+                  className="btn-transition"
                 >
                   Change Password
                 </Button>
@@ -367,7 +370,7 @@ const ProfilePage = () => {
               <Button
                 onClick={handleChangePassword}
                 disabled={isSaving}
-                className="flex items-center gap-2"
+                className="flex items-center gap-2 btn-transition"
               >
                 {isSaving ? (
                   <Loader2 className="h-4 w-4 animate-spin" />
@@ -387,6 +390,7 @@ const ProfilePage = () => {
                   });
                 }}
                 disabled={isSaving}
+                className="btn-transition"
               >
                 Cancel
               </Button>
@@ -394,7 +398,8 @@ const ProfilePage = () => {
           </CardContent>
         )}
       </Card>
-    </div>
+      </div>
+    </DashboardLayout>
   );
 };
 

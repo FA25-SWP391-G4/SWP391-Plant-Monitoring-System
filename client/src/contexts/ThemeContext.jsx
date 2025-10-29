@@ -93,6 +93,111 @@ export const ThemeProvider = ({ children }) => {
     chart3: getThemeColor('#10b981', '#10b981'),
     chart4: getThemeColor('#f59e0b', '#f59e0b'),
     chart5: getThemeColor('#ef4444', '#ef4444'),
+    
+    // Plant-specific colors
+    plant: {
+      primary: getThemeColor('#16a34a', '#22c55e'),
+      secondary: getThemeColor('#15803d', '#16a34a'),
+      accent: getThemeColor('#dcfce7', '#14532d'),
+      light: getThemeColor('#f0fdf4', '#052e16'),
+      muted: getThemeColor('#bbf7d0', '#166534')
+    }
+  }
+  
+  // Auth form specific styling configurations
+  const authStyles = {
+    // Container styles
+    container: getThemeColor(
+      'min-h-screen bg-gray-50 flex items-center justify-center p-4',
+      'min-h-screen bg-gray-900 flex items-center justify-center p-4'
+    ),
+    
+    // Card styles
+    card: getThemeColor(
+      'w-full max-w-md bg-white shadow-lg rounded-lg border border-gray-200',
+      'w-full max-w-md bg-gray-800 shadow-xl rounded-lg border border-gray-700'
+    ),
+    
+    // Header styles
+    header: 'text-center space-y-2 p-6 pb-4',
+    title: getThemeColor(
+      'text-2xl font-bold text-gray-900',
+      'text-2xl font-bold text-white'
+    ),
+    description: getThemeColor(
+      'text-sm text-gray-600',
+      'text-sm text-gray-400'
+    ),
+    
+    // Form styles
+    form: 'space-y-4 p-6 pt-0',
+    field: 'space-y-2',
+    label: getThemeColor(
+      'block text-sm font-medium text-gray-700',
+      'block text-sm font-medium text-gray-300'
+    ),
+    
+    // Input styles
+    input: {
+      base: getThemeColor(
+        'w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm bg-white text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500',
+        'w-full px-3 py-2 border border-gray-600 rounded-md shadow-sm bg-gray-700 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-green-400'
+      ),
+      error: getThemeColor(
+        'border-red-300 focus:ring-red-500 focus:border-red-500',
+        'border-red-500 focus:ring-red-400 focus:border-red-400'
+      )
+    },
+    
+    // Button styles
+    button: {
+      primary: getThemeColor(
+        'w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500',
+        'w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-400'
+      ),
+      secondary: getThemeColor(
+        'w-full flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500',
+        'w-full flex justify-center py-2 px-4 border border-gray-600 rounded-md shadow-sm text-sm font-medium text-gray-300 bg-gray-700 hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-400'
+      )
+    },
+    
+    // Link styles
+    link: getThemeColor(
+      'text-green-600 hover:text-green-500 hover:underline transition-colors duration-200',
+      'text-green-400 hover:text-green-300 hover:underline transition-colors duration-200'
+    ),
+    
+    // Error styles
+    error: getThemeColor(
+      'text-red-600 text-sm',
+      'text-red-400 text-sm'
+    ),
+    
+    // Helper text styles
+    helper: getThemeColor(
+      'text-gray-500 text-sm',
+      'text-gray-400 text-sm'
+    ),
+    
+    // Divider styles
+    divider: {
+      container: 'relative flex items-center justify-center my-6',
+      line: getThemeColor(
+        'absolute inset-0 flex items-center border-t border-gray-300',
+        'absolute inset-0 flex items-center border-t border-gray-600'
+      ),
+      text: getThemeColor(
+        'relative bg-white px-4 text-sm text-gray-500',
+        'relative bg-gray-800 px-4 text-sm text-gray-400'
+      )
+    },
+    
+    // Footer styles
+    footer: 'p-6 pt-0 text-center',
+    footerText: getThemeColor(
+      'text-sm text-gray-600',
+      'text-sm text-gray-400'
+    )
   }
 
   // Sidebar specific theme colors
@@ -104,6 +209,23 @@ export const ThemeProvider = ({ children }) => {
     accentForeground: getThemeColor('#0f172a', '#f8fafc'),
     hover: getThemeColor('#e2e8f0', '#334155'),
     muted: getThemeColor('#64748b', '#64748b'),
+  }
+
+  // Utility functions for component styling
+  const getAuthClass = (element, variant = 'base') => {
+    if (!mounted) return '' // Return empty string on server to prevent mismatch
+    
+    const elementStyles = authStyles[element]
+    if (typeof elementStyles === 'string') return elementStyles
+    if (typeof elementStyles === 'object' && elementStyles[variant]) {
+      return elementStyles[variant]
+    }
+    return ''
+  }
+  
+  const getPlantClass = (shade = 'primary') => {
+    if (!mounted) return themeColors.plant.primary
+    return themeColors.plant[shade] || themeColors.plant.primary
   }
 
   const value = {
@@ -130,6 +252,22 @@ export const ThemeProvider = ({ children }) => {
     getThemeColor,
     themeColors,
     sidebarTheme,
+    authStyles,
+    
+    // Helper functions
+    getAuthClass,
+    getPlantClass,
+    
+    // Pre-built class combinations for common use cases
+    presets: {
+      authCard: getAuthClass('card'),
+      authButton: getAuthClass('button', 'primary') + ' btn-transition',
+      authInput: getAuthClass('input', 'base'),
+      authLabel: getAuthClass('label'),
+      authError: getAuthClass('error'),
+      authHelper: getAuthClass('helper'),
+      authLink: getAuthClass('link')
+    }
   }
 
   return (

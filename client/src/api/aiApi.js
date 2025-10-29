@@ -1,21 +1,31 @@
 import axiosClient from './axiosClient';
+import Cookies from 'js-cookie';
 
 // Helper function to get auth token
 const getAuthToken = () => {
-  const token = localStorage.getItem('token');
+  const token = Cookies.get('token');
   return token ? `Bearer ${token}` : null;
 };
 
 // Helper function to check user access level
 const checkUserAccess = () => {
-  const token = localStorage.getItem('token');
+  const token = Cookies.get('token');
   if (!token) return { hasAccess: false, requiresLogin: true };
   
   try {
     // Decode JWT to check user role (basic decode without verification)
     const payload = JSON.parse(atob(token.split('.')[1]));
-    const isAdmin = payload.role === 'admin';
-    const isPremium = payload.isPremium === true || payload.role === 'admin';
+    
+    // Check for admin role (multiple possible formats)
+    const isAdmin = payload.role === 'admin' || payload.role === 'Admin';
+    
+    // Check for premium access (multiple ways to determine premium status)
+    const isPremium = payload.isPremium === true || 
+                     payload.role === 'premium' || 
+                     payload.role === 'Premium' || 
+                     payload.role === 'admin' || 
+                     payload.role === 'Admin' ||
+                     payload.subscriptionStatus === 'active';
     
     return { 
       hasAccess: isPremium || isAdmin, 
@@ -25,13 +35,41 @@ const checkUserAccess = () => {
       requiresPremium: !isPremium && !isAdmin
     };
   } catch (error) {
+    console.error('Error decoding token:', error);
     return { hasAccess: false, requiresLogin: true };
   }
 };
 
 // Helper function to handle auth errors
 const handleAuthError = (error) => {
+  console.log('AI API Error:', error.response?.status, error.response?.data);
+  
   if (error.response?.status === 401) {
+    const errorData = error.response.data;
+    
+    // Handle specific token errors
+    if (errorData?.code === 'TOKEN_EXPIRED') {
+      // Clear the expired token
+      Cookies.remove('token');
+      return {
+        success: false,
+        error: 'Your session has expired. Please log in again.',
+        requiresLogin: true,
+        code: 'TOKEN_EXPIRED'
+      };
+    }
+    
+    if (errorData?.code === 'INVALID_TOKEN') {
+      // Clear the invalid token
+      Cookies.remove('token');
+      return {
+        success: false,
+        error: 'Invalid authentication. Please log in again.',
+        requiresLogin: true,
+        code: 'INVALID_TOKEN'
+      };
+    }
+    
     return {
       success: false,
       error: 'Please log in to use AI features',
@@ -39,6 +77,7 @@ const handleAuthError = (error) => {
       code: 'AUTH_REQUIRED'
     };
   }
+  
   if (error.response?.status === 403) {
     return {
       success: false,
@@ -47,6 +86,7 @@ const handleAuthError = (error) => {
       code: 'PREMIUM_REQUIRED'
     };
   }
+  
   if (error.response?.status === 503) {
     return {
       success: false,
@@ -54,6 +94,7 @@ const handleAuthError = (error) => {
       code: 'SERVICE_UNAVAILABLE'
     };
   }
+  
   return {
     success: false,
     error: error.response?.data?.error || 'An unexpected error occurred',
@@ -81,7 +122,11 @@ const aiApi = {
     try {
       const access = checkUserAccess();
       
+      // Debug logging for authentication issues
+      console.log('AI API - checkUserAccess result:', access);
+      
       if (access.requiresLogin) {
+        console.log('AI API - Login required');
         return {
           success: false,
           error: 'Please log in to use the AI chatbot',
@@ -91,6 +136,7 @@ const aiApi = {
       }
       
       if (access.requiresPremium) {
+        console.log('AI API - Premium required');
         return {
           success: false,
           error: 'Premium subscription or admin access required for AI chatbot',
@@ -101,7 +147,7 @@ const aiApi = {
       
       const authToken = getAuthToken();
       
-      const response = await axiosClient.post('/ai/chatbot', data, {
+      const response = await axiosClient.post('/api/ai/chatbot', data, {
         headers: {
           'Authorization': authToken
         }

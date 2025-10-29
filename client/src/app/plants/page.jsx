@@ -214,7 +214,6 @@ export default function PlantsPage() {
   }
 
   return (
-    <AppLayout>
       <div className="flex flex-col flex-1 p-4 lg:p-8">
         {/* Header and Add Plant Button */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6">
@@ -285,8 +284,6 @@ export default function PlantsPage() {
             </div>
           )}
         </div>
-      </div>
-      
       {/* Add Plant Modal */}
       {showAddModal && (
         <AddPlantModal 
@@ -295,6 +292,6 @@ export default function PlantsPage() {
           isPremium={isPremium}
         />
       )}
-    </AppLayout>
+    </div>
   );
 }

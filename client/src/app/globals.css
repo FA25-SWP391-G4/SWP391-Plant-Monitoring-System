@@ -3,6 +3,7 @@
 @tailwind utilities;
 
 @import "flag-icons/css/flag-icons.min.css";
+@import "../styles/transitions.css";
  
 @layer base {
   :root {

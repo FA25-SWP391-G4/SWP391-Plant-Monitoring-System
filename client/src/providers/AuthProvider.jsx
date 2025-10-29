@@ -47,10 +47,16 @@ export default function AuthProvider({ children }) {
           setToken(cookieToken); // Store token for future requests
           setUser(data.user);
         } else {
-          // Clear state and cookie if unauthorized
+          console.log('Auth check failed:', response.status, response.statusText);
+          // Clear state and cookie if unauthorized or token expired
           setToken(null);
           setUser(null);
           Cookies.remove('token');
+          
+          // If it's a 401, redirect to login
+          if (response.status === 401) {
+            console.log('Token expired or invalid, clearing auth state');
+          }
         }
       } catch (error) {
         console.error('Error checking authentication:', error);
