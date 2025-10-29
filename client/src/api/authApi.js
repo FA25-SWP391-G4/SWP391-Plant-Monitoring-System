@@ -3,12 +3,15 @@ import axiosClient from "./axiosClient";
 
 const authApi = {
   // User Registration
-  register: (email, password, confirmPassword, full_name) =>
+  register: (email, password, confirmPassword, given_name, family_name, phoneNumber, newsletter) =>
     axiosClient.post("/auth/register", { 
       email, 
       password, 
-      confirmPassword, 
-      full_name 
+      confirmPassword,
+      given_name,
+      family_name,
+      phoneNumber,
+      newsletter
     }),
 
   // User Login
@@ -34,6 +37,22 @@ const authApi = {
   // Reset Password
   resetPassword: (token, newPassword) =>
     axiosClient.post("/auth/reset-password", { token, newPassword }),
+
+  // Get Current User Profile
+  getCurrentUser: () =>
+    axiosClient.get("/auth/me"),
+
+  // Update User Profile
+  updateProfile: (profileData) =>
+    axiosClient.put("/auth/profile", profileData),
+
+  // Verify Email
+  verifyEmail: (token) =>
+    axiosClient.get(`/auth/verify-email/${token}`),
+
+  // Resend Verification Email
+  resendVerification: () =>
+    axiosClient.post("/auth/resend-verification"),
 };
 
 export default authApi;

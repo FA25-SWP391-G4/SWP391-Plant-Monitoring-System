@@ -1,9 +1,10 @@
 const { pool } = require('../config/db');
+const { isValidUUID } = require('../utils/uuidGenerator');
 
 class SensorData {
     constructor(sensorData) {
         this.data_id = sensorData.data_id;
-        this.device_id = sensorData.device_id;
+        this.device_key = sensorData.device_key;  // UUID foreign key
         this.timestamp = sensorData.timestamp;
         this.soil_moisture = sensorData.soil_moisture;
         this.temperature = sensorData.temperature;
@@ -16,8 +17,13 @@ class SensorData {
         try {
             const query = `
                 SELECT sd.*, d.device_name, d.user_id 
+<<<<<<< HEAD
                 FROM sensors_data sd
                 LEFT JOIN devices d ON sd.device_id = d.device_id
+=======
+                FROM Sensors_Data sd
+                LEFT JOIN Devices d ON sd.device_key = d.device_key
+>>>>>>> 1d1e2513b9e8ac5f36f74d326d2a76f901e82987
                 ORDER BY sd.timestamp DESC 
                 LIMIT $1
             `;
@@ -33,8 +39,13 @@ class SensorData {
         try {
             const query = `
                 SELECT sd.*, d.device_name, d.user_id 
+<<<<<<< HEAD
                 FROM sensors_data sd
                 LEFT JOIN devices d ON sd.device_id = d.device_id
+=======
+                FROM Sensors_Data sd
+                LEFT JOIN Devices d ON sd.device_key = d.device_key
+>>>>>>> 1d1e2513b9e8ac5f36f74d326d2a76f901e82987
                 WHERE sd.data_id = $1
             `;
             const result = await pool.query(query, [id]);
@@ -49,31 +60,60 @@ class SensorData {
         }
     }
 
-    // Static method to find sensor data by device ID
-    static async findByDeviceId(deviceId, limit = 100) {
+    // Static method to find sensor data by device key (UUID)
+    static async findByDeviceKey(deviceKey, limit = 100) {
         try {
+            // Validate UUID format
+            if (!deviceKey || !isValidUUID(deviceKey)) {
+                console.error('[SENSOR_DATA] Invalid device_key UUID:', deviceKey);
+                return [];
+            }
+
             const query = `
                 SELECT sd.*, d.device_name, d.user_id 
+<<<<<<< HEAD
                 FROM sensors_data sd
                 LEFT JOIN devices d ON sd.device_id = d.device_id
                 WHERE sd.device_id = $1
+=======
+                FROM Sensors_Data sd
+                LEFT JOIN Devices d ON sd.device_key = d.device_key
+                WHERE sd.device_key = $1
+>>>>>>> 1d1e2513b9e8ac5f36f74d326d2a76f901e82987
                 ORDER BY sd.timestamp DESC 
                 LIMIT $2
             `;
-            const result = await pool.query(query, [deviceId, limit]);
+            const result = await pool.query(query, [deviceKey, limit]);
             return result.rows.map(row => new SensorData(row));
         } catch (error) {
             throw error;
         }
     }
 
-    // Static method to find sensor data by user ID
+    // Backward compatibility: findByDeviceId redirects to findByDeviceKey
+    static async findByDeviceId(deviceId, limit = 100) {
+        console.warn('[SENSOR_DATA] findByDeviceId is deprecated, use findByDeviceKey instead');
+        return SensorData.findByDeviceKey(deviceId, limit);
+    }
+
+    // Static method to find sensor data by user ID (UUID)
     static async findByUserId(userId, limit = 100) {
         try {
+            // Validate UUID format
+            if (!userId || !isValidUUID(userId)) {
+                console.error('[SENSOR_DATA] Invalid user_id UUID:', userId);
+                return [];
+            }
+
             const query = `
                 SELECT sd.*, d.device_name, d.user_id 
+<<<<<<< HEAD
                 FROM sensors_data sd
                 INNER JOIN devices d ON sd.device_id = d.device_id
+=======
+                FROM Sensors_Data sd
+                INNER JOIN Devices d ON sd.device_key = d.device_key
+>>>>>>> 1d1e2513b9e8ac5f36f74d326d2a76f901e82987
                 WHERE d.user_id = $1
                 ORDER BY sd.timestamp DESC 
                 LIMIT $2
@@ -124,18 +164,30 @@ class SensorData {
 
 
     // Static method to find sensor data within date range
-    static async findByDateRange(deviceId, startDate, endDate) {
+    static async findByDateRange(deviceKey, startDate, endDate) {
         try {
+            // Validate UUID format
+            if (!deviceKey || !isValidUUID(deviceKey)) {
+                console.error('[SENSOR_DATA] Invalid device_key UUID:', deviceKey);
+                return [];
+            }
+
             const query = `
                 SELECT sd.*, d.device_name, d.user_id 
+<<<<<<< HEAD
                 FROM sensors_data sd
                 LEFT JOIN devices d ON sd.device_id = d.device_id
                 WHERE sd.device_id = $1 
+=======
+                FROM Sensors_Data sd
+                LEFT JOIN Devices d ON sd.device_key = d.device_key
+                WHERE sd.device_key = $1 
+>>>>>>> 1d1e2513b9e8ac5f36f74d326d2a76f901e82987
                 AND sd.timestamp >= $2 
                 AND sd.timestamp <= $3
                 ORDER BY sd.timestamp DESC
             `;
-            const result = await pool.query(query, [deviceId, startDate, endDate]);
+            const result = await pool.query(query, [deviceKey, startDate, endDate]);
             return result.rows.map(row => new SensorData(row));
         } catch (error) {
             throw error;
@@ -166,43 +218,71 @@ class SensorData {
     }
 
     // Static method to get average values for a device within time period
-    static async getAveragesByDeviceId(deviceId, hours = 24) {
+    static async getAveragesByDeviceKey(deviceKey, hours = 24) {
+        // Validate UUID
+        if (!isValidUUID(deviceKey)) {
+            console.error('[SENSOR_DATA] Invalid device_key UUID in getAveragesByDeviceKey:', deviceKey);
+            return null;
+        }
+
         try {
             const query = `
                 SELECT 
-                    device_id,
+                    device_key,
                     AVG(soil_moisture) as avg_soil_moisture,
                     AVG(temperature) as avg_temperature,
                     AVG(air_humidity) as avg_air_humidity,
                     AVG(light_intensity) as avg_light_intensity,
                     COUNT(*) as data_points
+<<<<<<< HEAD
                 FROM sensors_data
                 WHERE device_id = $1 
+=======
+                FROM Sensors_Data 
+                WHERE device_key = $1 
+>>>>>>> 1d1e2513b9e8ac5f36f74d326d2a76f901e82987
                 AND timestamp >= NOW() - INTERVAL '${hours} hours'
-                GROUP BY device_id
+                GROUP BY device_key
             `;
-            const result = await pool.query(query, [deviceId]);
+            const result = await pool.query(query, [deviceKey]);
             return result.rows[0] || null;
         } catch (error) {
             throw error;
         }
     }
 
+    // Deprecated - Use getAveragesByDeviceKey instead
+    static async getAveragesByDeviceId(deviceId, hours = 24) {
+        console.warn('[SENSOR_DATA] getAveragesByDeviceId is deprecated. Use getAveragesByDeviceKey instead.');
+        return this.getAveragesByDeviceKey(deviceId, hours);
+    }
+
     // Create sensor data entry
     async save() {
+        // Validate device_key UUID
+        if (!isValidUUID(this.device_key)) {
+            console.error('[SENSOR_DATA] Invalid device_key UUID in save:', this.device_key);
+            throw new Error('Valid device_key UUID is required');
+        }
+
         try {
             if (this.data_id) {
                 // Update existing data (rarely needed for sensor data)
                 const query = `
+<<<<<<< HEAD
                     UPDATE sensors_data
                     SET device_id = $1, timestamp = $2, soil_moisture = $3, 
+=======
+                    UPDATE Sensors_Data 
+                    SET device_key = $1, timestamp = $2, soil_moisture = $3, 
+>>>>>>> 1d1e2513b9e8ac5f36f74d326d2a76f901e82987
                         temperature = $4, air_humidity = $5, light_intensity = $6
                     WHERE data_id = $7
                     RETURNING *
                 `;
                 
                 const result = await pool.query(query, [
-                    this.device_id,
+                    this.device_key,
                     this.timestamp || new Date(),
                     this.soil_moisture,
                     this.temperature,
@@ -217,14 +297,18 @@ class SensorData {
             } else {
                 // Create new sensor data
                 const query = `
+<<<<<<< HEAD
                     INSERT INTO sensors_data (device_id, timestamp, soil_moisture, 
+=======
+                    INSERT INTO Sensors_Data (device_key, timestamp, soil_moisture, 
+>>>>>>> 1d1e2513b9e8ac5f36f74d326d2a76f901e82987
                                             temperature, air_humidity, light_intensity)
                     VALUES ($1, $2, $3, $4, $5, $6)
                     RETURNING *
                 `;
                 
                 const result = await pool.query(query, [
-                    this.device_id,
+                    this.device_key,
                     this.timestamp || new Date(),
                     this.soil_moisture,
                     this.temperature,
@@ -242,10 +326,16 @@ class SensorData {
     }
 
     // Static method to create sensor data from IoT device
-    static async createFromDevice(deviceId, sensorReadings) {
+    static async createFromDevice(deviceKey, sensorReadings) {
+        // Validate UUID
+        if (!isValidUUID(deviceKey)) {
+            console.error('[SENSOR_DATA] Invalid device_key UUID in createFromDevice:', deviceKey);
+            throw new Error('Valid device_key UUID is required');
+        }
+
         try {
             const sensorData = new SensorData({
-                device_id: deviceId,
+                device_key: deviceKey,
                 timestamp: new Date(),
                 soil_moisture: sensorReadings.soil_moisture,
                 temperature: sensorReadings.temperature,

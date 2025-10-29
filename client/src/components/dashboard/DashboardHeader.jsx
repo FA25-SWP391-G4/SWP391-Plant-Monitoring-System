@@ -1,10 +1,12 @@
 import React from 'react';
 import Link from 'next/link';
 import { useTranslation } from 'react-i18next';
+import { useTheme } from '@/contexts/ThemeContext';
 import LanguageSwitcher from '@/components/LanguageSwitcher';
 
 export default function DashboardHeader({ user }) {
   const { t } = useTranslation();
+  const { isDark, themeColors } = useTheme();
   
   return (
     <header className="bg-white shadow-sm border-b border-gray-200">

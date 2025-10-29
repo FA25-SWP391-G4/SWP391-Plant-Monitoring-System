@@ -10,6 +10,7 @@ const axios = require('axios');
 const { body, param } = require('express-validator');
 const aiController = require('../controllers/aiController');
 const auth = require('../middlewares/authMiddleware');
+const { isPremium } = require('../middlewares/premiumMiddleware');
 const authenticate = auth;
 const isAdmin = auth.isAdmin;
 const multer = require('multer');
@@ -52,13 +53,24 @@ const upload = multer({
   }
 });
 const fs = require('fs');
+const FormData = require('form-data');
 
 // AI Service URL from environment or default to localhost in development
-const AI_SERVICE_URL = process.env.AI_SERVICE_URL;
+const AI_SERVICE_URL = process.env.AI_SERVICE_URL || 'http://localhost:3001';
+
+// Helper function to forward authentication headers
+const forwardAuthHeaders = (req) => {
+  const headers = {};
+  if (req.headers.authorization) {
+    headers.authorization = req.headers.authorization;
+  }
+  return headers;
+};
 
 console.log("AI Controller keys:", Object.keys(aiController));
 /**
  * @route POST /api/ai/watering-prediction
+<<<<<<< HEAD
  * @desc Predict watering needs using TensorFlow.js model
  * @access Private
  */
@@ -79,20 +91,81 @@ router.post('/watering-prediction',
   ],
   aiController.predictWatering
 );
+=======
+ * @desc Predict watering needs using AI (maps to irrigation endpoint)
+ * @access Private
+ */
+router.post('/watering-prediction', authenticate, async (req, res) => {
+  try {
+    const response = await axios.post(`${AI_SERVICE_URL}/api/irrigation`, req.body, {
+      timeout: 30000,
+      headers: {
+        'Content-Type': 'application/json',
+        ...forwardAuthHeaders(req)
+      }
+    });
+    res.json(response.data);
+  } catch (error) {
+    console.error('Error calling AI service for irrigation prediction:', error);
+    res.status(500).json({ 
+      success: false,
+      error: 'Failed to get irrigation prediction', 
+      message: 'AI service unavailable',
+      details: error.response?.data || error.message 
+    });
+  }
+});
+>>>>>>> 1d1e2513b9e8ac5f36f74d326d2a76f901e82987
 
 /**
  * @route POST /api/ai/plant-analysis
  * @desc Analyze plant condition using AI
  * @access Private
  */
-router.post('/plant-analysis', authenticate, async (req, res) => {
+router.post('/plant-analysis', authenticate, upload.single('image'), async (req, res) => {
   try {
-    const response = await axios.post(`${AI_SERVICE_URL}/plant-analysis`, req.body);
+    const formData = new FormData();
+    
+    // Add image file if present
+    if (req.file) {
+      formData.append('image', fs.createReadStream(req.file.path));
+    }
+    
+    // Add other form fields
+    Object.keys(req.body).forEach(key => {
+      formData.append(key, req.body[key]);
+    });
+    
+    const response = await axios.post(`${AI_SERVICE_URL}/api/image-recognition`, formData, {
+      timeout: 30000,
+      headers: {
+        ...formData.getHeaders(),
+        ...forwardAuthHeaders(req)
+      }
+    });
+    
+    // Clean up temporary file
+    if (req.file) {
+      fs.unlink(req.file.path, (err) => {
+        if (err) console.error('Error deleting temp file:', err);
+      });
+    }
+    
     res.json(response.data);
   } catch (error) {
     console.error('Error calling AI service for plant analysis:', error);
+    
+    // Clean up temporary file on error
+    if (req.file) {
+      fs.unlink(req.file.path, (err) => {
+        if (err) console.error('Error deleting temp file:', err);
+      });
+    }
+    
     res.status(500).json({ 
+      success: false,
       error: 'Failed to analyze plant condition', 
+      message: 'AI service unavailable',
       details: error.response?.data || error.message 
     });
   }
@@ -100,17 +173,25 @@ router.post('/plant-analysis', authenticate, async (req, res) => {
 
 /**
  * @route POST /api/ai/watering-schedule
- * @desc Optimize watering schedule using AI
+ * @desc Optimize watering schedule using AI (maps to irrigation-schedule endpoint)
  * @access Private
  */
 router.post('/watering-schedule', authenticate, async (req, res) => {
   try {
-    const response = await axios.post(`${AI_SERVICE_URL}/watering-schedule`, req.body);
+    const response = await axios.post(`${AI_SERVICE_URL}/api/irrigation-schedule`, req.body, {
+      timeout: 30000,
+      headers: {
+        'Content-Type': 'application/json',
+        ...forwardAuthHeaders(req)
+      }
+    });
     res.json(response.data);
   } catch (error) {
-    console.error('Error calling AI service for watering schedule:', error);
+    console.error('Error calling AI service for irrigation schedule:', error);
     res.status(500).json({ 
-      error: 'Failed to optimize watering schedule', 
+      success: false,
+      error: 'Failed to optimize irrigation schedule', 
+      message: 'AI service unavailable',
       details: error.response?.data || error.message 
     });
   }
@@ -123,12 +204,20 @@ router.post('/watering-schedule', authenticate, async (req, res) => {
  */
 router.post('/historical-analysis', authenticate, async (req, res) => {
   try {
-    const response = await axios.post(`${AI_SERVICE_URL}/historical-analysis`, req.body);
+    const response = await axios.post(`${AI_SERVICE_URL}/api/historical-analysis`, req.body, {
+      timeout: 30000,
+      headers: {
+        'Content-Type': 'application/json',
+        ...forwardAuthHeaders(req)
+      }
+    });
     res.json(response.data);
   } catch (error) {
     console.error('Error calling AI service for historical analysis:', error);
     res.status(500).json({ 
+      success: false,
       error: 'Failed to analyze historical data', 
+      message: 'AI service unavailable',
       details: error.response?.data || error.message 
     });
   }
@@ -136,6 +225,7 @@ router.post('/historical-analysis', authenticate, async (req, res) => {
 
 /**
  * @route POST /api/ai/image-recognition
+<<<<<<< HEAD
  * @desc Enhanced plant image analysis with disease recognition using TensorFlow.js
  * @access Private
  */
@@ -144,6 +234,33 @@ router.post('/image-recognition',
     // Rate limiting for image uploads
     require('../middlewares/rateLimitMiddleware').imageUploadLimiter,
     require('../middlewares/rateLimitMiddleware').imageUploadSpeedLimiter,
+=======
+ * @desc Analyze plant image using AI
+ * @access Private (Premium)
+ */
+router.post('/image-recognition', authenticate, isPremium, upload.single('image'), async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ error: 'No image file provided' });
+    }
+
+    // Read the file as base64
+    const imageBuffer = fs.readFileSync(req.file.path);
+    const base64Image = imageBuffer.toString('base64');
+
+    // Send to AI service
+    const response = await axios.post(`${AI_SERVICE_URL}/image-recognition`, {
+      image: base64Image,
+      plant_type: req.body.plant_type || 'unknown'
+    });
+
+    // Delete the temporary file
+    fs.unlinkSync(req.file.path);
+
+    res.json(response.data);
+  } catch (error) {
+    console.error('Error calling AI service for image recognition:', error);
+>>>>>>> 1d1e2513b9e8ac5f36f74d326d2a76f901e82987
     
     // Authentication
     authenticate,
@@ -161,8 +278,102 @@ router.post('/image-recognition',
   aiController.processImageRecognition
 );
 
+// ==================== TEST ROUTES (NO AUTH) ====================
+/**
+ * @route POST /api/ai/test/chatbot
+ * @desc Test AI chatbot without authentication
+ * @access Public (TEST ONLY)
+ */
+router.post('/test/chatbot', async (req, res) => {
+  try {
+    console.log('🧪 Testing AI chatbot:', req.body);
+    const response = await axios.post(`${AI_SERVICE_URL}/api/chatbot`, req.body, {
+      timeout: 30000,
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
+    res.json({
+      success: true,
+      test: true,
+      data: response.data
+    });
+  } catch (error) {
+    console.error('❌ Error testing AI chatbot:', error.message);
+    res.status(500).json({ 
+      success: false,
+      test: true,
+      error: 'Failed to test chatbot', 
+      message: 'AI service unavailable',
+      details: error.response?.data || error.message 
+    });
+  }
+});
+
+/**
+ * @route POST /api/ai/test/plant-analysis
+ * @desc Test AI plant analysis without authentication
+ * @access Public (TEST ONLY)
+ */
+router.post('/test/plant-analysis', async (req, res) => {
+  try {
+    console.log('🧪 Testing AI plant analysis:', req.body);
+    const response = await axios.post(`${AI_SERVICE_URL}/api/image-recognition`, req.body, {
+      timeout: 30000,
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
+    res.json({
+      success: true,
+      test: true,
+      data: response.data
+    });
+  } catch (error) {
+    console.error('❌ Error testing AI plant analysis:', error.message);
+    res.status(500).json({ 
+      success: false,
+      test: true,
+      error: 'Failed to test plant analysis', 
+      message: 'AI service unavailable',
+      details: error.response?.data || error.message 
+    });
+  }
+});
+
+/**
+ * @route GET /api/ai/test/status
+ * @desc Test AI service status
+ * @access Public (TEST ONLY)
+ */
+router.get('/test/status', async (req, res) => {
+  try {
+    console.log('🧪 Testing AI service status');
+    const response = await axios.get(`${AI_SERVICE_URL}/health`, {
+      timeout: 10000
+    });
+    res.json({
+      success: true,
+      test: true,
+      aiService: response.data,
+      connection: 'OK'
+    });
+  } catch (error) {
+    console.error('❌ Error testing AI service status:', error.message);
+    res.status(500).json({ 
+      success: false,
+      test: true,
+      error: 'AI service unavailable', 
+      details: error.message 
+    });
+  }
+});
+
+// ==================== AUTHENTICATED ROUTES ====================
+
 /**
  * @route POST /api/ai/chatbot
+<<<<<<< HEAD
  * @desc Interact with AI chatbot via AI microservice
  * @access Private
  */
@@ -195,6 +406,29 @@ router.post('/chatbot',
         error: error.response?.data?.message || error.message 
       });
     }
+=======
+ * @desc Interact with AI chatbot
+ * @access Private (Premium)
+ */
+router.post('/chatbot', authenticate, isPremium, async (req, res) => {
+  try {
+    const response = await axios.post(`${AI_SERVICE_URL}/api/chatbot`, req.body, {
+      timeout: 30000,
+      headers: {
+        'Content-Type': 'application/json',
+        ...forwardAuthHeaders(req)
+      }
+    });
+    res.json(response.data);
+  } catch (error) {
+    console.error('Error calling AI service for chatbot:', error);
+    res.status(500).json({ 
+      success: false,
+      error: 'Failed to get chatbot response', 
+      message: 'AI service unavailable',
+      details: error.response?.data || error.message 
+    });
+>>>>>>> 1d1e2513b9e8ac5f36f74d326d2a76f901e82987
   }
 );
 
@@ -278,6 +512,7 @@ router.post('/models/:id/test',
 );
 
 /**
+<<<<<<< HEAD
  * AI Performance and Optimization Routes
  */
 
@@ -298,6 +533,54 @@ router.post('/performance/clear-cache',
         body('type').optional().isIn(['all', 'responses', 'models', 'predictions']).withMessage('Invalid cache type')
     ], 
     aiController.clearAICache
+=======
+ * @route POST /api/ai/analyze-health
+ * @desc Analyze plant health from image
+ * @access Private (Premium)
+ */
+router.post('/analyze-health', 
+  authenticate, 
+  isPremium,
+  upload.single('image'), 
+  aiController.analyzeHealth
+);
+
+/**
+ * @route POST /api/ai/identify-plant
+ * @desc Identify plant species from image
+ * @access Private (Premium)
+ */
+router.post('/identify-plant', 
+  authenticate, 
+  isPremium,
+  upload.single('image'), 
+  aiController.identifyPlant
+);
+
+/**
+ * @route GET /api/ai/analysis-history/:plantId
+ * @desc Get analysis history for a plant
+ * @access Private
+ */
+router.get('/analysis-history/:plantId',
+  [
+    authenticate,
+    param('plantId').isNumeric().withMessage('Invalid plant ID')
+  ],
+  aiController.getAnalysisHistory
+);
+
+/**
+ * @route POST /api/ai/detect-disease
+ * @desc Detect disease from plant image
+ * @access Private (Premium)
+ */
+router.post('/detect-disease',
+  authenticate,
+  isPremium,
+  upload.single('image'),
+  aiController.detectDisease
+>>>>>>> 1d1e2513b9e8ac5f36f74d326d2a76f901e82987
 );
 
 module.exports = router;

@@ -1,4 +1,5 @@
 const { pool } = require('../config/db');
+const { isValidUUID } = require('../utils/uuidGenerator');
 
 class Alert {
     constructor(alertData) {
@@ -53,6 +54,12 @@ class Alert {
 
     // Static method to find alerts by user ID
     static async findByUserId(userId, limit = 50) {
+        // Validate UUID
+        if (!isValidUUID(userId)) {
+            console.error('[ALERT] Invalid user_id UUID:', userId);
+            return [];
+        }
+
         try {
             const query = `
                 SELECT a.*, u.full_name as user_name 
@@ -89,6 +96,12 @@ class Alert {
 
     // Static method to find unread alerts by user ID
     static async findUnreadByUserId(userId) {
+        // Validate UUID
+        if (!isValidUUID(userId)) {
+            console.error('[ALERT] Invalid user_id UUID:', userId);
+            return [];
+        }
+
         try {
             const query = `
                 SELECT a.*, u.full_name as user_name 
@@ -106,6 +119,12 @@ class Alert {
 
     // Static method to get unread count for a user
     static async getUnreadCountByUserId(userId) {
+        // Validate UUID
+        if (!isValidUUID(userId)) {
+            console.error('[ALERT] Invalid user_id UUID:', userId);
+            return 0;
+        }
+
         try {
             const query = `
                 SELECT COUNT(*) as unread_count 
@@ -121,6 +140,12 @@ class Alert {
 
     // Create or update alert
     async save() {
+        // Validate user_id UUID
+        if (!isValidUUID(this.user_id)) {
+            console.error('[ALERT] Invalid user_id UUID in save:', this.user_id);
+            throw new Error('Valid user_id UUID is required');
+        }
+
         try {
             if (this.alert_id) {
                 // Update existing alert
@@ -234,6 +259,12 @@ class Alert {
 
     // Static method to create alert
     static async createAlert(userId, message) {
+        // Validate UUID
+        if (!isValidUUID(userId)) {
+            console.error('[ALERT] Invalid user_id UUID in createAlert:', userId);
+            throw new Error('Valid user_id UUID is required');
+        }
+
         try {
             const alert = new Alert({
                 user_id: userId,
@@ -249,6 +280,12 @@ class Alert {
     
     // Enhanced static method to create alert with more details
     static async create(alertData) {
+        // Validate UUID
+        if (!isValidUUID(alertData.user_id)) {
+            console.error('[ALERT] Invalid user_id UUID in create:', alertData.user_id);
+            throw new Error('Valid user_id UUID is required');
+        }
+
         try {
             const alert = new Alert({
                 user_id: alertData.user_id,
@@ -267,6 +304,12 @@ class Alert {
 
     // Static method to mark all alerts as read for a user
     static async markAllAsReadByUserId(userId) {
+        // Validate UUID
+        if (!isValidUUID(userId)) {
+            console.error('[ALERT] Invalid user_id UUID in markAllAsReadByUserId:', userId);
+            return 0;
+        }
+
         try {
             const query = `
                 UPDATE Alerts 

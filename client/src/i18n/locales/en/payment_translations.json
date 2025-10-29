@@ -1,0 +1,18 @@
+{
+  "payment": {
+    "selectPaymentMethod": "Please select your payment method:",
+    "vnpayQR": "Pay with QR Code",
+    "vnbank": "ATM Card - Domestic Bank Account",
+    "intcard": "International Payment Card",
+    "processing": "Processing...",
+    "confirmPayment": "Confirm Payment",
+    "payMonthly": "Pay 20,000₫ for Monthly Plan",
+    "payAnnual": "Pay 200,000₫ for Annual Plan",
+    "payLifetime": "Pay 399,000₫ for Lifetime Plan",
+    "paymentSuccess": "Payment Successful",
+    "paymentFailed": "Payment Failed",
+    "authError": "You must be logged in to make a payment. Please log in and try again.",
+    "createPaymentError": "Failed to create payment. Please try again.",
+    "genericError": "An error occurred. Please try again later."
+  }
+}

@@ -1,13 +1,93 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useTheme } from '@/contexts/ThemeContext';
 import axios from 'axios';
+import ThemedLoader from '../ThemedLoader';
 
 export default function WeatherWidget() {
   const { t } = useTranslation();
+  const { isDark, themeColors } = useTheme();
   const [weatherData, setWeatherData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [lastUpdated, setLastUpdated] = useState(null);
   
+  // Get current locale for date formatting
+  const getCurrentLocale = () => {
+    const language = t('locale', 'en-US');
+    // Map supported languages to proper locale codes
+    const localeMap = {
+      'en': 'en-US',
+      'ja': 'ja-JP', 
+      'zh': 'zh-CN',
+      'kr': 'ko-KR',
+      'vi': 'vi-VN',
+      'fr': 'fr-FR'
+    };
+    
+    const currentLang = language.split('-')[0];
+    return localeMap[currentLang] || 'en-US';
+  };
+
+  // Get time format based on locale (12-hour for en/fr, 24-hour for others)
+  const getTimeFormat = () => {
+    const language = t('locale', 'en-US');
+    const currentLang = language.split('-')[0];
+    
+    // 12-hour format for English and French
+    const use12HourFormat = ['en', 'fr'].includes(currentLang);
+    return use12HourFormat;
+  };
+
+  // Get localized weekday names
+  const getLocalizedWeekday = (date, isToday = false, isTomorrow = false) => {
+    if (isToday) {
+      return t('weather.today', 'Today');
+    }
+    if (isTomorrow) {
+      return t('weather.tomorrow', 'Tomorrow');
+    }
+    
+    const currentLang = t('locale', 'en-US').split('-')[0];
+    const locale = getCurrentLocale();
+    const dayIndex = new Date(date).getDay();
+    
+    // For languages supported by API (en, ja, zh), use browser's localization
+    const apiSupportedLanguages = ['en', 'ja', 'zh'];
+    if (apiSupportedLanguages.includes(currentLang)) {
+      return new Date(date).toLocaleDateString(locale, { weekday: 'short' });
+    }
+    
+    // For other languages, use direct translation key access
+    const weekdayTranslations = {
+      kr: ['일', '월', '화', '수', '목', '금', '토'],
+      vi: ['CN', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7'],
+      fr: ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam']
+    };
+    
+    if (weekdayTranslations[currentLang]) {
+      return weekdayTranslations[currentLang][dayIndex];
+    }
+    
+    // Try to get from translation file as fallback
+    try {
+      const weekdays = t('weather.weekdays.short', { returnObjects: true });
+      console.log('Translation file weekdays:', weekdays);
+      if (Array.isArray(weekdays) && weekdays[dayIndex]) {
+        const result = weekdays[dayIndex];
+        console.log('Using translation file result:', result);
+        return result;
+      }
+    } catch (error) {
+      console.warn('Failed to get localized weekdays from translation:', error);
+    }
+    
+    // Final fallback to English
+    const fallback = new Date(date).toLocaleDateString('en-US', { weekday: 'short' });
+    console.log('Using fallback result:', fallback);
+    return fallback;
+  };
+
   useEffect(() => {
     const fetchWeather = async () => {
       try {
@@ -47,9 +127,7 @@ export default function WeatherWidget() {
             humidity: currentWeather.rh,
             wind: Math.round(currentWeather.wind_spd * 3.6), // Convert m/s to km/h
             forecast: forecastResponse.data.data.map((day, index) => ({
-              day: index === 0 ? 'Today' : 
-                   index === 1 ? 'Tomorrow' : 
-                   new Date(day.valid_date).toLocaleDateString('en-US', { weekday: 'short' }),
+              day: getLocalizedWeekday(day.valid_date, index === 0, index === 1),
               high: Math.round(day.max_temp),
               low: Math.round(day.min_temp),
               condition: mapWeatherCode(day.weather.code)
@@ -57,6 +135,7 @@ export default function WeatherWidget() {
           };
           
           setWeatherData(mappedData);
+          setLastUpdated(new Date());
         } else {
           throw new Error('Invalid data format from weather API');
         }
@@ -68,17 +147,22 @@ export default function WeatherWidget() {
         setLoading(false);
         
         // Fallback to default weather data if API fails
+        const today = new Date();
+        const tomorrow = new Date(today.getTime() + 24 * 60 * 60 * 1000);
+        const dayAfter = new Date(today.getTime() + 2 * 24 * 60 * 60 * 1000);
+        
         setWeatherData({
           temperature: 22,
           condition: 'partly-cloudy',
           humidity: 65,
           wind: 8,
           forecast: [
-            { day: 'Today', high: 22, low: 15, condition: 'partly-cloudy' },
-            { day: 'Tomorrow', high: 24, low: 16, condition: 'sunny' },
-            { day: 'Wed', high: 20, low: 14, condition: 'rainy' }
+            { day: getLocalizedWeekday(today, true, false), high: 22, low: 15, condition: 'partly-cloudy' },
+            { day: getLocalizedWeekday(tomorrow, false, true), high: 24, low: 16, condition: 'sunny' },
+            { day: getLocalizedWeekday(dayAfter, false, false), high: 20, low: 14, condition: 'rainy' }
           ]
         });
+        setLastUpdated(new Date());
       }
     };
     
@@ -88,7 +172,7 @@ export default function WeatherWidget() {
     const intervalId = setInterval(fetchWeather, 30 * 60 * 1000);
     
     return () => clearInterval(intervalId);
-  }, []);
+  }, [t]); // Re-fetch when language changes
   
   // Map Weatherbit weather codes to our simplified condition categories
   const mapWeatherCode = (code) => {
@@ -171,50 +255,86 @@ export default function WeatherWidget() {
 
   if (loading) {
     return (
-      <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden p-5">
-        <h3 className="font-medium text-gray-900 mb-4">{t('dashboard.weather', 'Local Weather')}</h3>
-        <div className="flex justify-center items-center h-40">
-          <div className="animate-pulse flex space-x-4">
-            <div className="rounded-full bg-slate-200 h-10 w-10"></div>
-            <div className="flex-1 space-y-6 py-1">
-              <div className="h-2 bg-slate-200 rounded"></div>
-              <div className="space-y-3">
-                <div className="grid grid-cols-3 gap-4">
-                  <div className="h-2 bg-slate-200 rounded col-span-2"></div>
-                  <div className="h-2 bg-slate-200 rounded col-span-1"></div>
-                </div>
-                <div className="h-2 bg-slate-200 rounded"></div>
-              </div>
-            </div>
-          </div>
+      <div className={`rounded-xl shadow-sm border overflow-hidden p-5 h-40 ${
+        isDark 
+          ? 'bg-gray-800 border-gray-700' 
+          : 'bg-white border-gray-100'
+      }`}>
+        <div className="flex items-center justify-between mb-4">
+          <h3 className={`font-medium ${
+            isDark ? 'text-white' : 'text-gray-900'
+          }`}>{t('dashboard.weather', 'Local Weather')}</h3>
         </div>
+        <ThemedLoader 
+          size="lg" 
+          showText={true} 
+          text={t('weather.loading', 'Loading weather data...')}
+          className="h-32"
+        />
       </div>
     );
   }
 
   if (error && !weatherData) {
     return (
-      <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden p-5">
-        <h3 className="font-medium text-gray-900 mb-4">{t('dashboard.weather', 'Local Weather')}</h3>
-        <div className="p-4 text-center text-red-500">
+      <div className={`rounded-xl shadow-sm border overflow-hidden p-5 ${
+        isDark 
+          ? 'bg-gray-800 border-gray-700' 
+          : 'bg-white border-gray-100'
+      }`}>
+        <div className="flex items-center justify-between mb-4">
+          <h3 className={`font-medium ${
+            isDark ? 'text-white' : 'text-gray-900'
+          }`}>{t('dashboard.weather', 'Local Weather')}</h3>
+        </div>
+        <div className="p-4 text-center text-red-500 dark:text-red-400">
           <p>{t('weather.error', 'Unable to fetch weather data')}</p>
-          <p className="text-sm text-gray-500 mt-2">{error}</p>
+          <p className={`text-sm mt-2 ${
+            isDark ? 'text-gray-400' : 'text-gray-500'
+          }`}>{error}</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+    <div className={`rounded-xl shadow-sm border overflow-hidden ${
+      isDark 
+        ? 'bg-gray-800 border-gray-700' 
+        : 'bg-white border-gray-100'
+    }`}>
       {/* Current weather */}
-      <div className="p-5 border-b border-gray-100">
-        <h3 className="font-medium text-gray-900 mb-4">{t('dashboard.weather', 'Local Weather')}</h3>
+      <div className={`p-5 border-b ${
+        isDark ? 'border-gray-700' : 'border-gray-100'
+      }`}>
+        <div className="flex items-center justify-between mb-4">
+          <h3 className={`font-medium ${
+            isDark ? 'text-white' : 'text-gray-900'
+          }`}>{t('dashboard.weather', 'Local Weather')}</h3>
+          {lastUpdated && (
+            <span className={`text-xs ${
+              isDark ? 'text-gray-400' : 'text-gray-500'
+            }`}>
+              {t('weather.updatedAt', 'Updated at')} {lastUpdated.toLocaleTimeString(getCurrentLocale(), { 
+                hour: '2-digit', 
+                minute: '2-digit',
+                hour12: getTimeFormat()
+              })}
+            </span>
+          )}
+        </div>
         
         <div className="flex items-center">
           <div className="flex-1">
-            <div className="text-3xl font-semibold text-gray-900">{weatherData.temperature}°C</div>
-            <div className="text-sm text-gray-500">{t('weather.humidity', 'Humidity')}: {weatherData.humidity}%</div>
-            <div className="text-sm text-gray-500">{t('weather.wind', 'Wind')}: {weatherData.wind} km/h</div>
+            <div className={`text-3xl font-semibold ${
+              isDark ? 'text-white' : 'text-gray-900'
+            }`}>{weatherData.temperature}°C</div>
+            <div className={`text-sm ${
+              isDark ? 'text-gray-400' : 'text-gray-500'
+            }`}>{t('weather.humidity', 'Humidity')}: {weatherData.humidity}%</div>
+            <div className={`text-sm ${
+              isDark ? 'text-gray-400' : 'text-gray-500'
+            }`}>{t('weather.wind', 'Wind')}: {weatherData.wind} km/h</div>
           </div>
           
           <div className="w-16 h-16 flex items-center justify-center">
@@ -224,25 +344,41 @@ export default function WeatherWidget() {
       </div>
       
       {/* 3-day forecast */}
-      <div className="grid grid-cols-3 divide-x divide-gray-100">
+      <div className={`grid grid-cols-3 divide-x ${
+        isDark ? 'divide-gray-700' : 'divide-gray-100'
+      }`}>
         {weatherData.forecast.map((day, index) => (
           <div key={index} className="p-3 text-center">
-            <div className="text-sm font-medium">{day.day}</div>
+            <div className={`text-sm font-medium ${
+              isDark ? 'text-gray-200' : 'text-gray-900'
+            }`}>{day.day}</div>
             <div className="my-2 flex justify-center">
               {getWeatherIcon(day.condition)}
             </div>
             <div className="text-xs">
-              <span className="font-medium">{day.high}°</span>
-              <span className="text-gray-500 mx-1">/</span>
-              <span className="text-gray-500">{day.low}°</span>
+              <span className={`font-medium ${
+                isDark ? 'text-gray-200' : 'text-gray-900'
+              }`}>{day.high}°</span>
+              <span className={`mx-1 ${
+                isDark ? 'text-gray-400' : 'text-gray-500'
+              }`}>/</span>
+              <span className={`${
+                isDark ? 'text-gray-400' : 'text-gray-500'
+              }`}>{day.low}°</span>
             </div>
           </div>
         ))}
       </div>
       
       {/* Plant tip based on weather */}
-      <div className="bg-emerald-50 p-3 text-sm text-emerald-800 flex items-start">
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-emerald-700 mr-2 flex-shrink-0 mt-0.5">
+      <div className={`p-3 text-sm flex items-start ${
+        isDark 
+          ? 'bg-emerald-900/30 text-emerald-200' 
+          : 'bg-emerald-50 text-emerald-800'
+      }`}>
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={`mr-2 flex-shrink-0 mt-0.5 ${
+          isDark ? 'text-emerald-300' : 'text-emerald-700'
+        }`}>
           <circle cx="12" cy="12" r="9"></circle>
           <line x1="12" y1="8" x2="12" y2="12"></line>
           <line x1="12" y1="16" x2="12.01" y2="16"></line>
