@@ -7,8 +7,8 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useRouter } from 'next/navigation';
-import { Card } from './ui/Card';
-import { Button } from './ui/Button';
+import { Card } from '../ui/Card';
+import { Button } from '../ui/Button';
 import {
   Bot,
   Camera,
@@ -153,10 +153,10 @@ const AIFunctionsGrid = ({ isPremium = false }) => {
             <Bot className="h-8 w-8 text-white" />
           </div>
         </div>
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">
+        <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
           {t('ai.functions.title', 'AI Plant Care Functions')}
         </h1>
-        <p className="text-gray-600 max-w-2xl mx-auto">
+        <p className="text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
           {t('ai.functions.subtitle', 'Discover powerful AI-driven features to optimize your plant care routine. Click on any function to get started.')}
         </p>
       </div>

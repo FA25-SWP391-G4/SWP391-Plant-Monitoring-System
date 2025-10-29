@@ -177,11 +177,11 @@ var deviceProxyRouter = require('./routes/deviceProxy'); // Device proxy to rela
 var sensorRouter = require('./routes/sensor');      // 🔄 Sensor data management
 var plantRouter = require('./routes/plant');        // ✅ UC5-9: Plant management & watering (implemented)
 var adminRouter = require('./routes/admin');        // 🔄 UC24-31: Admin functions
-var notificationRouter = require('./routes/notifications'); // 🔄 UC10: Real-time notifications
+//var notificationRouter = require('./routes/notifications'); // 🔄 UC10: Real-time notifications
 // var languageRouter = require('./routes/language');  // 🔄 UC31: Multi-language settings (tạm thời vô hiệu hóa)
 
 // TODO: Create additional route modules for remaining use cases:
-var dashboardRouter = require('./routes/dashboardRoutes');  // 🔄 UC4: Plant monitoring dashboard
+//var dashboardRouter = require('./routes/dashboardRoutes');  // 🔄 UC4: Plant monitoring dashboard
 // var plantRouter = require('./routes/plant');          // 🔄 UC5-9: Plant management & watering
 // var reportRouter = require('./routes/report');        // 🔄 UC8-9, UC15, UC17: Reports & history
 // var premiumRouter = require('./routes/premium');      // 🔄 UC14-23: Premium features
@@ -238,7 +238,7 @@ app.use('/api/activity', activityRouter);           // Recent activity API
 app.use('/api/device-proxy', deviceProxyRouter);    // Device provisioning proxy
 
 // TODO: Mount additional route handlers as they are implemented:
-app.use('/api/dashboard', dashboardRouter);      // 🔄 UC4: Dashboard API
+//app.use('/api/dashboard', dashboardRouter);      // 🔄 UC4: Dashboard API
 // app.use('/api/plant', plantRouter);              // 🔄 UC5-9: Plant management API
 // app.use('/api/report', reportRouter);            // 🔄 UC8-9, UC15, UC17: Reports API
 // app.use('/api/premium', premiumRouter);          // 🔄 UC14-23: Premium features API

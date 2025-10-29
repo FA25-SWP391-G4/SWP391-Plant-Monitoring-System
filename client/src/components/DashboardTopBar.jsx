@@ -12,7 +12,7 @@ import { useRouter } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../providers/AuthProvider';
 import { useDashboard } from '../contexts/DashboardContext';
-import SidebarUserMenu from './SidebarUserMenu';
+import SidebarUserMenu from './navigation/SidebarUserMenu';
 
 const DashboardTopBar = ({ 
   title, 

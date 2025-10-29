@@ -10,8 +10,8 @@ import { useTranslation } from 'react-i18next';
 import { useAuth } from '../providers/AuthProvider';
 import { useTheme } from '../contexts/ThemeContext';
 import { useDashboard } from '../contexts/DashboardContext';
-import SidebarUserMenu from './SidebarUserMenu';
-import DemoSidebarUserMenu from './DemoSidebarUserMenu';
+import SidebarUserMenu from './navigation/SidebarUserMenu';
+import DemoSidebarUserMenu from './navigation/DemoSidebarUserMenu';
 
 
 const DashboardSidebar = ({ isOpen = true, onToggle, demoUser = null }) => {
