@@ -10,7 +10,7 @@ import { Button } from '@/components/ui/Button';
 import axiosClient from '@/api/axiosClient';
 import Head from 'next/head';
 import { useGoogleAuth } from '@/hooks/useGoogleAuth';
-import GoogleLoginButton from '@/components/GoogleLoginButton';
+import GoogleLoginButton from '@/components/auth/GoogleLoginButton';
 import { toast } from 'sonner';
 
 // API URL for redirect purposes

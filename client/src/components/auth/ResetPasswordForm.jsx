@@ -2,9 +2,9 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
-import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from './ui/Card';
-import { Input } from './ui/Input';
-import { Button } from './ui/Button';
+import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '../ui/Card';
+import { Input } from '../ui/Input';
+import { Button } from '../ui/Button';
 import axios from 'axios';
 
 // Direct API URL - don't rely on the API client which might have issues

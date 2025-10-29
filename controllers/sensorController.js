@@ -1,4 +1,4 @@
-const db = require('../config/db.js');
+const { pool } = require('../config/db.js');
 
 /**
  * Get the latest sensor data for all devices
@@ -58,7 +58,7 @@ const getLatestSensorData = async (req, res) => {
             `;
         }
 
-        const { rows } = await db.query(query, params);
+                const { rows: countRows } = await pool.query(countQuery, countParams);
         
         // Format the response as an object with device_id as keys
         const formattedData = {};

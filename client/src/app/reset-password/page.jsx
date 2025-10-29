@@ -1,6 +1,6 @@
 'use client'
 
-import { ResetPasswordForm } from '@/components/ResetPasswordForm';
+import { ResetPasswordForm } from '@/components/auth/ResetPasswordForm';
 import { useAuth } from '@/providers/AuthProvider';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';

@@ -11,7 +11,7 @@ import WeatherWidget from '@/components/dashboard/WeatherWidget';
 import RecentActivity from '@/components/dashboard/RecentActivity';
 import WateringSchedule from '@/components/dashboard/WateringSchedule';
 import PremiumFeaturePrompt from '@/components/dashboard/PremiumFeaturePrompt';
-import Navbar from '@/components/Navbar';
+import Navbar from '@/components/navigation/Navbar';
 import ThemedLoader from '@/components/ThemedLoader';
 import useMemoizedData from '@/hooks/useMemoizedData';
 import axiosClient from '@/api/axiosClient';
@@ -69,7 +69,7 @@ export default function DashboardPage() {
   
   // Fetch sensor data using the custom hook
   const fetchSensorData = async () => {
-    const response = await axiosClient.get('/api/sensors/latest');
+    const response = await axiosClient.get('/api/sensor/latest');
     return response.data;
   };
   
