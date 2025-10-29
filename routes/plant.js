@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 /**
  * Plant Management Routes
  * Routes for plant management, watering control, and AI integration
@@ -77,5 +78,25 @@ router.put('/:plantId/thresholds',
   ],
   plantController.setSensorThresholds
 );
+=======
+const express = require('express');
+const { getAllPlants, getPlantById, getUserPlants } = require('../controllers/plantController');
+const { authMiddleware } = require('../middlewares/authMiddleware');
+const router = express.Router();
+
+/**
+ * @route   GET /api/plants
+ * @desc    Get all plants for the authenticated user
+ * @access  Private
+ */
+router.get('/', authMiddleware, getUserPlants);
+
+/**
+ * @route   GET /api/plants/:id
+ * @desc    Get a plant by ID
+ * @access  Private
+ */
+router.get('/:id', authMiddleware, getPlantById);
+>>>>>>> 1d1e2513b9e8ac5f36f74d326d2a76f901e82987
 
 module.exports = router;

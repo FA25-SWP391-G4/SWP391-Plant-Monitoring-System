@@ -63,30 +63,19 @@ export function ThemeProvider({ children, defaultTheme = 'light' }) {
       // Determine the actual theme to apply (considering system preference)
       const themeToApply = theme === 'system' ? systemTheme : theme;
       
-      // Comprehensively apply theme across all methods used in the app
-      // 1. Remove any existing theme classes
-      root.classList.remove('light', 'dark');
+      // Remove dark class first
+      root.classList.remove('dark');
       
-      // 2. Add appropriate class for current theme
-      root.classList.add(themeToApply);
+      // Add dark class if needed
+      if (themeToApply === 'dark') {
+        root.classList.add('dark');
+      }
       
-      // 3. Set data-theme attribute for CSS variables
+      // Set data-theme attribute for custom CSS variables
       root.setAttribute('data-theme', themeToApply);
       
-      // 4. Update body styles to ensure correct background and text colors
-      document.body.style.backgroundColor = 
-        themeToApply === 'dark' ? 'var(--background-dark)' : 'var(--background-light)';
-      document.body.style.color = 
-        themeToApply === 'dark' ? 'var(--text-dark)' : 'var(--text-light)';
-      
-      // 5. Store theme preference
+      // Store theme preference
       localStorage.setItem('plant-system-theme', theme);
-      
-      console.log('Theme applied:', themeToApply, {
-        classList: root.classList.contains(themeToApply),
-        dataTheme: root.getAttribute('data-theme'),
-        storedPreference: localStorage.getItem('plant-system-theme')
-      });
     }
   }, [theme, systemTheme]);
   

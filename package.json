@@ -16,18 +16,28 @@
     "body-parser": "^2.2.0",
     "compression": "^1.8.1",
     "concurrently": "^9.2.1",
+    "connect-pg-simple": "^10.0.0",
     "cookie-parser": "~1.4.4",
     "cors": "^2.8.5",
+    "crypto": "^1.0.1",
     "dateformat": "^5.0.3",
     "debug": "~2.6.9",
     "dotenv": "^17.2.2",
     "ejs": "^3.1.10",
     "express": "~4.16.1",
+<<<<<<< HEAD
     "express-rate-limit": "^7.5.1",
     "express-slow-down": "^3.0.0",
     "express-validator": "^7.2.1",
     "firebase-admin": "^13.5.0",
     "helmet": "^8.1.0",
+=======
+    "express-rate-limit": "^7.2.0",
+    "express-session": "^1.18.2",
+    "express-validator": "^7.2.1",
+    "firebase-admin": "^13.5.0",
+    "googleapis": "^164.0.0",
+>>>>>>> 1d1e2513b9e8ac5f36f74d326d2a76f901e82987
     "http-errors": "~1.6.3",
     "jade": "^1.11.0",
     "jsonwebtoken": "^9.0.2",
@@ -41,9 +51,17 @@
     "openai": "^6.2.0",
     "pg": "^8.16.3",
     "qs": "^6.14.0",
+<<<<<<< HEAD
     "sharp": "^0.34.4",
     "socket.io": "^4.7.5",
     "uuid": "^13.0.0",
+=======
+    "react-error-boundary": "^6.0.0",
+    "react-toastify": "^11.0.5",
+    "request": "^2.88.2",
+    "socket.io": "^4.7.5",
+    "vnpay": "^2.4.4",
+>>>>>>> 1d1e2513b9e8ac5f36f74d326d2a76f901e82987
     "winston": "^3.13.0"
   },
   "scripts": {
@@ -60,7 +78,9 @@
     "test:i18n": "node scripts/i18n-integrity-checker.js",
     "test:sensor": "jest tests/sensor.test.js",
     "test:mqtt": "jest tests/mqtt.test.js",
-    "test:aws": "jest tests/aws-iot.test.js"
+    "test:aws": "jest tests/aws-iot.test.js",
+    "test:payment": "node run-payment-tests.js",
+    "test:payment:watch": "jest tests/payment*.test.js --watch"
   },
   "engines": {
     "node": ">=14.0.0"

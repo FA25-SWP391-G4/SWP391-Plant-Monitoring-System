@@ -53,7 +53,7 @@ const PlantActions = ({ plantId, onWater, onAddNote, onAddPhoto, onShare, onRepo
             <Button
               key={index}
               variant="ghost"
-              className={`flex flex-col items-center justify-center h-24 p-2 rounded-lg ${action.color}`}
+              className={`flex flex-col items-center justify-center h-24 p-2 rounded-lg ${action.color} btn-transition`}
               onClick={action.onClick}
             >
               <div className="mb-2">{action.icon}</div>

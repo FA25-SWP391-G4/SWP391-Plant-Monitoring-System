@@ -30,7 +30,7 @@ const PlantHeader = ({ plant, onEdit, onDelete }) => {
       <Button
         variant="ghost"
         size="sm"
-        className="mb-4"
+        className="mb-4 btn-transition"
         onClick={handleBack}
       >
         <FiArrowLeft className="mr-2" />

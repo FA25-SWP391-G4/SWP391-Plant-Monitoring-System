@@ -21,22 +21,26 @@ const Device = require('../models/Device');
 const WateringHistory = require('../models/WateringHistory');
 const PumpSchedule = require('../models/PumpSchedule');
 const SystemLog = require('../models/SystemLog');
-const mqtt = require('mqtt');
+const { pool } = require('../config/db.js');
+const { connectAwsIoT } = require('../services/awsIOTClient');
+const { mqtt } = require('aws-iot-device-sdk-v2');
+const { isValidUUID } = require('../utils/uuidGenerator');
 
-// MQTT client for device communication
-let mqttClient = null;
-try {
-    mqttClient = mqtt.connect(process.env.MQTT_BROKER_URL || 'mqtt://localhost:1883');
-    
-    mqttClient.on('connect', () => {
-        console.log('Connected to MQTT broker');
-    });
-    
-    mqttClient.on('error', (err) => {
-        console.error('MQTT connection error:', err);
-    });
-} catch (error) {
-    console.error('Failed to initialize MQTT client:', error);
+// AWS IoT connection for device communication
+let awsIoTConnection = null;
+
+// Connect to AWS IoT Core
+async function getAwsIoTConnection() {
+    if (!awsIoTConnection) {
+        try {
+            awsIoTConnection = await connectAwsIoT();
+            console.log('Connected to AWS IoT Core');
+        } catch (error) {
+            console.error('AWS IoT connection error:', error);
+            throw error;
+        }
+    }
+    return awsIoTConnection;
 }
 
 /**
@@ -46,15 +50,29 @@ try {
  * 
  * @route POST /api/plants/:plantId/water
  * @access Private - Requires authentication
- * @param {number} plantId - ID of the plant to water
+ * @param {string} plantId - UUID of the plant to water
  * @param {number} duration - Watering duration in seconds (default: 10)
  * @returns {Object} Watering confirmation
+ * 
+ * UPDATED FOR UUID MIGRATION:
+ * - plantId parameter is now UUID (not integer)
+ * - user_id comparison uses UUID format
+ * - Validates UUID format before database operations
  */
 async function waterPlant(req, res) {
     try {
-        // Get plant ID from route params
+        // Get plant ID from route params (now UUID)
         const { plantId } = req.params;
         const { duration = 10 } = req.body; // Default 10 seconds if not provided
+
+        // Validate UUID format
+        if (!isValidUUID(plantId)) {
+            console.error('[WATER PLANT] Invalid plant UUID:', plantId);
+            return res.status(400).json({
+                success: false,
+                error: 'Invalid plant ID format'
+            });
+        }
 
         // Validate duration
         if (duration < 1 || duration > 300) { // Limit to 5 minutes max
@@ -63,6 +81,8 @@ async function waterPlant(req, res) {
                 error: 'Duration must be between 1 and 300 seconds'
             });
         }
+
+        console.log('[WATER PLANT] Watering plant UUID:', plantId, 'for', duration, 'seconds');
 
         // Find the plant
         const plant = await Plant.findById(plantId);
@@ -74,8 +94,9 @@ async function waterPlant(req, res) {
             });
         }
 
-        // Check if user owns this plant
+        // Check if user owns this plant (both are now UUIDs)
         if (plant.user_id !== req.user.user_id) {
+            console.error('[WATER PLANT] Permission denied. Plant owner:', plant.user_id, 'Request user:', req.user.user_id);
             return res.status(403).json({
                 success: false,
                 error: 'You do not have permission to water this plant'
@@ -100,7 +121,7 @@ async function waterPlant(req, res) {
             });
         }
 
-        // Send MQTT command to device to start watering
+        // Send command to device to start watering via AWS IoT Core
         const wateringCommand = {
             command: 'water',
             duration: duration,
@@ -108,13 +129,22 @@ async function waterPlant(req, res) {
             timestamp: new Date().toISOString()
         };
 
-        // Send command via MQTT
-        if (mqttClient && mqttClient.connected) {
-            mqttClient.publish(`device/${device.device_id}/command`, JSON.stringify(wateringCommand));
-        } else {
-            console.error('MQTT client not connected. Using alternative method...');
-            // Fallback to HTTP API call to device if MQTT is not available
-            // This is just a placeholder for the implementation
+        // Send command via AWS IoT Core
+        try {
+            const connection = await getAwsIoTConnection();
+            const topic = `smartplant/device/${device.device_id}/command`;
+            
+            connection.publish(
+                topic,
+                JSON.stringify(wateringCommand),
+                mqtt.QoS.AtLeastOnce
+            );
+            
+            console.log(`Command sent to AWS IoT Core on topic: ${topic}`);
+        } catch (error) {
+            console.error('AWS IoT Core publishing error:', error);
+            // Log error but continue - we already saved the watering record
+            await SystemLog.error('PlantController', `AWS IoT publish error: ${error.message}`);
         }
 
         // Create watering history record
@@ -172,13 +202,26 @@ function calculateWaterAmount(duration) {
  * 
  * @route GET /api/plants/:plantId/schedule
  * @access Private - Requires authentication
- * @param {number} plantId - ID of the plant
+ * @param {string} plantId - UUID of the plant
  * @returns {Object} Watering schedule
+ * 
+ * UPDATED FOR UUID MIGRATION:
+ * - plantId parameter is now UUID
+ * - Validates UUID format before operations
  */
 async function getWateringSchedule(req, res) {
     try {
-        // Get plant ID from route params
+        // Get plant ID from route params (now UUID)
         const { plantId } = req.params;
+
+        // Validate UUID format
+        if (!isValidUUID(plantId)) {
+            console.error('[GET SCHEDULE] Invalid plant UUID:', plantId);
+            return res.status(400).json({
+                success: false,
+                error: 'Invalid plant ID format'
+            });
+        }
 
         // Find the plant
         const plant = await Plant.findById(plantId);
@@ -190,7 +233,7 @@ async function getWateringSchedule(req, res) {
             });
         }
 
-        // Check if user owns this plant
+        // Check if user owns this plant (UUID comparison)
         if (plant.user_id !== req.user.user_id) {
             return res.status(403).json({
                 success: false,
@@ -222,15 +265,28 @@ async function getWateringSchedule(req, res) {
  * 
  * @route POST /api/plants/:plantId/schedule
  * @access Private - Requires authentication
- * @param {number} plantId - ID of the plant
+ * @param {string} plantId - UUID of the plant
  * @param {Array} schedule - Array of schedule entries
  * @returns {Object} Updated watering schedule
+ * 
+ * UPDATED FOR UUID MIGRATION:
+ * - plantId parameter is now UUID
+ * - Validates UUID format before operations
  */
 async function setWateringSchedule(req, res) {
     try {
-        // Get plant ID from route params
+        // Get plant ID from route params (now UUID)
         const { plantId } = req.params;
         const { schedule } = req.body;
+
+        // Validate UUID format
+        if (!isValidUUID(plantId)) {
+            console.error('[SET SCHEDULE] Invalid plant UUID:', plantId);
+            return res.status(400).json({
+                success: false,
+                error: 'Invalid plant ID format'
+            });
+        }
 
         // Validate schedule
         if (!schedule || !Array.isArray(schedule)) {
@@ -250,7 +306,7 @@ async function setWateringSchedule(req, res) {
             });
         }
 
-        // Check if user owns this plant
+        // Check if user owns this plant (UUID comparison)
         if (plant.user_id !== req.user.user_id) {
             return res.status(403).json({
                 success: false,
@@ -304,15 +360,28 @@ async function setWateringSchedule(req, res) {
  * 
  * @route PUT /api/plants/:plantId/auto-watering
  * @access Private - Requires authentication
- * @param {number} plantId - ID of the plant
+ * @param {string} plantId - UUID of the plant
  * @param {boolean} enabled - Whether auto-watering should be enabled
  * @returns {Object} Updated plant status
+ * 
+ * UPDATED FOR UUID MIGRATION:
+ * - plantId parameter is now UUID
+ * - Validates UUID format before operations
  */
 async function toggleAutoWatering(req, res) {
     try {
-        // Get plant ID from route params
+        // Get plant ID from route params (now UUID)
         const { plantId } = req.params;
         const { enabled } = req.body;
+
+        // Validate UUID format
+        if (!isValidUUID(plantId)) {
+            console.error('[TOGGLE AUTO WATERING] Invalid plant UUID:', plantId);
+            return res.status(400).json({
+                success: false,
+                error: 'Invalid plant ID format'
+            });
+        }
 
         // Validate input
         if (typeof enabled !== 'boolean') {
@@ -332,7 +401,7 @@ async function toggleAutoWatering(req, res) {
             });
         }
 
-        // Check if user owns this plant
+        // Check if user owns this plant (UUID comparison)
         if (plant.user_id !== req.user.user_id) {
             return res.status(403).json({
                 success: false,
@@ -376,15 +445,28 @@ async function toggleAutoWatering(req, res) {
  * 
  * @route PUT /api/plants/:plantId/thresholds
  * @access Private - Requires authentication and premium
- * @param {number} plantId - ID of the plant
+ * @param {string} plantId - UUID of the plant
  * @param {Object} thresholds - Sensor thresholds
  * @returns {Object} Updated thresholds
+ * 
+ * UPDATED FOR UUID MIGRATION:
+ * - plantId parameter is now UUID
+ * - Validates UUID format before operations
  */
 async function setSensorThresholds(req, res) {
     try {
-        // Get plant ID from route params
+        // Get plant ID from route params (now UUID)
         const { plantId } = req.params;
         const { thresholds } = req.body;
+
+        // Validate UUID format
+        if (!isValidUUID(plantId)) {
+            console.error('[SET THRESHOLDS] Invalid plant UUID:', plantId);
+            return res.status(400).json({
+                success: false,
+                error: 'Invalid plant ID format'
+            });
+        }
 
         // Check if user is premium
         if (req.user.role !== 'Premium' && req.user.role !== 'Admin') {
@@ -412,7 +494,7 @@ async function setSensorThresholds(req, res) {
             });
         }
 
-        // Check if user owns this plant
+        // Check if user owns this plant (UUID comparison)
         if (plant.user_id !== req.user.user_id) {
             return res.status(403).json({
                 success: false,
@@ -481,10 +563,229 @@ async function setSensorThresholds(req, res) {
     }
 }
 
+/**
+ * Get all plants for the authenticated user
+ * @param {Object} req - Express request object with authenticated user
+ * @param {Object} res - Express response object
+ */
+const getUserPlants = async (req, res) => {
+    try {
+        const userId = req.user.user_id;
+        
+        // Get all plants for the user with their devices and latest sensor data
+        const query = `
+            SELECT 
+                p.*,
+                d.device_id,
+                d.device_name
+            FROM 
+                "plants" p
+            LEFT JOIN 
+                "devices" d ON p.device_id = d.device_id
+            WHERE 
+                p.user_id = $1
+        `;
+        
+        const { rows } = await pool.query(query, [userId]);
+        
+        if (rows.length === 0) {
+            // Return a default plant if none exists for this user
+            return res.json([
+                {
+                    plant_id: 'default-1',
+                    name: 'Common Lantana',
+                    species: 'Lantana camara',
+                    location: 'Living Room',
+                    status: 'healthy',
+                    health: 95,
+                    image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Lantana_camara-IMG_8252.JPG/320px-Lantana_camara-IMG_8252.JPG',
+                    lastWatered: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(), // 1 day ago
+                    auto_watering_on: true,
+                    thresholds: JSON.stringify({
+                        moisture_min: 25,
+                        moisture_max: 60,
+                        light_min: 2000,
+                        light_max: 10000,
+                        temperature_min: 15,
+                        temperature_max: 32,
+                        humidity_min: 30,
+                        humidity_max: 70
+                    })
+                },
+                {
+                    plant_id: 'default-2',
+                    name: 'Peace Lily',
+                    species: 'Spathiphyllum',
+                    location: 'Bedroom',
+                    status: 'needs_water',
+                    health: 70,
+                    image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/bd/Spathiphyllum_cochlearispathum_RTBG.jpg/320px-Spathiphyllum_cochlearispathum_RTBG.jpg',
+                    lastWatered: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(), // 5 days ago
+                    auto_watering_on: false,
+                    thresholds: JSON.stringify({
+                        moisture_min: 30,
+                        moisture_max: 70,
+                        light_min: 1000,
+                        light_max: 8000,
+                        temperature_min: 18,
+                        temperature_max: 30,
+                        humidity_min: 40,
+                        humidity_max: 80
+                    })
+                },
+                {
+                    plant_id: 'default-3',
+                    name: 'Snake Plant',
+                    species: 'Sansevieria trifasciata',
+                    location: 'Study',
+                    status: 'needs_attention',
+                    health: 50,
+                    image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/fb/Snake_Plant_%28Sansevieria_trifasciata_%27Laurentii%27%29.jpg/320px-Snake_Plant_%28Sansevieria_trifasciata_%27Laurentii%27%29.jpg',
+                    lastWatered: new Date(Date.now() - 12 * 24 * 60 * 60 * 1000).toISOString(), // 12 days ago
+                    auto_watering_on: true,
+                    thresholds: JSON.stringify({
+                        moisture_min: 15,
+                        moisture_max: 40,
+                        light_min: 500,
+                        light_max: 5000,
+                        temperature_min: 10,
+                        temperature_max: 35,
+                        humidity_min: 20,
+                        humidity_max: 50
+                    })
+                }
+            ]);
+        }
+        
+        // Process the plants data to make it frontend-friendly
+        const plants = rows.map(plant => {
+            // Parse the thresholds if they exist
+            let thresholds = {};
+            if (plant.thresholds) {
+                try {
+                    thresholds = typeof plant.thresholds === 'string'
+                        ? JSON.parse(plant.thresholds)
+                        : plant.thresholds;
+                } catch (e) {
+                    console.error('Error parsing thresholds JSON:', e);
+                }
+            }
+            
+            return {
+                plant_id: plant.plant_id,
+                name: plant.name,
+                species: plant.species || 'Unknown',
+                location: plant.location || 'Not specified',
+                status: plant.status || 'healthy',
+                health: plant.health || 100,
+                image: plant.image_url || null,
+                lastWatered: plant.last_watered || new Date().toISOString(),
+                auto_watering_on: plant.auto_watering_on || false,
+                device_id: plant.device_id,
+                device_name: plant.device_name,
+                thresholds: thresholds
+            };
+        });
+        
+        res.json(plants);
+    } catch (error) {
+        console.error('Error fetching user plants:', error);
+        
+        // Log the error
+        await SystemLog.error('plantController', `Error fetching plants for user ${req.user.user_id}: ${error.message}`);
+        
+        res.status(500).json({ 
+            success: false, 
+            message: 'Failed to fetch plants'
+        });
+    }
+};
+
+/**
+ * Get a specific plant by ID
+ * @param {Object} req - Express request object with authenticated user and plant ID
+ * @param {Object} res - Express response object
+ */
+const getPlantById = async (req, res) => {
+    try {
+        const userId = req.user.user_id;
+        const plantId = req.params.id;
+        
+        // Get the plant with its device and latest sensor data
+        const query = `
+            SELECT 
+                p.*,
+                d.device_id,
+                d.device_name,
+                d.sensor_type
+            FROM 
+                "plants" p
+            LEFT JOIN 
+                "devices" d ON p.device_id = d.device_id
+            WHERE 
+                p.plant_id = $1 AND p.user_id = $2
+        `;
+        
+        const { rows } = await pool.query(query, [plantId, userId]);
+        
+        if (rows.length === 0) {
+            return res.status(404).json({ 
+                success: false, 
+                message: 'Plant not found or access denied'
+            });
+        }
+        
+        // Get the plant data
+        const plant = rows[0];
+        
+        // Parse the thresholds if they exist
+        let thresholds = {};
+        if (plant.thresholds) {
+            try {
+                thresholds = typeof plant.thresholds === 'string'
+                    ? JSON.parse(plant.thresholds)
+                    : plant.thresholds;
+            } catch (e) {
+                console.error('Error parsing thresholds JSON:', e);
+            }
+        }
+        
+        // Format the response
+        const formattedPlant = {
+            plant_id: plant.plant_id,
+            name: plant.name,
+            species: plant.species || 'Unknown',
+            location: plant.location || 'Not specified',
+            status: plant.status || 'healthy',
+            health: plant.health || 100,
+            image: plant.image_url || null,
+            lastWatered: plant.last_watered || new Date().toISOString(),
+            auto_watering_on: plant.auto_watering_on || false,
+            device_id: plant.device_id,
+            device_name: plant.device_name,
+            thresholds: thresholds
+        };
+        
+        res.json(formattedPlant);
+    } catch (error) {
+        console.error('Error fetching plant by ID:', error);
+        
+        // Log the error
+        await SystemLog.error('plantController', `Error fetching plant ${req.params.id} for user ${req.user.user_id}: ${error.message}`);
+        
+        res.status(500).json({ 
+            success: false, 
+            message: 'Failed to fetch plant details'
+        });
+    }
+};
+
 module.exports = {
     waterPlant,
     getWateringSchedule,
     setWateringSchedule,
     toggleAutoWatering,
-    setSensorThresholds
+    setSensorThresholds,
+    getUserPlants,
+    getPlantById
 };

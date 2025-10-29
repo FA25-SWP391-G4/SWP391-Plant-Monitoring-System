@@ -4,13 +4,14 @@ import { useState, useEffect } from 'react';
 import { useAuth } from '@/providers/AuthProvider';
 import { useRouter } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
+import DashboardAppearanceSettings from '@/components/settings/DashboardAppearanceSettings';
 import api from '@/api/axiosClient';
 
 export default function SettingsPage() {
   const { t } = useTranslation();
   const { isAuthenticated, user, loading, updateUser } = useAuth();
   const router = useRouter();
-  const [activeTab, setActiveTab] = useState('appearance');
+  const [activeTab, setActiveTab] = useState('dashboard');
   const [isLoading, setIsLoading] = useState(false);
   const [settings, setSettings] = useState({
     appearance: {
@@ -179,6 +180,18 @@ export default function SettingsPage() {
             <nav className="p-2">
               <button 
                 className={`flex items-center w-full text-left px-4 py-3 rounded-lg transition-colors ${
+                  activeTab === 'dashboard' ? 'bg-emerald-50 text-emerald-700' : 'hover:bg-gray-50'
+                }`}
+                onClick={() => setActiveTab('dashboard')}
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z" />
+                </svg>
+                <span>{t('settings.dashboard', 'Dashboard Layout')}</span>
+              </button>
+
+              <button 
+                className={`flex items-center w-full text-left px-4 py-3 rounded-lg transition-colors ${
                   activeTab === 'appearance' ? 'bg-emerald-50 text-emerald-700' : 'hover:bg-gray-50'
                 }`}
                 onClick={() => setActiveTab('appearance')}
@@ -232,6 +245,11 @@ export default function SettingsPage() {
         <div className="flex-grow">
           <div className="bg-white rounded-xl shadow-sm overflow-hidden border border-gray-100">
             <div className="p-6">
+              {/* Dashboard Settings */}
+              {activeTab === 'dashboard' && (
+                <DashboardAppearanceSettings />
+              )}
+
               {/* Appearance Settings */}
               {activeTab === 'appearance' && (
                 <>
