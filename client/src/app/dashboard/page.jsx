@@ -12,10 +12,14 @@ import RecentActivity from '@/components/dashboard/RecentActivity';
 import WateringSchedule from '@/components/dashboard/WateringSchedule';
 import PremiumFeaturePrompt from '@/components/dashboard/PremiumFeaturePrompt';
 <<<<<<< HEAD
+<<<<<<< HEAD
 import { set } from 'date-fns';
 
 =======
 import Navbar from '@/components/Navbar';
+=======
+import Navbar from '@/components/navigation/Navbar';
+>>>>>>> f6567a7fad87db2b4467364859c5c451a88cfd85
 import ThemedLoader from '@/components/ThemedLoader';
 import useMemoizedData from '@/hooks/useMemoizedData';
 import axiosClient from '@/api/axiosClient';
@@ -119,7 +123,7 @@ export default function DashboardPage() {
   
   // Fetch sensor data using the custom hook
   const fetchSensorData = async () => {
-    const response = await axiosClient.get('/api/sensors/latest');
+    const response = await axiosClient.get('/api/sensor/latest');
     return response.data;
   };
   

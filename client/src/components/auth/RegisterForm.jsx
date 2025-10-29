@@ -5,7 +5,7 @@ import { useTheme } from '@/contexts/ThemeContext';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/Card';
 import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
-import PhoneInput from '@/components/PhoneInput';
+import PhoneInput from '@/components/forms/PhoneInput';
 import axios from 'axios';
 
 /**

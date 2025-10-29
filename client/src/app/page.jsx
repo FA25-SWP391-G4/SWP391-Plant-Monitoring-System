@@ -10,7 +10,7 @@ import Image from 'next/image'
 import { useTranslation } from 'react-i18next'
 import LanguageSwitcher from '@/components/LanguageSwitcher'
 import Head from 'next/head'
-import Navbar from "@/components/Navbar";
+import Navbar from "@/components/navigation/Navbar";
 
 export default function Home() {
   const { user, loading } = useAuth();
