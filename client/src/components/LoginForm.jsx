@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '@/providers/AuthProvider';
@@ -6,6 +6,13 @@ import { useRouter } from 'next/navigation';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/Card';
 import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
+import axiosClient from '@/api/axiosClient';
+import Head from 'next/head';
+import { useGoogleAuth } from '@/hooks/useGoogleAuth';
+
+// API URL for redirect purposes
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
+const clientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;
 
 /**
  * LoginForm component
@@ -20,12 +27,98 @@ export function LoginForm() {
     password: '',
     rememberMe: false
   });
+  const [errors, setErrors] = useState({
+    email: '',
+    password: '',
+    form: ''
+  });
+  // New state for debugging information
+  const [debugInfo, setDebugInfo] = useState({
+    visible: false,
+    requestData: null,
+    responseData: null,
+    error: null
+  });
 
   const { login } = useAuth();
   const router = useRouter();
 
+  // Toggle debug info visibility
+  const toggleDebugInfo = () => {
+    setDebugInfo(prev => ({ ...prev, visible: !prev.visible }));
+  };
+
+  // Check connection to backend server
+  useEffect(() => {
+    const checkConnection = async () => {
+      try {
+        console.log(`[DEBUG] Testing connection to backend: ${API_URL}`);
+        const response = await fetch(`${API_URL}/health`, {
+          method: 'GET',
+          headers: { 'Content-Type': 'application/json' }
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          console.log(`[DEBUG] Backend server is reachable. Status: ${data.status}`);
+        } else {
+          console.warn(`[DEBUG] Backend server returned status: ${response.status}`);
+        }
+      } catch (error) {
+        console.error(`[DEBUG] Backend connection test failed:`, error);
+      }
+    };
+
+    checkConnection();
+  }, []);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    // Clear previous errors
+    setErrors({
+      email: '',
+      password: '',
+      form: ''
+    });
+    
+    // Reset debug info
+    setDebugInfo(prev => ({
+      ...prev,
+      requestData: null,
+      responseData: null,
+      error: null
+    }));
+
+    // Validate form inputs
+    let hasErrors = false;
+    const newErrors = {
+      email: '',
+      password: '',
+      form: ''
+    };
+    
+    // Check email
+    if (!formData.email.trim()) {
+      newErrors.email = t('validation.emailRequired', 'Email is required');
+      hasErrors = true;
+    } else if (!/^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/.test(formData.email.trim())) {
+      newErrors.email = t('validation.invalidEmail', 'Please enter a valid email address');
+      hasErrors = true;
+    }
+    
+    // Check password
+    if (!formData.password) {
+      newErrors.password = t('validation.passwordRequired', 'Password is required');
+      hasErrors = true;
+    }
+    
+    // If there are validation errors, don't proceed
+    if (hasErrors) {
+      setErrors(newErrors);
+      return;
+    }
+    
     setIsLoading(true);
     // client-side validation
     if (!formData.email.trim() || !formData.password) {
@@ -81,17 +174,229 @@ export function LoginForm() {
 
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
+    
+    // Clear the error for this field when user makes changes
+    if (errors[name]) {
+      setErrors({
+        ...errors,
+        [name]: '',
+        form: '' // Also clear any general form errors
+      });
+    }
+    
     setFormData({
       ...formData,
       [name]: type === 'checkbox' ? checked : value
     });
   };
+  
+  // Initialize Google Auth API with the modern Google Identity Services
+  useEffect(() => {
+    // Check if Google Identity Services script is loaded
+    const checkGoogleScriptLoaded = () => {
+      // Script is now loaded via GoogleHeadTags component
+      if (window.google) {
+        initializeGoogleButton();
+        return true;
+      }
+      return false;
+    };
+
+    // Initialize the Google Sign In button
+    const initializeGoogleButton = () => {
+      console.log('Google Identity Services script loaded, initializing button');
+
+      // Make sure the Google object is available
+      if (window.google) {
+        try {
+          // Define the client ID and make sure it's properly loaded          
+          if (!clientId) {
+            console.error('[GOOGLE AUTH] Client ID is not defined. Please check your environment variables.');
+            setErrors({...errors, form: t('errors.googleSignInFailed', 'Failed to show Google sign-in due to missing client ID.')});
+            return;
+          }
+          
+          console.log('[GOOGLE AUTH] Using client ID:', clientId);
+          
+          // Initialize Google accounts with explicit popup mode and FedCM support
+          window.google.accounts.id.initialize({
+            client_id: clientId,
+            callback: handleCredentialResponse,
+            auto_select: false, // Changed to false to always prompt for account selection
+            cancel_on_tap_outside: true,
+            use_fedcm_for_prompt: true, // Explicitly opt-in to FedCM
+            fedcm_provider_url: "https://accounts.google.com", // Specify the provider URL for FedCM
+            context: "signin", // Use signin context for login
+            itp_support: true, // Add support for Intelligent Tracking Prevention
+            prompt_parent_id: "google-signin-wrapper", // Add this to specify where the prompt should appear
+            select_by_default: false // Ensure account selection is always shown
+          });
+
+          console.log('[GOOGLE AUTH] Google One Tap initialized with FedCM support');
+
+          // Use a custom button that triggers the Google popup manually
+          const googleButton = document.getElementById('custom-google-btn');
+          if (googleButton) {
+            googleButton.onclick = (e) => {
+              e.preventDefault();
+              console.log('[GOOGLE AUTH] Custom button clicked, showing sign-in');
+              setIsGoogleLoading(true);
+
+              // This will trigger the sign-in flow with FedCM
+              window.google.accounts.id.prompt((notification) => {
+                // FedCM-compatible handling of notification moments
+                if (notification.getMomentType() === "skipped") {
+                  // Skipped moment (user has not engaged with the prompt or it couldn't be shown)
+                  console.log('[GOOGLE AUTH] Sign-in prompt was skipped:', notification.getSkippedReason());
+                  setIsGoogleLoading(false);
+
+                  // Handle specific skipped reasons
+                  const skippedReason = notification.getSkippedReason();
+                  if (skippedReason === "browser_not_supported" ||
+                      skippedReason === "third_party_cookies_blocked" ||
+                      skippedReason === "browser_not_supported") {
+                    setErrors({
+                      ...errors,
+                      form: t('errors.googleSignInBlocked', 'Google sign-in is not available. This might be due to browser settings or cookie restrictions.')
+                    });
+                  } else {
+                    setErrors({
+                      ...errors,
+                      form: t('errors.googleSignInFailed', 'Failed to show Google sign-in. Please try again or use email login.')
+                    });
+                  }
+                } else if (notification.getMomentType() === "dismissed") {
+                  // Dismissed moment (user actively dismissed the prompt)
+                  console.log('[GOOGLE AUTH] User dismissed the sign-in prompt');
+                  setIsGoogleLoading(false);
+                } else if (notification.getMomentType() === "display") {
+                  // Successfully displayed to user
+                  console.log('[GOOGLE AUTH] Sign-in prompt displayed to user');
+                } else {
+                  // Unknown moment type
+                  console.log('[GOOGLE AUTH] Unknown prompt moment type:', notification.getMomentType());
+                  setIsGoogleLoading(false);
+                }
+              });
+            };
+          }
+
+          // Also set up the hidden Google button as fallback
+          const hiddenGoogleButton = document.getElementById('google-signin-button');
+          if (hiddenGoogleButton) {
+            window.google.accounts.id.renderButton(
+              hiddenGoogleButton,
+              {
+                type: 'standard',
+                theme: 'outline',
+                size: 'large',
+                shape: 'rectangular',
+                text: 'signin_with',
+                logo_alignment: 'center',
+                width: '100%'
+              }
+            );
+            // Hide this button as we're using our custom one
+            hiddenGoogleButton.style.display = 'none';
+          } else {
+            console.error('[GOOGLE AUTH] Hidden Google button element not found');
+          }
+        } catch (error) {
+          console.error('[GOOGLE AUTH] Error initializing Google Sign-In:', error);
+        }
+      }
+    };
+
+    // Function to handle the credential response
+    const handleCredentialResponse = async (response) => {
+      console.log('Google Sign-In response received');
+
+      try {
+        setIsGoogleLoading(true);
+
+        if (response.credential) {
+          // Send the credential to your backend
+          const authApi = (await import('@/api/authApi')).default;
+          const result = await authApi.loginWithGoogle(response.credential);
+
+          // Process successful authentication
+          if (result.data && result.data.token) {
+            login(result.data.token, result.data.user);
+
+            // Redirect to dashboard or stored redirect path
+            const redirectUrl = localStorage.getItem('redirectAfterLogin') || '/dashboard';
+            router.push(redirectUrl);
+            localStorage.removeItem('redirectAfterLogin');
+          }
+        }
+      } catch (error) {
+        console.error('Google authentication error:', error);
+        setErrors({
+          ...errors,
+          form: t('errors.googleLoginFailed', 'Failed to authenticate with Google. Please try again.')
+        });
+      } finally {
+        setIsGoogleLoading(false);
+      }
+    };
+
+    // Check if Google script is loaded
+    if (!checkGoogleScriptLoaded()) {
+      // If not loaded yet, set up an interval to check
+      const intervalId = setInterval(() => {
+        if (checkGoogleScriptLoaded()) {
+          clearInterval(intervalId);
+        }
+      }, 100);
+      
+      // Clear interval after 5 seconds as a fallback
+      setTimeout(() => clearInterval(intervalId), 5000);
+    }
+
+    // Cleanup function
+    return () => {
+      // No explicit cleanup needed for Google Identity Services
+    };
+  }, [login, router, t, errors]);
+
+  // Use our custom Google auth hook
+  const { initGoogleSignIn } = useGoogleAuth();
+
+  // Google login handler - Updated to use our custom hook
+  const handleGoogleLogin = () => {
+    try {
+      setIsGoogleLoading(true);
+      
+      // Use our custom hook to initialize Google Sign In
+      initGoogleSignIn();
+      
+      // Set a timeout to reset the button state if no callback happens
+      setTimeout(() => {
+        setIsGoogleLoading(false);
+      }, 30000); // 30 seconds timeout
+    } catch (error) {
+      console.error('Error triggering Google Sign-In:', error);
+      setErrors({
+        ...errors,
+        form: t('errors.googleLoginFailed', 'Failed to initialize Google login. Please try again.')
+      });
+      setIsGoogleLoading(false);
+    }
+  };
+
+  // Handle Google credentials after successful popup authentication
+  // Google credential handling is now done in the useGoogleAuth hook
+
 
   return (
-    <section aria-labelledby="signin-heading" className="bg-white rounded-2xl shadow-xl border border-emerald-100/70 p-6 sm:p-8">
-      <h2 id="signin-heading" className="text-xl font-semibold text-gray-900 mb-6">
-        {t('auth.loginTitle', 'Sign in to your account')}
-      </h2>
+    <>
+      <Head>
+        <meta name="google-signin-client_id" content={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID} />
+      </Head>
+      <section aria-labelledby="signin-heading" className="bg-white rounded-2xl shadow-xl border border-emerald-100/70 p-6 sm:p-8">
+        <h2 id="signin-heading" className="text-xl font-semibold text-gray-900 mb-6">
+          {t('auth.loginTitle', 'Sign in to your account')}
+        </h2>
       
       <form className="space-y-5" onSubmit={handleSubmit} noValidate>
         {error && (
@@ -118,12 +423,17 @@ export function LoginForm() {
               onChange={handleInputChange}
               autoComplete="email"
               required
-              aria-invalid="false"
+              aria-invalid={errors.email ? "true" : "false"}
               placeholder="you@greenspace.com"
-              className="w-full rounded-lg border border-gray-200 pl-10 pr-3 py-3 text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-colors"
+              className={`w-full rounded-lg border ${errors.email ? 'border-red-500' : 'border-gray-200'} pl-10 pr-3 py-3 text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-colors`}
             />
           </div>
+          {/* Display field-level errors */}
+          {errors.email && (
+            <p className="text-sm text-red-600 mt-1">{errors.email}</p>
+          )}
         </div>
+        
         
         <div>
           <div className="flex items-center justify-between mb-2">
@@ -149,11 +459,15 @@ export function LoginForm() {
               onChange={handleInputChange}
               autoComplete="current-password"
               required
-              aria-invalid="false"
+              aria-invalid={errors.password ? "true" : "false"}
               placeholder="••••••••"
-              className="w-full rounded-lg border border-gray-200 pl-10 pr-3 py-3 text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-colors"
+              className={`w-full rounded-lg border ${errors.password ? 'border-red-500' : 'border-gray-200'} pl-10 pr-3 py-3 text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-colors`}
             />
           </div>
+          {errors.password && (
+            <p className="text-sm text-red-600 mt-1">{errors.password}</p>
+          )}
+          
         </div>
         
         <div className="flex items-center justify-between">
@@ -175,15 +489,29 @@ export function LoginForm() {
           </Link>
         </div>
         
-        <button
-          type="submit"
-          disabled={isLoading}
-          className="w-full px-4 py-3 bg-emerald-600 text-white rounded-lg font-semibold hover:bg-emerald-700 transition-colors shadow-md"
-        >
-          {isLoading ? t('common.loading', 'Loading...') : t('auth.login', 'Sign In')}
-        </button>
-        
-        <div className="flex items-center my-4">
+          {/* Display form-level errors */}
+          {errors.form && (
+            <div className="rounded-md bg-red-50 p-3 mb-4">
+              <div className="flex">
+                <div className="flex-shrink-0">
+                  <svg className="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.28 7.22a.75.75 0 00-1.06 1.06L8.94 10l-1.72 1.72a.75.75 0 101.06 1.06L10 11.06l1.72 1.72a.75.75 0 101.06-1.06L11.06 10l1.72-1.72a.75.75 0 00-1.06-1.06L10 8.94 8.28 7.22z" clipRule="evenodd" />
+                  </svg>
+                </div>
+                <div className="ml-3">
+                  <h3 className="text-sm font-medium text-red-800">{errors.form}</h3>
+                </div>
+              </div>
+            </div>
+          )}
+
+          <button
+            type="submit"
+            disabled={isLoading}
+            className="w-full px-4 py-3 bg-emerald-600 text-white rounded-lg font-semibold hover:bg-emerald-700 transition-colors shadow-md"
+          >
+            {isLoading ? t('common.loading', 'Loading...') : t('auth.login', 'Sign In')}
+          </button>        <div className="flex items-center my-4">
           <div className="flex-1 h-px bg-gray-200" aria-hidden="true"></div>
           <span className="px-3 text-xs uppercase tracking-wider text-gray-500">
             {t('common.or', 'or')}
@@ -191,19 +519,26 @@ export function LoginForm() {
           <div className="flex-1 h-px bg-gray-200" aria-hidden="true"></div>
         </div>
         
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-          <button type="button" className="w-full inline-flex items-center justify-center gap-2 border border-gray-200 hover:border-emerald-300 text-gray-700 hover:text-emerald-800 rounded-lg py-2.5 transition-colors bg-white">
-            <span className="sr-only">Continue with Google</span>
-            <span className="text-gray-700">
-              <svg aria-hidden="true" viewBox="0 0 24 24" className="h-5 w-5" focusable="false">
-                <path fill="#EA4335" d="M12 10.2v3.9h5.5c-.24 1.26-1.66 3.7-5.5 3.7-3.32 0-6.02-2.75-6.02-6.05S8.18 5.7 11.5 5.7c1.9 0 3.18.8 3.9 1.48l2.65-2.56C16.6 2.6 14.3 1.7 11.5 1.7 6.4 1.7 2.2 5.92 2.2 11s4.2 9.3 9.3 9.3c5.4 0 8.95-3.8 8.95-9.15 0-.62-.07-1.1-.16-1.6H12z"></path>
-                <path fill="#34A853" d="M3.1 7.4l3.2 2.3C7.1 7.3 9.1 5.7 11.5 5.7c1.9 0 3.18.8 3.9 1.48l2.65-2.56C16.6 2.6 14.3 1.7 11.5 1.7 7.9 1.7 4.86 3.7 3.1 7.4z"></path>
-                <path fill="#FBBC05" d="M11.5 20.3c3.84 0 5.26-2.44 5.5-3.7H12v-3.9h8.29c.09.5.16.98.16 1.6 0 5.35-3.55 9.15-8.95 9.15-3.9 0-7.18-2.6-8.35-6.12l3.26-2.54c.78 2.3 2.95 4.5 5.88 4.5z"></path>
-                <path fill="#4285F4" d="M21.29 12.7H12v-2.5h9.29c.06.3.11.66.11 1.25 0 .46-.04.88-.11 1.25z"></path>
-              </svg>
-            </span>
-            <span className="text-sm font-medium">Google</span>
-          </button>
+        <div className="items-center justify-between">
+          {/* Google Sign-In Button */}
+          <div className="w-full flex justify-center">
+            {/* Custom button for when Google API is not loaded */}
+            <button 
+              type="button" 
+              className="w-full inline-flex items-center justify-center gap-2 border border-gray-200 hover:border-emerald-300 text-gray-700 hover:text-emerald-800 rounded-lg py-2.5 transition-colors bg-white"
+              onClick={handleGoogleLogin}
+              disabled={isGoogleLoading}
+              id="custom-google-btn"
+            >
+              <span className="sr-only">Continue with Google</span>
+              <span className="text-sm font-medium">
+                {isGoogleLoading ? t('common.loading', 'Loading...') : t('auth.continueWithGoogle', 'Google')}
+              </span>
+            </button>
+            
+            {/* Google's rendered button (hidden at first, shows when API loads) */}
+            <div className="g-signin2" data-onsuccess="onSignIn" style={{display: 'none'}} id="google-signin-button"></div>
+          </div>
         </div>
         
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
@@ -220,6 +555,7 @@ export function LoginForm() {
         </p>
       </form>
     </section>
+    </>
   );
 }
 

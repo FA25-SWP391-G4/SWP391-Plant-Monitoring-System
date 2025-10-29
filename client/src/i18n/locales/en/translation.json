@@ -158,10 +158,20 @@
   "loadError": "Failed to load plants data. Please try again later.",
   "notFound": "Plant not found",
   "manualWatering": "Manual Watering",
+  "deviceStatus": "Device Status",
+  "lastWatered": "Last Watered",
+  "nextScheduled": "Next Scheduled Watering",
+  "notWateredYet": "Not watered yet",
+  "notScheduled": "Not scheduled",
+  "view": "View details",
+  "viewDetails": "View Details",
   "tabs": {
     "overview": "Overview",
     "sensorData": "Sensor Data",
-    "wateringSchedule": "Watering Schedule"
+    "wateringSchedule": "Watering Schedule",
+    "aiPredictions": "AI Predictions",
+    "diseaseRecognition": "Disease Recognition",
+    "aiAssistant": "AI Assistant"
   }
 },  "notFound": {
     "title": "Page Not Found",
@@ -371,6 +381,52 @@
     }
   },
   
+  "imageRecognition": {
+    "title": "Plant Disease Recognition",
+    "subtitle": "Upload plant images to detect diseases and get treatment recommendations",
+    "subtitleWithPlant": "Analyze {{plantName}} for diseases and health issues",
+    "uploadTitle": "Upload Plant Image",
+    "uploadDescription": "Drag and drop an image here, or click to select",
+    "selectFile": "Select Image",
+    "fileRequirements": "Supports JPG, PNG, WebP (max 5MB)",
+    "analyzing": "Analyzing image...",
+    "processingImage": "Processing image with AI model...",
+    "analyzeButton": "Analyze Plant Health",
+    "analysisResults": "Analysis Results",
+    "diseaseDetection": "Disease Detection",
+    "detectedCondition": "Detected Condition:",
+    "severity": "Severity:",
+    "confidence": "confidence",
+    "treatmentRecommendations": "Treatment Recommendations",
+    "preventionTips": "Prevention Tips",
+    "analysisHistory": "Recent Analysis History",
+    "healthy": "Healthy",
+    "clear": "Clear",
+    "viewAllHistory": "View All History",
+    "invalidFileType": "Please select a valid image file",
+    "fileTooLarge": "File size must be less than 5MB",
+    "noFileSelected": "Please select an image to analyze",
+    "analysisError": "Unable to analyze image. Please try again.",
+    "compressing": "Compressing image...",
+    "retryAnalysis": "Retry Analysis",
+    "offlineMode": "Offline Mode - Analysis will be processed when connection is restored",
+    "imageQualityPoor": "Image quality is too poor for reliable analysis. Please try a clearer image.",
+    "noHistoryAvailable": "No analysis history available",
+    "deleteHistory": "Clear History",
+    "exportHistory": "Export History"
+  },
+  
+  "devices": {
+    "online": "Online",
+    "offline": "Offline"
+  },
+  
+  "premium": {
+    "unlockFeatures": "Unlock Premium Features",
+    "scheduleDescription": "Schedule automatic watering, get detailed analytics, and more with Premium.",
+    "upgrade": "Upgrade to Premium"
+  },
+
   "settings": {
     "title": "Settings",
     "account": "Account Settings",

@@ -309,6 +309,35 @@ class SensorData {
         return true;
     }
 
+    // Static method to get recent sensor data for a plant (via device)
+    static async getRecentData(plantId, days = 7) {
+        try {
+            const query = `
+                SELECT sd.*, d.device_name 
+                FROM sensors_data sd
+                JOIN devices d ON sd.device_id = d.device_id
+                JOIN plants p ON d.device_id = p.device_id
+                WHERE p.plant_id = $1 
+                AND sd.timestamp >= NOW() - INTERVAL '${days} days'
+                ORDER BY sd.timestamp DESC
+                LIMIT 100
+            `;
+            const result = await pool.query(query, [plantId]);
+            
+            // Convert to format expected by AI models
+            return result.rows.map(row => ({
+                moisture: row.soil_moisture,
+                temperature: row.temperature,
+                humidity: row.air_humidity,
+                light: row.light_intensity,
+                timestamp: row.timestamp
+            }));
+        } catch (error) {
+            console.error('Error fetching recent sensor data:', error);
+            return [];
+        }
+    }
+
     // Convert to JSON
     toJSON() {
         return {

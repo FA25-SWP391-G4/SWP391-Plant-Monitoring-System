@@ -1,6 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { useTranslation } from 'react-i18next';
+import LanguageSwitcher from '@/components/LanguageSwitcher';
 
 export default function DashboardHeader({ user }) {
   const { t } = useTranslation();
@@ -42,14 +43,28 @@ export default function DashboardHeader({ user }) {
           
           {/* User menu and actions */}
           <div className="flex items-center space-x-4">
+            {/* Upgrade Button */}
+            {!user?.isPremium && (
+              <Link href="/upgrade" className="hidden sm:flex items-center text-sm font-medium bg-gradient-to-r from-amber-500 to-amber-600 text-white px-3 py-1.5 rounded-full hover:from-amber-600 hover:to-amber-700 transition">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-1">
+                  <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+                </svg>
+                {t('common.upgrade', 'Upgrade')}
+              </Link>
+            )}
+            
             {/* Notifications */}
-            <button className="text-gray-500 hover:text-emerald-600 relative p-2">
-              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-bell">
-                <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"></path>
-                <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"></path>
-              </svg>
-              <span className="absolute top-1 right-1 bg-red-500 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center">3</span>
-            </button>
+            <div className="relative">
+              <button className="text-gray-500 hover:text-emerald-600 relative p-2">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-bell">
+                  <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"></path>
+                  <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"></path>
+                </svg>
+                <span className="absolute top-1 right-1 bg-red-500 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center">3</span>
+              </button>
+              
+              {/* Notification dropdown would go here */}
+            </div>
             
             {/* User menu */}
             <div className="relative">
@@ -62,6 +77,13 @@ export default function DashboardHeader({ user }) {
                   <path d="m6 9 6 6 6-6"></path>
                 </svg>
               </div>
+              
+              {/* User dropdown would go here */}
+            </div>
+            
+            {/* Language Switcher */}
+            <div className="hidden sm:block">
+              <LanguageSwitcher />
             </div>
             
             {/* Mobile menu button */}
