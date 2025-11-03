@@ -169,29 +169,13 @@ var usersRouter = require('./routes/users');        // User management routes (b
 var authRouter = require('./routes/auth');          // ✅ UC11: Password reset routes (implemented)
 var paymentRouter = require('./routes/payment');    // ✅ UC19, UC22: VNPay payment integration (implemented)
 var aiRouter = require('./routes/ai');              // 🔄 UC17-18, UC20-21, UC23, UC30: AI features
-var iotRouter = require('./routes/device');            // 🔄 UC32-34: IoT device management
-var activityRouter = require('./routes/activity');  // Recent activity feed
-var deviceProxyRouter = require('./routes/deviceProxy'); // Device proxy to relay requests to ESP devices
-var googleAuthRouter = require('./routes/googleAuthRoutes'); // ✅ UC12: Google OAuth authentication
-var settingsRouter = require('./routes/settings');  // ✅ UC13: User settings management
-var plantProfileRouter = require('./routes/plantProfile'); // ✅ Plant species database management
-var uploadRouter = require('./routes/upload');      // ✅ File upload management
-var plantRouter = require('./routes/plant');        // ✅ UC5-9: Plant management & watering
-var zoneRouter = require('./routes/zone');          // ✅ Plant zone organization (Premium/Ultimate)
-
-// Commented out routers for future implementation:
-// var sensorRouter = require('./routes/sensor');      // 🔄 Sensor data management - COMMENTED OUT: Failed routes, will be re-enabled when team fixes
-var adminRouter = require('./routes/admin');        // 🔄 UC24-31: Admin functions
-// console.log('iotRouter type:', typeof iotRouter);
-// console.log('iotRouter keys:', Object.keys(iotRouter));
+var iotRouter = require('./routes/iot');            // 🔄 UC32-34: IoT device management
+console.log('iotRouter type:', typeof iotRouter);
+console.log('iotRouter keys:', Object.keys(iotRouter));
 var sensorRouter = require('./routes/sensor');      // 🔄 Sensor data management
-var plantRouter = require('./routes/plant');        // ✅ UC5-9: Plant management & watering (implemented)
-var adminRouter = require('./routes/admin');        // 🔄 UC24-31: Admin functions
-//var notificationRouter = require('./routes/notifications'); // 🔄 UC10: Real-time notifications
-// var languageRouter = require('./routes/language');  // 🔄 UC31: Multi-language settings (tạm thời vô hiệu hóa)
 
 // TODO: Create additional route modules for remaining use cases:
-//var dashboardRouter = require('./routes/dashboardRoutes');  // 🔄 UC4: Plant monitoring dashboard
+// var dashboardRouter = require('./routes/dashboard');  // 🔄 UC4: Plant monitoring dashboard
 // var plantRouter = require('./routes/plant');          // 🔄 UC5-9: Plant management & watering
 // var reportRouter = require('./routes/report');        // 🔄 UC8-9, UC15, UC17: Reports & history
 // var premiumRouter = require('./routes/premium');      // 🔄 UC14-23: Premium features
@@ -207,36 +191,6 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-
-// Session middleware for Google OAuth state management
-const session = require('express-session');
-app.use(session({
-  secret: process.env.SESSION_SECRET || 'plant-monitoring-session-secret-change-in-production',
-  resave: false,
-  saveUninitialized: false,
-  cookie: {
-    secure: process.env.NODE_ENV === 'production', // Use secure cookies in production
-    httpOnly: true,
-    maxAge: 24 * 60 * 60 * 1000 // 24 hours
-  }
-}));
-// Simple development CORS helper (kept intentionally small to avoid adding a new dependency)
-const DEFAULT_CORS_ORIGIN = process.env.CORS_ORIGIN || 'http://localhost:3000';
-
-app.use(function(req, res, next) {
-  // Allow the configured origin only
-  res.header('Access-Control-Allow-Origin', DEFAULT_CORS_ORIGIN);
-  res.header('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,OPTIONS');
-  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
-  res.header('Access-Control-Allow-Credentials', 'true');
-
-  // Preflight request short-circuit
-  if (req.method === 'OPTIONS') {
-    return res.sendStatus(204);
-  }
-
-  next();
-});
 app.use(express.static(path.join(__dirname, 'public')));
 // Serve uploaded files
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
@@ -260,16 +214,10 @@ app.use('/api/settings', settingsRouter);           // ✅ UC13: User settings m
 app.use('/payment', paymentRouter);                 // ✅ UC19, UC22: VNPay payment integration
 app.use('/api/ai', aiRouter);                       // ✅ UC17-18, UC20-21, UC23, UC30: AI API (implemented)
 app.use('/api/iot', iotRouter);                     // 🔄 UC32-34: IoT API
-// app.use('/api/sensor', sensorRouter);               // 🔄 Sensor data management API - COMMENTED OUT: Failed routes, will be re-enabled when team fixes
-app.use('/api/activity', activityRouter);           // Recent activity API
-app.use('/api/device-proxy', deviceProxyRouter);    // Device provisioning proxy
-app.use('/api/plant-profiles', plantProfileRouter); // ✅ Plant species database API
-app.use('/api/upload', uploadRouter);               // ✅ File upload API
-app.use('/api/plants', plantRouter);                // ✅ UC5-9: Plant management API
-app.use('/api/zones', zoneRouter);                  // ✅ Plant zone organization API (Premium/Ultimate)
+app.use('/api/sensor', sensorRouter);               // 🔄 Sensor data management API
 
 // TODO: Mount additional route handlers as they are implemented:
-//app.use('/api/dashboard', dashboardRouter);      // 🔄 UC4: Dashboard API
+// app.use('/api/dashboard', dashboardRouter);      // 🔄 UC4: Dashboard API
 // app.use('/api/plant', plantRouter);              // 🔄 UC5-9: Plant management API
 // app.use('/api/report', reportRouter);            // 🔄 UC8-9, UC15, UC17: Reports API
 // app.use('/api/premium', premiumRouter);          // 🔄 UC14-23: Premium features API

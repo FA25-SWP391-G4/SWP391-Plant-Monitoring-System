@@ -45,4 +45,12 @@ lerna-debug.log*
 .DS_Store
 Thumbs.db
 
+# AI Models and uploads
+/ai_models/**/*.bin
+/ai_models/**/*.json
+!/ai_models/config.json
+!/ai_models/**/README.md
+/uploads/images/*
+!/uploads/images/.gitkeep
+
 /certs

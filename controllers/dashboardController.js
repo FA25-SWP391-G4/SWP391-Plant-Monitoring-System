@@ -38,17 +38,8 @@ const { isValidUUID } = require('../utils/uuidGenerator');
  */
 async function getDashboardData(req, res) {
     try {
-        // Get user_id from authenticated request (now UUID)
+        // Get user_id from authenticated request
         const userId = req.user.user_id;
-
-        // Validate UUID (should already be validated by auth middleware, but double-check)
-        if (!isValidUUID(userId)) {
-            console.error('[DASHBOARD] Invalid user_id UUID:', userId);
-            return res.status(400).json({
-                success: false,
-                error: 'Invalid user ID format'
-            });
-        }
 
         // Get all plants owned by this user
         const plants = await Plant.findByUserId(userId);
@@ -68,10 +59,10 @@ async function getDashboardData(req, res) {
         const plantIds = plants.map(plant => plant.plant_id);
 
         // Get latest sensor readings for these plants
-        const latestReadings = await SensorData.findLatestForPlants(plantIds);
+        const latestReadings = await SensorData.findLatestForPlants(plants);
 
         // Get device status for plants with devices
-        const deviceStatus = await Device.getStatusForPlants(plantIds);
+        const deviceStatus = await Device.getStatusForPlants(plants);
 
         // Format the response
         const dashboardData = {

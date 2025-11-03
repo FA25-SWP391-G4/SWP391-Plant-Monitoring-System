@@ -1,7 +1,6 @@
 const OpenAI = require('openai');
 const ChatbotLog = require('../models/ChatbotLog');
 const sensorService = require('../services/sensorService');
-const { detectLanguage, getSystemPrompt, createContext, processResponse } = require('../utils/languageUtils');
 
 // Khởi tạo OpenAI client với OpenRouter
 const openai = new OpenAI({
@@ -16,13 +15,7 @@ const openai = new OpenAI({
 const chatbotController = {
   async handleMessage(req, res) {
     try {
-      const { message, user_id, context, plantId = 1 } = req.body;
-      
-      // Detect language from message
-      const detectedLanguage = detectLanguage(message, req.user?.language_preference);
-      console.log(`[Chatbot] Detected language: ${detectedLanguage} for message: "${message.substring(0, 50)}..."`);
-      
-      const userId = user_id || req.user?.user_id;
+      const { message, userId, plantId = 1, language = 'vi' } = req.body;
       
       if (!message || message.trim() === '') {
         return res.status(400).json({ 
@@ -92,19 +85,14 @@ const chatbotController = {
       const startTime = Date.now();
       
       try {
-        // Prepare context for AI with language support
-        const contextMessage = createContext(plantInfo, sensorData, wateringHistory, recentChats, detectedLanguage);
+        // Chuẩn bị context cho AI
+        const contextMessage = createContext(plantInfo, sensorData, wateringHistory, recentChats);
         
-        // Get language-specific system prompt
-        const systemPrompt = getSystemPrompt(detectedLanguage);
-        
-        console.log(`[Chatbot] Using system prompt for ${detectedLanguage}`);
-        
-        // Call OpenRouter API with Mistral model
+        // Gọi API OpenRouter với model Mistral
         const completion = await openai.chat.completions.create({
           model: process.env.OPENROUTER_MODEL || 'mistralai/mistral-7b-instruct',
           messages: [
-            { role: 'system', content: systemPrompt },
+            { role: 'system', content: getSystemPrompt(language) },
             { role: 'user', content: contextMessage },
             { role: 'user', content: message }
           ],
@@ -115,49 +103,39 @@ const chatbotController = {
         const endTime = Date.now();
         const responseTime = endTime - startTime;
         
-        const rawResponse = completion.choices[0].message.content;
+        const aiResponse = completion.choices[0].message.content;
         
-        // Process response for language-specific improvements
-        const aiResponse = processResponse(rawResponse, detectedLanguage);
-        
-        console.log(`[Chatbot] Generated response in ${responseTime}ms: "${aiResponse.substring(0, 100)}..."`);
-        
-        // Save chat log to database
+        // Lưu log chat vào database
         try {
           await ChatbotLog.create({
             userId: userId || 'anonymous',
             message: message,
             response: aiResponse,
             plantId,
-            language: detectedLanguage,
+            language,
             contextData: {
               plantInfo,
               sensorData,
-              wateringHistory,
-              detectedLanguage
+              wateringHistory
             }
           });
         } catch (logError) {
-          console.error('Unable to save chat log:', logError);
+          console.error('Không thể lưu log chat:', logError);
         }
         
         return res.json({
           success: true,
           response: aiResponse,
-          language: detectedLanguage,
           sensorData,
           plantInfo,
           responseTime,
-          hasError,
-          confidence: 0.95,
-          conversation_id: `conv_${Date.now()}`,
-          timestamp: new Date().toISOString()
+          hasError
         });
       } catch (aiError) {
-        console.error('Error calling AI API:', aiError);
+        console.error('Lỗi khi gọi API AI:', aiError);
         
-        // Return friendly error message in detected language
-        const errorMessage = detectedLanguage === 'vi' 
+        // Trả về thông báo lỗi thân thiện
+        const errorMessage = language === 'vi' 
           ? 'Xin lỗi, tôi đang gặp vấn đề kỹ thuật. Vui lòng thử lại sau ít phút.'
           : 'Sorry, I am experiencing technical issues. Please try again in a few minutes.';
           
@@ -165,27 +143,21 @@ const chatbotController = {
           success: false,
           error: true,
           response: errorMessage,
-          language: detectedLanguage,
-          details: process.env.NODE_ENV === 'development' ? aiError.message : undefined
+          details: aiError.message
         });
       }
     } catch (error) {
-      console.error('Error processing message:', error);
-      
-      // Try to detect language from the message for error response
-      const language = detectLanguage(req.body.message || '');
+      console.error('Lỗi khi xử lý tin nhắn:', error);
       
       const errorMessage = req.body.language === 'vi'
         ? 'Đã xảy ra lỗi khi xử lý tin nhắn. Vui lòng thử lại.'
         : 'An error occurred while processing your message. Please try again.';
         
       return res.status(500).json({
-        success: false,
         error: true,
         message: errorMessage,
-        response: errorMessage,
-        language: language,
-        details: process.env.NODE_ENV === 'development' ? error.message : undefined
+        details: error.message,
+        response: errorMessage
       });
     }
   },
@@ -208,89 +180,34 @@ const chatbotController = {
       });
       
     } catch (error) {
-      console.error('Lỗi khi lấy lịch sử chat:', error);
-      return res.status(500).json({
-        error: true,
-        message: 'Đã xảy ra lỗi khi lấy lịch sử chat',
-        details: error.message
-      });
+        console.error('Error getting conversation history:', error);
+        return res.status(500).json({
+            success: false,
+            message: 'Failed to get conversation history',
+            error: error.message
+        });
     }
-  },
-  
-  // API giả lập dữ liệu cảm biến cho giao diện
-  simulateData: async (req, res) => {
+};
+
+/**
+ * Get user's chat history
+ */
+const getUserChatHistory: = async (req, res) => {
     try {
-      const plantId = req.query.plantId || 1;
-      
-      // Lấy thông tin cây trồng và dữ liệu cảm biến
-      const plantInfo = await sensorService.getPlantInfo(plantId);
-      const sensorData = await sensorService.getLatestSensorData(plantId);
-      const wateringHistory = await sensorService.getWateringHistory(plantId, 3);
-      
-      // Tạo các kịch bản test khác nhau
-      const testScenarios = [
-        {
-          id: 1,
-          name: "Thiếu nước",
-          description: "Độ ẩm đất thấp, cần tưới nước ngay",
-          sampleQuestion: "Cây của tôi có vẻ héo, tôi nên làm gì?",
-          modifiedData: {
-            ...sensorData,
-            soilMoisture: Math.max(5, plantInfo.optimalSoilMoisture.min - 15)
-          }
-        },
-        {
-          id: 2,
-          name: "Quá nóng",
-          description: "Nhiệt độ cao hơn mức tối ưu",
-          sampleQuestion: "Tại sao lá cây của tôi bị vàng?",
-          modifiedData: {
-            ...sensorData,
-            temperature: plantInfo.optimalTemp.max + 5
-          }
-        },
-        {
-          id: 3,
-          name: "Thiếu ánh sáng",
-          description: "Mức ánh sáng thấp hơn mức tối ưu",
-          sampleQuestion: "Cây của tôi phát triển chậm, tại sao vậy?",
-          modifiedData: {
-            ...sensorData,
-            lightLevel: Math.max(100, plantInfo.optimalLight.min - 200)
-          }
-        },
-        {
-          id: 4,
-          name: "Điều kiện tối ưu",
-          description: "Tất cả các thông số đều trong phạm vi tối ưu",
-          sampleQuestion: "Làm thế nào để duy trì cây khỏe mạnh?",
-          modifiedData: {
-            ...sensorData,
-            temperature: (plantInfo.optimalTemp.min + plantInfo.optimalTemp.max) / 2,
-            soilMoisture: (plantInfo.optimalSoilMoisture.min + plantInfo.optimalSoilMoisture.max) / 2,
-            humidity: (plantInfo.optimalHumidity.min + plantInfo.optimalHumidity.max) / 2,
-            lightLevel: (plantInfo.optimalLight.min + plantInfo.optimalLight.max) / 2,
-            soilPH: (plantInfo.optimalPH.min + plantInfo.optimalPH.max) / 2
-          }
-        },
-        {
-          id: 5,
-          name: "Độ pH không phù hợp",
-          description: "Độ pH đất không phù hợp với loại cây",
-          sampleQuestion: "Tại sao cây của tôi không hấp thụ chất dinh dưỡng?",
-          modifiedData: {
-            ...sensorData,
-            soilPH: plantInfo.optimalPH.max + 1.5
-          }
-        }
-      ];
-      
-      res.json({
-        plantInfo,
-        sensorData,
-        wateringHistory,
-        testScenarios
-      });
+        const userId = req.user?.user_id || req.user?.id;
+        const limit = parseInt(req.query.limit) || 50;
+
+        // Get user's chat history
+        const history = await ChatHistory.findByUserId(userId, limit);
+
+        return res.json({
+            success: true,
+            data: {
+                user_id: userId,
+                chats: history.map(chat => chat.toJSON()),
+                total: history.length
+            }
+        });
     } catch (error) {
       console.error('Lỗi khi lấy dữ liệu giả lập:', error);
       res.status(500).json({
@@ -345,7 +262,31 @@ Respond as if you naturally know this information.`;
 }
 
 // Hàm tạo ngữ cảnh cho AI
-// Context creation is now handled by languageUtils
+function createContext(plantInfo, sensorData, wateringHistory, recentChats) {
+  if (!plantInfo || !sensorData) {
+    return "No plant data available";
+  }
+  
+  return `
+Thông tin cây trồng:
+- Tên: ${plantInfo.name}
+- Loại: ${plantInfo.type || plantInfo.plant_type}
+- Mô tả: ${plantInfo.description || 'Không có mô tả'}
+- Yêu cầu chăm sóc: ${plantInfo.careInstructions || 'Không có hướng dẫn cụ thể'}
+
+Dữ liệu cảm biến hiện tại:
+- Nhiệt độ: ${sensorData.temperature}°C (Tối ưu: ${plantInfo.optimalTemp?.min || plantInfo.optimal_temperature - 5}-${plantInfo.optimalTemp?.max || plantInfo.optimal_temperature + 5}°C)
+- Độ ẩm đất: ${sensorData.soilMoisture || sensorData.moisture}% (Tối ưu: ${plantInfo.optimalSoilMoisture?.min || plantInfo.optimal_moisture - 10}-${plantInfo.optimalSoilMoisture?.max || plantInfo.optimal_moisture + 10}%)
+- Độ ẩm không khí: ${sensorData.humidity}% (Tối ưu: 40-70%)
+- Ánh sáng: ${sensorData.lightLevel || sensorData.light} lux (Tối ưu: ${plantInfo.optimalLight?.min || plantInfo.optimal_light * 0.7}-${plantInfo.optimalLight?.max || plantInfo.optimal_light * 1.3} lux)
+
+Lịch sử tưới cây gần đây:
+${wateringHistory && wateringHistory.length > 0 ? wateringHistory.map(entry => `- Ngày ${new Date(entry.timestamp || entry.date).toLocaleDateString('vi-VN')}: ${entry.amount}ml nước`).join('\n') : '- Không có dữ liệu tưới cây gần đây'}
+
+Lịch sử trò chuyện gần đây:
+${recentChats && recentChats.length > 0 ? recentChats.map(chat => `Người dùng: ${chat.user_message || chat.message}\nTrợ lý: ${chat.ai_response || chat.response}`).join('\n\n') : '- Không có lịch sử trò chuyện'}
+`;
+}
 
 // Hàm gọi OpenRouter API với Mistral 7B Instruct
 async function callOpenRouterAPI(message, context = [], contextData = {}, language = 'vi') {

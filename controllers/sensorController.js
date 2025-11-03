@@ -1,4 +1,4 @@
-const db = require('../config/db.js');
+import db from  '../config/db.js';
 
 /**
  * Get the latest sensor data for all devices
@@ -6,85 +6,10 @@ const db = require('../config/db.js');
  */
 const getLatestSensorData = async (req, res) => {
     try {
-        const userId = req.user ? req.user.user_id : null;
-        
-        let query;
-        let params = [];
-        
-        if (userId) {
-            // If user is authenticated, only return their devices
-            query = `
-                SELECT DISTINCT ON (sd.device_id) 
-                    sd.device_id, 
-                    sd.timestamp, 
-                    sd.soil_moisture AS moisture,
-                    sd.temperature, 
-                    sd.air_humidity AS humidity, 
-                    sd.light_intensity AS light,
-                    d.device_name,
-                    d.sensor_type,
-                    p.plant_id,
-                    p.name AS plant_name
-                FROM 
-                    "SensorData" sd
-                JOIN 
-                    "Device" d ON sd.device_id = d.device_id
-                LEFT JOIN 
-                    "Plant" p ON d.device_id = p.device_id
-                WHERE 
-                    p.user_id = $1
-                ORDER BY 
-                    sd.device_id, sd.timestamp DESC
-            `;
-            params = [userId];
-        } else {
-            // If no user_id (should not happen due to authMiddleware), return all data
-            query = `
-                SELECT DISTINCT ON (sd.device_id) 
-                    sd.device_id, 
-                    sd.timestamp, 
-                    sd.soil_moisture AS moisture,
-                    sd.temperature, 
-                    sd.air_humidity AS humidity, 
-                    sd.light_intensity AS light,
-                    d.device_name,
-                    d.sensor_type
-                FROM 
-                    "SensorData" sd
-                JOIN 
-                    "Device" d ON sd.device_id = d.device_id
-                ORDER BY 
-                    sd.device_id, sd.timestamp DESC
-            `;
-        }
+        const query = "SELECT DISTINCT ON (device_id) device_id, timestamp, soil_moisture, temperature, air_humidity, light_intensity FROM sensor_data ORDER BY device_id, timestamp DESC";
 
-        const { rows } = await db.query(query, params);
-        
-        // Format the response as an object with device_id as keys
-        const formattedData = {};
-        rows.forEach(row => {
-            formattedData[row.device_id] = {
-                device_id: row.device_id,
-                device_name: row.device_name,
-                sensor_type: row.sensor_type,
-                plant_id: row.plant_id,
-                plant_name: row.plant_name,
-                timestamp: row.timestamp,
-                moisture: row.moisture,
-                temperature: row.temperature,
-                humidity: row.humidity,
-                light: row.light,
-                // Add historical data for charts
-                history: {
-                    moisture: generateMockHistoryData(30, 40, 80),
-                    temperature: generateMockHistoryData(30, 18, 30),
-                    humidity: generateMockHistoryData(30, 40, 80),
-                    light: generateMockHistoryData(30, 1000, 10000)
-                }
-            };
-        });
-        
-        res.json(formattedData);
+        const { rows } = await db.query(query);
+        res.json({ success: true, data: rows });
     } catch (error) {
         console.error('Error fetching sensor data:', error);
         res.status(500).json({ success: false, message: error.message });

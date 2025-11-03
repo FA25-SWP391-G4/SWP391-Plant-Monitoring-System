@@ -11,14 +11,44 @@ import WeatherWidget from '@/components/dashboard/WeatherWidget';
 import RecentActivity from '@/components/dashboard/RecentActivity';
 import WateringSchedule from '@/components/dashboard/WateringSchedule';
 import PremiumFeaturePrompt from '@/components/dashboard/PremiumFeaturePrompt';
-import AIFeaturesSection from '@/components/ai/AIFeaturesSection';
-import Navbar from '@/components/navigation/Navbar';
-import ThemedLoader from '@/components/ThemedLoader';
-import { Settings, TreePine } from 'lucide-react';
-import useMemoizedData from '@/hooks/useMemoizedData';
-import axiosClient from '@/api/axiosClient';
-import Link from 'next/link';
-import { useRenderDebug, useOperationTiming, useDataFetchDebug } from '@/utils/renderDebug';
+import Navbar from '@/components/Navbar';
+
+// Mock data for development - would come from API in real app
+const MOCK_PLANTS = [
+  {
+    plant_id: 1,
+    name: 'Snake Plant',
+    species: 'Sansevieria trifasciata',
+    image: '/images/plants/snake-plant.jpg',
+    location: 'Living Room',
+    status: 'healthy',
+    lastWatered: '2023-11-15T10:30:00Z',
+  },
+  {
+    plant_id: 2,
+    name: 'Monstera',
+    species: 'Monstera deliciosa',
+    image: '/images/plants/monstera.jpg',
+    location: 'Office',
+    status: 'needs_attention',
+    lastWatered: '2023-11-10T08:15:00Z',
+  },
+  {
+    plant_id: 3,
+    name: 'Peace Lily',
+    species: 'Spathiphyllum',
+    image: '/images/plants/peace-lily.jpg',
+    location: 'Bedroom',
+    status: 'needs_water',
+    lastWatered: '2023-11-08T14:45:00Z',
+  },
+];
+
+const MOCK_SENSOR_DATA = {
+  1: { moisture: 72, temperature: 22.5, light: 85 },
+  2: { moisture: 43, temperature: 24.1, light: 65 },
+  3: { moisture: 28, temperature: 21.8, light: 55 },
+};
 
 export default function DashboardPage() {
   const { user, loading, isPremium } = useAuth();
@@ -52,64 +82,44 @@ export default function DashboardPage() {
 
   // 🚀 PERFORMANCE MONITOR - Load performance monitoring tools
   useEffect(() => {
-    if (typeof window !== 'undefined' && process.env.NODE_ENV === 'development') {
-      // Load performance monitor script
-      const script = document.createElement('script');
-      script.src = '/utils/performanceMonitor.js';
-      script.async = true;
-      document.head.appendChild(script);
-      
-      // Enable render debugging globally
-      setTimeout(() => {
-        if (window.perfDebug) {
-          window.perfDebug.toggle(true);
-          console.log('🚀 Dashboard performance monitoring enabled');
-        }
-      }, 1000);
-      
-      return () => {
-        document.head.removeChild(script);
-      };
+    if (!loading && !user) {
+      router.push('/login');
     }
-  }, []);
+  }, [user, loading, router]);
 
   // Redirect if not logged in (only after loading is complete)
   useEffect(() => {
-    const authCheckStart = startTiming('auth-check');
-    
-    console.log('[DASHBOARD] Auth check - loading:', loading, 'user:', user?.email);
-    console.log('[DASHBOARD] User details:', {
-      hasUser: !!user,
-      userId: user?.id,
-      email: user?.email,
-      isPremium: user?.isPremium || user?.role === 'Premium' || user?.role === 'Admin',
-      role: user?.role
-    });
-    
-    if (!loading && !user) {
-      console.log('[DASHBOARD] No user found after loading complete - redirecting to /login');
-      endTiming('auth-check');
-      const redirectStart = startTiming('redirect-to-login');
-      router.push('/login').then(() => {
-        endTiming('redirect-to-login');
-      });
-    } else if (!loading && user) {
-      endTiming('auth-check');
-    }
-  }, [user, loading, router, startTiming, endTiming]);
+    if (user) {
+      // In a real app, we would fetch from the API here
+      // For now, using mock data with a timeout to simulate API call
+      const fetchData = async () => {
+        setIsLoading(true);
+        try {
+          // Simulate API call
+          await new Promise(resolve => setTimeout(resolve, 800));
+          
+          // Set mock data
+          setPlants(MOCK_PLANTS);
+          setSensorData(MOCK_SENSOR_DATA);
+        } catch (err) {
+          console.error('Error fetching dashboard data:', err);
+          setError(t('dashboard.loadError', 'Failed to load dashboard data. Please try again later.'));
+        } finally {
+          setIsLoading(false);
+        }
+      };
 
-  // Show loading state while auth is being checked
-  if (loading) {
-    console.log('[DASHBOARD] Still loading auth...');
-    const loadingRenderStart = performance.now();
-    
-    const loadingComponent = (
-      <div className="flex items-center justify-center min-h-screen">
-        <ThemedLoader 
-          size="xl" 
-          showText={true} 
-          text={t('common.loading', 'Loading...')}
-        />
+      fetchData();
+    }
+  }, [user]);
+
+  if (loading || isLoading) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <div className="animate-pulse flex flex-col items-center">
+          <div className="w-12 h-12 rounded-full bg-emerald-200 mb-4"></div>
+          <div className="h-4 w-24 bg-emerald-100 rounded"></div>
+        </div>
       </div>
     );
     
@@ -154,15 +164,11 @@ export default function DashboardPage() {
         />
       </div>
     );
-    renderDebug.logTiming('dashboard-loading-render', dashboardLoadingStart);
-    return component;
   }
 
-  // 🚀 RENDER DEBUG - Main dashboard render timing
-  const mainRenderStart = performance.now();
-
-  const dashboardComponent = (
-    <div className="min-h-screen bg-app-gradient fade-in">
+  return (
+    <div className="min-h-screen bg-gray-50">
+      <Navbar user={user} />
       <main className="container mx-auto px-4 py-8">
         {/* Welcome Banner */}
         <div className="bg-gradient-to-r from-emerald-500 to-emerald-700 dark:from-emerald-600 dark:to-emerald-800 rounded-xl shadow-lg mb-8 p-6 text-white flex items-center justify-between stagger-item">
@@ -243,23 +249,17 @@ export default function DashboardPage() {
           
           {/* Right column - Dashboard Widgets */}
           <div className="space-y-6">
-            {widgetSettings.showWeatherWidget && (
-              <WeatherWidget />
-            )}
+            <WeatherWidget />
             
-            {widgetSettings.showRecentActivity && (
-              <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-5">
-                <h3 className="font-medium text-gray-900 dark:text-white mb-4">{t('dashboard.recentActivity', 'Recent Activity')}</h3>
-                <RecentActivity />
-              </div>
-            )}
+            <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-5">
+              <h3 className="font-medium text-gray-900 mb-4">{t('dashboard.recentActivity', 'Recent Activity')}</h3>
+              <RecentActivity />
+            </div>
             
-            {widgetSettings.showWateringSchedule && (
-              <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-5">
-                <h3 className="font-medium text-gray-900 dark:text-white mb-4">{t('dashboard.wateringSchedule', 'Watering Schedule')}</h3>
-                <WateringSchedule plants={[]} />
-              </div>
-            )}
+            <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-5">
+              <h3 className="font-medium text-gray-900 mb-4">{t('dashboard.wateringSchedule', 'Watering Schedule')}</h3>
+              <WateringSchedule plants={plants} />
+            </div>
             
             {/* Premium feature banner */}
             {user?.role === 'Regular' && (
@@ -287,6 +287,7 @@ export default function DashboardPage() {
         </div>
       </main>
     </div>
+    </AIProvider>
   );
 
   // 🚀 RENDER DEBUG - Log main render completion

@@ -8,6 +8,7 @@ import Link from 'next/link';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from '@/contexts/ThemeContext';
 
+
 export default function LoginPage() {
   const { user, loading } = useAuth();
   const router = useRouter();
