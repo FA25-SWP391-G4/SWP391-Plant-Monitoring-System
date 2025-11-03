@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { ChevronDown, Search, Check } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useTheme } from '@/contexts/ThemeContext';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { countries } from '@/data/countries';
@@ -17,6 +18,7 @@ export default function PhoneInput({
   className = '',
   error = null,
 }) {
+  const { getThemeColor, isDark } = useTheme();
   const [open, setOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCountry, setSelectedCountry] = useState(
@@ -89,9 +91,9 @@ export default function PhoneInput({
           </Button>
 
           {open && (
-            <div className="absolute z-50 mt-1 w-[320px] rounded-md border bg-white dark:bg-gray-800 p-2 shadow-lg">
+            <div className="absolute z-50 mt-1 w-[320px] rounded-md border bg-card p-2 shadow-lg">
               <div className="relative mb-2">
-                <Search className="absolute left-2 top-2.5 h-4 w-4 text-gray-500" />
+                <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
                 <Input
                   type="text"
                   placeholder="Search country..."
@@ -103,7 +105,7 @@ export default function PhoneInput({
 
               <div className="max-h-[300px] overflow-auto">
                 {filteredCountries.length === 0 ? (
-                  <p className="py-6 text-center text-sm text-gray-500">
+                  <p className="py-6 text-center text-sm text-muted-foreground">
                     No country found.
                   </p>
                 ) : (
@@ -112,19 +114,19 @@ export default function PhoneInput({
                       key={country.code}
                       onClick={() => handleCountrySelect(country)}
                       className={cn(
-                        'flex cursor-pointer items-center gap-3 rounded-sm px-2 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors',
-                        selectedCountry.code === country.code && 'bg-gray-100 dark:bg-gray-700'
+                        'flex cursor-pointer items-center gap-3 rounded-sm px-2 py-2 text-sm hover:bg-muted/50 transition-colors',
+                        selectedCountry.code === country.code && 'bg-muted'
                       )}
                     >
                       {selectedCountry.code === country.code && (
-                        <Check className="h-4 w-4 text-green-600" />
+                        <Check className="h-4 w-4" style={{ color: getThemeColor('#16a34a', '#22c55e') }} />
                       )}
                       {selectedCountry.code !== country.code && (
                         <div className="w-4" />
                       )}
                       <span className={`fi fi-${country.code.toLowerCase()}`}></span>
                       <span className="flex-1">{country.name}</span>
-                      <span className="text-gray-500 text-xs">
+                      <span className="text-muted-foreground text-xs">
                         {country.dialCode}
                       </span>
                     </div>
@@ -142,17 +144,17 @@ export default function PhoneInput({
             onChange={handlePhoneChange}
             placeholder={placeholder}
             disabled={disabled}
-            className={cn(error && 'border-red-500 focus:ring-red-500')}
+            className={cn(error && 'border-destructive focus:ring-destructive')}
           />
         </div>
       </div>
 
       {error && (
-        <p className="text-sm text-red-500">{error}</p>
+        <p className="text-sm text-destructive">{error}</p>
       )}
 
       {!error && (
-        <p className="text-xs text-gray-500">
+        <p className="text-xs text-muted-foreground">
           Full number: {selectedCountry.dialCode} {value || '...'}
         </p>
       )}

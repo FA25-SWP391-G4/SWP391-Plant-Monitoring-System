@@ -45,6 +45,7 @@
     "react-error-boundary": "^6.0.0",
     "react-toastify": "^11.0.5",
     "request": "^2.88.2",
+    "sharp": "^0.34.4",
     "socket.io": "^4.7.5",
     "vnpay": "^2.4.4",
     "winston": "^3.13.0"

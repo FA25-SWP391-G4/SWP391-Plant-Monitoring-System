@@ -12,7 +12,6 @@ const {
     unlinkGoogleAccount
 } = require('../controllers/authController');
 const { authMiddleware } = require('../middlewares/authMiddleware');
-const { googleAuthCallback } = require('../controllers/googleAuthController');
 
 /**
  * ============================================================================
@@ -122,8 +121,8 @@ router.post('/register', register);
 // UC2: User Login
 router.post('/login', login);
 
-// UC2: Google Login (alternate authentication method)
-router.post('/google-login', googleAuthCallback);
+// UC2: Google OAuth routes are handled by dedicated googleAuthRoutes.js
+// Mounted at /auth/google/* - see app.js for route mounting
 
 // UC3: User Logout
 router.post('/logout', authMiddleware, logout);

@@ -12,7 +12,8 @@ import { useRouter } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../providers/AuthProvider';
 import { useDashboard } from '../contexts/DashboardContext';
-import SidebarUserMenu from './navigation/SidebarUserMenu';
+import UserMenu from './navigation/UserMenu';
+import { useTheme } from '@/contexts/ThemeContext';
 
 const DashboardTopBar = ({ 
   title, 
@@ -25,8 +26,9 @@ const DashboardTopBar = ({
   const { user } = useAuth();
   const router = useRouter();
   const { toggleSidebar } = useDashboard();
-  
-  // Use !!user for clean boolean user authentication state  
+  const { isDark, isLight, getThemeColor } = useTheme();
+
+  // Use !!user for clean boolean user authentication state
   const isAuthenticated = !!user;
   
   // Search state
@@ -170,12 +172,15 @@ const DashboardTopBar = ({
 
         {/* Logo */}
         <Link href={isDemo ? "/demo" : "/dashboard"} className="flex items-center">
-          <div style={{ color: 'transparent', marginRight: '3px' }}>
-            <Image className="w-9 h-9" src="/app-icon.png" alt="PlantSmart Logo" width={36} height={36} />
+          <div className="flex items-center">
+            <div className="w-7 h-7 rounded-lg flex items-center justify-center mr-2"
+                style={{ 
+                  background: `linear-gradient(to bottom right, ${getThemeColor('#4ade80', '#22c55e')}, ${getThemeColor('#16a34a', '#15803d')})` 
+                }}>
+              <Image src="/app-icon.png" alt="PlantSmart Logo" width={20} height={20} />
+            </div>
+            <span className="text-xl font-bold text-foreground">{t('common.appName', 'PlantSmart')}</span>
           </div>
-          <span className="text-xl font-semibold text-gray-800 dark:text-white hidden sm:block">
-            PlantSmart
-          </span>
         </Link>
       </div>
 
@@ -345,7 +350,7 @@ const DashboardTopBar = ({
           </div>
         ) : (
           // Authenticated mode - show user menu
-          <SidebarUserMenu isExpanded={true} />
+          <UserMenu isExpanded={true} />
         )}
       </div>
     </header>

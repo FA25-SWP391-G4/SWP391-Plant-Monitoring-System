@@ -271,12 +271,16 @@ export default function Home() {
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               {/* Testimonial 1 */}
-              <div className="bg-white p-6 rounded-xl border border-gray-100 shadow-sm">
+              <div className={`transition-colors duration-300 p-6 rounded-xl border border-gray-100 shadow-sm ${
+                isDark ? 'bg-gray-700' : 'bg-white'
+              }`}>
                 <div className="flex mb-4">
                   <div className="text-green-500 text-4xl mr-2">"</div>
                 </div>
                 <div className="flex text-amber-400 mb-3">★★★★★</div>
-                <p className="text-gray-600 mb-6">
+                <p className={` mb-6 transition-colors duration-300 ${
+                isDark ? 'text-gray-300' : 'text-gray-600'
+              }`}>
                   {t('testimonials.testimonial1.quote', '"PlantSmart completely transformed my plant care routine. I used to kill every plant I touched, but now my apartment is a thriving jungle! The AI recommendations are incredibly accurate."')}
                 </p>
                 <div className="flex items-center">
@@ -285,7 +289,9 @@ export default function Home() {
                   </div>
                   <div>
                     <h4 className="font-semibold">{t('testimonials.testimonial1.name', 'Sarah Chen')}</h4>
-                    <p className="text-sm text-gray-500">{t('testimonials.testimonial1.location', 'San Francisco, CA')}</p>
+                    <p className={`text-sm transition-colors duration-300 ${
+                isDark ? 'text-gray-300' : 'text-gray-600'
+              }`}>{t('testimonials.testimonial1.location', 'San Francisco, CA')}</p>
                   </div>
                 </div>
                 <div className="mt-4 pt-4 border-t border-gray-100 flex items-center">
@@ -300,12 +306,16 @@ export default function Home() {
               </div>
 
               {/* Testimonial 2 */}
-              <div className="bg-white p-6 rounded-xl border border-gray-100 shadow-sm">
+              <div className={`transition-colors duration-300 p-6 rounded-xl border border-gray-100 shadow-sm ${
+                isDark ? 'bg-gray-700' : 'bg-white'
+              }`}>
                 <div className="flex mb-4">
                   <div className="text-green-500 text-4xl mr-2">"</div>
                 </div>
                 <div className="flex text-amber-400 mb-3">★★★★★</div>
-                <p className="text-gray-600 mb-6">
+                <p className={` mb-6 transition-colors duration-300 ${
+                isDark ? 'text-gray-300' : 'text-gray-600'
+              }`}>
                   {t('testimonials.testimonial2.quote', '"As a busy entrepreneur, I never had time for proper plant care. The automated watering system is a game-changer. My plants have never looked better, and I get peace of mind."')}
                 </p>
                 <div className="flex items-center">
@@ -314,7 +324,9 @@ export default function Home() {
                   </div>
                   <div>
                     <h4 className="font-semibold">{t('testimonials.testimonial2.name', 'Marcus Rodriguez')}</h4>
-                    <p className="text-sm text-gray-500">{t('testimonials.testimonial2.location', 'Austin, TX')}</p>
+                    <p className={`text-sm transition-colors duration-300 ${
+                isDark ? 'text-gray-300' : 'text-gray-600'
+              }`}>{t('testimonials.testimonial2.location', 'Austin, TX')}</p>
                   </div>
                 </div>
                 <div className="mt-4 pt-4 border-t border-gray-100 flex items-center">
@@ -329,12 +341,16 @@ export default function Home() {
               </div>
 
               {/* Testimonial 3 */}
-              <div className="bg-white p-6 rounded-xl border border-gray-100 shadow-sm">
+              <div className={`transition-colors duration-300 p-6 rounded-xl border border-gray-100 shadow-sm ${
+                isDark ? 'bg-gray-700' : 'bg-white'
+              }`}>
                 <div className="flex mb-4">
                   <div className="text-green-500 text-4xl mr-2">"</div>
                 </div>
                 <div className="flex text-amber-400 mb-3">★★★★★</div>
-                <p className="text-gray-600 mb-6">
+                <p className={` mb-6 transition-colors duration-300 ${
+                isDark ? 'text-gray-300' : 'text-gray-600'
+              }`}>
                   {t('testimonials.testimonial3.quote', '"The health alerts saved my fiddle leaf fig from a pest infestation I never would have caught early. The mobile app makes monitoring so convenient and actually fun!"')}
                 </p>
                 <div className="flex items-center">
@@ -343,7 +359,9 @@ export default function Home() {
                   </div>
                   <div>
                     <h4 className="font-semibold">{t('testimonials.testimonial3.name', 'Emily Watson')}</h4>
-                    <p className="text-sm text-gray-500">{t('testimonials.testimonial3.location', 'Portland, OR')}</p>
+                    <p className={`text-sm transition-colors duration-300 ${
+                isDark ? 'text-gray-300' : 'text-gray-600'
+              }`}>{t('testimonials.testimonial3.location', 'Portland, OR')}</p>
                   </div>
                 </div>
                 <div className="mt-4 pt-4 border-t border-gray-100 flex items-center">
@@ -361,17 +379,19 @@ export default function Home() {
         </section>
 
         {/* Additional Features */}
-        <section className="bg-white py-16">
+        <section className={`transition-colors duration-300 py-16 ${isDark ? 'bg-gray-800' : 'bg-white'}`}>
           <div className="container mx-auto px-4">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              <div className="bg-white p-8 rounded-xl shadow-sm">
-                <div className="bg-green-100 w-16 h-16 rounded-xl flex items-center justify-center mb-6">
+              <div className={`transition-colors duration-300 p-8 rounded-xl shadow-sm ${isDark ? 'bg-gray-800' : 'bg-white'}`}>
+                <div className={`transition-colors duration-300 w-16 h-16 rounded-xl flex items-center justify-center mb-6 ${isDark ? 'bg-green-200' : 'bg-green-100'}`}>
                   <svg className="h-8 w-8 text-green-500" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M17,2H7C5.9,2 5,2.9 5,4V20C5,21.1 5.9,22 7,22H17C18.1,22 19,21.1 19,20V4C19,2.9 18.1,2 17,2M12,4C13.1,4 14,4.9 14,6C14,7.1 13.1,8 12,8C10.9,8 10,7.1 10,6C10,4.9 10.9,4 12,4M17,20H7V17H17V20M17,15H7V10H17V15Z" />
                   </svg>
                 </div>
                 <h3 className="text-xl font-semibold mb-3">{t('features.mobileDashboard.title', 'Mobile Dashboard')}</h3>
-                <p className="text-gray-600">
+                <p className={` transition-colors duration-300 ${
+                isDark ? 'text-gray-300' : 'text-gray-600'
+              }`}>
                   {t('features.mobileDashboard.description', 'Complete plant management from your phone with real-time monitoring, care schedules, and growth tracking.')}
                 </p>
                 <Link href="/features" className="inline-flex items-center text-green-500 mt-4 font-medium">
@@ -379,14 +399,16 @@ export default function Home() {
                 </Link>
               </div>
 
-              <div className="bg-white p-8 rounded-xl shadow-sm">
-                <div className="bg-purple-100 w-16 h-16 rounded-xl flex items-center justify-center mb-6">
+              <div className={`transition-colors duration-300 p-8 rounded-xl shadow-sm ${isDark ? 'bg-gray-800' : 'bg-white'}`}>
+                <div className={`transition-colors duration-300 w-16 h-16 rounded-xl flex items-center justify-center mb-6 ${isDark ? 'bg-purple-200' : 'bg-purple-100'}`}>
                   <svg className="h-8 w-8 text-purple-500" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M13,3V9H21V3M13,21H21V11H13M3,21H11V15H3M3,13H11V3H3V13Z" />
                   </svg>
                 </div>
                 <h3 className="text-xl font-semibold mb-3">{t('features.aiDoctor.title', 'AI Plant Doctor')}</h3>
-                <p className="text-gray-600">
+                <p className={` transition-colors duration-300 ${
+                isDark ? 'text-gray-300' : 'text-gray-600'
+              }`}>
                   {t('features.aiDoctor.description', 'Machine learning algorithms analyze your plant data to provide personalized care recommendations and predict potential issues.')}
                 </p>
                 <Link href="/features" className="inline-flex items-center text-purple-500 mt-4 font-medium">
@@ -394,17 +416,19 @@ export default function Home() {
                 </Link>
               </div>
 
-              <div className="bg-white p-8 rounded-xl shadow-sm">
-                <div className="bg-gray-100 w-16 h-16 rounded-xl flex items-center justify-center mb-6">
+              <div className={`transition-colors duration-300 p-8 rounded-xl shadow-sm ${isDark ? 'bg-gray-800' : 'bg-white'}`}>
+                <div className={`transition-colors duration-300 w-16 h-16 rounded-xl flex items-center justify-center mb-6 ${isDark ? 'bg-gray-700' : 'bg-gray-100'}`}>
                   <svg className="h-8 w-8 text-gray-500" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M12,21L15.6,16.2C14.6,15.45 13.35,15 12,15C10.65,15 9.4,15.45 8.4,16.2L12,21M12,3C7.95,3 4.21,4.34 1.2,6.6L3,9C5.5,7.12 8.62,6 12,6C15.38,6 18.5,7.12 21,9L22.8,6.6C19.79,4.34 16.05,3 12,3M12,9C9.3,9 6.81,9.89 4.8,11.4L6.6,13.8C8.1,12.67 9.97,12 12,12C14.03,12 15.9,12.67 17.4,13.8L19.2,11.4C17.19,9.89 14.7,9 12,9Z" />
                   </svg>
                 </div>
                 <h3 className="text-xl font-semibold mb-3">{t('features.iotSensors.title', 'IoT Sensors')}</h3>
-                <p className="text-gray-600">
+                <p className={` transition-colors duration-300 ${
+                isDark ? 'text-gray-300' : 'text-gray-600'
+              }`}>
                   {t('features.iotSensors.description', 'Network of wireless sensors monitoring temperature, humidity, soil pH, and nutrients for comprehensive plant care.')}
                 </p>
-                <Link href="/features" className="inline-flex items-center text-gray-500 mt-4 font-medium">
+                <Link href="/features" className="inline-flex items-center mt-4 font-medium">
                   {t('features.iotSensors.cta', 'Learn More')} →
                 </Link>
               </div>
@@ -413,11 +437,13 @@ export default function Home() {
         </section>
 
         {/* CTA Section */}
-        <section className="py-16 bg-green-50">
+        <section className={`py-16 transition-colors duration-300 ${
+                isDark ? 'bg-gray-700' : 'bg-white'
+              }`}>
           <div className="container mx-auto px-4">
             <div className="text-center">
-              <h2 className="text-3xl md:text-4xl font-bold mb-6">{t('landing.ctaTitle', 'Ready to Transform Your Plant Care?')}</h2>
-              <p className="max-w-2xl mx-auto text-lg text-gray-600 mb-8">
+              <h2 className={`text-3xl md:text-4xl font-bold mb-6 transition-colors duration-300 ${isDark ? 'bg-gray-700 text-white' : 'bg-white text-gray-600'}`}>{t('landing.ctaTitle', 'Ready to Transform Your Plant Care?')}</h2>
+              <p className={`max-w-2xl mx-auto text-lg mb-8 transition-colors duration-300 ${isDark ? 'bg-gray-700 text-gray-300' : 'bg-white text-gray-600'}`}>
                 {t('landing.ctaSubtitle', 'Join thousands of plant parents who never worry about their green friends again.')}
               </p>
               <div className="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4">
@@ -429,7 +455,7 @@ export default function Home() {
                 </Link>
                 <Link
                   href="/demo"
-                  className="border border-gray-300 hover:border-green-500 text-gray-700 hover:text-green-500 py-3 px-8 rounded-md font-medium text-lg transition"
+                  className={`border border-gray-300 hover:border-green-500 hover:text-green-500 py-3 px-8 rounded-md font-medium text-lg transition transition-colors duration-300 ${isDark ? 'text-white' : 'text-gray-700'}`}
                 >
                   {t('landing.scheduleDemo', 'Schedule Demo')}
                 </Link>

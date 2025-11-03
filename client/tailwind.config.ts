@@ -80,6 +80,10 @@ const config = {
       backgroundImage: {
         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
         'gradient-conic': 'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
+        'gradient-light-green': 'linear-gradient(135deg, #f8fafc 0%, #f0fdf4 50%, #f8fafc 100%)',
+        'gradient-dark-green': 'linear-gradient(135deg, #0f0f23 0%, #0c1c17 50%, #0f0f23 100%)',
+        'gradient-card-light': 'linear-gradient(135deg, #ffffff 0%, #f7fee7 50%, #ffffff 100%)',
+        'gradient-card-dark': 'linear-gradient(135deg, #1e1b2e 0%, #1a2e20 50%, #1e1b2e 100%)',
       },
     },
   },

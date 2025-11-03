@@ -29,21 +29,65 @@ const { isValidUUID } = require('../utils/uuidGenerator');
  * Middleware to verify JWT token and attach user to request
  */
 const authMiddleware = async (req, res, next) => {
+    console.log('\n=== AUTH MIDDLEWARE START ===');
+    console.log('[AUTH MIDDLEWARE] Request URL:', req.url);
+    console.log('[AUTH MIDDLEWARE] Request method:', req.method);
+    console.log('[AUTH MIDDLEWARE] Request headers:');
+    console.log('  - Authorization:', req.headers.authorization ? `${req.headers.authorization.substring(0, 30)}...` : 'MISSING');
+    console.log('  - Cookie:', req.headers.cookie || 'MISSING');
+    console.log('  - User-Agent:', req.headers['user-agent']?.substring(0, 50) + '...' || 'MISSING');
+    
     try {
-        // Get token from Authorization header
+        // Get token from Authorization header OR cookies
         const authHeader = req.headers.authorization;
+        let token = null;
         
-        if (!authHeader || !authHeader.startsWith('Bearer ')) {
+        console.log('[AUTH MIDDLEWARE] Token source validation:');
+        console.log('  - Auth header exists:', !!authHeader);
+        console.log('  - Auth header starts with Bearer:', authHeader?.startsWith('Bearer '));
+        
+        // Try Authorization header first
+        if (authHeader && authHeader.startsWith('Bearer ')) {
+            token = authHeader.split(' ')[1];
+            console.log('[AUTH MIDDLEWARE] ✅ Token found in Authorization header');
+        } else {
+            // Fallback to cookies
+            console.log('[AUTH MIDDLEWARE] No valid Authorization header, checking cookies...');
+            
+            // Parse cookie header for token
+            const cookieHeader = req.headers.cookie;
+            if (cookieHeader) {
+                const cookies = cookieHeader.split(';').reduce((acc, cookie) => {
+                    const [key, value] = cookie.trim().split('=');
+                    acc[key] = value;
+                    return acc;
+                }, {});
+                
+                token = cookies.token;
+                console.log('[AUTH MIDDLEWARE] Cookie parsing result:');
+                console.log('  - Cookies found:', Object.keys(cookies));
+                console.log('  - Token in cookies:', !!token);
+                
+                if (token) {
+                    console.log('[AUTH MIDDLEWARE] ✅ Token found in cookies');
+                }
+            }
+        }
+        
+        if (!token) {
+            console.log('[AUTH MIDDLEWARE] ❌ No token found in Authorization header or cookies');
             return res.status(401).json({ 
                 success: false,
                 error: 'Authentication required. No token provided.' 
             });
         }
         
-        // Extract token
-        const token = authHeader.split(' ')[1];
+        console.log('[AUTH MIDDLEWARE] Token extraction:');
+        console.log('  - Token length:', token?.length || 0);
+        console.log('  - Token preview:', token ? `${token.substring(0, 20)}...` : 'MISSING');
         
         if (!token) {
+            console.log('[AUTH MIDDLEWARE] ❌ Token extraction failed');
             return res.status(401).json({ 
                 success: false,
                 error: 'Authentication required. Invalid token format.' 
@@ -51,24 +95,55 @@ const authMiddleware = async (req, res, next) => {
         }
         
         // Verify token
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        console.log('[AUTH MIDDLEWARE] Verifying JWT token...');
+        let decoded;
+        try {
+            decoded = jwt.verify(token, process.env.JWT_SECRET);
+            console.log('[AUTH MIDDLEWARE] ✅ Token verification successful');
+            console.log('  - User ID:', decoded.user_id);
+            console.log('  - Email:', decoded.email);
+            console.log('  - Role:', decoded.role);
+            console.log('  - Issued at:', new Date(decoded.iat * 1000).toISOString());
+            console.log('  - Expires at:', new Date(decoded.exp * 1000).toISOString());
+        } catch (jwtError) {
+            console.log('[AUTH MIDDLEWARE] ❌ Token verification failed:', jwtError.message);
+            return res.status(401).json({ 
+                success: false,
+                error: 'Invalid or expired token. Please log in again.' 
+            });
+        }
         
         // Validate UUID format from token
         if (!decoded.user_id || !isValidUUID(decoded.user_id)) {
-            console.error('[AUTH MIDDLEWARE] Invalid user_id UUID in token:', decoded.user_id);
+            console.error('[AUTH MIDDLEWARE] ❌ Invalid user_id UUID in token:', decoded.user_id);
             return res.status(401).json({ 
                 success: false,
                 error: 'Invalid token format. Please log in again.' 
             });
         }
         
-        console.log('[AUTH MIDDLEWARE] Validating token for user UUID:', decoded.user_id);
+        console.log('[AUTH MIDDLEWARE] Looking up user in database...');
         
         // Find user by ID from decoded token
-        const user = await User.findById(decoded.user_id);
+        let user;
+        try {
+            user = await User.findById(decoded.user_id);
+            console.log('[AUTH MIDDLEWARE] User lookup result:', user ? 'FOUND' : 'NOT FOUND');
+            if (user) {
+                console.log('  - Database user ID:', user.user_id);
+                console.log('  - Database email:', user.email);
+                console.log('  - Database role:', user.role);
+            }
+        } catch (userLookupError) {
+            console.error('[AUTH MIDDLEWARE] ❌ User lookup failed:', userLookupError.message);
+            return res.status(500).json({ 
+                success: false,
+                error: 'Database error during authentication.' 
+            });
+        }
         
         if (!user) {
-            console.error('[AUTH MIDDLEWARE] User not found for UUID:', decoded.user_id);
+            console.error('[AUTH MIDDLEWARE] ❌ User not found for UUID:', decoded.user_id);
             return res.status(404).json({ 
                 success: false,
                 error: 'User not found. Token may be invalid.' 

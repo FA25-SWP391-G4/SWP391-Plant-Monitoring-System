@@ -75,6 +75,10 @@
     "changePassword": "Change Password",
     "changePasswordTitle": "Update your password",
     "logout": "Logout",
+    "signOut": "Sign Out",
+    "confirmLogout": "Confirm Sign Out",
+    "logoutMessage": "Are you sure you want to sign out? You will need to sign in again to access your account.",
+    "signingOut": "Signing Out...",
     "rememberMe": "Remember me",
     "passwordRequirements": "Password must be at least 6 characters long",
     "passwordMatch": "Passwords must match",
@@ -169,7 +173,12 @@
     "errorLoading": "Error Loading Dashboard",
     "loadError": "Failed to load dashboard data. Please try again later.",
     "redirecting": "Redirecting to dashboard...",
-    "weather": "Current Weather"
+    "weather": "Current Weather",
+    "aiFeatures": "AI Features",
+    "configureWidgets": "Configure",
+    "customizeLayout": "Customize Your Dashboard",
+    "customizeDescription": "Manage widget visibility and dashboard preferences",
+    "openSettings": "Open Settings"
   },
   "plants": {
     "myPlants": "My Plants",

@@ -1,5 +1,5 @@
 const express = require('express');
-const { getAllPlants, getPlantById, getUserPlants } = require('../controllers/plantController');
+const { getAllPlants, getPlantById, getUserPlants, createPlant } = require('../controllers/plantController');
 const { authMiddleware } = require('../middlewares/authMiddleware');
 const router = express.Router();
 
@@ -9,6 +9,13 @@ const router = express.Router();
  * @access  Private
  */
 router.get('/', authMiddleware, getUserPlants);
+
+/**
+ * @route   POST /api/plants
+ * @desc    Create a new plant
+ * @access  Private
+ */
+router.post('/', authMiddleware, createPlant);
 
 /**
  * @route   GET /api/plants/:id

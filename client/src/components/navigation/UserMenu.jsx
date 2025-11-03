@@ -4,7 +4,8 @@ import Image from "next/image";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "@/providers/AuthProvider";
 import { useTheme } from "@/contexts/ThemeContext"
-import { useRouter } from 'next/navigation'; // For redirecting to profile page
+import { useRouter } from 'next/navigation';
+import LogoutConfirmationModal from '../LogoutConfirmationModal';
 
 /**
  * UserMenu component 
@@ -17,9 +18,129 @@ const UserMenu = () => {
   const { t, i18n } = useTranslation();
   const { user, logout } = useAuth();
   const { currentTheme, theme, toggleTheme, setLightTheme, setDarkTheme, setSystemTheme } = useTheme();
+  
+  // Early return for logged-out users with minimal UI
+  if (!user) {
+    return <LoggedOutUserMenu i18n={i18n} t={t} />;
+  }
+
+  return <LoggedInUserMenu 
+    user={user}
+    logout={logout}
+    t={t}
+    i18n={i18n}
+    theme={theme}
+    setLightTheme={setLightTheme}
+    setDarkTheme={setDarkTheme}
+    setSystemTheme={setSystemTheme}
+  />;
+};
+
+/**
+ * Lightweight component for logged-out users
+ */
+const LoggedOutUserMenu = ({ i18n, t }) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const menuRef = useRef(null);
+  
+  // Available languages (minimal set for performance)
+  const availableLanguages = {
+    vi: { name: 'Tiếng Việt', flag: '/flags/vi.svg', nativeName: 'Tiếng Việt' },
+    en: { name: 'English', flag: '/flags/en.svg', nativeName: 'English' }
+  };
+
+  const currentLanguage = i18n.language;
+  
+  // Close dropdown when clicking outside - only when needed
+  useEffect(() => {
+    if (!isOpen) return;
+    
+    const handleClickOutside = (event) => {
+      if (menuRef.current && !menuRef.current.contains(event.target)) {
+        setIsOpen(false);
+      }
+    };
+    
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [isOpen]);
+
+  const changeLanguage = (lang) => {
+    i18n.changeLanguage(lang);
+    localStorage.setItem('i18nextLng', lang);
+    setIsOpen(false);
+  };
+
+  return (
+    <div className="relative" ref={menuRef}>
+      <button
+        className="flex items-center space-x-1 rounded-full hover:bg-gray-100 p-1.5 transition-colors"
+        onClick={() => setIsOpen(!isOpen)}
+        aria-expanded={isOpen}
+        aria-label={t('accessibility.languageMenu', 'Language menu')}
+      >
+        <div className="w-8 h-8 rounded-full overflow-hidden mr-2">
+          <Image
+            src={availableLanguages[currentLanguage]?.flag || availableLanguages.en.flag}
+            alt={availableLanguages[currentLanguage]?.name || availableLanguages.en.name}
+            width={32}
+            height={32}
+            className="object-cover w-full h-full"
+          />
+        </div>
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-gray-500">
+          <path d="m6 9 6 6 6-6"></path>
+        </svg>
+      </button>
+
+      {isOpen && (
+        <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg border border-gray-100 z-50 overflow-hidden">
+          <div className="py-1">
+            <div className="px-4 py-2 text-sm text-gray-500 border-b border-gray-100">
+              {t('settings.language', 'Language')}
+            </div>
+            {['vi', 'en'].map((langCode) => (
+              <button
+                key={langCode}
+                onClick={() => changeLanguage(langCode)}
+                className="w-full flex items-center justify-between px-4 py-2 text-gray-700 hover:bg-gray-50"
+              >
+                <div className="flex items-center">
+                  <div className="w-5 h-5 flex-shrink-0 relative overflow-hidden rounded-full border border-gray-200 mr-3">
+                    <Image 
+                      src={availableLanguages[langCode]?.flag || `/flags/${langCode}.svg`}
+                      alt={availableLanguages[langCode]?.nativeName || langCode}
+                      width={20}
+                      height={20}
+                      className="object-cover w-full h-full"
+                    />
+                  </div>
+                  <span>{availableLanguages[langCode]?.nativeName || langCode}</span>
+                </div>
+                {currentLanguage === langCode && (
+                  <span className="text-green-500">
+                    <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                  </span>
+                )}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
+/**
+ * Full-featured component for logged-in users
+ */
+const LoggedInUserMenu = ({ user, logout, t, i18n, theme, setLightTheme, setDarkTheme, setSystemTheme }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [showingAppearanceMenu, setShowingAppearanceMenu] = useState(false);
   const [showingLanguageMenu, setShowingLanguageMenu] = useState(false);
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
   const menuRef = useRef(null);
   const router = useRouter();
   
@@ -30,8 +151,7 @@ const UserMenu = () => {
     fr: { name: 'French', flag: '/flags/fr.svg', nativeName: 'Français' },
     zh: { name: 'Chinese', flag: '/flags/zh.svg', nativeName: '中文' },
     kr: { name: 'Korean', flag: '/flags/kr.svg', nativeName: '한국어' },
-    ja: { name: 'Japanese', flag: '/flags/ja.svg', nativeName: '日本語' },
-    es: { name: 'Spanish', flag: '/flags/es.svg', nativeName: 'Español' }
+    ja: { name: 'Japanese', flag: '/flags/ja.svg', nativeName: '日本語' }
   };
 
   // Get current language
@@ -40,6 +160,8 @@ const UserMenu = () => {
   
   // Close dropdown when clicking outside
   useEffect(() => {
+    if (!isOpen) return;
+    
     const handleClickOutside = (event) => {
       if (menuRef.current && !menuRef.current.contains(event.target)) {
         setIsOpen(false);
@@ -49,10 +171,8 @@ const UserMenu = () => {
     };
     
     document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, []);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [isOpen]);
   
   // Toggle dropdown visibility
   const toggleMenu = () => {
@@ -139,61 +259,94 @@ const UserMenu = () => {
         aria-expanded={isOpen}
         aria-label={t('accessibility.userMenu', 'User menu')}
       >
-        <div>
-          {user?.profile_picture ? (
-            <div className="w-10 h-10 rounded-full overflow-hidden mr-3">
-            <Image 
-              src={user.profile_picture}
-              alt={user.name || t('common.user', 'User')}
-              width={40}
-              height={40}
-              className="object-cover w-full h-full"
-            />
+        {user ? (
+          <div>
+            {user?.profile_picture ? (
+              <div className="w-10 h-10 rounded-full overflow-hidden mr-3">
+              <Image 
+            src={user.profile_picture}
+            alt={user.name || t('common.user', 'User')}
+            width={40}
+            height={40}
+            className="object-cover w-full h-full"
+              />
             </div>
           ) : (
             <div className="w-10 h-10 bg-green-100 text-green-700 rounded-full flex items-center justify-center mr-3">
-            {(user?.given_name?.charAt(0) || user?.family_name?.charAt(0) || 'U')}
+              {(user?.given_name?.charAt(0) || user?.family_name?.charAt(0) || 'U')}
             </div>
           )}
-        </div>
-        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-gray-500">
-          <path d="m6 9 6 6 6-6"></path>
-        </svg>
-      </button>
-      
-      {/* Dropdown menu */}
+            </div>
+          ) : (
+            <div className="w-8 h-8 rounded-full overflow-hidden mr-2">
+          <Image
+            src={availableLanguages[currentLanguage]?.flag || availableLanguages.en.flag}
+            alt={availableLanguages[currentLanguage]?.name || availableLanguages.en.name}
+            width={32}
+            height={32}
+            className="object-cover w-full h-full"
+          />
+            </div>
+          )}
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-gray-500">
+            <path d="m6 9 6 6 6-6"></path>
+          </svg>
+        </button>
+        
+        {/* Dropdown menu */}
       {isOpen && (
         <div className="absolute right-0 mt-2 w-60 bg-white rounded-md shadow-lg border border-gray-100 z-50 overflow-hidden">
           {/* User info section */}
-                {user && (
-                <div className="p-4 border-b border-gray-100">
-                  <div className="flex items-center">
-                  {user?.profile_picture ? (
-                    <div className="w-10 h-10 rounded-full overflow-hidden mr-3">
-                    <Image 
-                      src={user.profile_picture}
-                      alt={user.name || t('common.user', 'User')}
-                      width={40}
-                      height={40}
-                      className="object-cover w-full h-full"
-                    />
-                    </div>
-                  ) : (
-                    <div className="w-10 h-10 bg-green-100 text-green-700 rounded-full flex items-center justify-center mr-3">
-                    {(user?.given_name?.charAt(0) || user?.family_name?.charAt(0) || 'U')}
-                    </div>
-                  )}
-                  <div>
-                    <p className="font-medium text-gray-800">
-                    {user?.given_name && user?.family_name 
-                      ? `${user.given_name} ${user.family_name}` 
-                      : user?.family_name || user?.given_name || user?.full_name || user?.name || t('common.user', 'User')}
-                    </p>
-                    <p className="text-xs text-gray-500 truncate max-w-[160px]">{truncateEmail(user.email)}</p>
-                  </div>
-                  </div>
-                </div>
-                )}
+          {user && (
+            <div className="p-4 border-b border-gray-100">
+            <div className="flex items-center">
+              {user?.profile_picture ? (
+              <div className="w-10 h-10 rounded-full overflow-hidden mr-3">
+                <Image 
+                src={user.profile_picture}
+                alt={user.name || t('common.user', 'User')}
+                width={40}
+                height={40}
+                className="object-cover w-full h-full"
+                />
+              </div>
+              ) : (
+              <div className="w-10 h-10 bg-green-100 text-green-700 rounded-full flex items-center justify-center mr-3">
+                {(user?.given_name?.charAt(0) || user?.family_name?.charAt(0) || 'U')}
+              </div>
+              )}
+              <div className="absolute -top-1 -right-1"></div>
+              {user?.role === "Admin" && (
+                <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-gradient-to-r from-blue-500 to-blue-600 text-white">
+                {t('roles.admin', 'Admin')}
+                </span>
+              )}
+              {user?.role === "Premium" && (
+                <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-gradient-to-r from-amber-400 to-amber-500 text-white">
+                {t('subscription.premium', 'Premium')}
+                </span>
+              )}
+              {user?.role === "Ultimate" && (
+                <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-gradient-to-r from-purple-500 via-purple-600 to-indigo-700 text-white shadow-lg animate-pulse transform hover:scale-105 transition-all duration-300 hover:shadow-purple-500/50">
+                {t('subscription.ultimate', 'Ultimate')}
+                </span>
+              )}
+              {(!user?.role || user?.role === "Regular") && !user?.role && (
+                <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                {t('subscription.regular', 'Regular')}
+                </span>
+              )}
+              </div>
+              <div>
+              <p className="font-medium text-gray-800">
+                {user?.given_name && user?.family_name 
+                ? `${user.given_name} ${user.family_name}` 
+                : user?.family_name || user?.given_name || user?.full_name || user?.name || t('common.user', 'User')}
+                </p>
+              <p className="text-xs text-gray-500 truncate max-w-[160px]">{truncateEmail(user.email)}</p>
+              </div>
+            </div>
+          )}
                 
                 {/* Profile section */}
           {user && !showingAppearanceMenu && !showingLanguageMenu && (
@@ -425,7 +578,7 @@ const UserMenu = () => {
               </div>
               
               {/* Language options */}
-              {['vi', 'en', 'fr', 'kr', 'zh', 'ja'].map((langCode) => (
+              {['vi', 'en'].map((langCode) => (
                 <button
                   key={langCode}
                   onClick={() => changeLanguage(langCode)}
@@ -459,7 +612,10 @@ const UserMenu = () => {
           {user && !showingAppearanceMenu && !showingLanguageMenu && (
             <div className="py-1">
               <button 
-                onClick={logout}
+                onClick={() => {
+                  setShowLogoutModal(true);
+                  setIsOpen(false); // Close the user menu
+                }}
                 className="w-full flex items-center px-4 py-2 text-red-600 hover:bg-gray-50"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-3">
@@ -473,6 +629,12 @@ const UserMenu = () => {
           )}
         </div>
       )}
+
+      {/* Logout Confirmation Modal */}
+      <LogoutConfirmationModal 
+        isOpen={showLogoutModal} 
+        onClose={() => setShowLogoutModal(false)} 
+      />
     </div>
   );
 };

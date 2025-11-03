@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
+import { useTheme } from '@/contexts/ThemeContext';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '../ui/Card';
 import { Input } from '../ui/Input';
 import { Button } from '../ui/Button';
@@ -16,6 +17,7 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3010';
  */
 export function ResetPasswordForm({ token }) {
   const { t } = useTranslation();
+  const { getAuthClass, presets } = useTheme();
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [password, setPassword] = useState('');

@@ -93,6 +93,8 @@ class Plant {
         this.moisture_threshold = plantData.moisture_threshold; // UC16: Custom thresholds
         this.auto_watering_on = plantData.auto_watering_on; // UC7: Auto-watering control
         this.created_at = plantData.created_at;
+        this.zone_id = plantData.zone_id;
+        this.notes = plantData.notes;
     }
 
     /**
