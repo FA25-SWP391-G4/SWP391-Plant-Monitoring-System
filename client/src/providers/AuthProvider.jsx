@@ -20,18 +20,7 @@ export default function AuthProvider({ children }) {
   const [token, setToken] = useState(null);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
-  
-  // 🚀 RENDER DEBUG - Track AuthProvider performance
-  const renderDebug = useRenderDebug('AuthProvider', {
-    hasUser: !!user,
-    hasToken: !!token,
-    loading,
-    userEmail: user?.email
-  });
-  
-  const { startTiming, endTiming } = useOperationTiming('AuthProvider');
 
-  // Check if the user is authenticated on mount and after navigation
   useEffect(() => {
     const checkAuth = async () => {
       const authCheckStart = startTiming('auth-check');
@@ -129,31 +118,9 @@ export default function AuthProvider({ children }) {
   }, [startTiming, endTiming]);
 
   const login = (t, u) => { 
-    const loginStart = startTiming('login-process');
-    console.log('[AUTH PROVIDER] Login called with:');
-    console.log('  - Token length:', t?.length || 0);
-    console.log('  - User:', u?.email || 'no email');
-    
-    // Store token in cookie for later use in API requests
-    const cookieOptions = {
-      expires: 7, // 7 days to match backend
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'Lax',
-      path: '/', // Ensure path matches
-      domain: process.env.NODE_ENV === 'production' ? undefined : 'localhost' // Explicit domain for localhost
-    };
-    
-    console.log('[AUTH PROVIDER] Setting cookie with options:', cookieOptions);
-    Cookies.set('token_client', t, cookieOptions);
-    
-    // Verify cookie was set
-    const verifyToken = Cookies.get('token_client');
-    console.log('[AUTH PROVIDER] Cookie verification:', verifyToken ? 'SUCCESS' : 'FAILED');
-    if (verifyToken) {
-      console.log('[AUTH PROVIDER] Stored token preview:', verifyToken.substring(0, 20) + '...');
-    }
-    
-    // Update local state
+    // Set cookies with appropriate security settings
+    Cookies.set('token', t, { secure: true, sameSite: 'strict' }); 
+    Cookies.set('user', JSON.stringify(u), { secure: true, sameSite: 'strict' }); 
     setToken(t); 
     setUser(u); 
     

@@ -17,6 +17,7 @@
     "wateringFailed": "Failed to trigger watering. Please try again.",
     "analysisError": "Could not analyze plant condition. Please try again later."
   },
+  
   "common": {
     "submit": "Submit",
     "cancel": "Cancel",
@@ -27,7 +28,6 @@
     "close": "Close",
     "back": "Back",
     "next": "Next",
-    "upgrade": "Upgrade",
     "email": "Email",
     "password": "Password",
     "confirmPassword": "Confirm Password",
@@ -35,7 +35,6 @@
     "firstName": "First name",
     "lastName": "Last name",
     "phoneNumber": "Phone Number (optional)",
-    "user": "User",
     "and": "and",
     "required": "Required field",
     "success": "Success",
@@ -50,12 +49,11 @@
     "appName": "PlantSmart",
     "plantLover": "Plant Lover"
   },
+  
   "accessibility": {
     "email": "Email",
     "phone": "Phone",
-    "location": "Location",
-    "changeLanguage": "Change language",
-    "userMenu": "User menu"
+    "location": "Location"
   },
   "auth": {
     "login": "Login",
@@ -119,7 +117,6 @@
     "login": "Login",
     "logout": "Logout",
     "profile": "Profile",
-    "settings": "Settings",
     "register": "Register",
     "changePassword": "Change Password",
     "forgotPassword": "Forgot Password",
@@ -128,6 +125,7 @@
     "chat": "Chat",
     "support": "Support",
     "admin": "Administration",
+    "settings": "Settings",
     "features": "Features",
     "benefits": "Benefits",
     "pricing": "Pricing",
@@ -180,31 +178,41 @@
     "customizeDescription": "Manage widget visibility and dashboard preferences",
     "openSettings": "Open Settings"
   },
-  "plants": {
-    "myPlants": "My Plants",
-    "manage": "Manage and monitor your plant collection",
-    "addNew": "Add New Plant",
-    "noMatchingPlants": "No plants match your filters",
-    "noPlants": "No plants added yet",
-    "tryDifferentFilter": "Try a different filter or search term",
-    "startAdding": "Start adding plants to your collection",
-    "addFirstPlant": "Add Your First Plant",
-    "errorLoading": "Error Loading Plants",
-    "loadError": "Failed to load plants data. Please try again later.",
-    "notFound": "Plant not found",
-    "manualWatering": "Manual Watering",
-    "tabs": {
-      "overview": "Overview",
-      "sensorData": "Sensor Data",
-      "wateringSchedule": "Watering Schedule"
-    }
-  },
-  "notFound": {
+"plants": {
+  "myPlants": "My Plants",
+  "manage": "Manage and monitor your plant collection",
+  "addNew": "Add New Plant",
+  "noMatchingPlants": "No plants match your filters",
+  "noPlants": "No plants added yet",
+  "tryDifferentFilter": "Try a different filter or search term",
+  "startAdding": "Start adding plants to your collection",
+  "addFirstPlant": "Add Your First Plant",
+  "errorLoading": "Error Loading Plants",
+  "loadError": "Failed to load plants data. Please try again later.",
+  "notFound": "Plant not found",
+  "manualWatering": "Manual Watering",
+  "deviceStatus": "Device Status",
+  "lastWatered": "Last Watered",
+  "nextScheduled": "Next Scheduled Watering",
+  "notWateredYet": "Not watered yet",
+  "notScheduled": "Not scheduled",
+  "view": "View details",
+  "viewDetails": "View Details",
+  "tabs": {
+    "overview": "Overview",
+    "sensorData": "Sensor Data",
+    "wateringSchedule": "Watering Schedule",
+    "aiPredictions": "AI Predictions",
+    "diseaseRecognition": "Disease Recognition",
+    "aiAssistant": "AI Assistant"
+  }
+},  "notFound": {
     "title": "Page Not Found",
     "message": "The page you are looking for doesn't exist or has been moved.",
     "goBack": "Go back to home page",
     "errorCode": "Error 404"
   },
+  
   "forbidden": {
     "title": "Access Denied",
     "message": "You don't have permission to access this page.",
@@ -270,60 +278,26 @@
     "allRightsReserved": "All rights reserved."
   },
   "features": {
-    "smartWatering": {
-      "title": "Smart Watering",
-      "description": "Automated watering system that delivers the perfect amount of water based on soil moisture, plant type, and environmental conditions."
-    },
+    "smartWatering": "Smart Watering",
     "smartWateringDesc": "Our sensors monitor soil moisture and automatically water your plants at the perfect time, ensuring they're never over or under-watered.",
-    "lightOptimization": {
-      "title": "Light Optimization",
-      "description": "Advanced light sensors monitor and optimize lighting conditions, ensuring your plants receive the ideal spectrum and intensity."
-    },
+    "lightOptimization": "Light Optimization",
     "lightOptimizationDesc": "Track light exposure throughout the day and receive recommendations on optimal placement for each of your plants' specific needs.",
-    "healthAlerts": {
-      "title": "Health Alerts"
-    },
-    "healthAlertsDesc": "Get instant notifications about potential health issues, pests, or diseases before they become serious problems.",
-    "mobileDashboard": {
-      "title": "Mobile Dashboard",
-      "description": "Complete plant management from your phone with real-time monitoring, care schedules, and growth tracking.",
-      "cta": "Learn More"
-    },
-    "aiDoctor": {
-      "title": "AI Plant Doctor",
-      "description": "Machine learning algorithms analyze your plant data to provide personalized care recommendations and predict potential issues.",
-      "cta": "Learn More"
-    },
-    "iotSensors": {
-      "title": "IoT Sensors",
-      "description": "Network of wireless sensors monitoring temperature, humidity, soil pH, and nutrients for comprehensive plant care.",
-      "cta": "Learn More"
-    }
-  },
-  "cta": {
-    "heading": "Ready to Transform Your Plant Care?",
-    "subheading": "Join thousands of plant parents who never worry about their green friends again.",
-    "startTrial": "Start Free Trial",
-    "scheduleDemo": "Schedule a Demo"
+    "healthAlerts": "Health Alerts",
+    "healthAlertsDesc": "Get instant notifications about potential health issues, pests, or diseases before they become serious problems."
   },
   "footer": {
-    "companyDescription": "Smart plant care, simple and effective.",
     "product": "Product",
-    "features": "Features",
-    "pricing": "Pricing",
-    "security": "Security",
-    "integrations": "Integrations",
     "company": "Company",
-    "about": "About Us",
-    "blog": "Blog",
-    "careers": "Careers",
-    "contact": "Contact",
     "support": "Support",
     "helpCenter": "Help Center",
     "documentation": "Documentation",
     "community": "Community",
     "status": "System Status",
-    "copyright": "© {{year}} PlantSmart. All rights reserved.",
+    "about": "About Us",
+    "blog": "Blog",
+    "careers": "Careers",
+    "security": "Security",
+    "integrations": "Integrations",
     "privacyPolicy": "Privacy Policy",
     "termsOfService": "Terms of Service",
     "cookies": "Cookies"
@@ -403,76 +377,11 @@
   },
   "ai": {
     "chatbot": {
-      "title": "AI Plant Assistant",
-      "subtitle": "Premium Feature",
-      "placeholder": "Ask about plant care...",
+      "title": "Plant Assistant",
+      "placeholder": "Ask me anything about your plants...",
       "greeting": "Hello! How can I help with your plants today?",
-      "welcomeMessage": "Hello! I'm your AI plant care assistant. How can I help you today?",
       "loading": "Thinking...",
-      "error": "Sorry, I couldn't process your request. Please try again.",
-      "errorMessage": "Sorry, I'm having trouble connecting. Please try again later.",
-      "send": "Send",
-      "tooltip": "AI Plant Assistant",
-      "quickQuestions": {
-        "title": "Quick Questions:",
-        "watering": "When should I water my plants?",
-        "light": "Is my plant getting enough light?",
-        "yellowing": "Why are my leaves turning yellow?",
-        "fertilizer": "When should I fertilize?"
-      }
-    },
-    "section": {
-      "title": "AI Plant Care Assistant",
-      "subtitle": "Advanced AI-powered plant care insights and recommendations",
-      "premiumRequired": {
-        "title": "Premium Feature",
-        "description": "Unlock advanced AI plant care features with Premium",
-        "upgrade": "Upgrade to Premium"
-      },
-      "tabs": {
-        "analysis": "Plant Analysis",
-        "imageRecognition": "Image Recognition",
-        "predictions": "Predictions",
-        "history": "Analysis History"
-      },
-      "analysis": {
-        "healthScore": "Overall Health",
-        "refresh": "Refresh Analysis",
-        "analyze": "Analyze Plant",
-        "details": "Detailed Analysis"
-      },
-      "imageAnalysis": {
-        "upload": "Upload Plant Image",
-        "selectImage": "Select Plant Image",
-        "changeImage": "Change Image",
-        "analyze": "Analyze",
-        "analyzing": "Analyzing...",
-        "results": "Analysis Results",
-        "healthAssessment": "Health Assessment",
-        "diseaseDetection": "Disease Detection",
-        "diseaseFound": "Disease Detected",
-        "diseaseMessage": "Potential disease detected. Please consult a plant specialist.",
-        "noDiseaseFound": "No Disease Detected",
-        "healthyMessage": "Your plant appears healthy!",
-        "recommendations": "Recommendations"
-      },
-      "predictions": {
-        "watering": "Watering Predictions",
-        "predict": "Generate Predictions",
-        "predicting": "Predicting...",
-        "nextWatering": "Next Watering",
-        "noWateringNeeded": "No watering needed in the next 7 days",
-        "weeklyForecast": "Weekly Forecast",
-        "noPredictions": "No Predictions Available",
-        "generateMessage": "Generate AI predictions for your plants"
-      },
-      "history": {
-        "title": "Analysis History",
-        "refresh": "Refresh",
-        "noHistory": "No Analysis History",
-        "noHistoryMessage": "Run some analyses to see your history here",
-        "analysisDetails": "Analysis Details"
-      }
+      "error": "Sorry, I couldn't process your request. Please try again."
     },
     "imageRecognition": {
       "title": "Plant Identification",
@@ -510,7 +419,6 @@
   "weather": {
     "title": "Local Weather",
     "today": "Today",
-    "tomorrow": "Tomorrow",
     "forecast": "Forecast",
     "precipitation": "Precipitation",
     "humidity": "Humidity",
@@ -521,19 +429,7 @@
     "lowTemp": "Low",
     "feels": "Feels like",
     "indoor": "Indoor",
-    "outdoor": "Outdoor",
-    "updatedAt": "Updated at",
-    "error": "Unable to fetch weather data",
-    "weekdays": {
-      "short": ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
-    },
-    "tip": {
-      "default": "Monitor soil moisture daily based on current weather conditions.",
-      "hot": "Hot day ahead. Water your plants early morning or evening to prevent evaporation.",
-      "rainy": "Rainy weather. Check indoor plants for proper drainage to prevent root rot.",
-      "dry": "Low humidity. Consider misting your tropical plants to increase humidity.",
-      "windy": "Windy conditions. Move delicate potted plants to sheltered locations."
-    }
+    "outdoor": "Outdoor"
   },
   "reviews": {
     "title": "Customer Reviews",
@@ -670,87 +566,102 @@
       "outOfRange": "Out of Range"
     }
   },
-  "profile": {
-    "title": "User Profile",
-    "personalInfo": "Personal Information",
-    "accountInfo": "Account Information",
-    "memberSince": "Member Since",
-    "accountSettings": "Account Settings",
-    "subscription": "Subscription",
-    "planDetails": "Plan Details",
-    "billingHistory": "Billing History",
-    "changePassword": "Change Password",
-    "notifications": "Notifications",
-    "preferences": "Preferences",
-    "saveChanges": "Save Changes",
-    "cancelChanges": "Cancel",
-    "updateSuccess": "Profile updated successfully",
-    "updateError": "Failed to update profile",
-    "uploadPhoto": "Upload Photo",
-    "removePhoto": "Remove Photo",
-    "currentSubscription": "Current Subscription: {{plan}}",
-    "subscriptionStatus": "Status: {{status}}",
-    "editProfile": "Edit Profile",
-    "premiumUser": "Premium User",
-    "adminUser": "Administrator",
-    "standardUser": "Standard User",
-    "nextBilling": "Next Billing Date: {{date}}",
-    "upgradeAccount": "Upgrade Account",
-    "manageSubscription": "Manage Subscription",
-    "cancelSubscription": "Cancel Subscription",
-    "deleteAccount": "Delete Account",
-    "confirmDelete": "Are you sure you want to delete your account? This action cannot be undone."
+  
+  "imageRecognition": {
+    "title": "Plant Disease Recognition",
+    "subtitle": "Upload plant images to detect diseases and get treatment recommendations",
+    "subtitleWithPlant": "Analyze {{plantName}} for diseases and health issues",
+    "uploadTitle": "Upload Plant Image",
+    "uploadDescription": "Drag and drop an image here, or click to select",
+    "selectFile": "Select Image",
+    "fileRequirements": "Supports JPG, PNG, WebP (max 5MB)",
+    "analyzing": "Analyzing image...",
+    "processingImage": "Processing image with AI model...",
+    "analyzeButton": "Analyze Plant Health",
+    "analysisResults": "Analysis Results",
+    "diseaseDetection": "Disease Detection",
+    "detectedCondition": "Detected Condition:",
+    "severity": "Severity:",
+    "confidence": "confidence",
+    "treatmentRecommendations": "Treatment Recommendations",
+    "preventionTips": "Prevention Tips",
+    "analysisHistory": "Recent Analysis History",
+    "healthy": "Healthy",
+    "clear": "Clear",
+    "viewAllHistory": "View All History",
+    "invalidFileType": "Please select a valid image file",
+    "fileTooLarge": "File size must be less than 5MB",
+    "noFileSelected": "Please select an image to analyze",
+    "analysisError": "Unable to analyze image. Please try again.",
+    "compressing": "Compressing image...",
+    "retryAnalysis": "Retry Analysis",
+    "offlineMode": "Offline Mode - Analysis will be processed when connection is restored",
+    "imageQualityPoor": "Image quality is too poor for reliable analysis. Please try a clearer image.",
+    "noHistoryAvailable": "No analysis history available",
+    "deleteHistory": "Clear History",
+    "exportHistory": "Export History"
   },
-  "network": {
-    "title": "Network Setup",
-    "wifiSetup": "WiFi Setup",
-    "availableNetworks": "Available Networks",
-    "noNetworksFound": "No networks found",
-    "refreshNetworks": "Refresh",
-    "networkName": "Network Name",
-    "password": "Password",
-    "connect": "Connect",
-    "disconnect": "Disconnect",
-    "connecting": "Connecting...",
-    "connected": "Connected",
-    "connectionFailed": "Connection failed",
-    "security": {
-      "none": "None",
-      "wep": "WEP",
-      "wpa": "WPA",
-      "wpa2": "WPA2"
-    },
-    "advancedSettings": "Advanced Settings",
-    "ipAddress": "IP Address",
-    "subnetMask": "Subnet Mask",
-    "gateway": "Gateway",
-    "dns": "DNS",
-    "useDhcp": "Use DHCP",
-    "staticIp": "Static IP",
-    "applySettings": "Apply Settings"
+  
+  "devices": {
+    "online": "Online",
+    "offline": "Offline"
   },
-  "feature": {
-    "healthAlerts": {
-      "title": "Health Alerts",
-      "description": "Instant notifications about plant health issues, diseases, or care requirements sent directly to your smartphone."
-    },
-    "lightOptimization": {
-      "title": "Light Optimization",
-      "description": "Advanced light sensors monitor and optimize lighting conditions, ensuring your plants receive the ideal spectrum and intensity."
-    },
-    "smartWatering": {
-      "title": "Smart Watering",
-      "description": "Automated watering system that delivers the perfect amount of water based on soil moisture, plant type, and environmental conditions."
-    }
+  
+  "premium": {
+    "unlockFeatures": "Unlock Premium Features",
+    "scheduleDescription": "Schedule automatic watering, get detailed analytics, and more with Premium.",
+    "upgrade": "Upgrade to Premium"
   },
+
   "settings": {
+    "title": "Settings",
+    "account": "Account Settings",
+    "notificationsSection": "Notification Preferences",
+    "devices": "Device Management",
     "appearance": "Appearance",
     "language": "Language",
-    "moreLanguages": "More languages",
+    "privacySection": "Privacy & Data",
+    "help": "Help & Support",
+    "about": "About",
+    "logout": "Log Out",
+    "deleteAccount": "Delete Account",
     "theme": {
-      "system": "System",
-      "light": "Light Mode",
-      "dark": "Dark Mode"
+      "title": "Theme",
+      "light": "Light",
+      "dark": "Dark",
+      "system": "System Default"
+    },
+    "notificationPreferences": {
+      "push": "Push Notifications",
+      "email": "Email Notifications",
+      "watering": "Watering Reminders",
+      "moisture": "Low Moisture Alerts",
+      "battery": "Low Battery Alerts",
+      "tips": "Plant Care Tips",
+      "updates": "Product Updates"
+    },
+    "privacySettings": {
+      "dataCollection": "Data Collection",
+      "dataSharing": "Data Sharing",
+      "analytics": "Analytics",
+      "downloadData": "Download My Data",
+      "deleteData": "Delete My Data"
+    },
+    "advanced": {
+      "title": "Advanced Settings",
+      "readingFrequency": "Sensor Reading Frequency",
+      "frequencyHint": "More frequent readings use more battery power",
+      "debug": "Debug Mode",
+      "logs": "View System Logs",
+      "resetSystem": "Reset System"
+    },
+    "accountDeletion": {
+      "title": "Delete Your Account",
+      "warning": "This action permanently deletes your account and all data.",
+      "confirmation": "I understand this cannot be undone",
+      "button": "Delete My Account",
+      "feedback": "Please tell us why you're leaving:",
+      "success": "Account successfully deleted"
     }
   }
 }

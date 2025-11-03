@@ -124,7 +124,7 @@ export default function PlantCard({ plant, sensorData = {} }) {
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-blue-500 mr-1">
                 <path d="M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5C6 11.1 5 15 5 15a7 7 0 0 0 7 7z"></path>
               </svg>
-              <span className="font-medium">{sensorData?.moisture || 'N/A'}%</span>
+              <span className="font-medium">{sensorData?.soil_moisture ?? 'N/A'}%</span>
             </div>
           </div>
           
@@ -160,7 +160,7 @@ export default function PlantCard({ plant, sensorData = {} }) {
                 <path d="m6.34 17.66-1.41 1.41"></path>
                 <path d="m19.07 4.93-1.41 1.41"></path>
               </svg>
-              <span className="font-medium">{sensorData?.light || 'N/A'} lux</span>
+              <span className="font-medium">{sensorData?.light || 'N/A'}%</span>
             </div>
           </div>
         </div>
@@ -194,6 +194,26 @@ export default function PlantCard({ plant, sensorData = {} }) {
           {t('plants.lastWatered', 'Last watered')}: {lastWateredDate}
         </div>
         
+        {/* AI Prediction Banner */}
+        {sensorData?.moisture && sensorData.moisture < 40 && (
+          <div className="bg-gradient-to-r from-blue-50 to-blue-100 border border-blue-200 rounded-lg p-3 mb-4">
+            <div className="flex items-center">
+              <div className="text-blue-600 mr-2">🤖</div>
+              <div className="flex-1">
+                <p className="text-sm font-medium text-blue-900">
+                  {t('ai.prediction.wateringSoon', 'AI predicts watering needed in 2 days')}
+                </p>
+                <p className="text-xs text-blue-700">
+                  {t('ai.prediction.confidence', 'Confidence: 89%')} • {t('ai.prediction.amount', 'Recommended: 250ml')}
+                </p>
+              </div>
+              <button className="text-blue-600 hover:text-blue-700 text-xs font-medium">
+                {t('ai.prediction.details', 'Details')}
+              </button>
+            </div>
+          </div>
+        )}
+
         {/* Actions */}
         <div className="flex flex-wrap gap-2">
           <Link href={`/plants/${plant.plant_id}`} className="px-3 py-1.5 bg-emerald-600 text-white text-sm rounded hover:bg-emerald-700 transition-colors">
@@ -202,6 +222,9 @@ export default function PlantCard({ plant, sensorData = {} }) {
           <button className="px-3 py-1.5 bg-blue-50 text-blue-600 text-sm rounded hover:bg-blue-100 transition-colors border border-blue-200">
             {t('plants.water', 'Water Now')}
           </button>
+          <Link href={`/ai/chat?plant=${plant.plant_id}`} className="px-3 py-1.5 bg-purple-50 text-purple-600 text-sm rounded hover:bg-purple-100 transition-colors border border-purple-200">
+            {t('ai.askAI', 'Ask AI')}
+          </Link>
           <button className="px-3 py-1.5 bg-gray-50 text-gray-600 text-sm rounded hover:bg-gray-100 transition-colors">
             {t('plants.log', 'Log Activity')}
           </button>

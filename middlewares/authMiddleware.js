@@ -125,25 +125,9 @@ const authMiddleware = async (req, res, next) => {
         console.log('[AUTH MIDDLEWARE] Looking up user in database...');
         
         // Find user by ID from decoded token
-        let user;
-        try {
-            user = await User.findById(decoded.user_id);
-            console.log('[AUTH MIDDLEWARE] User lookup result:', user ? 'FOUND' : 'NOT FOUND');
-            if (user) {
-                console.log('  - Database user ID:', user.user_id);
-                console.log('  - Database email:', user.email);
-                console.log('  - Database role:', user.role);
-            }
-        } catch (userLookupError) {
-            console.error('[AUTH MIDDLEWARE] ❌ User lookup failed:', userLookupError.message);
-            return res.status(500).json({ 
-                success: false,
-                error: 'Database error during authentication.' 
-            });
-        }
+        const user = await User.findById(decoded.user_id);
         
         if (!user) {
-            console.error('[AUTH MIDDLEWARE] ❌ User not found for UUID:', decoded.user_id);
             return res.status(404).json({ 
                 success: false,
                 error: 'User not found. Token may be invalid.' 

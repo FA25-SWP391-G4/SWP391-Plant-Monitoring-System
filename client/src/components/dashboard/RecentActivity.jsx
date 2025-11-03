@@ -1,10 +1,9 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from '@/contexts/ThemeContext';
 
 export default function RecentActivity() {
   const { t } = useTranslation();
-  const { isDark, themeColors } = useTheme();
   
   // Mock activity data - would come from API in a real app
   const activities = [
@@ -153,6 +152,20 @@ export default function RecentActivity() {
   };
   
   if (activities.length === 0) {
+    if (loading) {
+      return (
+        <div className="text-center py-4">
+          <p className="text-sm text-gray-500">{t('common.loading', 'Loading...')}</p>
+        </div>
+      );
+    }
+    if (error) {
+      return (
+        <div className="text-center py-4">
+          <p className="text-sm text-red-600">{error}</p>
+        </div>
+      );
+    }
     return (
       <div className="text-center py-4">
         <p className={`text-sm ${
