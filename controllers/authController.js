@@ -236,12 +236,12 @@ async function register(req, res) {
     try {
         const { email, password, google_id, given_name, family_name, phoneNumber, profile_picture, newsletter } = req.body;
         
-        // Initialize userData with defaults - handle both naming conventions
+        // Initialize userData with defaults - use snake_case for consistency
         let userData = {
             email,
             password,
-            familyName: family_name,
-            givenName: given_name,
+            family_name: family_name,
+            given_name: given_name,
             role: 'Regular',
             google_id: google_id || null,
             phone_number: phoneNumber || null,
@@ -267,7 +267,7 @@ async function register(req, res) {
             // Continue with registration attempt
         }
 
-        console.log(`[REGISTER] Creating new user with email: ${userData.email}, given name: ${userData.givenName || 'none'}, google_id: ${userData.google_id || 'none'}`);
+        console.log(`[REGISTER] Creating new user with email: ${userData.email}, given name: ${userData.given_name || 'none'}, google_id: ${userData.google_id || 'none'}`);
 
         // Save with explicit error handling
         try {
@@ -382,13 +382,27 @@ async function sendWelcomeEmail(user) {
  * - Database errors
  */
 async function login(req, res) {
+    console.log('\n=== LOGIN CONTROLLER START ===');
+    console.log('[LOGIN] Request method:', req.method);
+    console.log('[LOGIN] Request URL:', req.url);
+    console.log('[LOGIN] Request headers:', JSON.stringify(req.headers, null, 2));
+    console.log('[LOGIN] Request body:', JSON.stringify(req.body, null, 2));
+    console.log('[LOGIN] Session ID:', req.sessionID);
+    console.log('[LOGIN] Session data:', JSON.stringify(req.session, null, 2));
+    
     try {
         const { email, password, googleId, refreshToken, loginMethod } = req.body;
-        console.log(`[LOGIN] Attempt for email: ${email}, googleId: ${googleId || 'none'}, method: ${loginMethod || 'password'}`);
+        
+        console.log(`[LOGIN] Login attempt details:`);
+        console.log(`  - Email: ${email}`);
+        console.log(`  - Password: ${password ? '[PROVIDED]' : '[NOT PROVIDED]'}`);
+        console.log(`  - Google ID: ${googleId || '[NOT PROVIDED]'}`);
+        console.log(`  - Refresh token: ${refreshToken ? '[PROVIDED]' : '[NOT PROVIDED]'}`);
+        console.log(`  - Login method: ${loginMethod || 'password'}`);
 
         // Validate inputs for regular login
         if (!googleId && (!email || !password)) {
-            console.log('[LOGIN] Missing email or password for regular login');
+            console.log('[LOGIN] Validation failed: Missing email or password for regular login');
             return res.status(400).json({
                 error: 'Email and password are required'
             });
@@ -417,9 +431,24 @@ async function login(req, res) {
         if (loginMethod === 'google' || googleId) {
             console.log(`[LOGIN] Google login attempt for user: ${email}`);
             
-            // Only proceed if user already has a google_id
             if (user.google_id) {
-                console.log('[GOOGLE AUTH] User already has Google ID, proceeding with Google auth');
+                // User already has Google ID - verify it matches
+                console.log('[GOOGLE AUTH] User already has Google ID, verifying match');
+                
+                if (googleId && user.google_id !== googleId) {
+                    console.log('[GOOGLE AUTH] Google ID mismatch');
+                    
+                    // For OAuth flow, redirect to frontend with error
+                    if (loginMethod === 'google') {
+                        const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
+                        return res.redirect(`${frontendUrl}/login?error=google_id_mismatch`);
+                    }
+                    
+                    // For API calls, return JSON
+                    return res.status(401).json({
+                        error: 'Google account mismatch'
+                    });
+                }
                 
                 // Store refresh token if provided
                 if (refreshToken) {
@@ -431,47 +460,38 @@ async function login(req, res) {
                     user = await User.findById(user.user_id);
                 }
             } else {
-                console.log('[GOOGLE AUTH] User exists but does not have Google ID');
+                // User exists but doesn't have Google ID - link the account
+                console.log('[GOOGLE AUTH] User exists but does not have Google ID, linking account');
                 
-                // For OAuth flow, redirect to frontend with error
-                if (loginMethod === 'google') {
-                    const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
-                    return res.redirect(`${frontendUrl}/login?error=account_not_linked&email=${encodeURIComponent(email)}`);
+                try {
+                    // Update user with Google ID and refresh token
+                    await user.update({
+                        google_id: googleId,
+                        google_refresh_token: refreshToken
+                    });
+                    
+                    console.log('[GOOGLE AUTH] Successfully linked Google account to existing user');
+                    
+                    // Refresh user object to get updated data
+                    user = await User.findById(user.user_id);
+                } catch (error) {
+                    console.error('[GOOGLE AUTH] Error linking Google account:', error);
+                    
+                    // For OAuth flow, redirect to frontend with error
+                    if (loginMethod === 'google') {
+                        const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
+                        return res.redirect(`${frontendUrl}/login?error=linking_failed`);
+                    }
+                    
+                    // For API calls, return JSON
+                    return res.status(500).json({
+                        error: 'Failed to link Google account'
+                    });
                 }
-                
-                // For API calls, return JSON
-                return res.status(401).json({
-                    error: 'This email is registered without Google. Please login with password or link your Google account.',
-                    requiresLinking: true
-                });
-            }
-
-            // Verify matching Google IDs if provided
-            if (googleId && user.google_id !== googleId) {
-                console.log('[GOOGLE AUTH] Google ID mismatch');
-                
-                // For OAuth flow, redirect to frontend with error
-                if (loginMethod === 'google') {
-                    const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
-                    return res.redirect(`${frontendUrl}/login?error=google_id_mismatch`);
-                }
-                
-                // For API calls, return JSON
-                return res.status(401).json({
-                    error: 'Google account mismatch'
-                });
             }
         } else {
             // Regular password login
             console.log(`[LOGIN] Regular login attempt for user: ${email}`);
-            
-            // Check for Google-only account
-            if (user.google_id && !user.password) {
-                return res.status(401).json({
-                    error: 'This account uses Google login. Please sign in with Google.',
-                    googleOnly: true
-                });
-            }
 
             // Validate password
             const isPasswordValid = await user.validatePassword(password);
@@ -494,14 +514,19 @@ async function login(req, res) {
 
         console.log(`[LOGIN] User name fields: given_name=${user.given_name}, family_name=${user.family_name}, fullName=${fullName}`);
 
-        // Create user response object
+        // Create user response object with consistent structure
         const userData = {
+            id: user.user_id, // Add id field for frontend compatibility
             user_id: user.user_id,
             email: user.email,
             family_name: user.family_name,
             given_name: user.given_name,
             full_name: fullName,
-            role: user.role
+            role: user.role,
+            isPremium: user.role === 'Premium' || user.role === 'Admin',
+            profile_picture: user.profile_picture,
+            language: user.language || 'en',
+            created_at: user.created_at
         };
         
         console.log(`[LOGIN] User data being sent to client:`, JSON.stringify(userData));
@@ -511,24 +536,69 @@ async function login(req, res) {
             const redirectUrl = req.session.redirectAfterLogin || '/dashboard';
             const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
             
-            console.log(`[LOGIN] Google OAuth flow - redirecting to frontend callback`);
-            console.log(`[LOGIN] Frontend URL: ${frontendUrl}`);
-            console.log(`[LOGIN] Redirect destination: ${redirectUrl}`);
+            console.log(`[LOGIN] Google OAuth flow - preparing redirect to frontend`);
+            console.log(`[LOGIN] Environment variables:`);
+            console.log(`  - FRONTEND_URL: ${process.env.FRONTEND_URL}`);
+            console.log(`  - NODE_ENV: ${process.env.NODE_ENV}`);
+            console.log(`[LOGIN] Computed values:`);
+            console.log(`  - Frontend URL: ${frontendUrl}`);
+            console.log(`  - Redirect destination: ${redirectUrl}`);
+            console.log(`  - Token length: ${token.length}`);
+            console.log(`  - Token preview: ${token.substring(0, 50)}...`);
+            
+            // Set backend cookies BEFORE redirecting (important for cookie-based auth)
+            const cookieOptions = {
+                secure: process.env.NODE_ENV === 'production',
+                sameSite: 'lax',
+                path: '/',
+                maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
+            };
+            
+            console.log(`[LOGIN] Setting cookies with options:`, cookieOptions);
+            
+            // HttpOnly cookie for server-side auth (secure)
+            res.cookie('token', token, {
+                ...cookieOptions,
+                httpOnly: true
+            });
+            
+            // Non-HttpOnly cookie for frontend JS access
+            res.cookie('token_client', token, {
+                ...cookieOptions,
+                httpOnly: false
+            });
+            
+            console.log(`[LOGIN] ✅ Both cookies set successfully for Google auth user`);
+            
+            // Construct redirect URL
+            const callbackUrl = `${frontendUrl}/auth/callback?token=${token}&redirect=${encodeURIComponent(redirectUrl)}`;
+            console.log(`[LOGIN] Final redirect URL: ${callbackUrl}`);
+            console.log(`[LOGIN] Redirect URL length: ${callbackUrl.length}`);
             
             // Redirect to frontend auth callback with token
-            // Frontend will store token in its own cookie
-            console.log(`${frontendUrl}/auth/callback?token=${token}&redirect=${encodeURIComponent(redirectUrl)}`);
-            return res.redirect(`${frontendUrl}/auth/callback?token=${token}&redirect=${encodeURIComponent(redirectUrl)}`);
+            console.log(`[LOGIN] ✅ Executing redirect to frontend callback...`);
+            return res.redirect(callbackUrl);
         }
 
         // For regular login, send JSON response with cookie
-        // Set session cookie for browser-based clients
-        res.cookie('auth_token', token, {
-            httpOnly: true,
+        // Set TWO cookies: one HttpOnly for security, one readable by frontend JS
+        const cookieOptions = {
             secure: process.env.NODE_ENV === 'production',
             sameSite: 'lax',
             path: '/',
             maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
+        };
+        
+        // HttpOnly cookie for server-side auth (secure)
+        res.cookie('token', token, {
+            ...cookieOptions,
+            httpOnly: true
+        });
+        
+        // Non-HttpOnly cookie for frontend JS access
+        res.cookie('token_client', token, {
+            ...cookieOptions,
+            httpOnly: false // Frontend can read this
         });
         
         res.status(200).json({
@@ -1052,26 +1122,44 @@ async function changePassword(req, res) {
  * Used by client to check authentication status
  */
 async function getCurrentUser(req, res) {
+    console.log('\n=== GET CURRENT USER START ===');
+    console.log('[GET CURRENT USER] Request headers:', JSON.stringify(req.headers, null, 2));
+    console.log('[GET CURRENT USER] Request cookies:', req.headers.cookie || 'None');
+    console.log('[GET CURRENT USER] Auth middleware user:', req.user ? 'Present' : 'Missing');
+    
     try {
         // User is attached by the auth middleware
         if (!req.user) {
+            console.log('[GET CURRENT USER] ❌ No user found - not authenticated');
             return res.status(401).json({
                 success: false,
-                message: 'Not authenticated'
+                error: 'Authentication required. No token provided.'
             });
         }
         
-        // Return the user data without sensitive fields
+        console.log('[GET CURRENT USER] ✅ User found via auth middleware:');
+        console.log('  - User ID:', req.user.user_id);
+        console.log('  - Email:', req.user.email);
+        console.log('  - Role:', req.user.role);
+        console.log('  - Given name:', req.user.given_name || req.user.givenName);
+        console.log('  - Family name:', req.user.family_name || req.user.familyName);
+        
+        // Return the user data without sensitive fields with consistent naming
         const userData = {
+            id: req.user.user_id, // Add id field for frontend compatibility
             user_id: req.user.user_id,
             email: req.user.email,
-            givenName: req.user.givenName,
-            familyName: req.user.familyName,
+            given_name: req.user.given_name || req.user.givenName,
+            family_name: req.user.family_name || req.user.familyName,
+            full_name: req.user.full_name || `${req.user.given_name || req.user.givenName || ''} ${req.user.family_name || req.user.familyName || ''}`.trim(),
             role: req.user.role,
+            isPremium: req.user.role === 'Premium' || req.user.role === 'Admin',
             profile_picture: req.user.profile_picture,
             language: req.user.language || 'en',
             created_at: req.user.created_at
         };
+        
+        console.log('[GET CURRENT USER] ✅ Returning user data:', userData);
         
         res.json({
             success: true,

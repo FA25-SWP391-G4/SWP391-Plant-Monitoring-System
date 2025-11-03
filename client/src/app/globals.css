@@ -74,7 +74,8 @@
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-gradient-light-green dark:bg-gradient-dark-green text-foreground;
+    min-height: 100vh;
   }
 }
 
@@ -86,3 +87,22 @@
 @import url('../assets/css/PlantStatusCard.css');
 @import url('../assets/css/notifications.css');
 @import url('../assets/css/theme.css');
+
+/* Custom gradient utilities */
+@layer utilities {
+  .bg-app-gradient {
+    background: linear-gradient(135deg, #f8fafc 0%, #f0fdf4 50%, #f8fafc 100%);
+  }
+  
+  .dark .bg-app-gradient {
+    background: linear-gradient(135deg, #0f0f23 0%, #0c1c17 50%, #0f0f23 100%);
+  }
+  
+  .bg-card-gradient {
+    background: linear-gradient(135deg, #ffffff 0%, #f7fee7 50%, #ffffff 100%);
+  }
+  
+  .dark .bg-card-gradient {
+    background: linear-gradient(135deg, #1e1b2e 0%, #1a2e20 50%, #1e1b2e 100%);
+  }
+}

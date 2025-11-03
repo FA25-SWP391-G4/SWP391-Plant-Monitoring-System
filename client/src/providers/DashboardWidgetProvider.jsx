@@ -5,6 +5,8 @@
 'use client'
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import settingsApi from '@/api/settingsApi';
+import { useAuth } from './AuthProvider';
 
 const DashboardWidgetContext = createContext();
 
@@ -17,6 +19,8 @@ export function useDashboardWidgets() {
 }
 
 export function DashboardWidgetProvider({ children }) {
+  const { user, isAuthenticated } = useAuth();
+  
   // Default widget visibility settings
   const defaultSettings = {
     // Main dashboard widgets
@@ -50,35 +54,86 @@ export function DashboardWidgetProvider({ children }) {
   const [widgetSettings, setWidgetSettings] = useState(defaultSettings);
   const [loading, setLoading] = useState(true);
 
-  // Load settings from localStorage on component mount
+  // Load settings from API on component mount for authenticated users
   useEffect(() => {
-    try {
-      const savedSettings = localStorage.getItem('dashboardAppearanceSettings');
-      if (savedSettings) {
-        const parsed = JSON.parse(savedSettings);
-        setWidgetSettings(prev => ({ ...prev, ...parsed }));
+    const loadSettings = async () => {
+      if (!isAuthenticated || !user) {
+        // For non-authenticated users, try to load from localStorage
+        try {
+          const savedSettings = localStorage.getItem('dashboardAppearanceSettings');
+          if (savedSettings) {
+            const parsed = JSON.parse(savedSettings);
+            setWidgetSettings(prev => ({ ...prev, ...parsed }));
+          }
+        } catch (error) {
+          console.error('Error loading dashboard widget settings from localStorage:', error);
+        } finally {
+          setLoading(false);
+        }
+        return;
       }
-    } catch (error) {
-      console.error('Error loading dashboard widget settings:', error);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
 
-  // Save settings to localStorage whenever they change
-  const updateWidgetSettings = (newSettings) => {
+      // For authenticated users, load from API
+      try {
+        const response = await settingsApi.getWidgetSettings();
+        if (response.data.success) {
+          setWidgetSettings(prev => ({ ...prev, ...response.data.data }));
+        }
+      } catch (error) {
+        console.error('Error loading dashboard widget settings from API:', error);
+        // Fallback to localStorage
+        try {
+          const savedSettings = localStorage.getItem('dashboardAppearanceSettings');
+          if (savedSettings) {
+            const parsed = JSON.parse(savedSettings);
+            setWidgetSettings(prev => ({ ...prev, ...parsed }));
+          }
+        } catch (localError) {
+          console.error('Error loading from localStorage fallback:', localError);
+        }
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadSettings();
+  }, [isAuthenticated, user]);
+
+  // Save settings to API for authenticated users, localStorage for others
+  const updateWidgetSettings = async (newSettings) => {
     const updatedSettings = { ...widgetSettings, ...newSettings };
     setWidgetSettings(updatedSettings);
     
-    try {
-      localStorage.setItem('dashboardAppearanceSettings', JSON.stringify(updatedSettings));
-      
-      // Trigger a custom event to notify other components
-      window.dispatchEvent(new CustomEvent('dashboardSettingsChanged', { 
-        detail: updatedSettings 
-      }));
-    } catch (error) {
-      console.error('Error saving dashboard widget settings:', error);
+    if (isAuthenticated && user) {
+      // Save to API for authenticated users
+      try {
+        await settingsApi.updateWidgetSettings(updatedSettings);
+        
+        // Trigger a custom event to notify other components
+        window.dispatchEvent(new CustomEvent('dashboardSettingsChanged', { 
+          detail: updatedSettings 
+        }));
+      } catch (error) {
+        console.error('Error saving dashboard widget settings to API:', error);
+        // Fallback to localStorage
+        try {
+          localStorage.setItem('dashboardAppearanceSettings', JSON.stringify(updatedSettings));
+        } catch (localError) {
+          console.error('Error saving to localStorage fallback:', localError);
+        }
+      }
+    } else {
+      // Save to localStorage for non-authenticated users
+      try {
+        localStorage.setItem('dashboardAppearanceSettings', JSON.stringify(updatedSettings));
+        
+        // Trigger a custom event to notify other components
+        window.dispatchEvent(new CustomEvent('dashboardSettingsChanged', { 
+          detail: updatedSettings 
+        }));
+      } catch (error) {
+        console.error('Error saving dashboard widget settings to localStorage:', error);
+      }
     }
   };
 
@@ -90,15 +145,39 @@ export function DashboardWidgetProvider({ children }) {
   };
 
   // Reset all settings to defaults
-  const resetToDefaults = () => {
+  const resetToDefaults = async () => {
     setWidgetSettings(defaultSettings);
-    try {
-      localStorage.setItem('dashboardAppearanceSettings', JSON.stringify(defaultSettings));
-      window.dispatchEvent(new CustomEvent('dashboardSettingsChanged', { 
-        detail: defaultSettings 
-      }));
-    } catch (error) {
-      console.error('Error resetting dashboard widget settings:', error);
+    
+    if (isAuthenticated && user) {
+      // Reset via API for authenticated users
+      try {
+        await settingsApi.resetWidgetSettings();
+        
+        // Trigger a custom event to notify other components
+        window.dispatchEvent(new CustomEvent('dashboardSettingsChanged', { 
+          detail: defaultSettings 
+        }));
+      } catch (error) {
+        console.error('Error resetting dashboard widget settings via API:', error);
+        // Fallback to localStorage
+        try {
+          localStorage.setItem('dashboardAppearanceSettings', JSON.stringify(defaultSettings));
+        } catch (localError) {
+          console.error('Error saving to localStorage fallback:', localError);
+        }
+      }
+    } else {
+      // Reset in localStorage for non-authenticated users
+      try {
+        localStorage.setItem('dashboardAppearanceSettings', JSON.stringify(defaultSettings));
+        
+        // Trigger a custom event to notify other components
+        window.dispatchEvent(new CustomEvent('dashboardSettingsChanged', { 
+          detail: defaultSettings 
+        }));
+      } catch (error) {
+        console.error('Error resetting dashboard widget settings in localStorage:', error);
+      }
     }
   };
 

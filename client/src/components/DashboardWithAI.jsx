@@ -4,7 +4,7 @@ import AIFeaturesSection from './AIFeaturesSection';
 
 const DashboardWithAI = ({ children }) => {
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-app-gradient">
       {/* Main Dashboard Content */}
       <div className="container mx-auto px-4 py-6">
         {children}

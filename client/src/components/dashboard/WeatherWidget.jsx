@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { useTheme } from '@/contexts/ThemeContext';
 import axios from 'axios';
 import ThemedLoader from '../ThemedLoader';
+import { useRenderDebug, useDataFetchDebug } from '@/utils/renderDebug';
 
 export default function WeatherWidget() {
   const { t } = useTranslation();
@@ -11,6 +12,17 @@ export default function WeatherWidget() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [lastUpdated, setLastUpdated] = useState(null);
+  
+  // 🚀 RENDER DEBUG
+  const renderDebug = useRenderDebug('WeatherWidget', {
+    hasWeatherData: !!weatherData,
+    loading,
+    hasError: !!error,
+    lastUpdated,
+    isDark
+  });
+  
+  const { fetchState, fetchWithDebug } = useDataFetchDebug('WeatherWidget');
   
   // Get current locale for date formatting
   const getCurrentLocale = () => {
@@ -91,31 +103,32 @@ export default function WeatherWidget() {
   useEffect(() => {
     const fetchWeather = async () => {
       try {
-        setLoading(true);
-        
-        // Default to Hanoi coordinates if geolocation is not available
-        let lat = 21.0278;
-        let lon = 105.8342;
-        
-        // Try to get user's location
-        if (navigator.geolocation) {
-          const position = await new Promise((resolve, reject) => {
-            navigator.geolocation.getCurrentPosition(resolve, reject, {
-              timeout: 5000,
-              maximumAge: 60000 // Cache for 1 minute
-            });
-          });
+        await fetchWithDebug(async () => {
+          setLoading(true);
           
-          lat = position.coords.latitude;
-          lon = position.coords.longitude;
-        }
-        
-        // Fetch current weather data from Weatherbit API
-        const apiKey = process.env.NEXT_PUBLIC_WEATHERBIT_API_KEY;
-        const response = await axios.get(`https://api.weatherbit.io/v2.0/current?lat=${lat}&lon=${lon}&key=${apiKey}`);
-        
-        if (response.data && response.data.data && response.data.data[0]) {
-          const currentWeather = response.data.data[0];
+          // Default to Hanoi coordinates if geolocation is not available
+          let lat = 21.0278;
+          let lon = 105.8342;
+          
+          // Try to get user's location
+          if (navigator.geolocation) {
+            const position = await new Promise((resolve, reject) => {
+              navigator.geolocation.getCurrentPosition(resolve, reject, {
+                timeout: 5000,
+                maximumAge: 60000 // Cache for 1 minute
+              });
+            });
+            
+            lat = position.coords.latitude;
+            lon = position.coords.longitude;
+          }
+          
+          // Fetch current weather data from Weatherbit API
+          const apiKey = process.env.NEXT_PUBLIC_WEATHERBIT_API_KEY;
+          const response = await axios.get(`https://api.weatherbit.io/v2.0/current?lat=${lat}&lon=${lon}&key=${apiKey}`);
+          
+          if (response.data && response.data.data && response.data.data[0]) {
+            const currentWeather = response.data.data[0];
           
           // Get forecast data for next 3 days
           const forecastResponse = await axios.get(`https://api.weatherbit.io/v2.0/forecast/daily?lat=${lat}&lon=${lon}&days=3&key=${apiKey}`);
@@ -134,13 +147,14 @@ export default function WeatherWidget() {
             })).slice(0, 3)
           };
           
-          setWeatherData(mappedData);
-          setLastUpdated(new Date());
-        } else {
-          throw new Error('Invalid data format from weather API');
-        }
-        
-        setLoading(false);
+            setWeatherData(mappedData);
+            setLastUpdated(new Date());
+            setLoading(false);
+            return mappedData;
+          } else {
+            throw new Error('Invalid data format from weather API');
+          }
+        }, 'weather-data-fetch');
       } catch (err) {
         console.error('Error fetching weather data:', err);
         setError(err.message);

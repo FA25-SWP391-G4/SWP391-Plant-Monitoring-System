@@ -7,8 +7,8 @@
   --primary-green-hover: #15803d;
   
   --secondary-white: #ffffff;
-  --background-light: #f8fafc;
-  --background-card: #ffffff;
+  --background-light: linear-gradient(135deg, #f8fafc 0%, #f0fdf4 50%, #f8fafc 100%);
+  --background-card: linear-gradient(135deg, #ffffff 0%, #f7fee7 50%, #ffffff 100%);
   --text-primary: #1e293b;
   --text-secondary: #64748b;
   --text-muted: #94a3b8;
@@ -49,8 +49,8 @@
   --primary-green-hover: #6d28d9;
   
   --secondary-white: #1e1b2e;
-  --background-light: #0f0f23;
-  --background-card: #1e1b2e;
+  --background-light: linear-gradient(135deg, #0f0f23 0%, #0c1c17 50%, #0f0f23 100%);
+  --background-card: linear-gradient(135deg, #1e1b2e 0%, #1a2e20 50%, #1e1b2e 100%);
   --text-primary: #e2e8f0;
   --text-secondary: #cbd5e1;
   --text-muted: #94a3b8;
@@ -87,6 +87,7 @@ html, body, #root {
   background: var(--sf-bg); 
   color: var(--sf-text);
   transition: all 0.3s ease;
+  min-height: 100vh;
 }
 
 .sf-app {

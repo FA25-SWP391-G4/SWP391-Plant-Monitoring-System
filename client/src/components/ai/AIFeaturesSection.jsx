@@ -1,95 +1,48 @@
-import React, { useState } from 'react';
-import { Brain, Camera, TrendingUp, MessageCircle, Zap, History } from 'lucide-react';
-import { useAuth } from '../contexts/AuthContext';
-import aiApi from '../api/aiApi';
+import React from 'react';
+import { Brain, Camera, TrendingUp, Zap } from 'lucide-react';
+import { useAuth } from '../../providers/AuthProvider';
 
 const AIFeaturesSection = () => {
-  const [isLoading, setIsLoading] = useState({});
-  const [results, setResults] = useState({});
   const { user } = useAuth();
 
   // Check if user has access to AI features
   const hasAIAccess = () => {
-    if (!user) return false;
-    return user.isPremium || user.role === 'admin';
+    if (!user) {
+      console.log('[AI FEATURES] No user found - access denied');
+      return false;
+    }
+    
+    const hasAccess = user.isPremium || user.role === 'Premium' || user.role === 'Admin' || user.role === 'admin';
+    console.log('[AI FEATURES] Access check:', {
+      user: user.email,
+      role: user.role,
+      isPremium: user.isPremium,
+      hasAccess
+    });
+    
+    return hasAccess;
   };
 
-  const handleFeatureClick = async (featureType, title) => {
+  const handleFeatureClick = (featureType) => {
     if (!hasAIAccess()) {
       alert('Premium subscription or admin access required for AI features');
       return;
     }
 
-    setIsLoading(prev => ({ ...prev, [featureType]: true }));
-
-    try {
-      let response;
-      
-      switch (featureType) {
-        case 'plant-analysis':
-          // Create file input for image upload
-          const fileInput = document.createElement('input');
-          fileInput.type = 'file';
-          fileInput.accept = 'image/*';
-          fileInput.onchange = async (e) => {
-            const file = e.target.files[0];
-            if (file) {
-              const formData = new FormData();
-              formData.append('image', file);
-              response = await aiApi.analyzeImage(formData);
-              handleFeatureResponse(featureType, response, title);
-            }
-          };
-          fileInput.click();
-          return;
-
-        case 'irrigation-prediction':
-          response = await aiApi.getIrrigationRecommendations({
-            plant_id: user.user_id,
-            current_moisture: Math.random() * 100,
-            temperature: 20 + Math.random() * 15,
-            humidity: 40 + Math.random() * 40
-          });
-          break;
-
-        case 'historical-analysis':
-          response = await aiApi.analyzeHistoricalData({
-            plant_id: user.user_id,
-            timeRange: {
-              start: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString(),
-              end: new Date().toISOString()
-            }
-          });
-          break;
-
-        default:
-          return;
-      }
-
-      handleFeatureResponse(featureType, response, title);
-    } catch (error) {
-      console.error(`Error with ${featureType}:`, error);
-      setResults(prev => ({
-        ...prev,
-        [featureType]: {
-          success: false,
-          error: 'An error occurred. Please try again.'
-        }
-      }));
-    } finally {
-      setIsLoading(prev => ({ ...prev, [featureType]: false }));
+    // Navigate to dedicated pages
+    switch (featureType) {
+      case 'plant-analysis':
+        window.location.href = '/ai/plant-health';
+        break;
+      case 'irrigation-prediction':
+        window.location.href = '/ai/smart-watering';
+        break;
+      case 'historical-analysis':
+        window.location.href = '/ai/growth-insights';
+        break;
+      default:
+        break;
     }
-  };
-
-  const handleFeatureResponse = (featureType, response, title) => {
-    setResults(prev => ({
-      ...prev,
-      [featureType]: {
-        title,
-        ...response
-      }
-    }));
-    setIsLoading(prev => ({ ...prev, [featureType]: false }));
   };
 
   const features = [
@@ -156,77 +109,28 @@ const AIFeaturesSection = () => {
         <h3 className="text-xl font-bold text-gray-900">AI Plant Features</h3>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {features.map((feature) => {
           const Icon = feature.icon;
-          const isFeatureLoading = isLoading[feature.id];
           
           return (
             <div
               key={feature.id}
-              onClick={() => handleFeatureClick(feature.id, feature.title)}
-              className={`${feature.color} ${feature.hoverColor} text-white p-6 rounded-lg cursor-pointer transition-all duration-200 hover:scale-105 shadow-lg ${
-                isFeatureLoading ? 'opacity-75 cursor-not-allowed' : ''
-              }`}
+              onClick={() => handleFeatureClick(feature.id)}
+              className={`${feature.color} ${feature.hoverColor} text-white p-6 rounded-lg cursor-pointer transition-all duration-200 hover:scale-105 shadow-lg`}
             >
               <div className="flex flex-col items-center text-center">
-                {isFeatureLoading ? (
-                  <div className="animate-spin rounded-full h-8 w-8 border-2 border-white border-t-transparent mb-3"></div>
-                ) : (
-                  <Icon size={32} className="mb-3" />
-                )}
+                <Icon size={32} className="mb-3" />
                 <h4 className="font-semibold text-lg mb-2">{feature.title}</h4>
                 <p className="text-sm opacity-90">{feature.description}</p>
+                <div className="mt-4 text-xs opacity-75">
+                  Click to open dedicated page
+                </div>
               </div>
             </div>
           );
         })}
       </div>
-
-      {/* Results Display */}
-      {Object.keys(results).length > 0 && (
-        <div className="border-t border-gray-200 pt-6">
-          <h4 className="text-lg font-semibold text-gray-900 mb-4">Recent Results</h4>
-          <div className="space-y-4">
-            {Object.entries(results).map(([featureId, result]) => (
-              <div key={featureId} className="bg-gray-50 rounded-lg p-4">
-                <div className="flex items-center gap-2 mb-2">
-                  <History size={16} className="text-gray-500" />
-                  <h5 className="font-medium text-gray-900">{result.title}</h5>
-                </div>
-                
-                {result.success ? (
-                  <div className="text-sm text-gray-700">
-                    {result.data?.response && <p className="mb-2">{result.data.response}</p>}
-                    {result.data?.analysis && (
-                      <div className="bg-white p-3 rounded border">
-                        <p><strong>Health Score:</strong> {result.data.analysis.health_score}%</p>
-                        <p><strong>Condition:</strong> {result.data.analysis.condition}</p>
-                        {result.data.analysis.recommendations && (
-                          <div className="mt-2">
-                            <strong>Recommendations:</strong>
-                            <ul className="list-disc list-inside mt-1">
-                              {result.data.analysis.recommendations.map((rec, index) => (
-                                <li key={index} className="text-sm">{rec}</li>
-                              ))}
-                            </ul>
-                          </div>
-                        )}
-                      </div>
-                    )}
-                  </div>
-                ) : (
-                  <div className="text-sm text-red-600">
-                    {result.requiresLogin && <p>Please log in to use this feature.</p>}
-                    {result.requiresPremium && <p>Premium subscription or admin access required.</p>}
-                    {result.error && !result.requiresLogin && !result.requiresPremium && <p>{result.error}</p>}
-                  </div>
-                )}
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
     </div>
   );
 };

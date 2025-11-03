@@ -38,13 +38,14 @@ class PlantProfile {
     // Static method to find plant profile by species name
     static async findBySpeciesName(speciesName) {
         try {
-            const query = 'SELECT * FROM Plant_Profiles WHERE LOWER(species_name) = LOWER($1)';
-            const result = await pool.query(query, [speciesName]);
+            const query = 'SELECT * FROM Plant_Profiles WHERE LOWER(species_name) LIKE LOWER($1)';
+            const searchPattern = `%${speciesName}%`;
+            const result = await pool.query(query, [searchPattern]);
             
             if (result.rows.length === 0) {
                 return null;
             }
-            
+            console.log(speciesName);
             return new PlantProfile(result.rows[0]);
         } catch (error) {
             throw error;
