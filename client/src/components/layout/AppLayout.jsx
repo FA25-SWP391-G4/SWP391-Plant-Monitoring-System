@@ -10,7 +10,7 @@ export default function AppLayout({ children }) {
   };
 
   return (
-    <div className="min-h-screen bg-app-gradient">
+    <div className="min-h-screen bg-gray-50">
       <Sidebar isSidebarOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
       
       <div className="lg:pl-64">

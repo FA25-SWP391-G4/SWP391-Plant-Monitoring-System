@@ -214,7 +214,7 @@ export default function PlantDetailsPage({ params }) {
   }
 
   return (
-    <div className="min-h-screen bg-app-gradient">
+    <div className="min-h-screen bg-gray-50">
       <DashboardHeader user={user} />
       
       <main className="container mx-auto px-4 py-8">

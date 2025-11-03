@@ -184,8 +184,8 @@ var zoneRouter = require('./routes/zone');          // ✅ Plant zone organizati
 var adminRouter = require('./routes/admin');        // 🔄 UC24-31: Admin functions
 // console.log('iotRouter type:', typeof iotRouter);
 // console.log('iotRouter keys:', Object.keys(iotRouter));
-// var sensorRouter = require('./routes/sensor');      // 🔄 Sensor data management - COMMENTED OUT: Failed routes, will be re-enabled when team fixes
-// var plantRouter = require('./routes/plant');        // ✅ UC5-9: Plant management & watering (implemented) - COMMENTED OUT: Failed routes, will be re-enabled when team fixes
+var sensorRouter = require('./routes/sensor');      // 🔄 Sensor data management
+var plantRouter = require('./routes/plant');        // ✅ UC5-9: Plant management & watering (implemented)
 var adminRouter = require('./routes/admin');        // 🔄 UC24-31: Admin functions
 //var notificationRouter = require('./routes/notifications'); // 🔄 UC10: Real-time notifications
 // var languageRouter = require('./routes/language');  // 🔄 UC31: Multi-language settings (tạm thời vô hiệu hóa)
@@ -270,6 +270,7 @@ app.use('/api/zones', zoneRouter);                  // ✅ Plant zone organizati
 
 // TODO: Mount additional route handlers as they are implemented:
 //app.use('/api/dashboard', dashboardRouter);      // 🔄 UC4: Dashboard API
+// app.use('/api/plant', plantRouter);              // 🔄 UC5-9: Plant management API
 // app.use('/api/report', reportRouter);            // 🔄 UC8-9, UC15, UC17: Reports API
 // app.use('/api/premium', premiumRouter);          // 🔄 UC14-23: Premium features API
 
