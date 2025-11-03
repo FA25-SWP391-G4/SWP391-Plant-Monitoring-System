@@ -74,8 +74,7 @@
     @apply border-border;
   }
   body {
-    @apply bg-gradient-light-green dark:bg-gradient-dark-green text-foreground;
-    min-height: 100vh;
+    @apply bg-background text-foreground;
   }
 }
 

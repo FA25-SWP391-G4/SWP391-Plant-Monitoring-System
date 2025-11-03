@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
-import { usePathname } from 'next/navigation';
+import { useLocation } from 'react-router-dom';
 
 export const usePageTransition = () => {
   const [isLoading, setIsLoading] = useState(false);
-  const pathname = usePathname();
+  const location = useLocation();
 
   useEffect(() => {
     setIsLoading(true);
@@ -14,7 +14,7 @@ export const usePageTransition = () => {
     }, 300);
 
     return () => clearTimeout(timer);
-  }, [pathname]);
+  }, [location.pathname]);
 
   return { isLoading };
 };
