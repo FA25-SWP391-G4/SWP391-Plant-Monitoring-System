@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useGoogleAuth } from '@/hooks/useGoogleAuth';
+import { useTheme } from '@/contexts/ThemeContext';
 import { Button } from '@/components/ui/Button';
 import { FaGoogle } from 'react-icons/fa';
 
@@ -21,6 +22,7 @@ export function GoogleLoginButton({
   className = ''
 }) {
   const { initGoogleSignIn, initiateServerSideAuth, isAuthenticating } = useGoogleAuth();
+  const { getThemeColor, isDark } = useTheme();
   const [loading, setLoading] = useState(false);
   
   /**

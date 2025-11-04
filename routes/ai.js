@@ -38,20 +38,12 @@ console.log("AI Controller keys:", Object.keys(aiController));
  */
 router.post('/watering-prediction', authenticate, async (req, res) => {
   try {
-    const response = await axios.post(`${AI_SERVICE_URL}/api/irrigation`, req.body, {
-      timeout: 30000,
-      headers: {
-        'Content-Type': 'application/json',
-        ...forwardAuthHeaders(req)
-      }
-    });
+    const response = await axios.post(`${AI_SERVICE_URL}/watering-prediction`, req.body);
     res.json(response.data);
   } catch (error) {
-    console.error('Error calling AI service for irrigation prediction:', error);
+    console.error('Error calling AI service for watering prediction:', error);
     res.status(500).json({ 
-      success: false,
-      error: 'Failed to get irrigation prediction', 
-      message: 'AI service unavailable',
+      error: 'Failed to get watering prediction', 
       details: error.response?.data || error.message 
     });
   }
@@ -221,84 +213,14 @@ router.post('/test/chatbot', async (req, res) => {
       headers: {
         'Content-Type': 'application/json'
       }
-    });
-    res.json({
-      success: true,
-      test: true,
-      data: response.data
-    });
-  } catch (error) {
-    console.error('❌ Error testing AI chatbot:', error.message);
+    }
+    
     res.status(500).json({ 
-      success: false,
-      test: true,
-      error: 'Failed to test chatbot', 
-      message: 'AI service unavailable',
+      error: 'Failed to analyze plant image', 
       details: error.response?.data || error.message 
     });
   }
 });
-
-/**
- * @route POST /api/ai/test/plant-analysis
- * @desc Test AI plant analysis without authentication
- * @access Public (TEST ONLY)
- */
-router.post('/test/plant-analysis', async (req, res) => {
-  try {
-    console.log('🧪 Testing AI plant analysis:', req.body);
-    const response = await axios.post(`${AI_SERVICE_URL}/api/image-recognition`, req.body, {
-      timeout: 30000,
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    });
-    res.json({
-      success: true,
-      test: true,
-      data: response.data
-    });
-  } catch (error) {
-    console.error('❌ Error testing AI plant analysis:', error.message);
-    res.status(500).json({ 
-      success: false,
-      test: true,
-      error: 'Failed to test plant analysis', 
-      message: 'AI service unavailable',
-      details: error.response?.data || error.message 
-    });
-  }
-});
-
-/**
- * @route GET /api/ai/test/status
- * @desc Test AI service status
- * @access Public (TEST ONLY)
- */
-router.get('/test/status', async (req, res) => {
-  try {
-    console.log('🧪 Testing AI service status');
-    const response = await axios.get(`${AI_SERVICE_URL}/health`, {
-      timeout: 10000
-    });
-    res.json({
-      success: true,
-      test: true,
-      aiService: response.data,
-      connection: 'OK'
-    });
-  } catch (error) {
-    console.error('❌ Error testing AI service status:', error.message);
-    res.status(500).json({ 
-      success: false,
-      test: true,
-      error: 'AI service unavailable', 
-      details: error.message 
-    });
-  }
-});
-
-// ==================== AUTHENTICATED ROUTES ====================
 
 /**
  * @route POST /api/ai/chatbot
@@ -307,20 +229,12 @@ router.get('/test/status', async (req, res) => {
  */
 router.post('/chatbot', authenticate, isPremium, async (req, res) => {
   try {
-    const response = await axios.post(`${AI_SERVICE_URL}/api/chatbot`, req.body, {
-      timeout: 30000,
-      headers: {
-        'Content-Type': 'application/json',
-        ...forwardAuthHeaders(req)
-      }
-    });
+    const response = await axios.post(`${AI_SERVICE_URL}/chatbot`, req.body);
     res.json(response.data);
   } catch (error) {
     console.error('Error calling AI service for chatbot:', error);
     res.status(500).json({ 
-      success: false,
       error: 'Failed to get chatbot response', 
-      message: 'AI service unavailable',
       details: error.response?.data || error.message 
     });
   }

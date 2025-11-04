@@ -194,7 +194,7 @@ class Device {
         }
     }
 
-    // Generate a unique device key (UUID)
+    // Generate a unique device key (UUID) - now using our UUID generator
     static generateDeviceKey() {
         return generateUUID();
     }

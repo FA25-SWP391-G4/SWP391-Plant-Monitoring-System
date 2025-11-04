@@ -73,6 +73,10 @@
     "changePassword": "Change Password",
     "changePasswordTitle": "Update your password",
     "logout": "Logout",
+    "signOut": "Sign Out",
+    "confirmLogout": "Confirm Sign Out",
+    "logoutMessage": "Are you sure you want to sign out? You will need to sign in again to access your account.",
+    "signingOut": "Signing Out...",
     "rememberMe": "Remember me",
     "passwordRequirements": "Password must be at least 6 characters long",
     "passwordMatch": "Passwords must match",
@@ -167,7 +171,12 @@
     "errorLoading": "Error Loading Dashboard",
     "loadError": "Failed to load dashboard data. Please try again later.",
     "redirecting": "Redirecting to dashboard...",
-    "weather": "Current Weather"
+    "weather": "Current Weather",
+    "aiFeatures": "AI Features",
+    "configureWidgets": "Configure",
+    "customizeLayout": "Customize Your Dashboard",
+    "customizeDescription": "Manage widget visibility and dashboard preferences",
+    "openSettings": "Open Settings"
   },
 "plants": {
   "myPlants": "My Plants",
@@ -293,22 +302,17 @@
     "termsOfService": "Terms of Service",
     "cookies": "Cookies"
   },
-  
-  "help": {
-    "title": "Help Center",
-    "searchPlaceholder": "Search for help topics...",
-    "popularTopics": "Popular Topics",
-    "contactSupport": "Contact Support",
-    "faqTitle": "Frequently Asked Questions",
-    "noResults": "No results found for '{{query}}'",
-    "tryDifferent": "Try a different search term or browse categories below",
-    
-    "categories": {
-      "gettingStarted": "Getting Started",
-      "account": "Account & Billing",
-      "devices": "Devices & Sensors",
-      "plantCare": "Plant Care",
-      "troubleshooting": "Troubleshooting"
+  "testimonials": {
+    "heading": "Don't just take our word for it. See what our community of plant lovers has to say about their PlantSmart experience.",
+    "verified": "Verified Review",
+    "plantsThriving": "{{count}} plants thriving",
+    "plantsSaved": "{{count}} plants saved",
+    "plantsMonitored": "{{count}} plants monitored",
+    "testimonial1": {
+      "quote": "PlantSmart completely transformed my plant care routine. I used to kill every plant I touched, but now my apartment is a thriving jungle! The AI recommendations are incredibly accurate.",
+      "name": "Sarah Chen",
+      "location": "San Francisco, CA",
+      "count": "12"
     },
     "testimonial2": {
       "quote": "As a busy entrepreneur, I never had time for proper plant care. The automated watering system is a game-changer. My plants have never looked better, and I get peace of mind.",
@@ -373,76 +377,11 @@
   },
   "ai": {
     "chatbot": {
-      "title": "AI Plant Assistant",
-      "subtitle": "Premium Feature",
-      "placeholder": "Ask about plant care...",
+      "title": "Plant Assistant",
+      "placeholder": "Ask me anything about your plants...",
       "greeting": "Hello! How can I help with your plants today?",
-      "welcomeMessage": "Hello! I'm your AI plant care assistant. How can I help you today?",
       "loading": "Thinking...",
-      "error": "Sorry, I couldn't process your request. Please try again.",
-      "errorMessage": "Sorry, I'm having trouble connecting. Please try again later.",
-      "send": "Send",
-      "tooltip": "AI Plant Assistant",
-      "quickQuestions": {
-        "title": "Quick Questions:",
-        "watering": "When should I water my plants?",
-        "light": "Is my plant getting enough light?",
-        "yellowing": "Why are my leaves turning yellow?",
-        "fertilizer": "When should I fertilize?"
-      }
-    },
-    "section": {
-      "title": "AI Plant Care Assistant",
-      "subtitle": "Advanced AI-powered plant care insights and recommendations",
-      "premiumRequired": {
-        "title": "Premium Feature",
-        "description": "Unlock advanced AI plant care features with Premium",
-        "upgrade": "Upgrade to Premium"
-      },
-      "tabs": {
-        "analysis": "Plant Analysis",
-        "imageRecognition": "Image Recognition",
-        "predictions": "Predictions",
-        "history": "Analysis History"
-      },
-      "analysis": {
-        "healthScore": "Overall Health",
-        "refresh": "Refresh Analysis",
-        "analyze": "Analyze Plant",
-        "details": "Detailed Analysis"
-      },
-      "imageAnalysis": {
-        "upload": "Upload Plant Image",
-        "selectImage": "Select Plant Image",
-        "changeImage": "Change Image",
-        "analyze": "Analyze",
-        "analyzing": "Analyzing...",
-        "results": "Analysis Results",
-        "healthAssessment": "Health Assessment",
-        "diseaseDetection": "Disease Detection",
-        "diseaseFound": "Disease Detected",
-        "diseaseMessage": "Potential disease detected. Please consult a plant specialist.",
-        "noDiseaseFound": "No Disease Detected",
-        "healthyMessage": "Your plant appears healthy!",
-        "recommendations": "Recommendations"
-      },
-      "predictions": {
-        "watering": "Watering Predictions",
-        "predict": "Generate Predictions",
-        "predicting": "Predicting...",
-        "nextWatering": "Next Watering",
-        "noWateringNeeded": "No watering needed in the next 7 days",
-        "weeklyForecast": "Weekly Forecast",
-        "noPredictions": "No Predictions Available",
-        "generateMessage": "Generate AI predictions for your plants"
-      },
-      "history": {
-        "title": "Analysis History",
-        "refresh": "Refresh",
-        "noHistory": "No Analysis History",
-        "noHistoryMessage": "Run some analyses to see your history here",
-        "analysisDetails": "Analysis Details"
-      }
+      "error": "Sorry, I couldn't process your request. Please try again."
     },
     "imageRecognition": {
       "title": "Plant Identification",
@@ -480,7 +419,6 @@
   "weather": {
     "title": "Local Weather",
     "today": "Today",
-    "tomorrow": "Tomorrow",
     "forecast": "Forecast",
     "precipitation": "Precipitation",
     "humidity": "Humidity",
@@ -491,19 +429,7 @@
     "lowTemp": "Low",
     "feels": "Feels like",
     "indoor": "Indoor",
-    "outdoor": "Outdoor",
-    "updatedAt": "Updated at",
-    "error": "Unable to fetch weather data",
-    "weekdays": {
-      "short": ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
-    },
-    "tip": {
-      "default": "Monitor soil moisture daily based on current weather conditions.",
-      "hot": "Hot day ahead. Water your plants early morning or evening to prevent evaporation.",
-      "rainy": "Rainy weather. Check indoor plants for proper drainage to prevent root rot.",
-      "dry": "Low humidity. Consider misting your tropical plants to increase humidity.",
-      "windy": "Windy conditions. Move delicate potted plants to sheltered locations."
-    }
+    "outdoor": "Outdoor"
   },
   "reviews": {
     "title": "Customer Reviews",
@@ -561,36 +487,83 @@
       "humidity": "Humidity Sensor",
       "combo": "Combo Sensor"
     },
-    "comparison": {
-      "title": "Plan Comparison",
-      "free": "Free Plan",
-      "premium": "Premium Plan",
-      "plantLimit": "Plant Limit",
-      "freeLimit": "5 plants",
-      "premiumLimit": "Unlimited",
-      "zoneLimit": "Zone Limit",
-      "freeZones": "1 zone",
-      "premiumZones": "Unlimited zones",
-      "dataHistory": "Data History",
-      "freeHistory": "7 days",
-      "premiumHistory": "12 months",
-      "advancedAnalytics": "Advanced Analytics",
-      "freeAnalytics": "Basic",
-      "premiumAnalytics": "Advanced with insights",
-      "aiDiagnostics": "AI Plant Diagnostics",
-      "notIncluded": "Not included",
-      "included": "Included"
+    "readingFrequency": {
+      "title": "Reading Frequency",
+      "realTime": "Real-time",
+      "minutes15": "Every 15 minutes",
+      "hourly": "Hourly",
+      "hours2": "Every 2 hours",
+      "hours6": "Every 6 hours",
+      "daily": "Daily"
     },
-    "faq": {
-      "title": "Frequently Asked Questions",
-      "cancelQuestion": "Can I cancel anytime?",
-      "cancelAnswer": "Yes, you can cancel your subscription at any time. Your Premium features will remain active until the end of your current billing period.",
-      "deviceQuestion": "Do I need special devices?",
-      "deviceAnswer": "No, Premium works with all existing PlantSmart sensors and devices. You'll immediately gain access to new features with your current setup.",
-      "trialQuestion": "What happens after the free trial?",
-      "trialAnswer": "After your 14-day trial ends, you'll be automatically subscribed to the Premium plan. We'll send a reminder before charging your payment method.",
-      "refundQuestion": "Can I get a refund?",
-      "refundAnswer": "We don't offer refunds for partial subscription periods, but you can cancel anytime to avoid future charges."
+    "noSensors": "No sensors found",
+    "addFirstSensor": "Add your first sensor",
+    "calibration": {
+      "title": "Sensor Calibration",
+      "instructions": "Follow these steps to calibrate your sensor",
+      "step1": "Place sensor in dry condition",
+      "step2": "Press 'Calibrate Dry' button",
+      "step3": "Place sensor in water",
+      "step4": "Press 'Calibrate Wet' button",
+      "calibrateDry": "Calibrate Dry",
+      "calibrateWet": "Calibrate Wet",
+      "success": "Calibration successful"
+    }
+  },
+  "reports": {
+    "title": "Reports",
+    "wateringReport": "Watering Report",
+    "soilMoistureReport": "Soil Moisture Report",
+    "temperatureReport": "Temperature Report",
+    "humidityReport": "Humidity Report",
+    "lightReport": "Light Report",
+    "generateReport": "Generate Report",
+    "exportReport": "Export Report",
+    "dateRange": "Date Range",
+    "lastWeek": "Last Week",
+    "lastMonth": "Last Month",
+    "lastYear": "Last Year",
+    "customRange": "Custom Range",
+    "from": "From",
+    "to": "To",
+    "applyRange": "Apply",
+    "noData": "No data available for selected period",
+    "downloadAs": "Download as",
+    "pdf": "PDF",
+    "csv": "CSV",
+    "excel": "Excel",
+    "summary": "Summary",
+    "details": "Details"
+  },
+  "thresholds": {
+    "title": "Plant Thresholds",
+    "soilMoisture": "Soil Moisture",
+    "temperature": "Temperature",
+    "humidity": "Humidity",
+    "light": "Light Level",
+    "minimum": "Minimum",
+    "maximum": "Maximum",
+    "optimal": "Optimal",
+    "current": "Current",
+    "setThresholds": "Set Thresholds",
+    "resetDefaults": "Reset to Defaults",
+    "saveChanges": "Save Changes",
+    "thresholdsUpdated": "Thresholds updated successfully",
+    "presets": {
+      "title": "Presets",
+      "tropical": "Tropical Plants",
+      "succulents": "Succulents",
+      "herbs": "Herbs",
+      "vegetables": "Vegetables",
+      "indoor": "Indoor Plants",
+      "custom": "Custom"
+    },
+    "alertSettings": {
+      "title": "Alert Settings",
+      "enableAlerts": "Enable Alerts",
+      "belowMinimum": "Below Minimum",
+      "aboveMaximum": "Above Maximum",
+      "outOfRange": "Out of Range"
     }
   },
   

@@ -12,78 +12,8 @@ import FilterBar from '@/components/plants/FilterBar';
 import plantApi from '@/api/plantApi';
 import { toast } from 'react-toastify';
 
-// Fallback data in case API fails
-const FALLBACK_PLANTS = [
-  {
-    plant_id: 1,
-    name: 'Snake Plant',
-    species: 'Sansevieria trifasciata',
-    image: '/images/plants/snake-plant.jpg',
-    location: 'Living Room',
-    status: 'healthy',
-    lastWatered: '2023-11-15T10:30:00Z',
-    zone: 'Indoor',
-    notes: 'Low maintenance plant, perfect for beginners.'
-  },
-  {
-    plant_id: 2,
-    name: 'Monstera',
-    species: 'Monstera deliciosa',
-    image: '/images/plants/monstera.jpg',
-    location: 'Office',
-    status: 'needs_attention',
-    lastWatered: '2023-11-10T08:15:00Z',
-    zone: 'Indoor',
-    notes: 'Needs more indirect light.'
-  },
-  {
-    plant_id: 3,
-    name: 'Peace Lily',
-    species: 'Spathiphyllum',
-    image: '/images/plants/peace-lily.jpg',
-    location: 'Bedroom',
-    status: 'needs_water',
-    lastWatered: '2023-11-08T14:45:00Z',
-    zone: 'Indoor',
-    notes: 'Drooping leaves indicate it needs water.'
-  },
-  {
-    plant_id: 4,
-    name: 'Aloe Vera',
-    species: 'Aloe barbadensis miller',
-    image: '/images/plants/aloe-vera.jpg',
-    location: 'Kitchen',
-    status: 'healthy',
-    lastWatered: '2023-11-14T09:20:00Z',
-    zone: 'Indoor',
-    notes: 'Medicinal plant with healing properties.'
-  },
-  {
-    plant_id: 5,
-    name: 'Basil',
-    species: 'Ocimum basilicum',
-    image: '/images/plants/basil.jpg',
-    location: 'Kitchen Garden',
-    status: 'needs_water',
-    lastWatered: '2023-11-07T16:30:00Z',
-    zone: 'Herb Garden',
-    notes: 'Harvest regularly to encourage growth.'
-  },
-  {
-    plant_id: 6,
-    name: 'Rose Bush',
-    species: 'Rosa',
-    image: '/images/plants/rose.jpg',
-    location: 'Garden',
-    status: 'healthy',
-    lastWatered: '2023-11-13T08:00:00Z',
-    zone: 'Outdoor',
-    notes: 'Prune in early spring.'
-  }
-];
-
 export default function PlantsPage() {
-  const { user, loading, isPremium } = useAuth();
+  const { user, loading} = useAuth();
   const router = useRouter();
   const { t } = useTranslation();
   
@@ -94,6 +24,9 @@ export default function PlantsPage() {
   const [showAddModal, setShowAddModal] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [activeFilter, setActiveFilter] = useState('all');
+
+    const isPremium = user?.role === 'Premium' || user?.role === 'Ultimate' || user?.role === 'Admin';
+
 
   // Redirect if not logged in
   useEffect(() => {

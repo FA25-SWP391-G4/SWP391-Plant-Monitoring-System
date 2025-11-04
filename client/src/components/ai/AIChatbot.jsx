@@ -151,12 +151,12 @@ const AIChatbot = ({ plant = null, className = '' }) => {
         }))
       });
       
-<<<<<<< HEAD:client/src/components/AIChatbot.jsx
+<<<<<<<<< Temporary merge branch 1:client/src/components/AIChatbot.jsx
       // Clear typing indicator
       setIsTyping(false);
       if (typingTimeoutRef.current) {
         clearTimeout(typingTimeoutRef.current);
-=======
+=========
       // Handle authentication errors
       if (!response.success) {
         let errorMessage = response.error || 'Sorry, I encountered an error. Please try again.';
@@ -177,7 +177,7 @@ const AIChatbot = ({ plant = null, className = '' }) => {
         setMessages(prev => [...prev, errorBotMessage]);
         setIsLoading(false);
         return;
->>>>>>> 1d1e2513b9e8ac5f36f74d326d2a76f901e82987:client/src/components/ai/AIChatbot.jsx
+>>>>>>>>> Temporary merge branch 2:client/src/components/ai/AIChatbot.jsx
       }
       
       // Add bot response

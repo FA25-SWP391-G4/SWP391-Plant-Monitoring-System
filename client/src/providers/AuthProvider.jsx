@@ -3,6 +3,7 @@
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Cookies from 'js-cookie';
+import { useRenderDebug, useOperationTiming } from '@/utils/renderDebug';
 
 const AuthContext = createContext(null);
 
@@ -20,7 +21,6 @@ export default function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true);
   const router = useRouter();
 
-  // Check if the user is authenticated on mount and after navigation
   useEffect(() => {
   console.log('[auth] current user:', user);
 }, [user]);
@@ -48,28 +48,63 @@ export default function AuthProvider({ children }) {
     Cookies.set('user', JSON.stringify(u), {secure : true, sameSite: 'lax' });
     setToken(t); 
     setUser(u); 
+    
+    console.log('[AUTH PROVIDER] Login completed - state updated');
+    endTiming('login-process');
   };
 
   const logout = async () => { 
+    const logoutStart = startTiming('logout-process');
+    console.log('[AUTH PROVIDER] Logout initiated');
+    
     try {
-      const cookieToken = Cookies.get('token');
+      const cookieToken = Cookies.get('token_client') || Cookies.get('token');
+      console.log('[AUTH PROVIDER] Calling logout endpoint...');
       
       // Call logout endpoint to clear HTTP-only cookie on server
-      await fetch(`${process.env.NEXT_PUBLIC_API_URL || ''}/auth/logout`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || ''}/auth/logout`, {
         method: 'POST',
         credentials: 'include',
         headers: cookieToken ? {
-          'Authorization': `Bearer ${cookieToken}`
-        } : {}
+          'Authorization': `Bearer ${cookieToken}`,
+          'Content-Type': 'application/json'
+        } : {
+          'Content-Type': 'application/json'
+        }
       });
+      
+      console.log('[AUTH PROVIDER] Logout response:', response.status);
     } catch (error) {
-      console.error('Logout error:', error);
+      console.error('[AUTH PROVIDER] Logout error:', error);
     } finally {
-      // Clear local state and cookie regardless of server response
+      console.log('[AUTH PROVIDER] Clearing local state and preparing redirect...');
+      
+      // Clear local state and both cookies regardless of server response
+      Cookies.remove('token_client');
       Cookies.remove('token');
+      
+      // Also clear any other potential auth-related cookies
+      Cookies.remove('token_httpOnly');
+      
+      // Clear local storage items that might contain auth data
+      if (typeof window !== 'undefined') {
+        localStorage.removeItem('plantsmart_user');
+        localStorage.removeItem('sg_user'); // Legacy storage key
+        sessionStorage.removeItem('plantsmart_user');
+      }
+      
       setToken(null); 
       setUser(null); 
-      router.push('/login');
+      
+      console.log('[AUTH PROVIDER] State cleared, adding redirect delay (similar to Google auth fix)...');
+      
+      // Add a small delay before redirect to ensure all cleanup completes
+      // This follows the same pattern as the Google auth callback fix
+      setTimeout(() => {
+        console.log('[AUTH PROVIDER] Executing delayed redirect to login page...');
+        endTiming('logout-process');
+        router.push('/login');
+      }, 100); // Small delay to let cleanup finish, similar to Google auth pattern
     }
   };
 

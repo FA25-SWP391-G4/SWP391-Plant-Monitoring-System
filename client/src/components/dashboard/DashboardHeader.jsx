@@ -3,10 +3,18 @@ import Link from 'next/link';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from '@/contexts/ThemeContext';
 import LanguageSwitcher from '@/components/LanguageSwitcher';
+import { useRenderDebug } from '@/utils/renderDebug';
 
 export default function DashboardHeader({ user }) {
   const { t } = useTranslation();
   const { isDark, themeColors } = useTheme();
+  
+  // 🚀 RENDER DEBUG
+  const renderDebug = useRenderDebug('DashboardHeader', {
+    userEmail: user?.email,
+    isPremium: user?.isPremium,
+    isDark
+  });
   
   return (
     <header className="bg-white shadow-sm border-b border-gray-200">

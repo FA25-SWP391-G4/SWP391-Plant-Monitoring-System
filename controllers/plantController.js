@@ -572,122 +572,62 @@ const getUserPlants = async (req, res) => {
     try {
         const userId = req.user.userId;
         
-        // Get all plants for the user with their devices and latest sensor data
+        // Get all plants for the user with their devices and zones
         const query = `
             SELECT 
                 p.*,
                 d.device_key,
-                d.device_name
+                d.device_name,
+                z.zone_name,
+                z.description as zone_description
             FROM 
                 "plants" p
             LEFT JOIN 
                 "devices" d ON p.device_key = d.device_key
+            LEFT JOIN 
+                "zones" z ON p.zone_id = z.zone_id
             WHERE 
                 p.user_id = $1
+            ORDER BY p.created_at DESC
         `;
         
         const { rows } = await pool.query(query, [userId]);
         
         if (rows.length === 0) {
-            // Return a default plant if none exists for this user
-            return res.json([
-                {
-                    plant_id: 'default-1',
-                    name: 'Common Lantana',
-                    species: 'Lantana camara',
-                    location: 'Living Room',
-                    status: 'healthy',
-                    health: 95,
-                    image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Lantana_camara-IMG_8252.JPG/320px-Lantana_camara-IMG_8252.JPG',
-                    lastWatered: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(), // 1 day ago
-                    auto_watering_on: true,
-                    thresholds: JSON.stringify({
-                        moisture_min: 25,
-                        moisture_max: 60,
-                        light_min: 2000,
-                        light_max: 10000,
-                        temperature_min: 15,
-                        temperature_max: 32,
-                        humidity_min: 30,
-                        humidity_max: 70
-                    })
-                },
-                {
-                    plant_id: 'default-2',
-                    name: 'Peace Lily',
-                    species: 'Spathiphyllum',
-                    location: 'Bedroom',
-                    status: 'needs_water',
-                    health: 70,
-                    image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/bd/Spathiphyllum_cochlearispathum_RTBG.jpg/320px-Spathiphyllum_cochlearispathum_RTBG.jpg',
-                    lastWatered: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(), // 5 days ago
-                    auto_watering_on: false,
-                    thresholds: JSON.stringify({
-                        moisture_min: 30,
-                        moisture_max: 70,
-                        light_min: 1000,
-                        light_max: 8000,
-                        temperature_min: 18,
-                        temperature_max: 30,
-                        humidity_min: 40,
-                        humidity_max: 80
-                    })
-                },
-                {
-                    plant_id: 'default-3',
-                    name: 'Snake Plant',
-                    species: 'Sansevieria trifasciata',
-                    location: 'Study',
-                    status: 'needs_attention',
-                    health: 50,
-                    image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/fb/Snake_Plant_%28Sansevieria_trifasciata_%27Laurentii%27%29.jpg/320px-Snake_Plant_%28Sansevieria_trifasciata_%27Laurentii%27%29.jpg',
-                    lastWatered: new Date(Date.now() - 12 * 24 * 60 * 60 * 1000).toISOString(), // 12 days ago
-                    auto_watering_on: true,
-                    thresholds: JSON.stringify({
-                        moisture_min: 15,
-                        moisture_max: 40,
-                        light_min: 500,
-                        light_max: 5000,
-                        temperature_min: 10,
-                        temperature_max: 35,
-                        humidity_min: 20,
-                        humidity_max: 50
-                    })
-                }
-            ]);
+            // Return empty array with consistent structure
+            return res.json({
+                success: true,
+                data: []
+            });
         }
         
         // Process the plants data to make it frontend-friendly
         const plants = rows.map(plant => {
-            // Parse the thresholds if they exist
-            let thresholds = {};
-            if (plant.thresholds) {
-                try {
-                    thresholds = typeof plant.thresholds === 'string'
-                        ? JSON.parse(plant.thresholds)
-                        : plant.thresholds;
-                } catch (e) {
-                    console.error('Error parsing thresholds JSON:', e);
-                }
-            }
-            
             return {
                 plant_id: plant.plant_id,
                 name: plant.custom_name || plant.name || 'Unnamed Plant',
-                species: plant.species || 'Unknown',
-                location: plant.location || 'Not specified',
+                species: plant.species_name || 'Unknown Species',
+                location: plant.zone_name || 'No zone assigned', // Use zone_name instead of location
                 status: plant.status || 'healthy',
-                health: plant.health || 100,
-                image: plant.image_url || null,
-                lastWatered: plant.last_watered || new Date().toISOString(),
+                health: 100, // Default health for now
+                image: plant.image || null,
+                lastWatered: null, // Will be populated from watering history later
                 auto_watering_on: plant.auto_watering_on || false,
-                device_key: plant.device_key,
+                thresholds: plant.thresholds || {},
+                device_id: plant.device_key,
                 device_name: plant.device_name,
-                thresholds
+                zone_id: plant.zone_id,
+                zone_name: plant.zone_name,
+                zone_description: plant.zone_description,
+                notes: plant.notes,
+                created_at: plant.created_at
             };
         });
         
-        res.json(plants);
+        res.json({
+            success: true,
+            data: plants
+        });
     } catch (error) {
         console.error('Error fetching user plants:', error);
         
@@ -779,6 +719,166 @@ const getPlantById = async (req, res) => {
     }
 };
 
+/**
+ * CREATE NEW PLANT
+ * ===============================
+ * Creates a new plant for the authenticated user
+ * 
+ * @route POST /api/plants
+ * @access Private - Requires authentication
+ * @param {Object} plant_data - Plant information
+ * @returns {Object} Created plant data
+ */
+const createPlant = async (req, res) => {
+    try {
+        const userId = req.user.user_id;
+        const {
+            custom_name,
+            profile_id,
+            notes,
+            zone_id,
+            moisture_threshold,
+            image,
+            species_name
+        } = req.body;
+        
+        // Debug logging
+        console.log('Received plant creation request:', req.body);
+        console.log('Zone ID received:', zone_id, typeof zone_id);
+
+        // Validate required fields
+        if (!custom_name || !custom_name.trim()) {
+            return res.status(400).json({
+                success: false,
+                error: 'Plant name is required'
+            });
+        }
+
+        // zone_id is optional, but if provided, validate it exists
+        if (zone_id && !Number.isInteger(parseInt(zone_id))) {
+            return res.status(400).json({
+                success: false,
+                error: 'Invalid zone ID format'
+            });
+        }
+
+        // Validate moisture threshold
+        const threshold = parseInt(moisture_threshold);
+        if (isNaN(threshold) || threshold < 10 || threshold > 90) {
+            return res.status(400).json({
+                success: false,
+                error: 'Moisture threshold must be between 10% and 90%'
+            });
+        }
+
+        // Check if profile_id exists if provided
+        let selectedProfile = null;
+        if (profile_id) {
+            const PlantProfile = require('../models/PlantProfile');
+            selectedProfile = await PlantProfile.findById(profile_id);
+            if (!selectedProfile) {
+                return res.status(400).json({
+                    success: false,
+                    error: 'Invalid plant profile selected'
+                });
+            }
+        }
+
+        // Create new plant using the Plant model
+        const plantData = {
+            user_id: userId,
+            profile_id: profile_id || null,
+            custom_name: custom_name.trim(),
+            notes: notes ? notes.trim() : null,
+            zone_id: zone_id ? parseInt(zone_id) : null,
+            moisture_threshold: threshold,
+            image: image || null,
+            species_name: species_name || 'Unknown Species',
+            auto_watering_on: true, // Default to enabled
+            status: 'healthy', // Default status
+            created_at: new Date()
+        };
+
+        // Use raw SQL insert for basic plant creation (simplified for existing schema)
+        const insertQuery = `
+            INSERT INTO plants (
+                user_id, profile_id, custom_name, 
+                moisture_threshold, auto_watering_on, zone_id, notes, image
+            ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+            RETURNING *
+        `;
+
+        const values = [
+            plantData.user_id,
+            plantData.profile_id,
+            plantData.custom_name,
+            plantData.moisture_threshold,
+            plantData.auto_watering_on,
+            plantData.zone_id,
+            plantData.notes,
+            plantData.image
+        ];
+
+        const result = await pool.query(insertQuery, values);
+        const createdPlant = result.rows[0];
+
+        // Get zone information if zone_id exists
+        let zoneInfo = null;
+        if (createdPlant.zone_id) {
+            const zoneQuery = `SELECT zone_name, description FROM zones WHERE zone_id = $1`;
+            const zoneResult = await pool.query(zoneQuery, [createdPlant.zone_id]);
+            if (zoneResult.rows.length > 0) {
+                zoneInfo = zoneResult.rows[0];
+            }
+        }
+
+        // Log the action
+        await SystemLog.create({
+            log_level: 'INFO',
+            source: 'PlantController',
+            message: `New plant created: ${createdPlant.custom_name} (ID: ${createdPlant.plant_id}) by user ${userId}`
+        });
+
+        // Return the created plant with formatted response (matching getUserPlants structure)
+        const responseData = {
+            plant_id: createdPlant.plant_id,
+            name: createdPlant.custom_name,
+            species: selectedProfile ? selectedProfile.species_name : (species_name || 'Unknown Species'),
+            location: zoneInfo ? zoneInfo.zone_name : 'No zone assigned',
+            status: createdPlant.status || 'healthy',
+            health: 100, // New plants start healthy
+            image: createdPlant.image,
+            lastWatered: null, // Never watered yet
+            auto_watering_on: createdPlant.auto_watering_on,
+            moisture_threshold: createdPlant.moisture_threshold,
+            device_id: createdPlant.device_id,
+            device_name: null, // No device assigned yet
+            zone_id: createdPlant.zone_id,
+            zone_name: zoneInfo ? zoneInfo.zone_name : null,
+            zone_description: zoneInfo ? zoneInfo.description : null,
+            notes: createdPlant.notes,
+            created_at: createdPlant.created_at
+        };
+
+        res.status(201).json({
+            success: true,
+            message: 'Plant created successfully',
+            data: responseData
+        });
+
+    } catch (error) {
+        console.error('Create plant error:', error);
+        
+        // Log the error
+        await SystemLog.error('PlantController', `Error creating plant for user ${req.user.user_id}: ${error.message}`);
+        
+        res.status(500).json({
+            success: false,
+            error: 'Failed to create plant. Please try again.'
+        });
+    }
+};
+
 module.exports = {
     waterPlant,
     getWateringSchedule,
@@ -786,5 +886,6 @@ module.exports = {
     toggleAutoWatering,
     setSensorThresholds,
     getUserPlants,
-    getPlantById
+    getPlantById,
+    createPlant
 };
