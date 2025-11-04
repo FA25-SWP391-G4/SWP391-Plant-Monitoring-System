@@ -40,7 +40,8 @@ const DashboardLayoutInner = ({ children }) => {
       '/premium',
       '/support',
       '/documentation',
-      '/ai'
+      '/ai',
+      '/profile'
     ];
     
     return dashboardRoutes.some(route => 
@@ -61,7 +62,8 @@ const DashboardLayoutInner = ({ children }) => {
       '/premium': 'Premium',
       '/support': 'Support',
       '/documentation': 'Documentation',
-      '/ai': 'AI Assistant'
+      '/ai': 'AI Assistant',
+      '/profile': 'Profile'
     };
 
     // Check for exact match first
@@ -84,17 +86,24 @@ const DashboardLayoutInner = ({ children }) => {
     const landingRoutes = ['/', '/features', '/benefits', '/pricing', '/contact'];
     const authRoutes = ['/login', '/register', '/forgot-password', '/reset-password'];
     
-    return landingRoutes.includes(pathname) || 
-           authRoutes.includes(pathname) ||
-           (!user && !loading);
+    // Only consider it a landing page if we're actually on a landing/auth route
+    // Don't use (!user && !loading) as it causes routing conflicts on reload
+    return landingRoutes.includes(pathname) || authRoutes.includes(pathname);
   };
+
+  // Handle authentication redirect in useEffect to avoid setState during render
+  useEffect(() => {
+    if (!loading && isDashboardPage() && !user) {
+      router.push('/login');
+    }
+  }, [user, loading, pathname, router]);
 
   // Handle sidebar toggle (using context now)
   const handleSidebarToggle = () => {
     toggleSidebar();
   };
 
-  // Show loading state
+  // Show loading state while authentication is being checked
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -103,8 +112,8 @@ const DashboardLayoutInner = ({ children }) => {
     );
   }
 
-  // Render landing page layout (original navbar)
-  if (isLandingPage() || !user) {
+  // Render landing page layout (original navbar) for public pages
+  if (isLandingPage()) {
     return (
       <>
         <Navbar />
@@ -113,10 +122,20 @@ const DashboardLayoutInner = ({ children }) => {
     );
   }
 
-  // Render dashboard page layout (sidebar navigation)
-  if (isDashboardPage() && user) {
+  // For dashboard pages, show dashboard layout if authenticated, otherwise show loading while redirecting
+  if (isDashboardPage()) {
+    if (!user) {
+      // User is not authenticated, show loading while redirect happens in useEffect
+      return (
+        <div className="min-h-screen flex items-center justify-center">
+          <ThemedLoader size="lg" showText={true} text="Redirecting to login..." />
+        </div>
+      );
+    }
+
+    // User is authenticated, show dashboard layout
     return (
-      <div className="flex flex-col h-screen bg-gray-50 dark:bg-gray-900">
+      <div className="flex flex-col h-screen bg-app-gradient">
         {/* Modern Top Bar - Fixed at top */}
         <DashboardTopBar 
           title={getPageTitle()}

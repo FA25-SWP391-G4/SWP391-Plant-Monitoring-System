@@ -10,13 +10,14 @@ class PaymentController {
     // Create payment URL for premium upgrade
     static async createPayment(req, res) {
         try {
-            const { amount, orderInfo, bankCode } = req.body;
+            const { amount, orderInfo, bankCode, planType } = req.body;
             const userId = req.user.user_id;
 
             console.log('[PAYMENT CONTROLLER] Creating payment for user:', userId, {
                 amount,
                 orderInfo,
-                bankCode
+                bankCode,
+                planType
             });
 
             // Validate required fields
@@ -33,8 +34,9 @@ class PaymentController {
                 });
             }
 
-            // Generate unique order ID
-            const orderId = VNPayService.generateOrderId('PREMIUM');
+            // Generate unique order ID based on plan type
+            const planPrefix = (planType && planType.includes('ultimate')) ? 'ULTIMATE' : 'PREMIUM';
+            const orderId = VNPayService.generateOrderId(planPrefix);
             
             // Get client IP
             const ipAddr = VNPayService.getClientIpAddress(req);
@@ -114,16 +116,29 @@ class PaymentController {
                 updated_at: new Date()
             });
 
-            // If payment successful, upgrade user to premium
+            // If payment successful, upgrade user to appropriate tier
             if (transaction.isSuccess) {
                 const payment = await Payment.findByOrderId(transaction.orderId);
                 if (payment) {
-                    await User.upgradeToPremium(payment.user_id);
-                    console.log('[PAYMENT CONTROLLER] User upgraded to premium:', payment.user_id);
+                    // Check order ID or order info for plan type
+                    const isUltimate = payment.order_id.includes('ULTIMATE') || 
+                                      (payment.order_info && payment.order_info.toLowerCase().includes('ultimate'));
                     
-                    // Log successful upgrade
-                    await SystemLog.log('payment', 'upgrade_premium', 
-                       'User upgraded to premium via payment', payment.user_id);
+                    if (isUltimate) {
+                        await User.upgradeToUltimate(payment.user_id);
+                        console.log('[PAYMENT CONTROLLER] User upgraded to ultimate:', payment.user_id);
+                        
+                        // Log successful upgrade
+                        await SystemLog.log('payment', 'upgrade_ultimate', 
+                           'User upgraded to ultimate via payment', payment.user_id);
+                    } else {
+                        await User.upgradeToPremium(payment.user_id);
+                        console.log('[PAYMENT CONTROLLER] User upgraded to premium:', payment.user_id);
+                        
+                        // Log successful upgrade
+                        await SystemLog.log('payment', 'upgrade_premium', 
+                           'User upgraded to premium via payment', payment.user_id);
+                    }
                 }
 
                 // Redirect to success page
@@ -187,14 +202,27 @@ class PaymentController {
                 updated_at: new Date()
             });
 
-            // If payment successful, upgrade user to premium
+            // If payment successful, upgrade user to appropriate tier
             if (transaction.isSuccess) {
-                await User.upgradeToPremium(payment.user_id);
-                console.log('[PAYMENT CONTROLLER] User upgraded to premium via IPN:', payment.user_id);
+                // Check order ID or order info for plan type
+                const isUltimate = payment.order_id.includes('ULTIMATE') || 
+                                  (payment.order_info && payment.order_info.toLowerCase().includes('ultimate'));
                 
-                // Log successful upgrade
-                await SystemLog.log('payment', 'upgrade_premium_ipn', 
-                    `User upgraded to premium via IPN`, payment.user_id);
+                if (isUltimate) {
+                    await User.upgradeToUltimate(payment.user_id);
+                    console.log('[PAYMENT CONTROLLER] User upgraded to ultimate via IPN:', payment.user_id);
+                    
+                    // Log successful upgrade
+                    await SystemLog.log('payment', 'upgrade_ultimate_ipn', 
+                        `User upgraded to ultimate via IPN`, payment.user_id);
+                } else {
+                    await User.upgradeToPremium(payment.user_id);
+                    console.log('[PAYMENT CONTROLLER] User upgraded to premium via IPN:', payment.user_id);
+                    
+                    // Log successful upgrade
+                    await SystemLog.log('payment', 'upgrade_premium_ipn', 
+                        `User upgraded to premium via IPN`, payment.user_id);
+                }
             }
 
             // Return success response to VNPay

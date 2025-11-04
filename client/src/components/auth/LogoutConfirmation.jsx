@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTheme } from '@/contexts/ThemeContext';
 import { Button } from '../ui/Button';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '../ui/Card';
 
@@ -7,6 +8,7 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '../ui
  * Confirms user wants to log out
  */
 export function LogoutConfirmation({ onConfirm, onCancel }) {
+  const { getThemeColor, isDark } = useTheme();
   const [isLoading, setIsLoading] = useState(false);
 
   const handleLogout = async () => {
@@ -34,9 +36,10 @@ export function LogoutConfirmation({ onConfirm, onCancel }) {
     <Card className="w-full max-w-md mx-auto">
       <CardHeader>
         <div className="flex items-center justify-center mb-4">
-          <span className="flex h-12 w-12 items-center justify-center rounded-full bg-red-100">
+          <span className="flex h-12 w-12 items-center justify-center rounded-full"
+                style={{ backgroundColor: getThemeColor('#fee2e2', '#7f1d1d') }}>
             {/* Logout icon representation */}
-            <span className="text-red-700 text-xl">⚠️</span>
+            <span className="text-xl" style={{ color: getThemeColor('#b91c1c', '#fca5a5') }}>⚠️</span>
           </span>
         </div>
         <CardTitle className="text-center text-2xl">Log out</CardTitle>

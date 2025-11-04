@@ -74,14 +74,20 @@ export default function PremiumPage() {
       let description = '';
       
       if (paymentType === 'monthly') {
-        amount = 20000; // 20,000 VND per month
+        amount = 15000; // 15,000 VND per month
         description = 'Monthly Premium Subscription - Plant Monitoring System';
       } else if (paymentType === 'annual') {
-        amount = 200000; // 200,000 VND per year (20% off)
-        description = 'Annual Premium Subscription - Plant Monitoring System (20% off)';
+        amount = 150000; // 150,000 VND per year (17% off)
+        description = 'Annual Premium Subscription - Plant Monitoring System (17% off)';
       } else if (paymentType === 'lifetime') {
-        amount = 399000; // 399,000 VND one-time payment
+        amount = 299000; // 299,000 VND one-time payment
         description = 'Lifetime Premium Subscription - Plant Monitoring System';
+      } else if (paymentType === 'ultimate-monthly') {
+        amount = 45000; // 45,000 VND per month
+        description = 'Monthly Ultimate Subscription - Plant Monitoring System';
+      } else if (paymentType === 'ultimate-annual') {
+        amount = 399000; // 399,000 VND per year (26% off)
+        description = 'Annual Ultimate Subscription - Plant Monitoring System (26% off)';
       }
       
       // Create payment data without bankCode to allow all payment methods
@@ -173,8 +179,8 @@ export default function PremiumPage() {
       </div>
       
       {/* Pricing Comparison */}
-      <div className="max-w-5xl mx-auto mb-12">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+      <div className="max-w-7xl mx-auto mb-12">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {/* Free Plan */}
           <div className="bg-white rounded-xl overflow-hidden border border-gray-200 shadow-sm">
             <div className="p-6">
@@ -224,15 +230,15 @@ export default function PremiumPage() {
               <div className="mb-6">
                 {selectedPlan === 'monthly' ? (
                   <>
-                    <span className="text-3xl font-bold text-emerald-600">20,000₫</span>
+                    <span className="text-3xl font-bold text-emerald-600">15,000₫</span>
                     <span className="text-gray-500 ml-1">{t('premium.perMonth', 'per month')}</span>
                   </>
                 ) : (
                   <>
-                    <span className="text-3xl font-bold text-emerald-600">200,000₫</span>
+                    <span className="text-3xl font-bold text-emerald-600">150,000₫</span>
                     <span className="text-gray-500 ml-1">{t('premium.perYear', 'per year')}</span>
                     <div className="text-sm text-emerald-600 font-medium mt-1">
-                      {t('premium.billed', 'Billed annually (20% off)')}
+                      {t('premium.billed', 'Billed annually (17% off)')}
                     </div>
                   </>
                 )}
@@ -250,7 +256,7 @@ export default function PremiumPage() {
                   className="w-full bg-white border border-emerald-600 hover:bg-emerald-50 text-emerald-600 py-2 px-4 rounded-lg font-medium transition-colors"
                   onClick={() => handleUpgradeClick('lifetime')}
                 >
-                  {t('premium.lifetimeUpgrade', 'Lifetime Access - 399,000₫')}
+                  {t('premium.lifetimeUpgrade', 'Lifetime Access - 299,000₫')}
                 </button>
               </div>
             </div>
@@ -264,9 +270,62 @@ export default function PremiumPage() {
                 <PlanFeature text={t('premium.features.premium3', 'Advanced analytics & reports')} highlighted={true} />
                 <PlanFeature text={t('premium.features.premium4', 'Automated watering schedules')} highlighted={true} />
                 <PlanFeature text={t('premium.features.premium5', 'Unlimited data history')} highlighted={true} />
-                <PlanFeature text={t('premium.features.premium6', 'AI-powered recommendations')} highlighted={true} />
                 <PlanFeature text={t('premium.features.premium7', 'Priority customer support')} highlighted={true} />
                 <PlanFeature text={t('premium.features.premium8', 'Export data (CSV, PDF)')} highlighted={true} />
+              </ul>
+            </div>
+          </div>
+
+          {/* Ultimate Plan */}
+          <div className="bg-gradient-to-br from-purple-50 to-indigo-50 rounded-xl overflow-hidden border-2 border-purple-300 shadow-lg relative transform hover:scale-105 transition-all duration-300">
+            <div className="absolute top-0 right-0 bg-gradient-to-r from-purple-500 via-purple-600 to-indigo-700 text-white text-xs font-bold py-1 px-3 rounded-bl-lg shadow-lg animate-pulse">
+              ✨ {t('premium.ultimate', 'ULTIMATE')}
+            </div>
+            <div className="p-6">
+              <h2 className="text-xl font-semibold bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent mb-2">
+                {t('premium.ultimate', 'Ultimate')}
+              </h2>
+              <p className="text-gray-600 mb-4">
+                {t('premium.ultimateDesc', 'Everything Premium has + AI intelligence & real-time monitoring')}
+              </p>
+              <div className="mb-6">
+                {selectedPlan === 'monthly' ? (
+                  <>
+                    <span className="text-3xl font-bold bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent">45,000₫</span>
+                    <span className="text-gray-500 ml-1">{t('premium.perMonth', 'per month')}</span>
+                  </>
+                ) : (
+                  <>
+                    <span className="text-3xl font-bold bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent">399,000₫</span>
+                    <span className="text-gray-500 ml-1">{t('premium.perYear', 'per year')}</span>
+                    <div className="text-sm text-purple-600 font-medium mt-1">
+                      {t('premium.ultimateBilled', 'Billed annually (26% off)')}
+                    </div>
+                  </>
+                )}
+              </div>
+              <div className="space-y-2">
+                <button
+                  className="w-full bg-gradient-to-r from-purple-500 via-purple-600 to-indigo-700 hover:from-purple-600 hover:via-purple-700 hover:to-indigo-800 text-white py-2 px-4 rounded-lg font-medium transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-purple-500/50"
+                  onClick={() => handleUpgradeClick(selectedPlan === 'monthly' ? 'ultimate-monthly' : 'ultimate-annual')}
+                >
+                  {selectedPlan === 'monthly' ? 
+                    t('premium.ultimateMonthlyUpgrade', 'Get Ultimate Monthly') : 
+                    t('premium.ultimateAnnualUpgrade', 'Get Ultimate Annual')}
+                </button>
+              </div>
+            </div>
+            <div className="border-t border-purple-200 p-6 bg-white/50">
+              <h3 className="font-medium text-gray-900 mb-4">
+                {t('premium.includes', 'Includes everything in Premium, plus:')}
+              </h3>
+              <ul className="space-y-3">
+                <PlanFeature text={t('premium.features.ultimate1', '🤖 AI-powered plant recommendations')} highlighted={true} />
+                <PlanFeature text={t('premium.features.ultimate2', '📹 Real-time camera monitoring')} highlighted={true} />
+                <PlanFeature text={t('premium.features.ultimate3', '🔬 Advanced plant health analysis')} highlighted={true} />
+                <PlanFeature text={t('premium.features.ultimate4', '📱 Smart notifications & alerts')} highlighted={true} />
+                <PlanFeature text={t('premium.features.ultimate5', '🌡️ Environmental pattern recognition')} highlighted={true} />
+                <PlanFeature text={t('premium.features.ultimate6', '⚡ Instant priority support')} highlighted={true} />
               </ul>
             </div>
           </div>
@@ -408,7 +467,7 @@ export default function PremiumPage() {
             className="bg-white text-emerald-600 hover:bg-gray-100 px-8 py-3 rounded-lg font-medium transition-colors"
             onClick={() => handleUpgradeClick('monthly')}
           >
-            {t('premium.getStartedMonthly', 'Get Started - 20,000₫/month')}
+            {t('premium.getStartedMonthly', 'Get Started - 15,000₫/month')}
           </button>
           <button 
             className="bg-white text-emerald-600 hover:bg-gray-100 px-8 py-3 rounded-lg font-medium transition-colors"

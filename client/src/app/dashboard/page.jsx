@@ -2,11 +2,11 @@
 
 import { useState, useEffect, useMemo } from 'react';
 import { useAuth } from '@/providers/AuthProvider';
+import { useDashboardWidgets } from '@/providers/DashboardWidgetProvider';
 import { useRouter } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from '@/contexts/ThemeContext';
 import DashboardHeader from '@/components/dashboard/DashboardHeader';
-import PlantCard from '@/components/dashboard/PlantCard';
 import WeatherWidget from '@/components/dashboard/WeatherWidget';
 import RecentActivity from '@/components/dashboard/RecentActivity';
 import WateringSchedule from '@/components/dashboard/WateringSchedule';
@@ -18,6 +18,7 @@ import axiosClient from '@/api/axiosClient';
 
 export default function DashboardPage() {
   const { user, loading, isPremium } = useAuth();
+  const { widgetSettings } = useDashboardWidgets();
   const router = useRouter();
   const { t } = useTranslation();
   const { isDark, themeColors } = useTheme();
@@ -29,12 +30,24 @@ export default function DashboardPage() {
   // Use !!user for clean boolean user authentication state
   const isAuthenticated = !!user;
 
-  console.log('[DASHBOARD] Render - user:', user?.email, 'loading:', loading);
+  // 🚀 RENDER DEBUG - Track dashboard performance
+  const renderDebug = useRenderDebug('DashboardPage', {
+    userEmail: user?.email,
+    loading,
+    isPremium,
+    isAuthenticated,
+    widgetSettings,
+    plantsCount: plants.length
+  });
 
-  // Redirect if not logged in (only after loading is complete)
+  const { startTiming, endTiming } = useOperationTiming('DashboardPage');
+  const { fetchState, fetchWithDebug } = useDataFetchDebug('DashboardPage');
+
+  console.log('[DASHBOARD] Render - user:', user?.email, 'loading:', loading, 'isPremium:', isPremium);
+  console.log('[DASHBOARD] User object:', user);
+
+  // 🚀 PERFORMANCE MONITOR - Load performance monitoring tools
   useEffect(() => {
-    console.log('[DASHBOARD] Auth check - loading:', loading, 'user:', user?.email);
-    
     if (!loading && !user) {
       console.log('[DASHBOARD] No user found after loading complete - redirecting to /login');
       router.push('/login');
@@ -45,26 +58,35 @@ export default function DashboardPage() {
   if (loading) {
     console.log('[DASHBOARD] Still loading auth...');
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <ThemedLoader 
-          size="xl" 
-          showText={true} 
-          text={t('common.loading', 'Loading...')}
-        />
+      <div className="flex items-center justify-center h-screen">
+        <div className="animate-pulse flex flex-col items-center">
+          <div className="w-12 h-12 rounded-full bg-emerald-200 mb-4"></div>
+          <div className="h-4 w-24 bg-emerald-100 rounded"></div>
+        </div>
       </div>
     );
+    
+    renderDebug.logTiming('loading-render', loadingRenderStart);
+    return loadingComponent;
   }
 
   // If not loading and no user, return null (redirect will happen via useEffect)
   if (!user) {
     console.log('[DASHBOARD] No user and not loading - should redirect');
+    const redirectRenderStart = performance.now();
+    renderDebug.logTiming('redirect-render', redirectRenderStart);
     return null;
   }
 
-  // Fetch plants data using the custom hook
-  const fetchPlants = async () => {
-    const response = await axiosClient.get('/api/plants');
-    return response.data;
+
+
+  // Mock tree statistics - these will be non-toggleable
+  const treeStats = {
+    totalTrees: 12,
+    healthyTrees: 10,
+    needsAttention: 2,
+    co2Absorbed: 145.7, // kg per year
+    oxygenProduced: 106.2 // kg per year
   };
   
   // Fetch sensor data using the custom hook
@@ -221,13 +243,13 @@ export default function DashboardPage() {
         )}
         
         {/* Welcome Banner */}
-        <div className="bg-gradient-to-r from-emerald-500 to-emerald-700 dark:from-emerald-600 dark:to-emerald-800 rounded-xl shadow-lg mb-8 p-6 text-white flex items-center justify-between">
+        <div className="bg-gradient-to-r from-emerald-500 to-emerald-700 dark:from-emerald-600 dark:to-emerald-800 rounded-xl shadow-lg mb-8 p-6 text-white flex items-center justify-between stagger-item">
           <div>
             <h1 className="text-2xl font-bold mb-2">
-              {t('dashboard.welcome', 'Welcome back')}, {user?.family_name || t('common.plantLover', 'Plant Lover')}!
+              {t('dashboard.welcome', 'Welcome back')}, {user?.family_name || user?.given_name || t('common.user', 'User')}!
             </h1>
             <p className="opacity-90">
-              {t('dashboard.overview', 'Here\'s an overview of your plant collection')}
+              {t('dashboard.overview', 'Your plant monitoring dashboard')}
             </p>
           </div>
           <div className="hidden md:block">
@@ -239,63 +261,58 @@ export default function DashboardPage() {
             </button>
           </div>
         </div>
+
+
         
-        {/* Summary Stats */}
-        {!noData && (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-            <div className="bg-white dark:bg-gray-800 p-5 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 flex items-center">
+        {/* Tree Statistics */}
+        {widgetSettings.showPlantOverview && (
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8 stagger-item">
+            <div className="bg-white dark:bg-gray-800 p-3 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 flex items-center stagger-item">
+              <div className="bg-green-100 dark:bg-green-900 p-3 rounded-full mr-4">
+                <TreePine className="h-6 w-6 text-green-600 dark:text-green-400" />
+              </div>
+              <div>
+                <p className="text-gray-500 dark:text-gray-400 text-sm">Total Trees</p>
+                <p className="text-xl font-semibold text-gray-900 dark:text-white">{treeStats.totalTrees}</p>
+              </div>
+            </div>    
+            <div className="bg-white dark:bg-gray-800 p-3 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 flex items-center stagger-item">
               <div className="bg-emerald-100 dark:bg-emerald-900 p-3 rounded-full mr-4">
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-emerald-600 dark:text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
               </div>
               <div>
-                <p className="text-gray-500 dark:text-gray-400 text-sm">{t('dashboard.totalPlants', 'Total Plants')}</p>
-                <p className="text-xl font-semibold text-gray-900 dark:text-white">{plants.length}</p>
+                <p className="text-gray-500 dark:text-gray-400 text-sm">Healthy</p>
+                <p className="text-xl font-semibold text-gray-900 dark:text-white">{treeStats.healthyTrees}</p>
               </div>
-          </div>    
-          <div className="bg-white dark:bg-gray-800 p-5 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 flex items-center">
-            <div className="bg-blue-100 dark:bg-blue-900 p-3 rounded-full mr-4">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-blue-600 dark:text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
-              </svg>
             </div>
-            <div>
-              <p className="text-gray-500 dark:text-gray-400 text-sm">{t('dashboard.needsWatering', 'Needs Watering')}</p>
-              <p className="text-xl font-semibold text-gray-900 dark:text-white">
-                {plants.filter(plant => plant.status === 'needs_water').length}
-              </p>
-            </div>
-          </div>
-          
-          <div className="bg-white dark:bg-gray-800 p-5 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 flex items-center">
-            <div className="bg-amber-100 dark:bg-amber-900 p-3 rounded-full mr-4">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-amber-600 dark:text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-              </svg>
-            </div>
-            <div>
-              <p className="text-gray-500 dark:text-gray-400 text-sm">{t('dashboard.needsAttention', 'Needs Attention')}</p>
-              <p className="text-xl font-semibold text-gray-900 dark:text-white">
-                {plants.filter(plant => plant.status === 'needs_attention').length}
-              </p>
+            <div className="bg-white dark:bg-gray-800 p-3 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 flex items-center stagger-item">
+              <div className="bg-amber-100 dark:bg-amber-900 p-3 rounded-full mr-4">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-amber-600 dark:text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                </svg>
+              </div>
+              <div>
+                <p className="text-gray-500 dark:text-gray-400 text-sm">Needs Attention</p>
+                <p className="text-xl font-semibold text-gray-900 dark:text-white">{treeStats.needsAttention}</p>
+              </div>
             </div>
           </div>
-        </div>
         )}
         
         {/* Main Content Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Left column - Plant cards */}
+          {/* Left column - AI Features */}
           <div className="lg:col-span-2 space-y-6">
-            <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-4">{t('dashboard.yourPlants', 'Your Plants')}</h2>
-            
-            {plants.length === 0 ? (
-              <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-8 text-center">
-                <div className="flex justify-center mb-4">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 text-gray-300 dark:text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-                  </svg>
+            {widgetSettings.showAIInsights && (
+              <div>
+                <div className="flex items-center justify-between mb-4">
+                  <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-200">{t('dashboard.aiFeatures', 'AI Features')}</h2>
+                  <Link href="/settings" className="text-sm text-emerald-600 hover:text-emerald-700 flex items-center gap-1">
+                    <Settings size={16} />
+                    {t('dashboard.configureWidgets', 'Configure')}
+                  </Link>
                 </div>
                 <h3 className="text-lg font-medium mb-2 text-gray-900 dark:text-white">{t('dashboard.noPlants', 'No plants added yet')}</h3>
                 <p className="text-gray-500 dark:text-gray-400 mb-4">{t('dashboard.startAdding', 'Start adding plants to your collection')}</p>
@@ -321,17 +338,17 @@ export default function DashboardPage() {
             )}
           </div>
           
-          {/* Right column - Widgets */}
+          {/* Right column - Dashboard Widgets */}
           <div className="space-y-6">
             <WeatherWidget />
             
-            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-5">
-              <h3 className="font-medium text-gray-900 dark:text-white mb-4">{t('dashboard.recentActivity', 'Recent Activity')}</h3>
+            <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-5">
+              <h3 className="font-medium text-gray-900 mb-4">{t('dashboard.recentActivity', 'Recent Activity')}</h3>
               <RecentActivity />
             </div>
             
-            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-5">
-              <h3 className="font-medium text-gray-900 dark:text-white mb-4">{t('dashboard.wateringSchedule', 'Watering Schedule')}</h3>
+            <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-5">
+              <h3 className="font-medium text-gray-900 mb-4">{t('dashboard.wateringSchedule', 'Watering Schedule')}</h3>
               <WateringSchedule plants={plants} />
             </div>
             
@@ -339,9 +356,32 @@ export default function DashboardPage() {
             {user?.role === 'Regular' && (
               <PremiumFeaturePrompt />
             )}
+            
+            {/* Settings Quick Access */}
+            <div className="bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-700 rounded-xl p-4 border border-gray-200 dark:border-gray-600">
+              <div className="flex items-center gap-3 mb-2">
+                <Settings size={20} className="text-gray-600 dark:text-gray-400" />
+                <h3 className="font-medium text-gray-900 dark:text-white">{t('dashboard.customizeLayout', 'Customize Your Dashboard')}</h3>
+              </div>
+              <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">
+                {t('dashboard.customizeDescription', 'Manage widget visibility and dashboard preferences')}
+              </p>
+              <Link 
+                href="/settings"
+                className="inline-flex items-center gap-2 text-sm bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-2 rounded-lg btn-transition fade-in"
+              >
+                <Settings size={16} />
+                {t('dashboard.openSettings', 'Open Settings')}
+              </Link>
+            </div>
           </div>
         </div>
       </main>
     </div>
   );
+
+  // 🚀 RENDER DEBUG - Log main render completion
+  renderDebug.logTiming('main-dashboard-render', mainRenderStart);
+  
+  return dashboardComponent;
 }

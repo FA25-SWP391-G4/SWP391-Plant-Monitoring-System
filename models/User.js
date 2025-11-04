@@ -845,6 +845,113 @@ createPasswordResetToken() {
             throw error;
         }
     }
+
+    static async upgradeToUltimate(userId) {
+        // Validate UUID
+        if (!isValidUUID(userId)) {
+            throw new Error('Invalid user_id UUID');
+        }
+
+        try {
+            console.log(`[USER] Upgrading user to Ultimate: ${userId}`);
+            
+            const query = `
+                UPDATE users 
+                SET role = 'Ultimate' 
+                WHERE user_id = $1 
+                RETURNING user_id, email, role
+            `;
+            const result = await pool.query(query, [userId]);
+            
+            if (result.rows.length === 0) {
+                throw new Error('User not found');
+            }
+            
+            console.log(`[USER] Successfully upgraded user to Ultimate:`, result.rows[0]);
+            return result.rows[0];
+        } catch (error) {
+            console.error('[USER ERROR] Error upgrading user to Ultimate:', error.message);
+            throw error;
+        }
+    }
+
+    /**
+     * UPDATE USER SETTINGS
+     * ====================
+     * Updates user settings in JSON format
+     * 
+     * @param {string} userId - User UUID
+     * @param {string} settingsJson - Settings JSON string
+     * @returns {boolean} - Success status
+     */
+    static async updateUserSettings(userId, settingsJson) {
+        try {
+            console.log('[USER SETTINGS] Updating settings for user:', userId);
+            
+            if (!isValidUUID(userId)) {
+                throw new Error('Invalid user ID format');
+            }
+
+            const query = `
+                UPDATE Users 
+                SET settings = $1
+                WHERE user_id = $2
+                RETURNING user_id
+            `;
+
+            const result = await pool.query(query, [settingsJson, userId]);
+            
+            if (result.rows.length === 0) {
+                console.error('[USER SETTINGS] User not found:', userId);
+                return false;
+            }
+
+            console.log('[USER SETTINGS] Settings updated successfully for user:', userId);
+            return true;
+        } catch (error) {
+            console.error('[USER SETTINGS ERROR] Error updating user settings:', error.message);
+            throw error;
+        }
+    }
+
+    /**
+     * GET USER SETTINGS
+     * =================
+     * Retrieves user settings from database
+     * 
+     * @param {string} userId - User UUID
+     * @returns {Object|null} - Parsed settings object or null
+     */
+    static async getUserSettings(userId) {
+        try {
+            console.log('[USER SETTINGS] Fetching settings for user:', userId);
+            
+            if (!isValidUUID(userId)) {
+                throw new Error('Invalid user ID format');
+            }
+
+            const query = `
+                SELECT settings 
+                FROM Users 
+                WHERE user_id = $1
+            `;
+
+            const result = await pool.query(query, [userId]);
+            
+            if (result.rows.length === 0) {
+                console.error('[USER SETTINGS] User not found:', userId);
+                return null;
+            }
+
+            const settings = result.rows[0].settings;
+            console.log('[USER SETTINGS] Settings retrieved for user:', userId);
+            
+            return settings ? JSON.parse(settings) : null;
+        } catch (error) {
+            console.error('[USER SETTINGS ERROR] Error fetching user settings:', error.message);
+            throw error;
+        }
+    }
 }
 
 module.exports = User;

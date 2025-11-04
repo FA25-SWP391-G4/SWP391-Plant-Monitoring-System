@@ -325,6 +325,7 @@ const AIImageRecognition = ({ plant = null, className = '' }) => {
       }
 
       const response = await aiApi.analyzeImage(formData);
+<<<<<<< HEAD
       
       // Complete progress
       setAnalysisProgress(100);
@@ -388,11 +389,16 @@ const AIImageRecognition = ({ plant = null, className = '' }) => {
         return;
       }
       
+=======
+>>>>>>> 238337da54f3c9ad3ad777d8b53c3984f6cdc290
       setAnalysis(response.data);
     } catch (err) {
       console.error('Error analyzing image:', err);
       setError('Không thể phân tích hình ảnh. Vui lòng thử lại sau.');
+<<<<<<< HEAD
 >>>>>>> 1d1e2513b9e8ac5f36f74d326d2a76f901e82987:client/src/components/ai/AIImageRecognition.jsx
+=======
+>>>>>>> 238337da54f3c9ad3ad777d8b53c3984f6cdc290
     } finally {
       clearInterval(progressInterval);
       setIsAnalyzing(false);

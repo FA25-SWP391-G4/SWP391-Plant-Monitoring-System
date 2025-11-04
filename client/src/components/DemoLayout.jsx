@@ -105,7 +105,7 @@ const DemoLayout = ({ children }) => {
   }
 
   return (
-    <div className="flex h-screen bg-gray-50 dark:bg-gray-900">
+    <div className="flex h-screen bg-app-gradient">
       {/* Demo Sidebar - using mock user data */}
       <div className={`${sidebarOpen ? 'w-72' : 'w-16'} transition-all duration-300`}>
         <DashboardSidebar 
