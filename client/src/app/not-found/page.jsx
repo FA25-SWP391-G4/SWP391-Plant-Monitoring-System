@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { useTranslation } from 'react-i18next';
 
 export default function NotFoundPage() {
@@ -11,10 +12,9 @@ export default function NotFoundPage() {
       <header className="w-full border-b border-emerald-100/60 bg-white/80 backdrop-blur-md">
         <nav className="container mx-auto px-6 py-4 flex items-center justify-between">
           <div className="flex items-center">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-leaf h-7 w-7 text-emerald-600 mr-2" aria-hidden="true">
-              <path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"></path>
-              <path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"></path>
-            </svg>
+            <div className="w-7 h-7 bg-gradient-to-br from-green-400 to-green-600 rounded-lg flex items-center justify-center mr-2">
+              <Image src="/app-icon.png" alt="PlantSmart Logo" width={20} height={20} />
+            </div>
             <span className="text-xl font-bold text-gray-900">{t('common.appName', 'PlantSmart')}</span>
           </div>
           <div className="hidden sm:flex items-center space-x-6">

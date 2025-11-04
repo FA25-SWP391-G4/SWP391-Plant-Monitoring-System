@@ -26,8 +26,27 @@ const customizeWebpack = (config, { isServer, dev }) => {
 
   // Optimize chunks for auth pages
   if (!isServer) {
+    // Ensure optimization object exists
+    if (!config.optimization) {
+      config.optimization = {};
+    }
+    
+    // Ensure splitChunks object exists
+    if (!config.optimization.splitChunks) {
+      config.optimization.splitChunks = {
+        chunks: 'all',
+        cacheGroups: {}
+      };
+    }
+    
+    // Ensure cacheGroups object exists
+    if (!config.optimization.splitChunks.cacheGroups) {
+      config.optimization.splitChunks.cacheGroups = {};
+    }
+    
+    // Now safely add the authPages cache group
     config.optimization.splitChunks.cacheGroups.authPages = {
-      test: /[\\/]pages[\\/]auth[\\/]/,
+      test: /[\\/](pages|app)[\\/]auth[\\/]/,
       name: 'auth-pages',
       chunks: 'all',
       priority: 10,
@@ -47,3 +66,6 @@ const customizeWebpack = (config, { isServer, dev }) => {
 
 // Export as CommonJS module
 module.exports = customizeWebpack;
+
+// Also support named export for compatibility
+module.exports.default = customizeWebpack;

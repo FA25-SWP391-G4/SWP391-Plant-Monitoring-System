@@ -16,6 +16,7 @@
 const User = require('../models/User');
 const Payment = require('../models/Payment');
 const bcrypt = require('bcryptjs');
+const { isValidUUID } = require('../utils/uuidGenerator');
 
 /**
  * UC13: GET USER PROFILE
@@ -25,11 +26,26 @@ const bcrypt = require('bcryptjs');
  * @route GET /users/profile
  * @access Private - Requires authentication
  * @returns {Object} User profile data (excluding sensitive information)
+ * 
+ * UPDATED FOR UUID MIGRATION:
+ * - req.user.user_id is now UUID (not integer)
+ * - Validates UUID format before database lookup
  */
 async function getUserProfile(req, res) {
     try {
-        // Get user_id from authenticated request
+        // Get user_id from authenticated request (now UUID)
         const userId = req.user.user_id; 
+        
+        // Validate UUID format (redundant with auth middleware, but defensive)
+        if (!isValidUUID(userId)) {
+            console.error('[USER PROFILE] Invalid user_id UUID:', userId);
+            return res.status(400).json({ 
+                success: false, 
+                error: 'Invalid user ID format' 
+            });
+        }
+        
+        console.log('[USER PROFILE] Fetching profile for user UUID:', userId);
         
         // Find the user by ID
         const user = await User.findById(userId);
@@ -66,11 +82,26 @@ async function getUserProfile(req, res) {
  * @param {string} full_name - User's full name
  * @param {object} notification_prefs - User's notification preferences
  * @returns {Object} Updated user profile data
+ * 
+ * UPDATED FOR UUID MIGRATION:
+ * - req.user.user_id is now UUID (not integer)
+ * - Validates UUID format before database operations
  */
 async function updateUserProfile(req, res) {
     try {
-        // Get user_id from authenticated request
+        // Get user_id from authenticated request (now UUID)
         const userId = req.user.user_id;
+        
+        // Validate UUID format
+        if (!isValidUUID(userId)) {
+            console.error('[UPDATE PROFILE] Invalid user_id UUID:', userId);
+            return res.status(400).json({ 
+                success: false, 
+                error: 'Invalid user ID format' 
+            });
+        }
+        
+        console.log('[UPDATE PROFILE] Updating profile for user UUID:', userId);
         
         // Find the user by ID
         const user = await User.findById(userId);

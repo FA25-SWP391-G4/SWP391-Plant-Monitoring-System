@@ -1,6 +1,7 @@
 import React from 'react';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '@/providers/AuthProvider';
 
@@ -35,6 +36,15 @@ export default function Sidebar({ isSidebarOpen, toggleSidebar }) {
       icon: (
         <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z" />
+        </svg>
+      ),
+    },
+    {
+      name: t('navigation.history', 'History'),
+      href: '/history',
+      icon: (
+        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
         </svg>
       ),
     },
@@ -119,16 +129,9 @@ export default function Sidebar({ isSidebarOpen, toggleSidebar }) {
           {/* Logo and close button */}
           <div className="px-4 py-5 flex items-center justify-between border-b border-gray-200">
             <div className="flex items-center">
-              <svg 
-                className="h-8 w-8 text-emerald-500"
-                viewBox="0 0 24 24" 
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-              >
-                <path d="M7,17.2C5.4,16.5,4,14.9,4,12c0-3.9,3.1-7,7-7c3.9,0,7,3.1,7,7c0,2.9-2.1,5.3-4.8,6.4" />
-                <path d="M12,22c-1.6,0-3-1.3-3-3c0-1.1,0.6-2,1.5-2.5c-0.3-0.5-0.5-1-0.5-1.6c0-1.8,1.5-3.3,3.3-3.3c1.8,0,3.3,1.5,3.3,3.3" />
-              </svg>
+              <div className="w-8 h-8 bg-gradient-to-br from-green-400 to-green-600 rounded-lg flex items-center justify-center">
+                <Image src="/app-icon.png" alt="PlantSmart Logo" width={24} height={24} />
+              </div>
               <span className="ml-2 text-xl font-semibold text-gray-800">PlantSmart</span>
             </div>
             <button 

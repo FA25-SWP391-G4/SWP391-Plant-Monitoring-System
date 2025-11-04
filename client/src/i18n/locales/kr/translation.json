@@ -47,13 +47,21 @@
     "expand": "확장",
     "collapse": "접기",
     "appName": "플랜트스마트",
-    "plantLover": "식물 애호가"
+    "plantLover": "식물 애호가",
+    "search": "식물, 기기 또는 페이지 검색...",
+    "user": "사용자",
+    "viewDetails": "상세 보기",
+    "days": "일",
+    "ago": "전"
   },
+
+  "locale": "ko-KR",
 
   "accessibility": {
     "email": "이메일",
     "phone": "전화",
-    "location": "위치"
+    "location": "위치",
+    "userMenu": "사용자 메뉴"
   },
 
   "auth": {
@@ -134,7 +142,36 @@
     "optimal": "최적",
     "warning": "경고",
     "critical": "위험",
-    "unknown": "알 수 없음"
+    "unknown": "알 수 없음",
+    "weather": "현재 날씨"
+  },
+
+  "weather": {
+    "title": "현재 날씨",
+    "today": "오늘",
+    "tomorrow": "내일",
+    "forecast": "예보",
+    "precipitation": "강수량",
+    "humidity": "습도",
+    "wind": "바람",
+    "sunrise": "일출",
+    "sunset": "일몰",
+    "highTemp": "최고 기온",
+    "lowTemp": "최저 기온",
+    "feels": "체감 온도",
+    "indoor": "실내",
+    "outdoor": "실외",
+    "weekdays": {
+      "short": ["일", "월", "화", "수", "목", "금", "토"]
+    },
+    "tip": {
+      "hot": "고온. 증발을 피하기 위해 아침 일찍 또는 저녁에 식물에 물을 주십시오.",
+      "rainy": "비가 옵니다. 실내 식물이 적절하게 배수되고 뿌리 부패를 피하도록 확인하십시오.",
+      "dry": "습도가 낮습니다. 열대 식물의 습도를 높이기 위해 분무하는 것을 고려하십시오.",
+      "windy": "바람이 많이 불고 있습니다. 민감한 화분을 보호받는 곳으로 옮기십시오.",
+      "default": "현재 날씨 조건에 따라 매일 토양 습도를 모니터링하십시오."
+    },
+    "updatedAt": "업데이트됨"
   },
 
   "plants": {

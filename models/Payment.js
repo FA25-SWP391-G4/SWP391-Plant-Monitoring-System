@@ -1,4 +1,5 @@
 const { pool } = require('../config/db');
+const { isValidUUID } = require('../utils/uuidGenerator');
 
 class Payment {
     constructor(paymentData) {
@@ -14,7 +15,7 @@ class Payment {
     static async findAll(limit = 100) {
         try {
             const query = `
-                SELECT p.*, u.full_name as user_name, u.email 
+                SELECT p.*, CONCAT(u.given_name, ' ', u.family_name) as user_name, u.email 
                 FROM Payments p
                 LEFT JOIN Users u ON p.user_id = u.user_id
                 ORDER BY p.created_at DESC 
@@ -31,7 +32,7 @@ class Payment {
     static async findById(id) {
         try {
             const query = `
-                SELECT p.*, u.full_name as user_name, u.email 
+                SELECT p.*, CONCAT(u.given_name, ' ', u.family_name) as user_name, u.email 
                 FROM Payments p
                 LEFT JOIN Users u ON p.user_id = u.user_id
                 WHERE p.payment_id = $1
@@ -71,6 +72,12 @@ class Payment {
 
     // Static method to find payments by user ID
     static async findByUserId(userId, limit = 50) {
+        // Validate UUID
+        if (!isValidUUID(userId)) {
+            console.error('[PAYMENT] Invalid user_id UUID:', userId);
+            return [];
+        }
+
         try {
             const query = `
                 SELECT p.*, u.full_name as user_name, u.email 
@@ -116,6 +123,12 @@ class Payment {
 
     // Static method to find completed payments for a user
     static async findCompletedByUserId(userId) {
+        // Validate UUID
+        if (!isValidUUID(userId)) {
+            console.error('[PAYMENT] Invalid user_id UUID:', userId);
+            return [];
+        }
+
         try {
             const query = `
                 SELECT p.*, u.full_name as user_name, u.email 
@@ -154,6 +167,12 @@ class Payment {
 
     // Create or update payment
     async save() {
+        // Validate user_id UUID
+        if (!isValidUUID(this.user_id)) {
+            console.error('[PAYMENT] Invalid user_id UUID in save:', this.user_id);
+            throw new Error('Valid user_id UUID is required');
+        }
+
         try {
             if (this.payment_id) {
                 // Update existing payment
@@ -330,16 +349,151 @@ class Payment {
         }).format(this.amount);
     }
 
+    // Enhanced methods for VNPay community library integration
+
+    // Static method to find payment by order ID (VNPay community library)
+    static async findByOrderId(orderId) {
+        try {
+            const query = `
+                SELECT p.*, CONCAT(u.given_name, ' ', u.family_name) as user_name, u.email 
+                FROM Payments p
+                LEFT JOIN Users u ON p.user_id = u.user_id
+                WHERE p.order_id = $1
+            `;
+            const result = await pool.query(query, [orderId]);
+            
+            if (result.rows.length === 0) {
+                return null;
+            }
+            
+            return new Payment(result.rows[0]);
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    // Static method to create payment with enhanced fields
+    static async create(paymentData) {
+        // Validate required fields
+        if (!paymentData.user_id || !paymentData.amount) {
+            throw new Error('Missing required fields: user_id and amount');
+        }
+
+        // Validate UUID
+        if (!isValidUUID(paymentData.user_id)) {
+            throw new Error('Invalid user_id UUID');
+        }
+
+        try {
+            const query = `
+                INSERT INTO Payments (
+                    user_id, order_id, amount, order_info, bank_code, 
+                    ip_address, status, created_at
+                ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+                RETURNING payment_id
+            `;
+            
+            const values = [
+                paymentData.user_id,
+                paymentData.order_id,
+                paymentData.amount,
+                paymentData.order_info || null,
+                paymentData.bank_code || null,
+                paymentData.ip_address || null,
+                paymentData.status || 'PENDING',
+                paymentData.created_at || new Date()
+            ];
+
+            const result = await pool.query(query, values);
+            return result.rows[0].payment_id;
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    // Static method to update payment by order ID
+    static async updateByOrderId(orderId, updateData) {
+        try {
+            const fields = [];
+            const values = [];
+            let paramCount = 1;
+
+            // Build dynamic update query
+            Object.keys(updateData).forEach(key => {
+                if (updateData[key] !== undefined) {
+                    fields.push(`${key} = $${paramCount}`);
+                    values.push(updateData[key]);
+                    paramCount++;
+                }
+            });
+
+            if (fields.length === 0) {
+                throw new Error('No fields to update');
+            }
+
+            const query = `
+                UPDATE Payments 
+                SET ${fields.join(', ')}
+                WHERE order_id = $${paramCount}
+                RETURNING *
+            `;
+            values.push(orderId);
+
+            const result = await pool.query(query, values);
+            
+            if (result.rows.length === 0) {
+                return null;
+            }
+            
+            return new Payment(result.rows[0]);
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    // Enhanced findByUserId with pagination support
+    static async findByUserId(userId, options = {}) {
+        // Validate UUID
+        if (!isValidUUID(userId)) {
+            console.error('[PAYMENT] Invalid user_id UUID:', userId);
+            return [];
+        }
+
+        const { page = 1, limit = 10 } = options;
+        const offset = (page - 1) * limit;
+
+        try {
+            const query = `
+                SELECT p.*, u.full_name as user_name, u.email 
+                FROM Payments p
+                LEFT JOIN Users u ON p.user_id = u.user_id
+                WHERE p.user_id = $1
+                ORDER BY p.created_at DESC 
+                LIMIT $2 OFFSET $3
+            `;
+            const result = await pool.query(query, [userId, limit, offset]);
+            return result.rows.map(row => new Payment(row));
+        } catch (error) {
+            throw error;
+        }
+    }
+
     // Convert to JSON
     toJSON() {
         return {
             payment_id: this.payment_id,
             user_id: this.user_id,
             vnpay_txn_ref: this.vnpay_txn_ref,
+            order_id: this.order_id,
             amount: this.amount,
             formatted_amount: this.getFormattedAmount(),
+            order_info: this.order_info,
+            bank_code: this.bank_code,
+            transaction_no: this.transaction_no,
+            response_code: this.response_code,
             status: this.status,
             created_at: this.created_at,
+            updated_at: this.updated_at,
             age_string: this.getAgeString(),
             is_expired: this.isExpired()
         };

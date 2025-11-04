@@ -1,4 +1,5 @@
 const { pool } = require('../config/db');
+const { isValidUUID } = require('../utils/uuidGenerator');
 
 class WateringHistory {
     constructor(historyData) {
@@ -18,7 +19,7 @@ class WateringHistory {
                 FROM Watering_History wh
                 LEFT JOIN Plants p ON wh.plant_id = p.plant_id
                 LEFT JOIN Users u ON p.user_id = u.user_id
-                LEFT JOIN Devices d ON p.device_id = d.device_id
+                LEFT JOIN Devices d ON p.device_key = d.device_key
                 ORDER BY wh.timestamp DESC 
                 LIMIT $1
             `;
@@ -38,7 +39,7 @@ class WateringHistory {
                 FROM Watering_History wh
                 LEFT JOIN Plants p ON wh.plant_id = p.plant_id
                 LEFT JOIN Users u ON p.user_id = u.user_id
-                LEFT JOIN Devices d ON p.device_id = d.device_id
+                LEFT JOIN Devices d ON p.device_key = d.device_key
                 WHERE wh.history_id = $1
             `;
             const result = await pool.query(query, [id]);
@@ -62,7 +63,7 @@ class WateringHistory {
                 FROM Watering_History wh
                 LEFT JOIN Plants p ON wh.plant_id = p.plant_id
                 LEFT JOIN Users u ON p.user_id = u.user_id
-                LEFT JOIN Devices d ON p.device_id = d.device_id
+                LEFT JOIN Devices d ON p.device_key = d.device_key
                 WHERE wh.plant_id = $1
                 ORDER BY wh.timestamp DESC 
                 LIMIT $2
@@ -76,6 +77,12 @@ class WateringHistory {
 
     // Static method to find watering history by user ID
     static async findByUserId(userId, limit = 100) {
+        // Validate UUID
+        if (!isValidUUID(userId)) {
+            console.error('[WATERING_HISTORY] Invalid user_id UUID:', userId);
+            return [];
+        }
+
         try {
             const query = `
                 SELECT wh.*, p.custom_name as plant_name, 
@@ -83,7 +90,7 @@ class WateringHistory {
                 FROM Watering_History wh
                 INNER JOIN Plants p ON wh.plant_id = p.plant_id
                 INNER JOIN Users u ON p.user_id = u.user_id
-                LEFT JOIN Devices d ON p.device_id = d.device_id
+                LEFT JOIN Devices d ON p.device_key = d.device_key
                 WHERE u.user_id = $1
                 ORDER BY wh.timestamp DESC 
                 LIMIT $2
@@ -104,7 +111,7 @@ class WateringHistory {
                 FROM Watering_History wh
                 LEFT JOIN Plants p ON wh.plant_id = p.plant_id
                 LEFT JOIN Users u ON p.user_id = u.user_id
-                LEFT JOIN Devices d ON p.device_id = d.device_id
+                LEFT JOIN Devices d ON p.device_key = d.device_key
                 WHERE wh.trigger_type = $1
                 ORDER BY wh.timestamp DESC 
                 LIMIT $2
@@ -125,7 +132,7 @@ class WateringHistory {
                 FROM Watering_History wh
                 LEFT JOIN Plants p ON wh.plant_id = p.plant_id
                 LEFT JOIN Users u ON p.user_id = u.user_id
-                LEFT JOIN Devices d ON p.device_id = d.device_id
+                LEFT JOIN Devices d ON p.device_key = d.device_key
                 WHERE wh.plant_id = $1 
                 AND wh.timestamp >= $2 
                 AND wh.timestamp <= $3

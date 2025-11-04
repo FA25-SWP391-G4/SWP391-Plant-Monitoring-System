@@ -25,7 +25,7 @@ const requiredVariables = {
     'EMAIL_HOST',
     'EMAIL_PORT',
     'EMAIL_USER',
-    'EMAIL_PASSWORD',
+    'EMAIL_PASS',
     'EMAIL_FROM',
   ],
   payment: [

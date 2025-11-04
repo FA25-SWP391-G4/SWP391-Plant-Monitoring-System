@@ -6,13 +6,9 @@ const path = require('path');
 const fs = require('fs');
 const { exec } = require('child_process');
 const util = require('util');
+const axios = require('axios');
+const FormData = require('form-data');
 const execPromise = util.promisify(exec);
-
-// Enhanced error handling and caching services
-const aiErrorHandler = require('../services/aiErrorHandler');
-const aiCacheService = require('../services/aiCacheService');
-const aiModelManager = require('../services/aiModelManager');
-const optimizedImageProcessor = require('../services/optimizedImageProcessor');
 
 // AI Service methods
 const runPrediction = async (plantId, sensorData) => {
@@ -1220,306 +1216,99 @@ const processImageRecognition = async (req, res) => {
     }
 };
 
-// Enhanced watering prediction with error handling and caching
-const predictWatering = async (req, res) => {
-    const startTime = Date.now();
-    
-    try {
-        const errors = validationResult(req);
-        if (!errors.isEmpty()) {
-            return res.status(400).json(
-                aiErrorHandler.createErrorResponse('Validation failed', { errors: errors.array() }, 400)
-            );
-        }
-
-        const { plant_id, sensor_data } = req.body;
-        
-        // Enhanced input validation
-        const validationErrors = aiErrorHandler.validateInput(req.body, {
-            plant_id: { type: 'number' }, // Allow null/undefined
-            sensor_data: { required: true, type: 'object' }
-        });
-
-        if (validationErrors.length > 0) {
-            return res.status(400).json(
-                aiErrorHandler.createErrorResponse('Input validation failed', { validationErrors }, 400)
-            );
-        }
-
-        // Check cache first
-        const cachedPrediction = await aiCacheService.getCachedWateringPrediction(sensor_data, plant_id);
-        
-        if (cachedPrediction) {
-            await aiErrorHandler.logEvent('INFO', 'Watering prediction served from cache', { 
-                plantId: plant_id,
-                sensorData: sensor_data
-            });
-            
-            return res.json({
-                success: true,
-                data: {
-                    prediction_id: null,
-                    plant_id: plant_id,
-                    prediction: {
-                        ...cachedPrediction,
-                        cached: true
-                    },
-                    model_version: cachedPrediction.modelUsed || 'cached',
-                    timestamp: new Date().toISOString(),
-                    input_data: sensor_data,
-                    processing_time_ms: Date.now() - startTime
-                }
-            });
-        }
-
-        // Log the prediction request
-        await aiErrorHandler.logEvent('INFO', `Watering prediction requested for plant ${plant_id}`, {
-            plantId: plant_id,
-            sensorData: sensor_data
-        });
-
-        // Get historical data with error handling
-        let historicalData = [];
-        if (plant_id) {
-            historicalData = await aiErrorHandler.handleDatabaseOperation(async () => {
-                const SensorData = require('../models/SensorData');
-                return await SensorData.getRecentData(plant_id, 7); // last 7 days
-            }, { plantId: plant_id }) || [];
-        }
-
-        // Load and run prediction model with error handling
-        const predictionResult = await aiErrorHandler.handleModelOperation(async () => {
-            const UltimateWateringPredictionSystem = require('../ai_models/watering_prediction/ultimateSolution');
-            const predictionSystem = new UltimateWateringPredictionSystem();
-            
-            try {
-                const prediction = await predictionSystem.predict(sensor_data, historicalData, plant_id);
-                
-                const result = {
-                    shouldWater: prediction.shouldWater,
-                    confidence: prediction.confidence > 1 ? prediction.confidence / 100 : prediction.confidence,
-                    recommendedAmount: prediction.recommendedAmount || 0,
-                    reasoning: prediction.reasoning,
-                    modelUsed: prediction.modelUsed,
-                    processingTime: prediction.processingTime,
-                    nextWateringDate: prediction.shouldWater ? new Date() : null,
-                    recommendations: []
-                };
-
-                // Add recommendations based on prediction
-                if (prediction.shouldWater) {
-                    result.recommendations.push('Water your plant now');
-                    if (result.recommendedAmount > 0) {
-                        result.recommendations.push(`Recommended amount: ${result.recommendedAmount}ml`);
-                    }
-                } else {
-                    result.recommendations.push('No watering needed at this time');
-                    
-                    const moisture = sensor_data.moisture || 50;
-                    if (moisture > 70) {
-                        result.recommendations.push('Check again in 3-4 days');
-                    } else if (moisture > 50) {
-                        result.recommendations.push('Check again in 1-2 days');
-                    } else {
-                        result.recommendations.push('Monitor closely, may need water soon');
-                    }
-                }
-
-                return {
-                    result,
-                    modelVersion: prediction.systemVersion || '3.0.0-ultimate'
-                };
-            } finally {
-                // Always dispose of the prediction system
-                try {
-                    predictionSystem.dispose();
-                } catch (disposeError) {
-                    console.warn('Warning disposing prediction system:', disposeError.message);
-                }
-            }
-        }, 'watering prediction', { plantId: plant_id, sensorData: sensor_data });
-
-        // Handle the case where model operation returns fallback response
-        if (!predictionResult.success) {
-            // Cache the fallback response briefly
-            await aiCacheService.cacheWateringPrediction(sensor_data, plant_id, predictionResult.data.prediction);
-            
-            return res.json({
-                success: true,
-                data: {
-                    prediction_id: null,
-                    plant_id: plant_id,
-                    prediction: predictionResult.data.prediction,
-                    model_version: 'fallback',
-                    timestamp: new Date().toISOString(),
-                    input_data: sensor_data,
-                    processing_time_ms: Date.now() - startTime,
-                    fallback: true
-                }
-            });
-        }
-
-        // Store the prediction in the database with error handling
-        const savedPrediction = await aiErrorHandler.handleDatabaseOperation(async () => {
-            return await AIPrediction.createWateringPrediction(
-                plant_id,
-                sensor_data,
-                predictionResult.result,
-                predictionResult.result.confidence,
-                predictionResult.modelVersion
-            );
-        }, { plantId: plant_id }) || { prediction_id: null };
-
-        // Cache the successful prediction
-        await aiCacheService.cacheWateringPrediction(sensor_data, plant_id, predictionResult.result);
-
-        // Log successful prediction
-        await aiErrorHandler.logEvent('INFO', 'Watering prediction completed successfully', {
-            plantId: plant_id,
-            shouldWater: predictionResult.result.shouldWater,
-            confidence: Math.round(predictionResult.result.confidence * 100),
-            processingTime: Date.now() - startTime
-        });
-
-        // Trigger automatic watering notifications if needed (requirement 2.5)
-        if (predictionResult.result.shouldWater && predictionResult.result.confidence > 0.7 && plant_id) {
-            // Handle notification creation with error handling (don't fail the main request)
-            aiErrorHandler.executeWithRetry(async () => {
-                const Plant = require('../models/Plant');
-                const plant = await Plant.findById(plant_id);
-                
-                if (plant && plant.user_id) {
-                    const Alert = require('../models/Alert');
-                    await Alert.create({
-                        user_id: plant.user_id,
-                        title: 'Watering Needed',
-                        message: `Your plant "${plant.custom_name || 'Plant #' + plant_id}" needs watering. ${predictionResult.result.reasoning}`,
-                        type: 'watering_alert',
-                        details: JSON.stringify({
-                            plant_id: plant_id,
-                            confidence: predictionResult.result.confidence,
-                            recommended_amount: predictionResult.result.recommendedAmount,
-                            prediction_id: savedPrediction.prediction_id
-                        })
-                    });
-                }
-            }, 'watering alert creation', { plantId: plant_id }).catch(alertError => {
-                console.warn('Failed to create watering alert:', alertError.message);
-            });
-        }
-
-        // Return the prediction result
-        return res.json({
-            success: true,
-            data: {
-                prediction_id: savedPrediction.prediction_id,
-                plant_id: plant_id,
-                prediction: predictionResult.result,
-                model_version: predictionResult.modelVersion,
-                timestamp: new Date().toISOString(),
-                input_data: sensor_data,
-                processing_time_ms: Date.now() - startTime
-            }
-        });
-
-    } catch (error) {
-        console.error('Error in watering prediction:', error);
-        
-        // Get fallback response
-        const fallbackResponse = aiErrorHandler.getFallbackResponse('wateringPrediction', error, {
-            plantId: req.body.plant_id,
-            sensorData: req.body.sensor_data
-        });
-
-        // Log the error
-        await aiErrorHandler.logEvent('ERROR', 'Watering prediction failed, using fallback', {
-            error: error.message,
-            plantId: req.body.plant_id,
-            processingTime: Date.now() - startTime
-        });
-
-        return res.status(200).json(fallbackResponse); // Return 200 with fallback response
-    }
-};
-
-// AI Performance and Optimization endpoints
-const getAIPerformanceStats = async (req, res) => {
-    try {
-        const stats = {
-            errorHandler: await aiErrorHandler.healthCheck(),
-            cache: await aiCacheService.healthCheck(),
-            modelManager: await aiModelManager.healthCheck(),
-            imageProcessor: await optimizedImageProcessor.healthCheck(),
-            system: {
-                memory: process.memoryUsage(),
-                uptime: process.uptime(),
-                timestamp: new Date().toISOString()
-            }
-        };
-
-        return res.json({
-            success: true,
-            data: stats
-        });
-    } catch (error) {
-        console.error('Error getting AI performance stats:', error);
-        return res.status(500).json(
-            aiErrorHandler.createErrorResponse('Failed to get performance stats', error)
-        );
-    }
-};
-
-const optimizeAIPerformance = async (req, res) => {
-    try {
-        const results = {
-            cache: await aiCacheService.optimizeCache(),
-            modelManager: await aiModelManager.optimizePerformance(),
-            imageProcessor: await optimizedImageProcessor.optimizePerformance()
-        };
-
-        await aiErrorHandler.logEvent('INFO', 'AI performance optimization completed', {
-            results: Object.keys(results).map(key => ({ [key]: results[key].success }))
-        });
-
-        return res.json({
-            success: true,
-            message: 'AI performance optimization completed',
-            data: results
-        });
-    } catch (error) {
-        console.error('Error optimizing AI performance:', error);
-        return res.status(500).json(
-            aiErrorHandler.createErrorResponse('Failed to optimize performance', error)
-        );
-    }
-};
-
-const clearAICache = async (req, res) => {
-    try {
-        const { type = 'all' } = req.body;
-        
-        const result = await aiCacheService.clearCache(type);
-        
-        await aiErrorHandler.logEvent('INFO', `AI cache cleared: ${type}`, {
-            type,
-            success: result
-        });
-
-        return res.json({
-            success: true,
-            message: `Cache cleared: ${type}`,
-            data: { type, cleared: result }
-        });
-    } catch (error) {
-        console.error('Error clearing AI cache:', error);
-        return res.status(500).json(
-            aiErrorHandler.createErrorResponse('Failed to clear cache', error)
-        );
-    }
-};
-
 // Alias for setModelActive to match route naming in mock
 const activateModel = setModelActive;
+
+// AI Service Proxy Methods
+const proxyChatbotRequest = async (req, res) => {
+    try {
+        const response = await axios.post(`${AI_SERVICE_URL}/api/test/chatbot`, req.body, {
+            timeout: 30000,
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+        
+        res.json(response.data);
+    } catch (error) {
+        console.error('AI Service chatbot proxy error:', error.message);
+        res.status(500).json({
+            success: false,
+            error: 'AI service unavailable',
+            message: 'Could not connect to AI service'
+        });
+    }
+};
+
+const proxyImageAnalysis = async (req, res) => {
+    try {
+        const formData = new FormData();
+        if (req.file) {
+            formData.append('image', fs.createReadStream(req.file.path));
+        }
+        
+        // Add other form fields
+        Object.keys(req.body).forEach(key => {
+            formData.append(key, req.body[key]);
+        });
+        
+        const response = await axios.post(`${AI_SERVICE_URL}/api/test/plant-analysis`, formData, {
+            timeout: 30000,
+            headers: {
+                ...formData.getHeaders()
+            }
+        });
+        
+        res.json(response.data);
+    } catch (error) {
+        console.error('AI Service image analysis proxy error:', error.message);
+        res.status(500).json({
+            success: false,
+            error: 'AI service unavailable',
+            message: 'Could not connect to AI service'
+        });
+    }
+};
+
+const proxyWateringPrediction = async (req, res) => {
+    try {
+        const response = await axios.post(`${AI_SERVICE_URL}/api/irrigation`, req.body, {
+            timeout: 30000,
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+        
+        res.json(response.data);
+    } catch (error) {
+        console.error('AI Service watering prediction proxy error:', error.message);
+        res.status(500).json({
+            success: false,
+            error: 'AI service unavailable',
+            message: 'Could not connect to AI service'
+        });
+    }
+};
+
+const proxyHistoricalAnalysis = async (req, res) => {
+    try {
+        const response = await axios.post(`${AI_SERVICE_URL}/api/historical-analysis`, req.body, {
+            timeout: 30000,
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+        
+        res.json(response.data);
+    } catch (error) {
+        console.error('AI Service historical analysis proxy error:', error.message);
+        res.status(500).json({
+            success: false,
+            error: 'AI service unavailable',
+            message: 'Could not connect to AI service'
+        });
+    }
+};
 
 module.exports = {
     // Service methods exported for use in other parts of the application
@@ -1541,12 +1330,5 @@ module.exports = {
     optimizeWateringSchedule,
     analyzeHistoricalData,
     processPlantImage,
-    processChatbotQuery,
-    predictWatering, // Enhanced watering prediction endpoint
-    processImageRecognition, // Enhanced image recognition endpoint
-    
-    // Performance and optimization endpoints
-    getAIPerformanceStats,
-    optimizeAIPerformance,
-    clearAICache
+    processChatbotQuery
 };
