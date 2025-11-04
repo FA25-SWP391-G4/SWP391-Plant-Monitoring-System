@@ -4,15 +4,107 @@ import { useAuth } from "@/providers/AuthProvider";
 import { useTranslation } from "react-i18next";
 import UserMenu from './UserMenu';
 import { useState, useRef, useEffect } from "react";
+<<<<<<< HEAD
+=======
 import { useTheme } from '@/contexts/ThemeContext';
 import LogoutConfirmationModal from '../LogoutConfirmationModal';
+>>>>>>> 238337da54f3c9ad3ad777d8b53c3984f6cdc290
 
-export default function Navbar() {
+export default function Navbar({ hiddenOnPages = ["login", "register", "forgot-password"] }) {
   const { user, logout } = useAuth();
   const { t } = useTranslation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+<<<<<<< HEAD
+  const [notificationDropdownOpen, setNotificationDropdownOpen] = useState(false);
+  // UserMenu component manages its own open/close state
+  const [notifications, setNotifications] = useState([
+    {
+      id: 1,
+      title: 'Plant moisture alert',
+      message: 'Snake plant needs watering! Moisture level is below 20%.',
+      read: false,
+      type: 'alert',
+      time: new Date(Date.now() - 30 * 60000) // 30 minutes ago
+    },
+    {
+      id: 2,
+      title: 'Device connected',
+      message: 'Your new soil moisture sensor has been successfully connected.',
+      read: false,
+      type: 'success',
+      time: new Date(Date.now() - 5 * 3600000) // 5 hours ago
+    },
+    {
+      id: 3,
+      title: 'Weekly report available',
+      message: 'Your plant health weekly report is now available.',
+      read: true,
+      type: 'info',
+      time: new Date(Date.now() - 24 * 3600000) // 1 day ago
+    }
+  ]);
+  
+  // Calculate unread notifications
+  const unreadNotifications = notifications.filter(n => !n.read).length;
+  
+  // Refs for dropdowns (for click outside)
+  const notificationRef = useRef(null);
+
+  // Format notification time to relative format (e.g., "2 hours ago")
+  const formatNotificationTime = (time) => {
+    const now = new Date();
+    const diff = now - new Date(time);
+    const minutes = Math.floor(diff / 60000);
+    
+    if (minutes < 1) return t('time.justNow', 'Just now');
+    if (minutes < 60) return t('time.minutesAgo', '{{count}} minutes ago', { count: minutes });
+    
+    const hours = Math.floor(minutes / 60);
+    if (hours < 24) return t('time.hoursAgo', '{{count}} hours ago', { count: hours });
+    
+    const days = Math.floor(hours / 24);
+    if (days < 7) return t('time.daysAgo', '{{count}} days ago', { count: days });
+    
+    return new Date(time).toLocaleDateString();
+  };
+  
+  // Mark all notifications as read
+  const markAllAsRead = (e) => {
+    e.stopPropagation();
+    setNotifications(notifications.map(n => ({ ...n, read: true })));
+  };
+  
+  // Handle notification click
+  const handleNotificationClick = (notification) => {
+    // Mark this notification as read
+    setNotifications(notifications.map(n => 
+      n.id === notification.id ? { ...n, read: true } : n
+    ));
+    
+    // Here you would handle navigation based on notification type
+    // For example: router.push(`/plants/${notification.plantId}`);
+    
+    setNotificationDropdownOpen(false);
+  };
+  
+  // Close dropdowns when clicking outside
+  useEffect(() => {
+    function handleClickOutside(event) {
+      // Handle notification dropdown
+      if (notificationRef.current && !notificationRef.current.contains(event.target)) {
+        setNotificationDropdownOpen(false);
+      }
+    }
+    
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [notificationRef]);
+=======
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   const { isDark, isLight, getThemeColor } = useTheme();
+>>>>>>> 238337da54f3c9ad3ad777d8b53c3984f6cdc290
 
   // No longer needed since UserMenu handles its own state
 
@@ -22,8 +114,23 @@ export default function Navbar() {
   const isAuthenticated = !!user;
 
   // Check if we're on a page where navbar should be hidden
+<<<<<<< HEAD
+  const isHiddenPage = () => {
+    if (typeof window !== "undefined") {
+      const pathname = window.location.pathname;
+      return hiddenOnPages.some(page => pathname.includes(page));
+    }
+    return false;
+  };
+
+  // Don't render navbar on login, register, or forgot password pages
+  if (isHiddenPage()) {
+    return null;
+  }
+=======
   const location = typeof window !== 'undefined' ? window.location : { pathname: '' };
   const isAuthPage = location.pathname.includes('/login') || location.pathname.includes('/register') || location.pathname.includes('/forget-password') || location.pathname.includes('/reset-password');
+>>>>>>> 238337da54f3c9ad3ad777d8b53c3984f6cdc290
 
   // Toggle mobile menu
   const toggleMobileMenu = () => {
@@ -97,6 +204,11 @@ export default function Navbar() {
             
             {/* Language and theme for non-authenticated users */}
             <UserMenu />
+<<<<<<< HEAD
+          </>
+        )}
+=======
+>>>>>>> 238337da54f3c9ad3ad777d8b53c3984f6cdc290
       </div>
 
       {/* Mobile Menu - Shows when menu button is clicked */}
@@ -160,7 +272,11 @@ export default function Navbar() {
                   <Link href="/settings" className="text-gray-600 hover:text-green-600 font-medium py-2" onClick={() => setMobileMenuOpen(false)}>
                     {t('navigation.settings')}
                   </Link>
+<<<<<<< HEAD
+                  <button onClick={() => { logout(); setMobileMenuOpen(false); }} className="text-left text-red-600 hover:text-red-800 py-2">
+=======
                   <button onClick={() => { setShowLogoutModal(true); setMobileMenuOpen(false); }} className="text-left text-red-600 hover:text-red-800 py-2">
+>>>>>>> 238337da54f3c9ad3ad777d8b53c3984f6cdc290
                     {t('auth.logout')}
                   </button>
                 </div>

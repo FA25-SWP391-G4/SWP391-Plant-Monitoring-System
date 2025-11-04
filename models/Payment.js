@@ -16,8 +16,8 @@ class Payment {
         try {
             const query = `
                 SELECT p.*, CONCAT(u.given_name, ' ', u.family_name) as user_name, u.email 
-                FROM Payments p
-                LEFT JOIN Users u ON p.user_id = u.user_id
+                FROM payments p
+                LEFT JOIN users u ON p.user_id = u.user_id
                 ORDER BY p.created_at DESC 
                 LIMIT $1
             `;
@@ -33,8 +33,8 @@ class Payment {
         try {
             const query = `
                 SELECT p.*, CONCAT(u.given_name, ' ', u.family_name) as user_name, u.email 
-                FROM Payments p
-                LEFT JOIN Users u ON p.user_id = u.user_id
+                FROM payments p
+                LEFT JOIN users u ON p.user_id = u.user_id
                 WHERE p.payment_id = $1
             `;
             const result = await pool.query(query, [id]);
@@ -54,8 +54,8 @@ class Payment {
         try {
             const query = `
                 SELECT p.*, u.full_name as user_name, u.email 
-                FROM Payments p
-                LEFT JOIN Users u ON p.user_id = u.user_id
+                FROM payments p
+                LEFT JOIN users u ON p.user_id = u.user_id
                 WHERE p.vnpay_txn_ref = $1
             `;
             const result = await pool.query(query, [txnRef]);
@@ -81,8 +81,8 @@ class Payment {
         try {
             const query = `
                 SELECT p.*, u.full_name as user_name, u.email 
-                FROM Payments p
-                LEFT JOIN Users u ON p.user_id = u.user_id
+                FROM payments p
+                LEFT JOIN users u ON p.user_id = u.user_id
                 WHERE p.user_id = $1
                 ORDER BY p.created_at DESC 
                 LIMIT $2
@@ -99,8 +99,8 @@ class Payment {
         try {
             const query = `
                 SELECT p.*, u.full_name as user_name, u.email 
-                FROM Payments p
-                LEFT JOIN Users u ON p.user_id = u.user_id
+                FROM payments p
+                LEFT JOIN users u ON p.user_id = u.user_id
                 WHERE p.status = $1
                 ORDER BY p.created_at DESC 
                 LIMIT $2
@@ -132,8 +132,8 @@ class Payment {
         try {
             const query = `
                 SELECT p.*, u.full_name as user_name, u.email 
-                FROM Payments p
-                LEFT JOIN Users u ON p.user_id = u.user_id
+                FROM payments p
+                LEFT JOIN users u ON p.user_id = u.user_id
                 WHERE p.user_id = $1 AND p.status = 'completed'
                 ORDER BY p.created_at DESC
             `;
@@ -155,7 +155,7 @@ class Payment {
                     COUNT(CASE WHEN status = 'failed' THEN 1 END) as failed_count,
                     COUNT(CASE WHEN status = 'pending' THEN 1 END) as pending_count,
                     AVG(CASE WHEN status = 'completed' THEN amount END) as avg_payment_amount
-                FROM Payments 
+                FROM payments 
                 WHERE created_at >= NOW() - INTERVAL '${days} days'
             `;
             const result = await pool.query(query);
@@ -177,7 +177,7 @@ class Payment {
             if (this.payment_id) {
                 // Update existing payment
                 const query = `
-                    UPDATE Payments 
+                    UPDATE payments 
                     SET user_id = $1, vnpay_txn_ref = $2, amount = $3, status = $4
                     WHERE payment_id = $5
                     RETURNING *
@@ -197,7 +197,7 @@ class Payment {
             } else {
                 // Create new payment
                 const query = `
-                    INSERT INTO Payments (user_id, vnpay_txn_ref, amount, status)
+                    INSERT INTO payments (user_id, vnpay_txn_ref, amount, status)
                     VALUES ($1, $2, $3, $4)
                     RETURNING *
                 `;
@@ -227,7 +227,7 @@ class Payment {
             }
 
             const query = `
-                UPDATE Payments 
+                UPDATE payments 
                 SET status = $1
                 WHERE payment_id = $2
                 RETURNING *
@@ -262,7 +262,7 @@ class Payment {
                 throw new Error('Cannot delete payment without ID');
             }
 
-            const query = 'DELETE FROM Payments WHERE payment_id = $1';
+            const query = 'DELETE FROM payments WHERE payment_id = $1';
             await pool.query(query, [this.payment_id]);
             
             return true;
@@ -356,8 +356,8 @@ class Payment {
         try {
             const query = `
                 SELECT p.*, CONCAT(u.given_name, ' ', u.family_name) as user_name, u.email 
-                FROM Payments p
-                LEFT JOIN Users u ON p.user_id = u.user_id
+                FROM payments p
+                LEFT JOIN users u ON p.user_id = u.user_id
                 WHERE p.order_id = $1
             `;
             const result = await pool.query(query, [orderId]);
@@ -386,7 +386,7 @@ class Payment {
 
         try {
             const query = `
-                INSERT INTO Payments (
+                INSERT INTO payments (
                     user_id, order_id, amount, order_info, bank_code, 
                     ip_address, status, created_at
                 ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
@@ -432,7 +432,7 @@ class Payment {
             }
 
             const query = `
-                UPDATE Payments 
+                UPDATE payments 
                 SET ${fields.join(', ')}
                 WHERE order_id = $${paramCount}
                 RETURNING *
@@ -465,8 +465,8 @@ class Payment {
         try {
             const query = `
                 SELECT p.*, u.full_name as user_name, u.email 
-                FROM Payments p
-                LEFT JOIN Users u ON p.user_id = u.user_id
+                FROM payments p
+                LEFT JOIN users u ON p.user_id = u.user_id
                 WHERE p.user_id = $1
                 ORDER BY p.created_at DESC 
                 LIMIT $2 OFFSET $3

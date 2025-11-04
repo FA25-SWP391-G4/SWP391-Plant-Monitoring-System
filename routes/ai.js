@@ -14,44 +14,7 @@ const { isPremium } = require('../middlewares/premiumMiddleware');
 const authenticate = auth;
 const isAdmin = auth.isAdmin;
 const multer = require('multer');
-const path = require('path');
-
-// Configure multer for image uploads
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, 'uploads/images/');
-  },
-  filename: function (req, file, cb) {
-    // Generate unique filename with timestamp and random string
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-    cb(null, 'plant-image-' + uniqueSuffix + path.extname(file.originalname));
-  }
-});
-
-// File filter for images only
-const fileFilter = (req, file, cb) => {
-  const allowedMimeTypes = [
-    'image/jpeg',
-    'image/jpg', 
-    'image/png',
-    'image/webp',
-    'image/tiff'
-  ];
-  
-  if (allowedMimeTypes.includes(file.mimetype)) {
-    cb(null, true);
-  } else {
-    cb(new Error('Invalid file type. Only JPEG, PNG, WebP, and TIFF images are allowed.'), false);
-  }
-};
-
-const upload = multer({ 
-  storage: storage,
-  fileFilter: fileFilter,
-  limits: {
-    fileSize: 10 * 1024 * 1024 // 10MB limit
-  }
-});
+const upload = multer({ dest: 'uploads/' });
 const fs = require('fs');
 const FormData = require('form-data');
 
@@ -70,7 +33,7 @@ const forwardAuthHeaders = (req) => {
 console.log("AI Controller keys:", Object.keys(aiController));
 /**
  * @route POST /api/ai/watering-prediction
- * @desc Predict watering needs using AI
+ * @desc Predict watering needs using AI (maps to irrigation endpoint)
  * @access Private
  */
 router.post('/watering-prediction', authenticate, async (req, res) => {
@@ -195,9 +158,9 @@ router.post('/historical-analysis', authenticate, async (req, res) => {
 /**
  * @route POST /api/ai/image-recognition
  * @desc Analyze plant image using AI
- * @access Private
+ * @access Private (Premium)
  */
-router.post('/image-recognition', authenticate, upload.single('image'), async (req, res) => {
+router.post('/image-recognition', authenticate, isPremium, upload.single('image'), async (req, res) => {
   try {
     if (!req.file) {
       return res.status(400).json({ error: 'No image file provided' });
@@ -236,12 +199,35 @@ router.post('/image-recognition', authenticate, upload.single('image'), async (r
   }
 });
 
+// ==================== TEST ROUTES (NO AUTH) ====================
+/**
+ * @route POST /api/ai/test/chatbot
+ * @desc Test AI chatbot without authentication
+ * @access Public (TEST ONLY)
+ */
+router.post('/test/chatbot', async (req, res) => {
+  try {
+    console.log('🧪 Testing AI chatbot:', req.body);
+    const response = await axios.post(`${AI_SERVICE_URL}/api/chatbot`, req.body, {
+      timeout: 30000,
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    }
+    
+    res.status(500).json({ 
+      error: 'Failed to analyze plant image', 
+      details: error.response?.data || error.message 
+    });
+  }
+});
+
 /**
  * @route POST /api/ai/chatbot
  * @desc Interact with AI chatbot
- * @access Private
+ * @access Private (Premium)
  */
-router.post('/chatbot', authenticate, async (req, res) => {
+router.post('/chatbot', authenticate, isPremium, async (req, res) => {
   try {
     const response = await axios.post(`${AI_SERVICE_URL}/chatbot`, req.body);
     res.json(response.data);
@@ -252,7 +238,7 @@ router.post('/chatbot', authenticate, async (req, res) => {
       details: error.response?.data || error.message 
     });
   }
-);
+});
 
 /**
  * AI Model Management Routes
@@ -331,6 +317,55 @@ router.post('/models/:id/test',
         body('testDataPath').notEmpty().withMessage('Test data path is required')
     ],
     aiController.testModelPerformance
+);
+
+/**
+ * @route POST /api/ai/analyze-health
+ * @desc Analyze plant health from image
+ * @access Private (Premium)
+ */
+router.post('/analyze-health', 
+  authenticate, 
+  isPremium,
+  upload.single('image'), 
+  aiController.analyzeHealth
+);
+
+/**
+ * @route POST /api/ai/identify-plant
+ * @desc Identify plant species from image
+ * @access Private (Premium)
+ */
+router.post('/identify-plant', 
+  authenticate, 
+  isPremium,
+  upload.single('image'), 
+  aiController.identifyPlant
+);
+
+/**
+ * @route GET /api/ai/analysis-history/:plantId
+ * @desc Get analysis history for a plant
+ * @access Private
+ */
+router.get('/analysis-history/:plantId',
+  [
+    authenticate,
+    param('plantId').isNumeric().withMessage('Invalid plant ID')
+  ],
+  aiController.getAnalysisHistory
+);
+
+/**
+ * @route POST /api/ai/detect-disease
+ * @desc Detect disease from plant image
+ * @access Private (Premium)
+ */
+router.post('/detect-disease',
+  authenticate,
+  isPremium,
+  upload.single('image'),
+  aiController.detectDisease
 );
 
 module.exports = router;

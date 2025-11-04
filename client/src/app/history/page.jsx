@@ -49,10 +49,9 @@ export default function HistoryPage() {
   
   // Filter state
   const [filters, setFilters] = useState({
-    device_id: '',
+    device_key: '',
     start_date: formatDate(subDays(new Date(), 7), 'yyyy-MM-dd'),
-    end_date: formatDate(new Date(), 'yyyy-MM-dd'),
-    sensor_type: ''
+    end_date: formatDate(new Date(), 'yyyy-MM-dd')
   });
   
   // Pagination state
@@ -82,14 +81,14 @@ export default function HistoryPage() {
         if (response.data && Array.isArray(response.data)) {
           // Extract unique devices from plants data
           const uniqueDevices = response.data
-            .filter(plant => plant.device_id)
+            .filter(plant => plant.device_key)
             .map(plant => ({
-              device_id: plant.device_id,
-              device_name: plant.device_name || `Device ${plant.device_id}`,
+              device_key: plant.device_key,
+              device_name: plant.device_name || `Device ${plant.device_key}`,
               plant_name: plant.name
             }))
             .filter((device, index, self) => 
-              index === self.findIndex(d => d.device_id === device.device_id)
+              index === self.findIndex(d => d.device_key === device.device_key)
             );
           setDevices(uniqueDevices);
         }
@@ -167,10 +166,9 @@ export default function HistoryPage() {
   // Reset filters
   const resetFilters = () => {
     setFilters({
-      device_id: '',
+      device_key: '',
       start_date: formatDate(subDays(new Date(), 7), 'yyyy-MM-dd'),
-      end_date: formatDate(new Date(), 'yyyy-MM-dd'),
-      sensor_type: ''
+      end_date: formatDate(new Date(), 'yyyy-MM-dd')
     });
   };
 
@@ -273,14 +271,14 @@ export default function HistoryPage() {
                 <label className="text-sm font-medium">
                   {t('history.device', 'Device')}
                 </label>
-                <Select value={filters.device_id} onValueChange={(value) => handleFilterChange('device_id', value)}>
+                <Select value={filters.device_key} onValueChange={(value) => handleFilterChange('device_key', value)}>
                   <SelectTrigger>
                     <SelectValue placeholder={t('history.allDevices', 'All Devices')} />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="">{t('history.allDevices', 'All Devices')}</SelectItem>
                     {devices.map(device => (
-                      <SelectItem key={device.device_id} value={device.device_id}>
+                      <SelectItem key={device.device_key} value={device.device_key}>
                         {device.plant_name} ({device.device_name})
                       </SelectItem>
                     ))}
@@ -464,7 +462,7 @@ export default function HistoryPage() {
                             {formatDate(item.timestamp, 'MMM dd, yyyy HH:mm:ss')}
                           </td>
                           <td className="py-3 px-4 text-sm text-gray-900 dark:text-gray-300">
-                            {item.device_name || `Device ${item.device_id}`}
+                            {item.device_name || `Device ${item.device_key}`}
                           </td>
                           <td className="py-3 px-4 text-sm text-gray-900 dark:text-gray-300">
                             {item.plant_name || '-'}

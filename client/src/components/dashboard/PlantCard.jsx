@@ -116,10 +116,10 @@ export default function PlantCard({ plant, sensorData = {} }) {
         <div className="grid grid-cols-3 gap-2 mb-2">
           {/* Moisture level */}
           <div 
-            className={`flex flex-col ${activeChart === 'moisture' ? 'bg-blue-50 rounded p-1' : ''} cursor-pointer`}
-            onClick={() => { setActiveChart('moisture'); setShowHistory(true); }}
+            className={`flex flex-col ${activeChart === 'soil_moisture' ? 'bg-blue-50 rounded p-1' : ''} cursor-pointer`}
+            onClick={() => { setActiveChart('soil_moisture'); setShowHistory(true); }}
           >
-            <span className="text-xs text-gray-500 mb-1">{t('metrics.moisture', 'Moisture')}</span>
+            <span className="text-xs text-gray-500 mb-1">{t('metrics.soil_moisture', 'Soil Moisture')}</span>
             <div className="flex items-center">
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-blue-500 mr-1">
                 <path d="M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5C6 11.1 5 15 5 15a7 7 0 0 0 7 7z"></path>
@@ -144,10 +144,10 @@ export default function PlantCard({ plant, sensorData = {} }) {
           
           {/* Light level */}
           <div 
-            className={`flex flex-col ${activeChart === 'light' ? 'bg-amber-50 rounded p-1' : ''} cursor-pointer`}
-            onClick={() => { setActiveChart('light'); setShowHistory(true); }}
+            className={`flex flex-col ${activeChart === 'light_intensity' ? 'bg-amber-50 rounded p-1' : ''} cursor-pointer`}
+            onClick={() => { setActiveChart('light_intensity'); setShowHistory(true); }}
           >
-            <span className="text-xs text-gray-500 mb-1">{t('metrics.light', 'Light')}</span>
+            <span className="text-xs text-gray-500 mb-1">{t('metrics.light_intensity', 'Light')}</span>
             <div className="flex items-center">
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-amber-500 mr-1">
                 <circle cx="12" cy="12" r="4"></circle>
@@ -160,7 +160,7 @@ export default function PlantCard({ plant, sensorData = {} }) {
                 <path d="m6.34 17.66-1.41 1.41"></path>
                 <path d="m19.07 4.93-1.41 1.41"></path>
               </svg>
-              <span className="font-medium">{sensorData?.light || 'N/A'}%</span>
+              <span className="font-medium">{sensorData?.light_intensity || 'N/A'} lux</span>
             </div>
           </div>
         </div>

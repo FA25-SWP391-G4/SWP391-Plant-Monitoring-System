@@ -40,7 +40,7 @@
  * PLANT DATA STRUCTURE:
  * - plant_id: Unique identifier for each plant
  * - user_id: Owner association for access control
- * - device_id: IoT device connection for sensor data
+ * - device_key: IoT device connection for sensor data
  * - profile_id: Plant species profile for default settings
  * - custom_name: User-friendly plant name for personalization
  * - moisture_threshold: Custom watering trigger level (0-100%)
@@ -114,10 +114,10 @@ class Plant {
                 SELECT p.*, u.family_name as owner_name, 
                        d.device_name, d.status as device_status,
                        pp.species_name, pp.ideal_moisture
-                FROM Plants p
-                LEFT JOIN Users u ON p.user_id = u.user_id
-                LEFT JOIN Devices d ON p.device_key = d.device_key
-                LEFT JOIN Plant_Profiles pp ON p.profile_id = pp.profile_id
+                FROM plants p
+                LEFT JOIN users u ON p.user_id = u.user_id
+                LEFT JOIN devices d ON p.device_key = d.device_key
+                LEFT JOIN plant_profiles pp ON p.profile_id = pp.profile_id
                 ORDER BY p.created_at DESC
             `;
             const result = await pool.query(query);
@@ -147,10 +147,10 @@ class Plant {
                 SELECT p.*, u.family_name as owner_name, 
                        d.device_name, d.status as device_status,
                        pp.species_name, pp.ideal_moisture
-                FROM Plants p
-                LEFT JOIN Users u ON p.user_id = u.user_id
-                LEFT JOIN Devices d ON p.device_key = d.device_key
-                LEFT JOIN Plant_Profiles pp ON p.profile_id = pp.profile_id
+                FROM plants p
+                LEFT JOIN users u ON p.user_id = u.user_id
+                LEFT JOIN devices d ON p.device_key = d.device_key
+                LEFT JOIN plant_profiles pp ON p.profile_id = pp.profile_id
                 WHERE p.plant_id = $1
             `;
             const result = await pool.query(query, [id]);
@@ -178,10 +178,10 @@ class Plant {
                 SELECT p.*, u.family_name as owner_name, 
                        d.device_name, d.status as device_status,
                        pp.species_name, pp.ideal_moisture
-                FROM Plants p
-                LEFT JOIN Users u ON p.user_id = u.user_id
-                LEFT JOIN Devices d ON p.device_key = d.device_key
-                LEFT JOIN Plant_Profiles pp ON p.profile_id = pp.profile_id
+                FROM plants p
+                LEFT JOIN users u ON p.user_id = u.user_id
+                LEFT JOIN devices d ON p.device_key = d.device_key
+                LEFT JOIN plant_profiles pp ON p.profile_id = pp.profile_id
                 WHERE p.user_id = $1
                 ORDER BY p.created_at DESC
             `;
@@ -205,10 +205,10 @@ class Plant {
                 SELECT p.*, u.family_name as owner_name, 
                        d.device_name, d.status as device_status,
                        pp.species_name, pp.ideal_moisture
-                FROM Plants p
-                LEFT JOIN Users u ON p.user_id = u.user_id
-                LEFT JOIN Devices d ON p.device_key = d.device_key
-                LEFT JOIN Plant_Profiles pp ON p.profile_id = pp.profile_id
+                FROM plants p
+                LEFT JOIN users u ON p.user_id = u.user_id
+                LEFT JOIN devices d ON p.device_key = d.device_key
+                LEFT JOIN plant_profiles pp ON p.profile_id = pp.profile_id
                 WHERE p.device_key = $1
                 ORDER BY p.created_at DESC
             `;
@@ -232,10 +232,10 @@ class Plant {
                 SELECT p.*, u.family_name as owner_name, 
                        d.device_name, d.status as device_status,
                        pp.species_name, pp.ideal_moisture
-                FROM Plants p
-                LEFT JOIN Users u ON p.user_id = u.user_id
-                LEFT JOIN Devices d ON p.device_key = d.device_key
-                LEFT JOIN Plant_Profiles pp ON p.profile_id = pp.profile_id
+                FROM plants p
+                LEFT JOIN users u ON p.user_id = u.user_id
+                LEFT JOIN devices d ON p.device_key = d.device_key
+                LEFT JOIN plant_profiles pp ON p.profile_id = pp.profile_id
                 WHERE p.auto_watering_on = true AND d.status = 'online'
                 ORDER BY p.created_at DESC
             `;
@@ -260,7 +260,7 @@ class Plant {
                 }
 
                 const query = `
-                    UPDATE Plants 
+                    UPDATE plants
                     SET user_id = $1, device_key = $2, profile_id = $3, 
                         custom_name = $4, moisture_threshold = $5, auto_watering_on = $6
                     WHERE plant_id = $7
@@ -291,7 +291,7 @@ class Plant {
                 }
 
                 const query = `
-                    INSERT INTO Plants (user_id, device_key, profile_id, custom_name, 
+                    INSERT INTO plants (user_id, device_key, profile_id, custom_name, 
                                       moisture_threshold, auto_watering_on)
                     VALUES ($1, $2, $3, $4, $5, $6)
                     RETURNING *
@@ -319,7 +319,7 @@ class Plant {
     async toggleAutoWatering() {
         try {
             const query = `
-                UPDATE Plants 
+                UPDATE plants 
                 SET auto_watering_on = $1
                 WHERE plant_id = $2
                 RETURNING *
@@ -346,7 +346,7 @@ class Plant {
             }
 
             const query = `
-                UPDATE Plants 
+                UPDATE plants 
                 SET moisture_threshold = $1
                 WHERE plant_id = $2
                 RETURNING *
@@ -368,12 +368,12 @@ class Plant {
     async getLatestSensorData() {
         try {
             const query = `
-                SELECT * FROM Sensors_Data 
-                WHERE device_id = $1 
+                SELECT * FROM sensors_data
+                WHERE device_key = $1 
                 ORDER BY timestamp DESC 
                 LIMIT 1
             `;
-            const result = await pool.query(query, [this.device_id]);
+            const result = await pool.query(query, [this.device_key]);
             return result.rows[0] || null;
         } catch (error) {
             throw error;
@@ -384,7 +384,7 @@ class Plant {
     async getWateringHistory(limit = 50) {
         try {
             const query = `
-                SELECT * FROM Watering_History 
+                SELECT * FROM watering_history 
                 WHERE plant_id = $1 
                 ORDER BY timestamp DESC 
                 LIMIT $2
@@ -418,7 +418,7 @@ class Plant {
                 throw new Error('Cannot delete plant without ID');
             }
 
-            const query = 'DELETE FROM Plants WHERE plant_id = $1';
+            const query = 'DELETE FROM plants WHERE plant_id = $1';
             await pool.query(query, [this.plant_id]);
             
             return true;
@@ -432,7 +432,7 @@ class Plant {
         return {
             plant_id: this.plant_id,
             user_id: this.user_id,
-            device_id: this.device_id,
+            device_key: this.device_key,
             profile_id: this.profile_id,
             custom_name: this.custom_name,
             moisture_threshold: this.moisture_threshold,

@@ -57,8 +57,8 @@ const getDashboardOverview = async (req, res) => {
     // Get the latest device data from enhanced device mock for each plant
     const realtimeData = {};
     for (const plant of plants) {
-      const deviceId = plant.device_id || 3;
-      realtimeData[plant.plant_id] = EnhancedDeviceMock.generateMockData(deviceId);
+      const deviceKey = plant.device_key || 3;
+      realtimeData[plant.plant_id] = EnhancedDeviceMock.generateMockData(deviceKey);
     }
     
     res.json({
@@ -488,11 +488,11 @@ const getPlantHealthHistory = async (req, res) => {
  */
 const getRealtimeDeviceData = async (req, res) => {
   try {
-    const { deviceId } = req.query;
-    const deviceIdNum = parseInt(deviceId || 3, 10);
+    const { deviceKey } = req.query;
+    const deviceKeyNum = parseInt(deviceKey || 3, 10);
     
     // Generate mock data from enhanced device mock
-    const realtimeData = EnhancedDeviceMock.generateMockData(deviceIdNum);
+    const realtimeData = EnhancedDeviceMock.generateMockData(deviceKeyNum);
     
     res.json({
       success: true,

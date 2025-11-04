@@ -14,10 +14,10 @@ class PumpSchedule {
             const query = `
                 SELECT ps.*, p.custom_name as plant_name, 
                        u.full_name as owner_name, d.device_name
-                FROM Pump_Schedules ps
-                LEFT JOIN Plants p ON ps.plant_id = p.plant_id
-                LEFT JOIN Users u ON p.user_id = u.user_id
-                LEFT JOIN Devices d ON p.device_id = d.device_id
+                FROM pump_schedules ps
+                LEFT JOIN plants p ON ps.plant_id = p.plant_id
+                LEFT JOIN users u ON p.user_id = u.user_id
+                LEFT JOIN devices d ON p.device_id = d.device_id
                 ORDER BY ps.schedule_id
             `;
             const result = await pool.query(query);
@@ -33,10 +33,10 @@ class PumpSchedule {
             const query = `
                 SELECT ps.*, p.custom_name as plant_name, 
                        u.full_name as owner_name, d.device_name
-                FROM Pump_Schedules ps
-                LEFT JOIN Plants p ON ps.plant_id = p.plant_id
-                LEFT JOIN Users u ON p.user_id = u.user_id
-                LEFT JOIN Devices d ON p.device_id = d.device_id
+                FROM pump_schedules ps
+                LEFT JOIN plants p ON ps.plant_id = p.plant_id
+                LEFT JOIN users u ON p.user_id = u.user_id
+                LEFT JOIN devices d ON p.device_id = d.device_id
                 WHERE ps.schedule_id = $1
             `;
             const result = await pool.query(query, [id]);
@@ -57,10 +57,10 @@ class PumpSchedule {
             const query = `
                 SELECT ps.*, p.custom_name as plant_name, 
                        u.full_name as owner_name, d.device_name
-                FROM Pump_Schedules ps
-                LEFT JOIN Plants p ON ps.plant_id = p.plant_id
-                LEFT JOIN Users u ON p.user_id = u.user_id
-                LEFT JOIN Devices d ON p.device_id = d.device_id
+                FROM pump_schedules ps
+                LEFT JOIN plants p ON ps.plant_id = p.plant_id
+                LEFT JOIN users u ON p.user_id = u.user_id
+                LEFT JOIN devices d ON p.device_id = d.device_id
                 WHERE ps.plant_id = $1
                 ORDER BY ps.schedule_id
             `;
@@ -77,10 +77,10 @@ class PumpSchedule {
             const query = `
                 SELECT ps.*, p.custom_name as plant_name, 
                        u.full_name as owner_name, d.device_name
-                FROM Pump_Schedules ps
-                INNER JOIN Plants p ON ps.plant_id = p.plant_id
-                INNER JOIN Users u ON p.user_id = u.user_id
-                LEFT JOIN Devices d ON p.device_id = d.device_id
+                FROM pump_schedules ps
+                INNER JOIN plants p ON ps.plant_id = p.plant_id
+                INNER JOIN users u ON p.user_id = u.user_id
+                LEFT JOIN devices d ON p.device_id = d.device_id
                 WHERE u.user_id = $1
                 ORDER BY ps.schedule_id
             `;
@@ -98,10 +98,10 @@ class PumpSchedule {
                 SELECT ps.*, p.custom_name as plant_name, 
                        u.full_name as owner_name, d.device_name,
                        d.status as device_status
-                FROM Pump_Schedules ps
-                INNER JOIN Plants p ON ps.plant_id = p.plant_id
-                INNER JOIN Users u ON p.user_id = u.user_id
-                INNER JOIN Devices d ON p.device_id = d.device_id
+                FROM pump_schedules ps
+                INNER JOIN plants p ON ps.plant_id = p.plant_id
+                INNER JOIN users u ON p.user_id = u.user_id
+                INNER JOIN devices d ON p.device_id = d.device_id
                 WHERE ps.is_active = true 
                 AND d.status = 'online'
                 AND p.auto_watering_on = true
@@ -120,7 +120,7 @@ class PumpSchedule {
             if (this.schedule_id) {
                 // Update existing schedule
                 const query = `
-                    UPDATE Pump_Schedules 
+                    UPDATE pump_schedules 
                     SET plant_id = $1, cron_expression = $2, is_active = $3
                     WHERE schedule_id = $4
                     RETURNING *
@@ -139,7 +139,7 @@ class PumpSchedule {
             } else {
                 // Create new schedule
                 const query = `
-                    INSERT INTO Pump_Schedules (plant_id, cron_expression, is_active)
+                    INSERT INTO pump_schedules (plant_id, cron_expression, is_active)
                     VALUES ($1, $2, $3)
                     RETURNING *
                 `;
@@ -163,7 +163,7 @@ class PumpSchedule {
     async toggleActive() {
         try {
             const query = `
-                UPDATE Pump_Schedules 
+                UPDATE pump_schedules 
                 SET is_active = $1
                 WHERE schedule_id = $2
                 RETURNING *
@@ -190,7 +190,7 @@ class PumpSchedule {
             }
 
             const query = `
-                UPDATE Pump_Schedules 
+                UPDATE pump_schedules 
                 SET cron_expression = $1
                 WHERE schedule_id = $2
                 RETURNING *

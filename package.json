@@ -28,6 +28,7 @@
     "express-rate-limit": "^7.2.0",
     "express-validator": "^7.2.1",
     "firebase-admin": "^13.5.0",
+    "googleapis": "^164.1.0",
     "http-errors": "~1.6.3",
     "jade": "^1.11.0",
     "jsonwebtoken": "^9.0.2",
@@ -44,6 +45,7 @@
     "react-error-boundary": "^6.0.0",
     "request": "^2.88.2",
     "socket.io": "^4.7.5",
+    "vnpay": "^2.4.4",
     "winston": "^3.13.0"
   },
   "scripts": {

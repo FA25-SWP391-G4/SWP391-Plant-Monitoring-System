@@ -133,6 +133,15 @@ const authMiddleware = async (req, res, next) => {
                 error: 'User not found. Token may be invalid.' 
             });
         }
+
+        // Attach user to request object
+        req.user = {
+            userId: user.user_id || decoded.user_id,
+            username: user.username,
+            email: user.email,
+            role: user.role
+        };
+        console.log('[AUTH MIDDLEWARE] User authenticated:', req.user.username);
         
         // Attach user to request and include JWT decoded fields
         req.user = {

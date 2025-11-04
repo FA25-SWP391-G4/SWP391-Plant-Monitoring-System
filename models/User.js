@@ -129,7 +129,7 @@ createPasswordResetToken() {
 async updatePasswordResetFields(token, expires) {
     try {
         const query = `
-                    UPDATE Users 
+                    UPDATE users 
                     SET password_reset_token = $1, password_reset_expires = $2
                     WHERE user_id = $3
                     RETURNING *
@@ -163,7 +163,7 @@ async updatePasswordResetFields(token, expires) {
     static async findByEmail(email) {
         try {
             console.log(`[USER] Finding user by email: ${email}`);
-            const query = 'SELECT * FROM Users WHERE email = $1';
+            const query = 'SELECT * FROM users WHERE email = $1';
             const result = await pool.query(query, [email.toLowerCase()]);
             
             if (result.rows.length === 0) {
@@ -215,7 +215,7 @@ async updatePasswordResetFields(token, expires) {
                 return null;
             }
 
-            const query = 'SELECT * FROM Users WHERE user_id = $1';
+            const query = 'SELECT * FROM users WHERE user_id = $1';
             const result = await pool.query(query, [id]);
             
             if (result.rows.length === 0) {
@@ -244,7 +244,7 @@ async updatePasswordResetFields(token, expires) {
     static async findByResetToken(token) {
         try {
             const query = `
-                SELECT * FROM Users 
+                SELECT * FROM users 
                 WHERE password_reset_token = $1 
                 AND password_reset_expires > NOW()
             `;
@@ -293,7 +293,7 @@ async updatePasswordResetFields(token, expires) {
             if (this.user_id) {
                 // Update existing user
                 const query = `
-                    UPDATE Users 
+                    UPDATE users 
                     SET email = $1, password_hash = $2, family_name = $3, given_name = $4,
                         role = $5, notification_prefs = $6, 
                         password_reset_token = $7, password_reset_expires = $8,
@@ -365,7 +365,7 @@ async updatePasswordResetFields(token, expires) {
                 }
 
                 const query = `
-                    INSERT INTO Users (
+                    INSERT INTO users (
                         user_id, email, password_hash, family_name, given_name, role, 
                         notification_prefs, google_id, profile_picture
                     )
@@ -399,7 +399,7 @@ async updatePasswordResetFields(token, expires) {
 
             // Add detailed error diagnostics for database issues
             if (error.code === '42P01') {
-                console.error('[USER CREATE ERROR] Table "Users" does not exist. Database schema may need to be created.');
+                console.error('[USER CREATE ERROR] Table "users" does not exist. Database schema may need to be created.');
             } else if (error.code === '23505') {
                 console.error('[USER CREATE ERROR] Duplicate key violation. Email may already be registered.');
                 const conflictError = new Error('Email already registered');
@@ -508,7 +508,7 @@ createPasswordResetToken() {
     async updatePasswordResetFields(token = null, expires = null) {
         try {
             const query = `
-                UPDATE Users 
+                UPDATE users 
                 SET password_reset_token = $1, password_reset_expires = $2
                 WHERE user_id = $3
                 RETURNING *
@@ -546,7 +546,7 @@ createPasswordResetToken() {
             const hashedPassword = await this.hashPassword(newPassword);
             
             const query = `
-                             UPDATE Users 
+                             UPDATE users 
                              SET password_hash = $1, password_reset_token = NULL, password_reset_expires = NULL
                              WHERE user_id = $2
                              RETURNING *
@@ -620,7 +620,7 @@ createPasswordResetToken() {
             
             // Construct and execute the update query
             const query = `
-                UPDATE Users 
+                UPDATE users 
                 SET ${updates.join(', ')}
                 WHERE user_id = $1
                 RETURNING *

@@ -22,8 +22,8 @@ class ChatHistory {
         try {
             const query = `
                 SELECT ch.*, u.full_name as user_name 
-                FROM Chat_History ch
-                LEFT JOIN Users u ON ch.user_id = u.user_id
+                FROM chat_history ch
+                LEFT JOIN users u ON ch.user_id = u.user_id
                 ORDER BY ch.timestamp DESC 
                 LIMIT $1
             `;
@@ -39,8 +39,8 @@ class ChatHistory {
         try {
             const query = `
                 SELECT ch.*, u.full_name as user_name 
-                FROM Chat_History ch
-                LEFT JOIN Users u ON ch.user_id = u.user_id
+                FROM chat_history ch
+                LEFT JOIN users u ON ch.user_id = u.user_id
                 WHERE ch.chat_id = $1
             `;
             const result = await pool.query(query, [id]);
@@ -60,8 +60,8 @@ class ChatHistory {
         try {
             const query = `
                 SELECT ch.*, u.full_name as user_name 
-                FROM Chat_History ch
-                LEFT JOIN Users u ON ch.user_id = u.user_id
+                FROM chat_history ch
+                LEFT JOIN users u ON ch.user_id = u.user_id
                 WHERE ch.user_id = $1
                 ORDER BY ch.timestamp DESC 
                 LIMIT $2
@@ -78,8 +78,8 @@ class ChatHistory {
         try {
             const query = `
                 SELECT ch.*, u.full_name as user_name 
-                FROM Chat_History ch
-                LEFT JOIN Users u ON ch.user_id = u.user_id
+                FROM chat_history ch
+                LEFT JOIN users u ON ch.user_id = u.user_id
                 WHERE ch.user_id = $1 
                 AND ch.timestamp >= NOW() - INTERVAL '${days} days'
                 ORDER BY ch.timestamp DESC
@@ -96,8 +96,8 @@ class ChatHistory {
         try {
             const query = `
                 SELECT ch.*, u.full_name as user_name 
-                FROM Chat_History ch
-                LEFT JOIN Users u ON ch.user_id = u.user_id
+                FROM chat_history ch
+                LEFT JOIN users u ON ch.user_id = u.user_id
                 WHERE ch.user_id = $1 
                 AND (ch.user_message ILIKE $2 OR ch.ai_response ILIKE $2)
                 ORDER BY ch.timestamp DESC 
@@ -119,7 +119,7 @@ class ChatHistory {
                     COUNT(CASE WHEN ai_response IS NOT NULL THEN 1 END) as responded_conversations,
                     AVG(LENGTH(user_message)) as avg_message_length,
                     AVG(LENGTH(ai_response)) as avg_response_length
-                FROM Chat_History 
+                FROM chat_history 
                 WHERE user_id = $1 
                 AND timestamp >= NOW() - INTERVAL '${days} days'
             `;
@@ -140,7 +140,7 @@ class ChatHistory {
                     COUNT(CASE WHEN ai_response IS NOT NULL THEN 1 END) as responded_conversations,
                     AVG(LENGTH(user_message)) as avg_message_length,
                     AVG(LENGTH(ai_response)) as avg_response_length
-                FROM Chat_History 
+                FROM chat_history 
                 WHERE timestamp >= NOW() - INTERVAL '${days} days'
             `;
             const result = await pool.query(query);
@@ -207,7 +207,7 @@ class ChatHistory {
     async updateAIResponse(aiResponse) {
         try {
             const query = `
-                UPDATE Chat_History 
+                UPDATE chat_history 
                 SET ai_response = $1
                 WHERE chat_id = $2
                 RETURNING *
@@ -232,7 +232,7 @@ class ChatHistory {
                 throw new Error('Cannot delete chat history without ID');
             }
 
-            const query = 'DELETE FROM Chat_History WHERE chat_id = $1';
+            const query = 'DELETE FROM chat_history WHERE chat_id = $1';
             await pool.query(query, [this.chat_id]);
             
             return true;
@@ -316,7 +316,7 @@ class ChatHistory {
     // Static method to delete user's chat history
     static async deleteUserHistory(userId) {
         try {
-            const query = 'DELETE FROM Chat_History WHERE user_id = $1';
+            const query = 'DELETE FROM chat_history WHERE user_id = $1';
             const result = await pool.query(query, [userId]);
             return result.rowCount;
         } catch (error) {
@@ -328,7 +328,7 @@ class ChatHistory {
     static async cleanupOldHistory(daysToKeep = 90) {
         try {
             const query = `
-                DELETE FROM Chat_History 
+                DELETE FROM chat_history 
                 WHERE timestamp < NOW() - INTERVAL '${daysToKeep} days'
             `;
             const result = await pool.query(query);
@@ -342,7 +342,7 @@ class ChatHistory {
     async getConversationContext(contextLimit = 5) {
         try {
             const query = `
-                SELECT * FROM Chat_History 
+                SELECT * FROM chat_history 
                 WHERE user_id = $1 
                 AND timestamp <= $2
                 ORDER BY timestamp DESC 

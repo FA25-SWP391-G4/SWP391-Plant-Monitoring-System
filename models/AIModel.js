@@ -17,8 +17,8 @@ class AIModel {
         try {
             const query = `
                 SELECT am.*, u.full_name as uploader_name 
-                FROM AI_Models am
-                LEFT JOIN Users u ON am.uploaded_by = u.user_id
+                FROM ai_models am
+                LEFT JOIN users u ON am.uploaded_by = u.user_id
                 ORDER BY am.created_at DESC
             `;
             const result = await pool.query(query);
@@ -33,8 +33,8 @@ class AIModel {
         try {
             const query = `
                 SELECT am.*, u.full_name as uploader_name 
-                FROM AI_Models am
-                LEFT JOIN Users u ON am.uploaded_by = u.user_id
+                FROM ai_models am
+                LEFT JOIN users u ON am.uploaded_by = u.user_id
                 WHERE am.model_id = $1
             `;
             const result = await pool.query(query, [id]);
@@ -54,8 +54,8 @@ class AIModel {
         try {
             const query = `
                 SELECT am.*, u.full_name as uploader_name 
-                FROM AI_Models am
-                LEFT JOIN Users u ON am.uploaded_by = u.user_id
+                FROM ai_models am
+                LEFT JOIN users u ON am.uploaded_by = u.user_id
                 WHERE am.is_active = true
                 LIMIT 1
             `;
@@ -82,8 +82,8 @@ class AIModel {
         try {
             const query = `
                 SELECT am.*, u.full_name as uploader_name 
-                FROM AI_Models am
-                LEFT JOIN Users u ON am.uploaded_by = u.user_id
+                FROM ai_models am
+                LEFT JOIN users u ON am.uploaded_by = u.user_id
                 WHERE am.uploaded_by = $1
                 ORDER BY am.created_at DESC
             `;
@@ -106,7 +106,7 @@ class AIModel {
             if (this.model_id) {
                 // Update existing model
                 const query = `
-                    UPDATE AI_Models 
+                    UPDATE ai_models 
                     SET model_name = $1, version = $2, file_path = $3, 
                         is_active = $4, uploaded_by = $5
                     WHERE model_id = $6
@@ -128,7 +128,7 @@ class AIModel {
             } else {
                 // Create new model
                 const query = `
-                    INSERT INTO AI_Models (model_name, version, file_path, is_active, uploaded_by)
+                    INSERT INTO ai_models (model_name, version, file_path, is_active, uploaded_by)
                     VALUES ($1, $2, $3, $4, $5)
                     RETURNING *
                 `;
@@ -160,11 +160,11 @@ class AIModel {
                 await client.query('BEGIN');
                 
                 // Deactivate all models
-                await client.query('UPDATE AI_Models SET is_active = false');
+                await client.query('UPDATE ai_models SET is_active = false');
                 
                 // Activate this model
                 const query = `
-                    UPDATE AI_Models 
+                    UPDATE ai_models 
                     SET is_active = true 
                     WHERE model_id = $1
                     RETURNING *
@@ -193,7 +193,7 @@ class AIModel {
                 throw new Error('Cannot delete model without ID');
             }
 
-            const query = 'DELETE FROM AI_Models WHERE model_id = $1';
+            const query = 'DELETE FROM ai_models WHERE model_id = $1';
             await pool.query(query, [this.model_id]);
             
             return true;
