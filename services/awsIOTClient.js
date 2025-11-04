@@ -53,7 +53,7 @@ connection.on("connect", async () => {
           const light = payloadObj.light_intensity ?? payloadObj.light ?? null;
 
           await pool.query(
-            `INSERT INTO sensors_data(device_id, timestamp, soil_moisture, temperature, air_humidity, light_intensity)
+            `INSERT INTO sensors_data(device_key, timestamp, soil_moisture, temperature, air_humidity, light_intensity)
              VALUES($1, $2, $3, $4, $5, $6)`,
             [deviceId, ts, soil, temp, humidity, light]
           );

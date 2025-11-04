@@ -16,10 +16,10 @@ class WateringHistory {
             const query = `
                 SELECT wh.*, p.custom_name as plant_name, 
                        u.full_name as owner_name, d.device_name
-                FROM Watering_History wh
-                LEFT JOIN Plants p ON wh.plant_id = p.plant_id
-                LEFT JOIN Users u ON p.user_id = u.user_id
-                LEFT JOIN Devices d ON p.device_key = d.device_key
+                FROM watering_history wh
+                LEFT JOIN plants p ON wh.plant_id = p.plant_id
+                LEFT JOIN users u ON p.user_id = u.user_id
+                LEFT JOIN devices d ON p.device_key = d.device_key
                 ORDER BY wh.timestamp DESC 
                 LIMIT $1
             `;
@@ -36,10 +36,10 @@ class WateringHistory {
             const query = `
                 SELECT wh.*, p.custom_name as plant_name, 
                        u.full_name as owner_name, d.device_name
-                FROM Watering_History wh
-                LEFT JOIN Plants p ON wh.plant_id = p.plant_id
-                LEFT JOIN Users u ON p.user_id = u.user_id
-                LEFT JOIN Devices d ON p.device_key = d.device_key
+                FROM watering_history wh
+                LEFT JOIN plants p ON wh.plant_id = p.plant_id
+                LEFT JOIN users u ON p.user_id = u.user_id
+                LEFT JOIN devices d ON p.device_key = d.device_key
                 WHERE wh.history_id = $1
             `;
             const result = await pool.query(query, [id]);
@@ -60,10 +60,10 @@ class WateringHistory {
             const query = `
                 SELECT wh.*, p.custom_name as plant_name, 
                        u.full_name as owner_name, d.device_name
-                FROM Watering_History wh
-                LEFT JOIN Plants p ON wh.plant_id = p.plant_id
-                LEFT JOIN Users u ON p.user_id = u.user_id
-                LEFT JOIN Devices d ON p.device_key = d.device_key
+                FROM watering_history wh
+                LEFT JOIN plants p ON wh.plant_id = p.plant_id
+                LEFT JOIN users u ON p.user_id = u.user_id
+                LEFT JOIN devices d ON p.device_key = d.device_key
                 WHERE wh.plant_id = $1
                 ORDER BY wh.timestamp DESC 
                 LIMIT $2
@@ -87,10 +87,10 @@ class WateringHistory {
             const query = `
                 SELECT wh.*, p.custom_name as plant_name, 
                        u.full_name as owner_name, d.device_name
-                FROM Watering_History wh
-                INNER JOIN Plants p ON wh.plant_id = p.plant_id
-                INNER JOIN Users u ON p.user_id = u.user_id
-                LEFT JOIN Devices d ON p.device_key = d.device_key
+                FROM watering_history wh
+                INNER JOIN plants p ON wh.plant_id = p.plant_id
+                INNER JOIN users u ON p.user_id = u.user_id
+                LEFT JOIN devices d ON p.device_key = d.device_key
                 WHERE u.user_id = $1
                 ORDER BY wh.timestamp DESC 
                 LIMIT $2
@@ -108,10 +108,10 @@ class WateringHistory {
             const query = `
                 SELECT wh.*, p.custom_name as plant_name, 
                        u.full_name as owner_name, d.device_name
-                FROM Watering_History wh
-                LEFT JOIN Plants p ON wh.plant_id = p.plant_id
-                LEFT JOIN Users u ON p.user_id = u.user_id
-                LEFT JOIN Devices d ON p.device_key = d.device_key
+                FROM watering_history wh
+                LEFT JOIN plants p ON wh.plant_id = p.plant_id
+                LEFT JOIN users u ON p.user_id = u.user_id
+                LEFT JOIN devices d ON p.device_key = d.device_key
                 WHERE wh.trigger_type = $1
                 ORDER BY wh.timestamp DESC 
                 LIMIT $2
@@ -129,10 +129,10 @@ class WateringHistory {
             const query = `
                 SELECT wh.*, p.custom_name as plant_name, 
                        u.full_name as owner_name, d.device_name
-                FROM Watering_History wh
-                LEFT JOIN Plants p ON wh.plant_id = p.plant_id
-                LEFT JOIN Users u ON p.user_id = u.user_id
-                LEFT JOIN Devices d ON p.device_key = d.device_key
+                FROM watering_history wh
+                LEFT JOIN plants p ON wh.plant_id = p.plant_id
+                LEFT JOIN users u ON p.user_id = u.user_id
+                LEFT JOIN devices d ON p.device_key = d.device_key
                 WHERE wh.plant_id = $1 
                 AND wh.timestamp >= $2 
                 AND wh.timestamp <= $3
@@ -158,7 +158,7 @@ class WateringHistory {
                     COUNT(CASE WHEN trigger_type = 'automatic_threshold' THEN 1 END) as auto_threshold_count,
                     COUNT(CASE WHEN trigger_type = 'schedule' THEN 1 END) as schedule_count,
                     COUNT(CASE WHEN trigger_type = 'ai_prediction' THEN 1 END) as ai_prediction_count
-                FROM Watering_History 
+                FROM watering_history 
                 WHERE plant_id = $1 
                 AND timestamp >= NOW() - INTERVAL '${days} days'
                 GROUP BY plant_id
@@ -176,7 +176,7 @@ class WateringHistory {
             if (this.history_id) {
                 // Update existing entry (rarely needed)
                 const query = `
-                    UPDATE Watering_History 
+                    UPDATE watering_history 
                     SET plant_id = $1, timestamp = $2, trigger_type = $3, duration_seconds = $4
                     WHERE history_id = $5
                     RETURNING *
@@ -196,7 +196,7 @@ class WateringHistory {
             } else {
                 // Create new watering history
                 const query = `
-                    INSERT INTO Watering_History (plant_id, timestamp, trigger_type, duration_seconds)
+                    INSERT INTO watering_history (plant_id, timestamp, trigger_type, duration_seconds)
                     VALUES ($1, $2, $3, $4)
                     RETURNING *
                 `;
@@ -240,7 +240,7 @@ class WateringHistory {
                 throw new Error('Cannot delete watering history without ID');
             }
 
-            const query = 'DELETE FROM Watering_History WHERE history_id = $1';
+            const query = 'DELETE FROM watering_history WHERE history_id = $1';
             await pool.query(query, [this.history_id]);
             
             return true;
@@ -253,7 +253,7 @@ class WateringHistory {
     static async cleanupOldHistory(daysToKeep = 365) {
         try {
             const query = `
-                DELETE FROM Watering_History 
+                DELETE FROM watering_history 
                 WHERE timestamp < NOW() - INTERVAL '${daysToKeep} days'
             `;
             const result = await pool.query(query);

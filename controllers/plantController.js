@@ -132,7 +132,7 @@ async function waterPlant(req, res) {
         // Send command via AWS IoT Core
         try {
             const connection = await getAwsIoTConnection();
-            const topic = `smartplant/device/${device.device_id}/command`;
+            const topic = `smartplant/device/${device.device_key}/command`;
             
             connection.publish(
                 topic,
@@ -570,20 +570,20 @@ async function setSensorThresholds(req, res) {
  */
 const getUserPlants = async (req, res) => {
     try {
-        const userId = req.user.user_id;
+        const userId = req.user.userId;
         
         // Get all plants for the user with their devices and zones
         const query = `
             SELECT 
                 p.*,
-                d.device_id,
+                d.device_key,
                 d.device_name,
                 z.zone_name,
                 z.description as zone_description
             FROM 
                 "plants" p
             LEFT JOIN 
-                "devices" d ON p.device_id = d.device_id
+                "devices" d ON p.device_key = d.device_key
             LEFT JOIN 
                 "zones" z ON p.zone_id = z.zone_id
             WHERE 
@@ -605,7 +605,7 @@ const getUserPlants = async (req, res) => {
         const plants = rows.map(plant => {
             return {
                 plant_id: plant.plant_id,
-                name: plant.custom_name, // Use custom_name from database
+                name: plant.custom_name || plant.name || 'Unnamed Plant',
                 species: plant.species_name || 'Unknown Species',
                 location: plant.zone_name || 'No zone assigned', // Use zone_name instead of location
                 status: plant.status || 'healthy',
@@ -613,8 +613,8 @@ const getUserPlants = async (req, res) => {
                 image: plant.image || null,
                 lastWatered: null, // Will be populated from watering history later
                 auto_watering_on: plant.auto_watering_on || false,
-                moisture_threshold: plant.moisture_threshold,
-                device_id: plant.device_id,
+                thresholds: plant.thresholds || {},
+                device_id: plant.device_key,
                 device_name: plant.device_name,
                 zone_id: plant.zone_id,
                 zone_name: plant.zone_name,
@@ -655,13 +655,12 @@ const getPlantById = async (req, res) => {
         const query = `
             SELECT 
                 p.*,
-                d.device_id,
-                d.device_name,
-                d.sensor_type
+                d.device_key,
+                d.device_name
             FROM 
                 "plants" p
             LEFT JOIN 
-                "devices" d ON p.device_id = d.device_id
+                "devices" d ON p.device_key = d.device_key
             WHERE 
                 p.plant_id = $1 AND p.user_id = $2
         `;
@@ -701,7 +700,7 @@ const getPlantById = async (req, res) => {
             image: plant.image_url || null,
             lastWatered: plant.last_watered || new Date().toISOString(),
             auto_watering_on: plant.auto_watering_on || false,
-            device_id: plant.device_id,
+            device_key: plant.device_key,
             device_name: plant.device_name,
             thresholds: thresholds
         };

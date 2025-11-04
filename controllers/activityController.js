@@ -23,8 +23,8 @@ async function getRecentActivity(req, res) {
       SELECT
         data_id::text AS id,
         'sensor' AS type,
-        (SELECT custom_name FROM plants p WHERE p.device_id = s.device_id LIMIT 1) AS plant_name,
-        to_jsonb(s.*) - 'data_id' - 'device_id' AS payload,
+        (SELECT custom_name FROM plants p WHERE p.device_key = s.device_key LIMIT 1) AS plant_name,
+        to_jsonb(s.*) - 'data_id' - 'device_key' AS payload,
         s.timestamp AS created_at
       FROM sensors_data s
     `;

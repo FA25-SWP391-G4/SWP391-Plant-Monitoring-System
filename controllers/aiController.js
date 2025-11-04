@@ -1330,5 +1330,17 @@ module.exports = {
     optimizeWateringSchedule,
     analyzeHistoricalData,
     processPlantImage,
-    processChatbotQuery
+    processChatbotQuery,
+    
+    // New image analysis methods
+    analyzeHealth,
+    identifyPlant,
+    getAnalysisHistory,
+    detectDisease,
+    
+    // AI Service proxy methods
+    proxyChatbotRequest,
+    proxyImageAnalysis,
+    proxyWateringPrediction,
+    proxyHistoricalAnalysis
 };

@@ -1,21 +1,87 @@
+<<<<<<< HEAD
+const { validationResult } = require('express-validator');
+const openRouterService = require('../services/openRouterService');
+const ChatHistory = require('../models/ChatHistory');
+const { initializeTensorFlow } = require('../services/aiUtils');
+const jwt = require('jsonwebtoken');
+=======
 const OpenAI = require('openai');
 const ChatbotLog = require('../models/ChatbotLog');
 const sensorService = require('../services/sensorService');
+const { detectLanguage, getSystemPrompt, createContext, processResponse } = require('../utils/languageUtils');
+>>>>>>> 1d1e2513b9e8ac5f36f74d326d2a76f901e82987
 
-// Khởi tạo OpenAI client với OpenRouter
-const openai = new OpenAI({
-  apiKey: process.env.OPENROUTER_API_KEY || 'MISSING_API_KEY',
-  baseURL: 'https://openrouter.ai/api/v1',
-  defaultHeaders: {
-    'HTTP-Referer': process.env.APP_URL || 'http://localhost:3001',
-    'X-Title': 'Smart Garden Assistant'
-  }
-});
-
-const chatbotController = {
-  async handleMessage(req, res) {
+/**
+ * Process chatbot queries
+ */
+const processChatbotQuery = async (req, res) => {
     try {
-      const { message, userId, plantId = 1, language = 'vi' } = req.body;
+<<<<<<< HEAD
+        // Validate request
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).json({
+                success: false,
+                message: 'Validation failed',
+                errors: errors.array()
+            });
+        }
+
+        const { message, conversation_id, plant_id, context } = req.body;
+        const userId = req.user?.user_id || req.user?.id;
+        
+        if (!message) {
+            return res.status(400).json({
+                success: false,
+                message: 'Message is required'
+            });
+        }
+
+        if (!userId) {
+            return res.status(401).json({
+                success: false,
+                message: 'User authentication required'
+            });
+        }
+
+        // Generate conversation ID if not provided
+        const conversationId = conversation_id || `conv_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
+
+        console.log(`Chatbot query received from user ${userId}: "${message.substring(0, 50)}..."`);
+
+        // Get conversation history from database
+        const conversationHistory = await ChatHistory.getConversationContext(conversationId, 10);
+
+        // Use OpenRouter service for chat completion
+        const chatResult = await openRouterService.generateChatCompletion(
+            message,
+            conversationHistory,
+            context || {}
+        );
+        
+        // Store the conversation in database
+        await ChatHistory.createChat(
+            userId,
+            message,
+            chatResult.response,
+            plant_id,
+            conversationId,
+            {
+                ...context,
+                source: chatResult.source,
+                model: chatResult.model,
+                confidence: chatResult.confidence,
+                isPlantRelated: chatResult.isPlantRelated
+            }
+        );
+=======
+      const { message, user_id, context, plantId = 1 } = req.body;
+      
+      // Detect language from message
+      const detectedLanguage = detectLanguage(message, req.user?.language_preference);
+      console.log(`[Chatbot] Detected language: ${detectedLanguage} for message: "${message.substring(0, 50)}..."`);
+      
+      const userId = user_id || req.user?.user_id;
       
       if (!message || message.trim() === '') {
         return res.status(400).json({ 
@@ -122,8 +188,33 @@ const chatbotController = {
         } catch (logError) {
           console.error('Không thể lưu log chat:', logError);
         }
+>>>>>>> 1d1e2513b9e8ac5f36f74d326d2a76f901e82987
         
+        console.log(`Chatbot response generated via ${chatResult.source}, plant-related: ${chatResult.isPlantRelated}, confidence: ${chatResult.confidence}`);
+
         return res.json({
+<<<<<<< HEAD
+            success: true,
+            data: {
+                response: chatResult.response,
+                conversation_id: conversationId,
+                timestamp: new Date(),
+                isPlantRelated: chatResult.isPlantRelated,
+                confidence: chatResult.confidence,
+                source: chatResult.source,
+                model: chatResult.model,
+                usage: chatResult.usage
+            }
+        });
+    } catch (error) {
+        console.error('Error processing chatbot query:', error);
+
+        return res.status(500).json({
+            success: false,
+            message: 'Failed to process chatbot query',
+            error: error.message
+        });
+=======
           success: true,
           response: aiResponse,
           sensorData,
@@ -156,29 +247,44 @@ const chatbotController = {
       return res.status(500).json({
         error: true,
         message: errorMessage,
-        details: error.message,
-        response: errorMessage
+        response: errorMessage,
+        language: language,
+        details: process.env.NODE_ENV === 'development' ? error.message : undefined
       });
+>>>>>>> 1d1e2513b9e8ac5f36f74d326d2a76f901e82987
     }
-  },
-  
-  // Lấy lịch sử trò chuyện
-  getChatHistory: async (req, res) => {
+};
+
+/**
+ * Get conversation history
+ */
+const getConversationHistory = async (req, res) => {
     try {
-      const { userId } = req.params;
-      
-      if (!userId) {
-        return res.status(400).json({ error: true, message: 'User ID không được để trống' });
-      }
-      
-      // Lấy lịch sử chat từ database
-      const chatHistory = await ChatbotLog.getByUserId(userId, 10);
-      
-      return res.json({
-        success: true,
-        history: chatHistory
-      });
-      
+        const { conversation_id } = req.params;
+        const userId = req.user?.user_id || req.user?.id;
+
+        if (!conversation_id) {
+            return res.status(400).json({
+                success: false,
+                message: 'Conversation ID is required'
+            });
+        }
+
+        // Get conversation history
+        const history = await ChatHistory.findByConversationId(conversation_id, 50);
+        
+        // Filter by user ID for security
+        const userHistory = history.filter(chat => chat.user_id === userId);
+
+<<<<<<< HEAD
+        return res.json({
+            success: true,
+            data: {
+                conversation_id,
+                messages: userHistory.map(chat => chat.toJSON()),
+                total: userHistory.length
+            }
+        });
     } catch (error) {
         console.error('Error getting conversation history:', error);
         return res.status(500).json({
@@ -186,57 +292,7 @@ const chatbotController = {
             message: 'Failed to get conversation history',
             error: error.message
         });
-    }
-};
-
-/**
- * Get user's chat history
- */
-const getUserChatHistory: = async (req, res) => {
-    try {
-        const userId = req.user?.user_id || req.user?.id;
-        const limit = parseInt(req.query.limit) || 50;
-
-        // Get user's chat history
-        const history = await ChatHistory.findByUserId(userId, limit);
-
-        return res.json({
-            success: true,
-            data: {
-                user_id: userId,
-                chats: history.map(chat => chat.toJSON()),
-                total: history.length
-            }
-        });
-    } catch (error) {
-      console.error('Lỗi khi lấy dữ liệu giả lập:', error);
-      res.status(500).json({
-        error: 'Đã xảy ra lỗi khi lấy dữ liệu giả lập',
-        details: error.message
-      });
-    }
-  }
-};
-
-// Hàm tạo system prompt cho AI
-function getSystemPrompt(language = 'vi') {
-  if (language === 'vi') {
-    return `Bạn là Trợ lý Vườn Thông minh, một AI chuyên gia về chăm sóc cây trồng và làm vườn.
-Nhiệm vụ của bạn là giúp người dùng chăm sóc cây trồng dựa trên dữ liệu cảm biến thời gian thực.
-
-Khi trả lời:
-1. Phân tích dữ liệu cảm biến và so sánh với giá trị tối ưu cho loại cây cụ thể
-2. Đưa ra cảnh báo nếu bất kỳ thông số nào nằm ngoài phạm vi tối ưu
-3. Đề xuất hành động cụ thể dựa trên dữ liệu (tưới nước, điều chỉnh ánh sáng, v.v.)
-4. Sử dụng lịch sử tưới cây để đưa ra lời khuyên phù hợp
-5. Trả lời ngắn gọn, thân thiện và hữu ích
-6. Nếu không có đủ thông tin, hãy yêu cầu thêm chi tiết
-
-XỬ LÝ CÁC TÌNH HUỐNG ĐẶC BIỆT:
-- Nếu người dùng hỏi về chủ đề không liên quan đến cây trồng hoặc làm vườn, hãy lịch sự giải thích rằng bạn là Trợ lý Vườn Thông minh và chỉ có thể giúp đỡ về các vấn đề liên quan đến cây trồng và làm vườn. Gợi ý họ hỏi về chăm sóc cây.
-- Nếu người dùng hỏi về loại cây không có trong dữ liệu, hãy thông báo rằng bạn không có thông tin chi tiết về loại cây đó trong hệ thống, nhưng có thể cung cấp lời khuyên chung về chăm sóc cây tương tự.
-- Nếu dữ liệu cảm biến không khả dụng hoặc không đầy đủ, hãy thông báo với người dùng và đưa ra lời khuyên chung dựa trên kiến thức về loại cây.
-
+=======
 Đừng đề cập đến việc bạn đang xem dữ liệu cảm biến hoặc ngữ cảnh này trong câu trả lời của bạn.
 Trả lời như thể bạn tự nhiên biết thông tin này.`;
   } else {
@@ -307,82 +363,67 @@ async function callOpenRouterAPI(message, context = [], contextData = {}, langua
         messages.push({ role: 'user', content: item.message || item.user_message });
         messages.push({ role: 'assistant', content: item.response || item.ai_response });
       });
+>>>>>>> 1d1e2513b9e8ac5f36f74d326d2a76f901e82987
     }
-    
-    // Thêm thông tin cây trồng và dữ liệu cảm biến vào prompt nếu có
-    if (contextData && Object.keys(contextData).length > 0) {
-      const contextMessage = createContext(
-        contextData.plantInfo || {}, 
-        contextData.sensorData || {}, 
-        contextData.wateringHistory || [],
-        []
-      );
-      messages.push({ role: 'user', content: contextMessage });
-    }
-    
-    // Thêm tin nhắn hiện tại
-    messages.push({ role: 'user', content: message });
-    
-    // Gọi API
-    const completion = await openai.chat.completions.create({
-      model: process.env.OPENROUTER_MODEL || 'mistralai/mistral-7b-instruct',
-      messages: messages,
-      temperature: 0.7,
-      max_tokens: 500,
-      timeout: 30000 // 30 giây timeout
-    });
-    
-    const responseTime = Date.now() - startTime;
-    console.log(`OpenRouter API response time: ${responseTime}ms`);
-    
-    // Trích xuất phản hồi
-    if (completion.choices && 
-        completion.choices.length > 0 && 
-        completion.choices[0].message) {
-      return completion.choices[0].message.content;
-    } else {
-      throw new Error('Không nhận được phản hồi hợp lệ từ API');
-    }
-    
-  } catch (error) {
-    console.error('Lỗi khi gọi OpenRouter API:', error);
-    if (error.response) {
-      console.error('Chi tiết lỗi API:', error.response.data);
-    }
-    
-    // Trả về phản hồi dự phòng nếu API gặp lỗi
-    return language === 'vi'
-      ? 'Xin lỗi, tôi đang gặp khó khăn trong việc xử lý yêu cầu của bạn. Vui lòng thử lại sau hoặc đặt câu hỏi khác.'
-      : 'Sorry, I am experiencing difficulties processing your request. Please try again later or ask a different question.';
-  }
-}
+};
 
-// Hàm giả lập lịch sử chat
-function getMockChatHistory(userId) {
-  // Trong thực tế, dữ liệu này sẽ được lấy từ cơ sở dữ liệu
-  return [
-    {
-      id: '1',
-      userId: userId,
-      message: 'Làm thế nào để chăm sóc cây cảnh trong nhà?',
-      response: 'Để chăm sóc cây cảnh trong nhà, bạn cần chú ý đến ánh sáng, nước và độ ẩm. Hầu hết các loại cây cảnh trong nhà cần ánh sáng gián tiếp, tưới nước khi đất khô và độ ẩm vừa phải.',
-      timestamp: new Date(Date.now() - 86400000).toISOString() // 1 ngày trước
-    },
-    {
-      id: '2',
-      userId: userId,
-      message: 'Cây của tôi có lá vàng, tôi nên làm gì?',
-      response: 'Lá vàng có thể do nhiều nguyên nhân như tưới nước quá nhiều, thiếu ánh sáng hoặc thiếu dinh dưỡng. Bạn nên kiểm tra độ ẩm của đất, vị trí đặt cây và xem xét bón phân nếu cần.',
-      timestamp: new Date(Date.now() - 43200000).toISOString() // 12 giờ trước
-    },
-    {
-      id: '3',
-      userId: userId,
-      message: 'Làm thế nào để nhân giống cây?',
-      response: 'Có nhiều cách để nhân giống cây như giâm cành, gieo hạt, chiết cành hoặc tách cây con. Mỗi phương pháp phù hợp với từng loại cây khác nhau. Bạn muốn nhân giống loại cây nào?',
-      timestamp: new Date(Date.now() - 3600000).toISOString() // 1 giờ trước
-    }
-  ];
-}
+/**
+ * Get user's chat history
+ */
+const getUserChatHistory = async (req, res) => {
+    try {
+        const userId = req.user?.user_id || req.user?.id;
+        const limit = parseInt(req.query.limit) || 50;
 
-module.exports = chatbotController;
+        // Get user's chat history
+        const history = await ChatHistory.findByUserId(userId, limit);
+
+        return res.json({
+            success: true,
+            data: {
+                user_id: userId,
+                chats: history.map(chat => chat.toJSON()),
+                total: history.length
+            }
+        });
+    } catch (error) {
+        console.error('Error getting user chat history:', error);
+        return res.status(500).json({
+            success: false,
+            message: 'Failed to get user chat history',
+            error: error.message
+        });
+    }
+};
+
+/**
+ * Get OpenRouter service status
+ */
+const getServiceStatus = async (req, res) => {
+    try {
+        const status = openRouterService.getServiceStatus();
+        
+        return res.json({
+            success: true,
+            data: {
+                service: 'chatbot',
+                ...status,
+                timestamp: new Date()
+            }
+        });
+    } catch (error) {
+        console.error('Error getting service status:', error);
+        return res.status(500).json({
+            success: false,
+            message: 'Failed to get service status',
+            error: error.message
+        });
+    }
+};
+
+module.exports = {
+    processChatbotQuery,
+    getConversationHistory,
+    getUserChatHistory,
+    getServiceStatus
+};

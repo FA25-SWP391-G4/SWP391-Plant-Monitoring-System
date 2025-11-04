@@ -151,6 +151,35 @@ const AIChatbot = ({ plant = null, className = '' }) => {
         }))
       });
       
+<<<<<<<<< Temporary merge branch 1:client/src/components/AIChatbot.jsx
+      // Clear typing indicator
+      setIsTyping(false);
+      if (typingTimeoutRef.current) {
+        clearTimeout(typingTimeoutRef.current);
+=========
+      // Handle authentication errors
+      if (!response.success) {
+        let errorMessage = response.error || 'Sorry, I encountered an error. Please try again.';
+        
+        if (response.requiresLogin) {
+          errorMessage = 'Please log in to use the AI chatbot.';
+        } else if (response.requiresPremium) {
+          errorMessage = 'Premium subscription required to use the AI chatbot.';
+        }
+        
+        const errorBotMessage = {
+          id: messages.length + 2,
+          text: errorMessage,
+          sender: 'bot',
+          isError: true
+        };
+        
+        setMessages(prev => [...prev, errorBotMessage]);
+        setIsLoading(false);
+        return;
+>>>>>>>>> Temporary merge branch 2:client/src/components/ai/AIChatbot.jsx
+      }
+      
       // Add bot response
       const botMessage = {
         id: Date.now() + 1,

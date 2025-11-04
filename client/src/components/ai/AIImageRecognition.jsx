@@ -325,10 +325,80 @@ const AIImageRecognition = ({ plant = null, className = '' }) => {
       }
 
       const response = await aiApi.analyzeImage(formData);
+<<<<<<< HEAD
+      
+      // Complete progress
+      setAnalysisProgress(100);
+      
+      const result = response.data.data || response.data;
+      
+      // Validate result quality
+      if (result.confidence && result.confidence < 0.3) {
+        setError(t('imageRecognition.imageQualityPoor', 'Image quality is too poor for reliable analysis. Please try a clearer image.'));
+        return;
+      }
+      
+<<<<<<< HEAD:client/src/components/AIImageRecognition.jsx
+      setAnalysisResult(result);
+      setRetryCount(0); // Reset retry count on success
+
+      // Save to history
+      const historyEntry = {
+        id: Date.now(),
+        timestamp: new Date().toISOString(),
+        plantName: plant?.name || 'Unknown Plant',
+        plantId: plant?.id,
+        fileName: originalFile?.name || selectedFile.name,
+        originalSize: originalFile?.size || selectedFile.size,
+        compressedSize: selectedFile.size,
+        result: result,
+        preview: preview
+      };
+      saveAnalysisHistory(historyEntry);
+
+    } catch (error) {
+      console.error('Error analyzing image:', error);
+      
+      // Implement retry logic
+      if (!isRetry && retryCount < 2) {
+        setRetryCount(prev => prev + 1);
+        setError(`Analysis failed. Retrying... (${retryCount + 1}/3)`);
+        
+        retryTimeoutRef.current = setTimeout(() => {
+          analyzeImage(true);
+        }, 2000);
+        return;
+      }
+      
+      setError(
+        error.response?.data?.message || 
+        t('imageRecognition.analysisError', 'Unable to analyze image. Please try again.')
+      );
+=======
+      const response = await aiApi.analyzeImage(formData);
+      
+      // Handle authentication errors
+      if (!response.success) {
+        if (response.requiresLogin) {
+          setError('Vui lòng đăng nhập để sử dụng tính năng phân tích hình ảnh.');
+        } else if (response.requiresPremium) {
+          setError('Cần nâng cấp tài khoản Premium để sử dụng tính năng phân tích hình ảnh.');
+        } else {
+          setError(response.error || 'Không thể phân tích hình ảnh. Vui lòng thử lại sau.');
+        }
+        return;
+      }
+      
+=======
+>>>>>>> 238337da54f3c9ad3ad777d8b53c3984f6cdc290
       setAnalysis(response.data);
     } catch (err) {
       console.error('Error analyzing image:', err);
       setError('Không thể phân tích hình ảnh. Vui lòng thử lại sau.');
+<<<<<<< HEAD
+>>>>>>> 1d1e2513b9e8ac5f36f74d326d2a76f901e82987:client/src/components/ai/AIImageRecognition.jsx
+=======
+>>>>>>> 238337da54f3c9ad3ad777d8b53c3984f6cdc290
     } finally {
       clearInterval(progressInterval);
       setIsAnalyzing(false);
