@@ -6,7 +6,7 @@ export function middleware(request) {
   const { pathname } = request.nextUrl;
 
   // Public paths - accessible without authentication
-  const publicPaths = ['/', '/login', '/register', '/forgot-password'];
+  const publicPaths = ['/', '/login', '/register', '/forgot-password', '/reset-password'];
 
   // If on a public path and logged in, redirect to dashboard
   if (publicPaths.includes(pathname) && pathname !== '/' && token) {

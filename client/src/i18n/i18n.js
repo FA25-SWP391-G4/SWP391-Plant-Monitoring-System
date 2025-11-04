@@ -60,7 +60,7 @@ i18n
     // Detect language from localStorage or navigator
     detection: {
       order: ['localStorage', 'navigator'],
-      cachkr: ['localStorage'],
+      caches: ['localStorage'],
     },
   });
 

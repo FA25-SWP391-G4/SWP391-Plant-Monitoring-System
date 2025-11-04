@@ -4,10 +4,12 @@ const {
     register,
     login,
     logout,
-    googleLogin,
     forgotPassword, 
     resetPassword,
-    changePassword 
+    changePassword,
+    getCurrentUser,
+    linkGoogleAccount,
+    unlinkGoogleAccount
 } = require('../controllers/authController');
 const { authMiddleware } = require('../middlewares/authMiddleware');
 
@@ -119,15 +121,26 @@ router.post('/register', register);
 // UC2: User Login
 router.post('/login', login);
 
-// UC2: Google Login (alternate authentication method)
-router.post('/google-login', googleLogin);
+// UC2: Google OAuth routes are handled by dedicated googleAuthRoutes.js
+// Mounted at /auth/google/* - see app.js for route mounting
 
 // UC3: User Logout
 router.post('/logout', authMiddleware, logout);
 
+// Get current authenticated user profile
+router.get('/me', authMiddleware, getCurrentUser);
+
 // UC12: Change Password - Authenticated endpoint
 // Protected by authMiddleware - requires valid JWT token
 router.put('/change-password', authMiddleware, changePassword);
+
+// Link Google account to existing user account
+// Protected by authMiddleware - requires valid JWT token
+router.post('/link-google-account', authMiddleware, linkGoogleAccount);
+
+// Unlink Google account from existing user account
+// Protected by authMiddleware - requires valid JWT token
+router.post('/unlink-google-account', authMiddleware, unlinkGoogleAccount);
 
 // UC13: Manage Profile - Moved to userController/userRoutes for better organization
 // router.get('/profile', requireAuth, getProfile);

@@ -4,13 +4,16 @@ import { useState, useEffect } from 'react';
 import { useAuth } from '@/providers/AuthProvider';
 import { useRouter } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
-import api from '@/api/axiosClient';
+import Link from 'next/link';
+import DashboardAppearanceSettings from '@/components/settings/DashboardAppearanceSettings';
+import settingsApi from '@/api/settingsApi';
 
 export default function SettingsPage() {
   const { t } = useTranslation();
-  const { isAuthenticated, user, loading, updateUser } = useAuth();
+  const { user, loading } = useAuth();
   const router = useRouter();
-  const [activeTab, setActiveTab] = useState('appearance');
+  const isAuthenticated = !!user;
+  const [activeTab, setActiveTab] = useState('dashboard');
   const [isLoading, setIsLoading] = useState(false);
   const [settings, setSettings] = useState({
     appearance: {
@@ -56,39 +59,15 @@ export default function SettingsPage() {
     try {
       setIsLoading(true);
       
-      // In a real app, this would be an API call
-      // Here we're just simulating it
-      await new Promise(resolve => setTimeout(resolve, 500));
+      // Fetch user settings from the API
+      const response = await settingsApi.getUserSettings();
       
-      // For demonstration, we'll pre-populate with some settings
-      // In a real app, this would come from the API
-      const userSettings = {
-        appearance: {
-          theme: user?.preferences?.theme || 'system',
-          fontSize: user?.preferences?.fontSize || 'medium',
-          colorScheme: user?.preferences?.colorScheme || 'default'
-        },
-        language: {
-          preferred: user?.preferences?.language || 'en',
-          dateFormat: user?.preferences?.dateFormat || 'MM/DD/YYYY',
-          timeFormat: user?.preferences?.timeFormat || '12h'
-        },
-        notifications: {
-          email: user?.preferences?.notifications?.email !== false,
-          push: user?.preferences?.notifications?.push !== false,
-          sms: user?.preferences?.notifications?.sms === true,
-          wateringReminders: user?.preferences?.notifications?.wateringReminders !== false,
-          criticalAlerts: user?.preferences?.notifications?.criticalAlerts !== false,
-          weeklyReports: user?.preferences?.notifications?.weeklyReports !== false
-        },
-        privacy: {
-          shareData: user?.preferences?.privacy?.shareData === true,
-          anonymousAnalytics: user?.preferences?.privacy?.anonymousAnalytics !== false,
-          locationAccess: user?.preferences?.privacy?.locationAccess || 'while-using'
-        }
-      };
+      if (response.data.success) {
+        setSettings(response.data.data);
+      } else {
+        throw new Error(response.data.error || 'Failed to fetch settings');
+      }
       
-      setSettings(userSettings);
       setError(null);
     } catch (err) {
       console.error('Error fetching settings:', err);
@@ -112,17 +91,16 @@ export default function SettingsPage() {
     try {
       setIsLoading(true);
       
-      // In a real app, this would be an API call to save the settings
-      await new Promise(resolve => setTimeout(resolve, 800));
+      // Save settings to the API
+      const response = await settingsApi.updateUserSettings(settings);
       
-      // Update the user context with the new preferences
-      updateUser({
-        ...user,
-        preferences: settings
-      });
-      
-      setSuccess(t('settings.saveSuccess', 'Settings saved successfully'));
-      setTimeout(() => setSuccess(null), 3000);
+      if (response.data.success) {
+        // Settings saved successfully
+        setSuccess(t('settings.saveSuccess', 'Settings saved successfully'));
+        setTimeout(() => setSuccess(null), 3000);
+      } else {
+        throw new Error(response.data.error || 'Failed to save settings');
+      }
     } catch (err) {
       console.error('Error saving settings:', err);
       setError(t('errors.saveFailed', 'Failed to save settings'));
@@ -146,18 +124,15 @@ export default function SettingsPage() {
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="mb-8">
-        <div className="text-sm breadcrumbs">
-          <ul>
-            <li>
-              <a href="/dashboard">
-                {t('navigation.dashboard', 'Dashboard')}
-              </a>
-            </li>
-            <li className="font-medium">
-              {t('navigation.settings', 'Settings')}
-            </li>
-          </ul>
-        </div>
+        <nav className="flex text-sm text-gray-500">
+          <Link href="/dashboard" className="hover:text-emerald-600 transition-colors">
+            {t('navigation.dashboard', 'Dashboard')}
+          </Link>
+          <span className="mx-2">/</span>
+          <span className="font-medium text-gray-900">
+            {t('navigation.settings', 'Settings')}
+          </span>
+        </nav>
       </div>
       
       {error && (
@@ -177,6 +152,18 @@ export default function SettingsPage() {
         <div className="w-full md:w-64 shrink-0">
           <div className="bg-white rounded-xl shadow-sm overflow-hidden border border-gray-100">
             <nav className="p-2">
+              <button 
+                className={`flex items-center w-full text-left px-4 py-3 rounded-lg transition-colors ${
+                  activeTab === 'dashboard' ? 'bg-emerald-50 text-emerald-700' : 'hover:bg-gray-50'
+                }`}
+                onClick={() => setActiveTab('dashboard')}
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z" />
+                </svg>
+                <span>{t('settings.dashboard', 'Dashboard Layout')}</span>
+              </button>
+
               <button 
                 className={`flex items-center w-full text-left px-4 py-3 rounded-lg transition-colors ${
                   activeTab === 'appearance' ? 'bg-emerald-50 text-emerald-700' : 'hover:bg-gray-50'
@@ -232,6 +219,11 @@ export default function SettingsPage() {
         <div className="flex-grow">
           <div className="bg-white rounded-xl shadow-sm overflow-hidden border border-gray-100">
             <div className="p-6">
+              {/* Dashboard Settings */}
+              {activeTab === 'dashboard' && (
+                <DashboardAppearanceSettings />
+              )}
+
               {/* Appearance Settings */}
               {activeTab === 'appearance' && (
                 <>

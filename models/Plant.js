@@ -72,22 +72,29 @@
  */
 
 const { pool } = require('../config/db');
+const { isValidUUID } = require('../utils/uuidGenerator');
 
 class Plant {
     /**
      * PLANT CONSTRUCTOR
      * Initialize plant object with all necessary data and relationships
      * SUPPORTS: UC4-10, UC13-17, UC20-21, UC23-25, UC27, UC29-31
+     * 
+     * UPDATED FOR UUID MIGRATION:
+     * - user_id is now UUID (not integer)
+     * - device_key (UUID) replaces device_id
      */
     constructor(plantData) {
         this.plant_id = plantData.plant_id;
-        this.user_id = plantData.user_id; // Owner for access control
-        this.device_id = plantData.device_id; // IoT device connection
+        this.user_id = plantData.user_id; // Owner UUID for access control
+        this.device_key = plantData.device_key; // IoT device UUID connection
         this.profile_id = plantData.profile_id; // Species profile
         this.custom_name = plantData.custom_name; // User-friendly name
         this.moisture_threshold = plantData.moisture_threshold; // UC16: Custom thresholds
         this.auto_watering_on = plantData.auto_watering_on; // UC7: Auto-watering control
         this.created_at = plantData.created_at;
+        this.zone_id = plantData.zone_id;
+        this.notes = plantData.notes;
     }
 
     /**
@@ -104,12 +111,12 @@ class Plant {
     static async findAll() {
         try {
             const query = `
-                SELECT p.*, u.full_name as owner_name, 
+                SELECT p.*, u.family_name as owner_name, 
                        d.device_name, d.status as device_status,
                        pp.species_name, pp.ideal_moisture
                 FROM Plants p
                 LEFT JOIN Users u ON p.user_id = u.user_id
-                LEFT JOIN Devices d ON p.device_id = d.device_id
+                LEFT JOIN Devices d ON p.device_key = d.device_key
                 LEFT JOIN Plant_Profiles pp ON p.profile_id = pp.profile_id
                 ORDER BY p.created_at DESC
             `;
@@ -137,12 +144,12 @@ class Plant {
     static async findById(id) {
         try {
             const query = `
-                SELECT p.*, u.full_name as owner_name, 
+                SELECT p.*, u.family_name as owner_name, 
                        d.device_name, d.status as device_status,
                        pp.species_name, pp.ideal_moisture
                 FROM Plants p
                 LEFT JOIN Users u ON p.user_id = u.user_id
-                LEFT JOIN Devices d ON p.device_id = d.device_id
+                LEFT JOIN Devices d ON p.device_key = d.device_key
                 LEFT JOIN Plant_Profiles pp ON p.profile_id = pp.profile_id
                 WHERE p.plant_id = $1
             `;
@@ -161,13 +168,19 @@ class Plant {
     // Static method to find plants by user ID
     static async findByUserId(userId) {
         try {
+            // Validate UUID format
+            if (!userId || !isValidUUID(userId)) {
+                console.error('[PLANT] Invalid user_id UUID:', userId);
+                return [];
+            }
+
             const query = `
-                SELECT p.*, u.full_name as owner_name, 
+                SELECT p.*, u.family_name as owner_name, 
                        d.device_name, d.status as device_status,
                        pp.species_name, pp.ideal_moisture
                 FROM Plants p
                 LEFT JOIN Users u ON p.user_id = u.user_id
-                LEFT JOIN Devices d ON p.device_id = d.device_id
+                LEFT JOIN Devices d ON p.device_key = d.device_key
                 LEFT JOIN Plant_Profiles pp ON p.profile_id = pp.profile_id
                 WHERE p.user_id = $1
                 ORDER BY p.created_at DESC
@@ -179,37 +192,49 @@ class Plant {
         }
     }
 
-    // Static method to find plants by device ID
-    static async findByDeviceId(deviceId) {
+    // Static method to find plants by device key (UUID)
+    static async findByDeviceKey(deviceKey) {
         try {
+            // Validate UUID format
+            if (!deviceKey || !isValidUUID(deviceKey)) {
+                console.error('[PLANT] Invalid device_key UUID:', deviceKey);
+                return [];
+            }
+
             const query = `
-                SELECT p.*, u.full_name as owner_name, 
+                SELECT p.*, u.family_name as owner_name, 
                        d.device_name, d.status as device_status,
                        pp.species_name, pp.ideal_moisture
                 FROM Plants p
                 LEFT JOIN Users u ON p.user_id = u.user_id
-                LEFT JOIN Devices d ON p.device_id = d.device_id
+                LEFT JOIN Devices d ON p.device_key = d.device_key
                 LEFT JOIN Plant_Profiles pp ON p.profile_id = pp.profile_id
-                WHERE p.device_id = $1
+                WHERE p.device_key = $1
                 ORDER BY p.created_at DESC
             `;
-            const result = await pool.query(query, [deviceId]);
+            const result = await pool.query(query, [deviceKey]);
             return result.rows.map(row => new Plant(row));
         } catch (error) {
             throw error;
         }
     }
 
+    // Backward compatibility: findByDeviceId redirects to findByDeviceKey
+    static async findByDeviceId(deviceId) {
+        console.warn('[PLANT] findByDeviceId is deprecated, use findByDeviceKey instead');
+        return Plant.findByDeviceKey(deviceId);
+    }
+
     // Static method to find plants with auto watering enabled
     static async findWithAutoWatering() {
         try {
             const query = `
-                SELECT p.*, u.full_name as owner_name, 
+                SELECT p.*, u.family_name as owner_name, 
                        d.device_name, d.status as device_status,
                        pp.species_name, pp.ideal_moisture
                 FROM Plants p
                 LEFT JOIN Users u ON p.user_id = u.user_id
-                LEFT JOIN Devices d ON p.device_id = d.device_id
+                LEFT JOIN Devices d ON p.device_key = d.device_key
                 LEFT JOIN Plant_Profiles pp ON p.profile_id = pp.profile_id
                 WHERE p.auto_watering_on = true AND d.status = 'online'
                 ORDER BY p.created_at DESC
@@ -226,9 +251,17 @@ class Plant {
         try {
             if (this.plant_id) {
                 // Update existing plant
+                // Validate UUID foreign keys
+                if (this.user_id && !isValidUUID(this.user_id)) {
+                    throw new Error('Invalid user_id UUID format');
+                }
+                if (this.device_key && !isValidUUID(this.device_key)) {
+                    throw new Error('Invalid device_key UUID format');
+                }
+
                 const query = `
                     UPDATE Plants 
-                    SET user_id = $1, device_id = $2, profile_id = $3, 
+                    SET user_id = $1, device_key = $2, profile_id = $3, 
                         custom_name = $4, moisture_threshold = $5, auto_watering_on = $6
                     WHERE plant_id = $7
                     RETURNING *
@@ -236,7 +269,7 @@ class Plant {
                 
                 const result = await pool.query(query, [
                     this.user_id,
-                    this.device_id,
+                    this.device_key,
                     this.profile_id,
                     this.custom_name,
                     this.moisture_threshold,
@@ -249,8 +282,16 @@ class Plant {
                 return this;
             } else {
                 // Create new plant
+                // Validate UUID foreign keys
+                if (!this.user_id || !isValidUUID(this.user_id)) {
+                    throw new Error('Valid user_id UUID is required');
+                }
+                if (this.device_key && !isValidUUID(this.device_key)) {
+                    throw new Error('Invalid device_key UUID format');
+                }
+
                 const query = `
-                    INSERT INTO Plants (user_id, device_id, profile_id, custom_name, 
+                    INSERT INTO Plants (user_id, device_key, profile_id, custom_name, 
                                       moisture_threshold, auto_watering_on)
                     VALUES ($1, $2, $3, $4, $5, $6)
                     RETURNING *
@@ -258,7 +299,7 @@ class Plant {
                 
                 const result = await pool.query(query, [
                     this.user_id,
-                    this.device_id,
+                    this.device_key,
                     this.profile_id,
                     this.custom_name,
                     this.moisture_threshold,

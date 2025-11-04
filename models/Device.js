@@ -36,17 +36,18 @@
 
 const { pool } = require('../config/db');
 const crypto = require('crypto');
+const { generateUUID, isValidUUID } = require('../utils/uuidGenerator');
 
 class Device {
     /**
      * DEVICE CONSTRUCTOR
      * Initializes device object with default values and validation
      * SUPPORTS: UC3 (Add Device), UC26 (Admin device management)
+     * NOTE: device_key is the primary key (UUID), device_id is deprecated
      */
     constructor(deviceData) {
-        this.device_id = deviceData.device_id;
+        this.device_key = deviceData.device_key;  // Primary key (UUID)
         this.user_id = deviceData.user_id;
-        this.device_key = deviceData.device_key;
         this.device_name = deviceData.device_name;
         this.status = deviceData.status || 'offline'; // Default to offline for security
         this.last_seen = deviceData.last_seen;
@@ -66,7 +67,7 @@ class Device {
     static async findAll() {
         try {
             const query = `
-                SELECT d.*, u.full_name as owner_name 
+                SELECT d.*, u.family_name as owner_name 
                 FROM Devices d
                 LEFT JOIN Users u ON d.user_id = u.user_id
                 ORDER BY d.created_at DESC
@@ -89,33 +90,19 @@ class Device {
      * - UC26: Admin device management - Device details view
      * 
      * SECURITY: Includes owner validation for authorization checks
+     * NOTE: device_key is the primary key (UUID)
      */
-    // Static method to find device by ID
-    static async findById(id) {
+    // Static method to find device by device_key (primary key)
+    static async findById(deviceKey) {
         try {
-            const query = `
-                SELECT d.*, u.full_name as owner_name 
-                FROM Devices d
-                LEFT JOIN Users u ON d.user_id = u.user_id
-                WHERE d.device_id = $1
-            `;
-            const result = await pool.query(query, [id]);
-            
-            if (result.rows.length === 0) {
+            // Validate UUID format
+            if (!deviceKey || !isValidUUID(deviceKey)) {
+                console.error('[DEVICE FINDBYID] Invalid UUID format:', deviceKey);
                 return null;
             }
-            
-            return new Device(result.rows[0]);
-        } catch (error) {
-            throw error;
-        }
-    }
 
-    // Static method to find device by device key
-    static async findByDeviceKey(deviceKey) {
-        try {
             const query = `
-                SELECT d.*, u.full_name as owner_name 
+                SELECT d.*, u.family_name as owner_name 
                 FROM Devices d
                 LEFT JOIN Users u ON d.user_id = u.user_id
                 WHERE d.device_key = $1
@@ -132,11 +119,22 @@ class Device {
         }
     }
 
+    // Static method to find device by device key (alias for findById for backwards compatibility)
+    static async findByDeviceKey(deviceKey) {
+        return Device.findById(deviceKey);
+    }
+
     // Static method to find devices by user ID
     static async findByUserId(userId) {
         try {
+            // Validate UUID format for user_id
+            if (!userId || !isValidUUID(userId)) {
+                console.error('[DEVICE FINDBYUSERID] Invalid user UUID format:', userId);
+                return [];
+            }
+
             const query = `
-                SELECT d.*, u.full_name as owner_name 
+                SELECT d.*, u.family_name as owner_name 
                 FROM Devices d
                 LEFT JOIN Users u ON d.user_id = u.user_id
                 WHERE d.user_id = $1
@@ -153,7 +151,7 @@ class Device {
     static async findByStatus(status) {
         try {
             const query = `
-                SELECT d.*, u.full_name as owner_name 
+                SELECT d.*, u.family_name as owner_name 
                 FROM Devices d
                 LEFT JOIN Users u ON d.user_id = u.user_id
                 WHERE d.status = $1
@@ -196,51 +194,53 @@ class Device {
         }
     }
 
-    // Generate a unique device key (UUID)
+    // Generate a unique device key (UUID) - now using our UUID generator
     static generateDeviceKey() {
-        return crypto.randomUUID();
+        return generateUUID();
     }
 
     // Create or update device
     async save() {
         try {
-            if (this.device_id) {
-                // Update existing device
+            if (this.device_key && isValidUUID(this.device_key)) {
+                // Update existing device (device_key is primary key)
                 const query = `
                     UPDATE Devices 
-                    SET user_id = $1, device_key = $2, device_name = $3, 
-                        status = $4, last_seen = $5
-                    WHERE device_id = $6
+                    SET user_id = $1, device_name = $2, 
+                        status = $3, last_seen = $4
+                    WHERE device_key = $5
                     RETURNING *
                 `;
                 
                 const result = await pool.query(query, [
                     this.user_id,
-                    this.device_key,
                     this.device_name,
                     this.status,
                     this.last_seen,
-                    this.device_id
+                    this.device_key
                 ]);
+                
+                if (result.rows.length === 0) {
+                    throw new Error('Device not found for update');
+                }
                 
                 const updatedDevice = new Device(result.rows[0]);
                 Object.assign(this, updatedDevice);
                 return this;
             } else {
-                // Create new device
-                if (!this.device_key) {
-                    this.device_key = Device.generateDeviceKey();
-                }
+                // Create new device - generate UUID for device_key
+                this.device_key = Device.generateDeviceKey();
+                console.log('[DEVICE CREATE] Generated device_key:', this.device_key);
                 
                 const query = `
-                    INSERT INTO Devices (user_id, device_key, device_name, status)
+                    INSERT INTO Devices (device_key, user_id, device_name, status)
                     VALUES ($1, $2, $3, $4)
                     RETURNING *
                 `;
                 
                 const result = await pool.query(query, [
-                    this.user_id,
                     this.device_key,
+                    this.user_id,
                     this.device_name,
                     this.status || 'offline'
                 ]);
@@ -260,11 +260,11 @@ class Device {
             const query = `
                 UPDATE Devices 
                 SET status = $1, last_seen = CURRENT_TIMESTAMP
-                WHERE device_id = $2
+                WHERE device_key = $2
                 RETURNING *
             `;
             
-            const result = await pool.query(query, [status, this.device_id]);
+            const result = await pool.query(query, [status, this.device_key]);
             
             if (result.rows.length > 0) {
                 this.status = status;
@@ -283,11 +283,11 @@ class Device {
             const query = `
                 UPDATE Devices 
                 SET last_seen = CURRENT_TIMESTAMP, status = 'online'
-                WHERE device_id = $1
+                WHERE device_key = $1
                 RETURNING *
             `;
             
-            const result = await pool.query(query, [this.device_id]);
+            const result = await pool.query(query, [this.device_key]);
             
             if (result.rows.length > 0) {
                 this.last_seen = result.rows[0].last_seen;
@@ -303,12 +303,12 @@ class Device {
     // Delete device
     async delete() {
         try {
-            if (!this.device_id) {
-                throw new Error('Cannot delete device without ID');
+            if (!this.device_key) {
+                throw new Error('Cannot delete device without device_key');
             }
 
-            const query = 'DELETE FROM Devices WHERE device_id = $1';
-            await pool.query(query, [this.device_id]);
+            const query = 'DELETE FROM Devices WHERE device_key = $1';
+            await pool.query(query, [this.device_key]);
             
             return true;
         } catch (error) {
@@ -329,9 +329,8 @@ class Device {
     // Convert to JSON
     toJSON() {
         return {
-            device_id: this.device_id,
+            device_key: this.device_key,  // Primary key (UUID)
             user_id: this.user_id,
-            device_key: this.device_key,
             device_name: this.device_name,
             status: this.status,
             last_seen: this.last_seen,
