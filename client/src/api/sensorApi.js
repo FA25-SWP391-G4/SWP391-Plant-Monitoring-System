@@ -1,18 +1,3 @@
-<<<<<<< HEAD
-// client/src/api/sensorApi.js
-import axiosClient from './axiosClient';
-
-const sensorApi = {
-  async getLatest() {
-    // Express backend endpoint you already confirmed works:
-    const url = '/api/sensor/latest';
-    const res = await axiosClient.get(url);
-    return res.data;
-  },
-};
-
-export default sensorApi;
-=======
 // src/api/sensorApi.js
 import axiosClient from "./axiosClient";
 
@@ -53,4 +38,3 @@ const sensorApi = {
 };
 
 export default sensorApi;
->>>>>>> 1d1e2513b9e8ac5f36f74d326d2a76f901e82987

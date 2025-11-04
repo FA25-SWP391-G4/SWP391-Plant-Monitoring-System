@@ -7,7 +7,7 @@ const router = express.Router();
 // POST /api/device-proxy/config
 // Body: { deviceIp, ssid, password, deviceId?, plantId? }
 router.post('/config', async (req, res) => {
-  const { deviceIp, ssid, password, deviceId, plantId } = req.body;
+  const { deviceIp, ssid, password, userId, deviceId, plantId } = req.body;
   if (!deviceIp || !ssid) return res.status(400).json({ error: 'deviceIp and ssid required' });
 
     // 🧠 Detect if we're connected to SmartPlant_AP (no internet)
@@ -30,14 +30,15 @@ router.post('/config', async (req, res) => {
     });
 
     const deviceName = resp.data.deviceName || `ESP32_${Date.now()}`;
-    const deviceKey = resp.data.deviceKey || `esp32-${Math.random().toString(36).slice(2, 10)}`;
+    // const deviceKey = resp.data.deviceKey || `esp32-${Math.random().toString(36).slice(2, 10)}`;
+    const deviceHardwareId = resp.data.deviceId?.trim() || deviceKey;
 
     const insertResult = await pool.query(
        `INSERT INTO devices (user_id, device_key, device_name, status)
        VALUES ($1, $2, $3, 'online')
        ON CONFLICT (device_key) DO UPDATE SET status = 'online', last_seen = NOW()
        RETURNING device_id;`,
-      [userId, deviceKey, deviceName]
+      [userId, deviceHardwareId, deviceName]
     );
 
     return res.status(200).json({

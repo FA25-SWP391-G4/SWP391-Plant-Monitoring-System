@@ -222,7 +222,7 @@ class DynamicPlantMockService {
     try {
       // Check for existing devices first
       const deviceResult = await this.dbPool.query(
-        'SELECT * FROM Devices WHERE user_id = $1',
+        'SELECT * FROM devices WHERE user_id = $1',
         [this.mockUserId]
       );
       
@@ -361,7 +361,7 @@ class DynamicPlantMockService {
           // last_seen TIMESTAMP NULL,
           // created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
           const result = await this.dbPool.query(
-            'INSERT INTO Devices (user_id, device_key, device_name, status, last_seen) ' +
+            'INSERT INTO devices (user_id, device_key, device_name, status, last_seen) ' +
             'VALUES ($1, $2, $3, $4, $5) RETURNING *',
             [
               this.mockUserId,
@@ -530,7 +530,7 @@ class DynamicPlantMockService {
         const mainDevice = this.devices && this.devices.length > 0 ? this.devices[0] : null;
         
         if (!mainDevice) {
-          throw new Error('No devices available to associate with plant');
+          throw new Error('No available to associate with plant');
         }
         
         // Create a plant profile for Lantana if needed

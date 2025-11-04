@@ -1,43 +1,4 @@
 {
-<<<<<<< HEAD
-  "common": {
-    "loading": "Đang tải...",
-    "error": "Đã xảy ra lỗi",
-    "retry": "Thử lại",
-    "save": "Lưu",
-    "cancel": "Hủy",
-    "delete": "Xóa",
-    "edit": "Chỉnh sửa",
-    "view": "Xem",
-    "add": "Thêm",
-    "search": "Tìm kiếm",
-    "filter": "Lọc",
-    "sort": "Sắp xếp",
-    "settings": "Cài đặt",
-    "profile": "Hồ sơ",
-    "logout": "Đăng xuất",
-    "login": "Đăng nhập",
-    "register": "Đăng ký",
-    "home": "Trang chủ",
-    "dashboard": "Bảng điều khiển",
-    "plants": "Cây trồng",
-    "devices": "Thiết bị",
-    "notifications": "Thông báo",
-    "analytics": "Phân tích",
-    "help": "Trợ giúp",
-    "about": "Giới thiệu",
-    "contact": "Liên hệ",
-    "welcome": "Chào mừng",
-    "yes": "Có",
-    "no": "Không",
-    "confirm": "Xác nhận",
-    "success": "Thành công",
-    "failed": "Thất bại",
-    "warning": "Cảnh báo",
-    "info": "Thông tin"
-  }
-}
-=======
 "errors": {
 "genericError": "Đã xảy ra lỗi. Vui lòng thử lại sau.",
 "loginFailed": "Đăng nhập không thành công. Vui lòng kiểm tra thông tin đăng nhập của bạn.",
@@ -779,4 +740,3 @@
     "upgradeNow": "Nâng cấp ngay"
   }
 }
->>>>>>> 1d1e2513b9e8ac5f36f74d326d2a76f901e82987

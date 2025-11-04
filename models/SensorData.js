@@ -17,13 +17,8 @@ class SensorData {
         try {
             const query = `
                 SELECT sd.*, d.device_name, d.user_id 
-<<<<<<< HEAD
                 FROM sensors_data sd
-                LEFT JOIN devices d ON sd.device_id = d.device_id
-=======
-                FROM Sensors_Data sd
-                LEFT JOIN Devices d ON sd.device_key = d.device_key
->>>>>>> 1d1e2513b9e8ac5f36f74d326d2a76f901e82987
+                LEFT JOIN devices d ON sd.device_key = d.device_key
                 ORDER BY sd.timestamp DESC 
                 LIMIT $1
             `;
@@ -39,13 +34,8 @@ class SensorData {
         try {
             const query = `
                 SELECT sd.*, d.device_name, d.user_id 
-<<<<<<< HEAD
                 FROM sensors_data sd
-                LEFT JOIN devices d ON sd.device_id = d.device_id
-=======
-                FROM Sensors_Data sd
-                LEFT JOIN Devices d ON sd.device_key = d.device_key
->>>>>>> 1d1e2513b9e8ac5f36f74d326d2a76f901e82987
+                LEFT JOIN devices d ON sd.device_key = d.device_key
                 WHERE sd.data_id = $1
             `;
             const result = await pool.query(query, [id]);
@@ -71,15 +61,9 @@ class SensorData {
 
             const query = `
                 SELECT sd.*, d.device_name, d.user_id 
-<<<<<<< HEAD
                 FROM sensors_data sd
-                LEFT JOIN devices d ON sd.device_id = d.device_id
-                WHERE sd.device_id = $1
-=======
-                FROM Sensors_Data sd
-                LEFT JOIN Devices d ON sd.device_key = d.device_key
+                LEFT JOIN devices d ON sd.device_key = d.device_key
                 WHERE sd.device_key = $1
->>>>>>> 1d1e2513b9e8ac5f36f74d326d2a76f901e82987
                 ORDER BY sd.timestamp DESC 
                 LIMIT $2
             `;
@@ -107,13 +91,8 @@ class SensorData {
 
             const query = `
                 SELECT sd.*, d.device_name, d.user_id 
-<<<<<<< HEAD
                 FROM sensors_data sd
-                INNER JOIN devices d ON sd.device_id = d.device_id
-=======
-                FROM Sensors_Data sd
-                INNER JOIN Devices d ON sd.device_key = d.device_key
->>>>>>> 1d1e2513b9e8ac5f36f74d326d2a76f901e82987
+                INNER JOIN devices d ON sd.device_key = d.device_key
                 WHERE d.user_id = $1
                 ORDER BY sd.timestamp DESC 
                 LIMIT $2
@@ -129,12 +108,12 @@ class SensorData {
     static async findLatestForPlants(plants) {
     if (!plants || plants.length === 0) return {};
 
-    const deviceIds = plants.map(p => p.device_id);
-    const placeholders = deviceIds.map((_, i) => `$${i + 1}`).join(', ');
+    const deviceKeys = plants.map(p => p.device_key);
+    const placeholders = deviceKeys.map((_, i) => `$${i + 1}`).join(', ');
 
     const query = `
-        SELECT DISTINCT ON (sd.device_id)
-            sd.device_id,
+        SELECT DISTINCT ON (sd.device_key)
+            sd.device_key,
             sd.data_id,
             sd.timestamp,
             sd.soil_moisture,
@@ -142,17 +121,17 @@ class SensorData {
             sd.air_humidity,
             sd.light_intensity
         FROM sensors_data sd
-        WHERE sd.device_id IN (${placeholders})
-        ORDER BY sd.device_id, sd.timestamp DESC
+        WHERE sd.device_key IN (${placeholders})
+        ORDER BY sd.device_key, sd.timestamp DESC
     `;
 
     try {
         const result = await pool.query(query, deviceIds);
 
-        // Map device_id → latest reading
+        // Map device_key → latest reading
         const readingsMap = {};
         result.rows.forEach(row => {
-            readingsMap[row.device_id] = new SensorData(row);
+            readingsMap[row.device_key] = new SensorData(row);
         });
 
         return readingsMap;
@@ -174,15 +153,9 @@ class SensorData {
 
             const query = `
                 SELECT sd.*, d.device_name, d.user_id 
-<<<<<<< HEAD
                 FROM sensors_data sd
-                LEFT JOIN devices d ON sd.device_id = d.device_id
-                WHERE sd.device_id = $1 
-=======
-                FROM Sensors_Data sd
-                LEFT JOIN Devices d ON sd.device_key = d.device_key
+                LEFT JOIN devices d ON sd.device_key = d.device_key
                 WHERE sd.device_key = $1 
->>>>>>> 1d1e2513b9e8ac5f36f74d326d2a76f901e82987
                 AND sd.timestamp >= $2 
                 AND sd.timestamp <= $3
                 ORDER BY sd.timestamp DESC
@@ -200,8 +173,8 @@ class SensorData {
             const query = `
                 SELECT sd.*, d.device_name, d.user_id 
                 FROM sensors_data sd
-                LEFT JOIN devices d ON sd.device_id = d.device_id
-                WHERE sd.device_id = $1
+                LEFT JOIN devices d ON sd.device_key = d.device_key
+                WHERE sd.device_key = $1
                 ORDER BY sd.timestamp DESC 
                 LIMIT 1
             `;
@@ -234,13 +207,8 @@ class SensorData {
                     AVG(air_humidity) as avg_air_humidity,
                     AVG(light_intensity) as avg_light_intensity,
                     COUNT(*) as data_points
-<<<<<<< HEAD
                 FROM sensors_data
-                WHERE device_id = $1 
-=======
-                FROM Sensors_Data 
                 WHERE device_key = $1 
->>>>>>> 1d1e2513b9e8ac5f36f74d326d2a76f901e82987
                 AND timestamp >= NOW() - INTERVAL '${hours} hours'
                 GROUP BY device_key
             `;
@@ -269,13 +237,8 @@ class SensorData {
             if (this.data_id) {
                 // Update existing data (rarely needed for sensor data)
                 const query = `
-<<<<<<< HEAD
                     UPDATE sensors_data
-                    SET device_id = $1, timestamp = $2, soil_moisture = $3, 
-=======
-                    UPDATE Sensors_Data 
                     SET device_key = $1, timestamp = $2, soil_moisture = $3, 
->>>>>>> 1d1e2513b9e8ac5f36f74d326d2a76f901e82987
                         temperature = $4, air_humidity = $5, light_intensity = $6
                     WHERE data_id = $7
                     RETURNING *
@@ -297,11 +260,7 @@ class SensorData {
             } else {
                 // Create new sensor data
                 const query = `
-<<<<<<< HEAD
-                    INSERT INTO sensors_data (device_id, timestamp, soil_moisture, 
-=======
-                    INSERT INTO Sensors_Data (device_key, timestamp, soil_moisture, 
->>>>>>> 1d1e2513b9e8ac5f36f74d326d2a76f901e82987
+                    INSERT INTO sensors_data (device_key, timestamp, soil_moisture, 
                                             temperature, air_humidity, light_intensity)
                     VALUES ($1, $2, $3, $4, $5, $6)
                     RETURNING *
@@ -405,8 +364,8 @@ class SensorData {
             const query = `
                 SELECT sd.*, d.device_name 
                 FROM sensors_data sd
-                JOIN devices d ON sd.device_id = d.device_id
-                JOIN plants p ON d.device_id = p.device_id
+                JOIN devices d ON sd.device_key = d.device_key
+                JOIN plants p ON d.device_key = p.device_key
                 WHERE p.plant_id = $1 
                 AND sd.timestamp >= NOW() - INTERVAL '${days} days'
                 ORDER BY sd.timestamp DESC
@@ -432,7 +391,7 @@ class SensorData {
     toJSON() {
         return {
             data_id: this.data_id,
-            device_id: this.device_id,
+            device_key: this.device_key,
             timestamp: this.timestamp,
             soil_moisture: this.soil_moisture,
             temperature: this.temperature,

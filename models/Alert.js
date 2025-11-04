@@ -19,8 +19,8 @@ class Alert {
         try {
             const query = `
                 SELECT a.*, u.full_name as user_name 
-                FROM Alerts a
-                LEFT JOIN Users u ON a.user_id = u.user_id
+                FROM alerts a
+                LEFT JOIN users u ON a.user_id = u.user_id
                 ORDER BY a.created_at DESC 
                 LIMIT $1
             `;
@@ -36,8 +36,8 @@ class Alert {
         try {
             const query = `
                 SELECT a.*, u.full_name as user_name 
-                FROM Alerts a
-                LEFT JOIN Users u ON a.user_id = u.user_id
+                FROM alerts a
+                LEFT JOIN users u ON a.user_id = u.user_id
                 WHERE a.alert_id = $1
             `;
             const result = await pool.query(query, [id]);
@@ -63,8 +63,8 @@ class Alert {
         try {
             const query = `
                 SELECT a.*, u.full_name as user_name 
-                FROM Alerts a
-                LEFT JOIN Users u ON a.user_id = u.user_id
+                FROM alerts a
+                LEFT JOIN users u ON a.user_id = u.user_id
                 WHERE a.user_id = $1
                 ORDER BY a.created_at DESC 
                 LIMIT $2
@@ -81,8 +81,8 @@ class Alert {
         try {
             const query = `
                 SELECT a.*, u.full_name as user_name 
-                FROM Alerts a
-                LEFT JOIN Users u ON a.user_id = u.user_id
+                FROM alerts a
+                LEFT JOIN users u ON a.user_id = u.user_id
                 WHERE a.status = $1
                 ORDER BY a.created_at DESC 
                 LIMIT $2
@@ -105,8 +105,8 @@ class Alert {
         try {
             const query = `
                 SELECT a.*, u.full_name as user_name 
-                FROM Alerts a
-                LEFT JOIN Users u ON a.user_id = u.user_id
+                FROM alerts a
+                LEFT JOIN users u ON a.user_id = u.user_id
                 WHERE a.user_id = $1 AND a.status = 'unread'
                 ORDER BY a.created_at DESC
             `;
@@ -128,7 +128,7 @@ class Alert {
         try {
             const query = `
                 SELECT COUNT(*) as unread_count 
-                FROM Alerts 
+                FROM alerts 
                 WHERE user_id = $1 AND status = 'unread'
             `;
             const result = await pool.query(query, [userId]);
@@ -150,7 +150,7 @@ class Alert {
             if (this.alert_id) {
                 // Update existing alert
                 const query = `
-                    UPDATE Alerts 
+                    UPDATE alerts 
                     SET user_id = $1, title = $2, message = $3, type = $4, details = $5, status = $6
                     WHERE alert_id = $7
                     RETURNING *
@@ -172,7 +172,7 @@ class Alert {
             } else {
                 // Create new alert
                 const query = `
-                    INSERT INTO Alerts (user_id, title, message, type, details, status)
+                    INSERT INTO alerts (user_id, title, message, type, details, status)
                     VALUES ($1, $2, $3, $4, $5, $6)
                     RETURNING *
                 `;
@@ -199,7 +199,7 @@ class Alert {
     async markAsRead() {
         try {
             const query = `
-                UPDATE Alerts 
+                UPDATE alerts 
                 SET status = 'read'
                 WHERE alert_id = $1
                 RETURNING *
@@ -222,7 +222,7 @@ class Alert {
     async markAsUnread() {
         try {
             const query = `
-                UPDATE Alerts 
+                UPDATE alerts 
                 SET status = 'unread'
                 WHERE alert_id = $1
                 RETURNING *
@@ -248,7 +248,7 @@ class Alert {
                 throw new Error('Cannot delete alert without ID');
             }
 
-            const query = 'DELETE FROM Alerts WHERE alert_id = $1';
+            const query = 'DELETE FROM alerts WHERE alert_id = $1';
             await pool.query(query, [this.alert_id]);
             
             return true;
@@ -312,7 +312,7 @@ class Alert {
 
         try {
             const query = `
-                UPDATE Alerts 
+                UPDATE alerts 
                 SET status = 'read'
                 WHERE user_id = $1 AND status = 'unread'
             `;
@@ -332,7 +332,7 @@ class Alert {
     static async cleanupOldAlerts(daysToKeep = 30) {
         try {
             const query = `
-                DELETE FROM Alerts 
+                DELETE FROM alerts 
                 WHERE status = 'read' 
                 AND created_at < NOW() - INTERVAL '${daysToKeep} days'
             `;

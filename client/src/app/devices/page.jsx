@@ -107,7 +107,7 @@ export default function DevicesPage() {
                 </thead>
                 <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
                   {devices.map((device) => (
-                    <tr key={device.device_id}>
+                    <tr key={device.device_key}>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="flex items-center">
                           <div className="ml-4">
@@ -115,7 +115,7 @@ export default function DevicesPage() {
                               {device.device_name}
                             </div>
                             <div className="text-sm text-gray-500 dark:text-gray-400">
-                              ID: {device.device_id}
+                              ID: {device.device_key}
                             </div>
                           </div>
                         </div>
@@ -136,13 +136,13 @@ export default function DevicesPage() {
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                         <button 
-                          onClick={() => router.push(`/devices/${device.device_id}`)} 
+                          onClick={() => router.push(`/devices/${device.device_key}`)} 
                           className="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300 mr-4"
                         >
                           {t('common.view', 'View')}
                         </button>
                         <button 
-                          onClick={() => router.push(`/devices/${device.device_id}/edit`)} 
+                          onClick={() => router.push(`/devices/${device.device_key}/edit`)} 
                           className="text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-300"
                         >
                           {t('common.edit', 'Edit')}

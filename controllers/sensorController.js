@@ -1,88 +1,85 @@
-<<<<<<< HEAD
-<<<<<<< HEAD
-import { pool } from  '../config/db.js';
-=======
-const db = require('../config/db.js');
->>>>>>> 1d1e2513b9e8ac5f36f74d326d2a76f901e82987
-=======
 const { pool } = require('../config/db.js');
->>>>>>> f6567a7fad87db2b4467364859c5c451a88cfd85
 
 /**
  * Get the latest sensor data for all devices
  * If user_id is provided, only returns data for devices associated with that user
  */
-const getLatestSensorData = async (req, res) => {
-    try {
-<<<<<<< HEAD
-        const result = await pool.query("SELECT DISTINCT ON (device_id) device_id, timestamp, soil_moisture, temperature, air_humidity, light_intensity FROM sensors_data ORDER BY device_id, timestamp DESC");
 
-        res.json({
-            ok: true,
-            data: result.rows
-        });
-=======
-        const userId = req.user ? req.user.user_id : null;
+
+const getLatestSensorData = async (req, res) => {
+    console.log("📡 [getLatestSensorData] called - checking route");
+    try {
+        // Determine user and SQL query to fetch latest sensor readings (joined with devices/plants when user is authenticated)
+        const userId = req.user ? (req.user.user_id || req.user.userId) : null;
         
         let query;
         let params = [];
         
         if (userId) {
-            // If user is authenticated, only return their devices
-            query = `
-                SELECT DISTINCT ON (sd.device_id) 
-                    sd.device_id, 
-                    sd.timestamp, 
-                    sd.soil_moisture AS moisture,
-                    sd.temperature, 
-                    sd.air_humidity AS humidity, 
-                    sd.light_intensity AS light,
-                    d.device_name,
-                    d.sensor_type,
-                    p.plant_id,
-                    p.name AS plant_name
-                FROM 
-                    "SensorData" sd
-                JOIN 
-                    "Device" d ON sd.device_id = d.device_id
-                LEFT JOIN 
-                    "Plant" p ON d.device_id = p.device_id
-                WHERE 
-                    p.user_id = $1
-                ORDER BY 
-                    sd.device_id, sd.timestamp DESC
-            `;
-            params = [userId];
+    query = `
+        WITH cleaned_data AS (
+            SELECT 
+                TRIM(sd.device_key) AS device_key,
+                sd.timestamp,
+                sd.soil_moisture AS moisture,
+                sd.temperature,
+                sd.air_humidity AS humidity,
+                sd.light_intensity AS light,
+                TRIM(d.device_key) AS dev_key,
+                d.device_name,
+                p.plant_id,
+                p.custom_name AS plant_name,
+                p.user_id
+            FROM 
+                sensors_data sd
+            JOIN 
+                devices d ON TRIM(sd.device_key) = TRIM(d.device_key)
+            LEFT JOIN 
+                plants p ON TRIM(d.device_key) = TRIM(p.device_key)
+            )
+            SELECT DISTINCT ON (device_key)
+                device_key, timestamp, moisture, temperature, humidity, light,
+                device_name, plant_id, plant_name
+            FROM cleaned_data
+            WHERE user_id = $1
+            ORDER BY device_key, timestamp DESC;
+        `;
+        params = [userId];
         } else {
-            // If no user_id (should not happen due to authMiddleware), return all data
             query = `
-                SELECT DISTINCT ON (sd.device_id) 
-                    sd.device_id, 
-                    sd.timestamp, 
-                    sd.soil_moisture AS moisture,
-                    sd.temperature, 
-                    sd.air_humidity AS humidity, 
-                    sd.light_intensity AS light,
-                    d.device_name,
-                    d.sensor_type
-                FROM 
-                    "SensorData" sd
-                JOIN 
-                    "Device" d ON sd.device_id = d.device_id
-                ORDER BY 
-                    sd.device_id, sd.timestamp DESC
+                WITH cleaned_data AS (
+                    SELECT 
+                        TRIM(sd.device_key) AS device_key,
+                        sd.timestamp,
+                        sd.soil_moisture AS moisture,
+                        sd.temperature,
+                        sd.air_humidity AS humidity,
+                        sd.light_intensity AS light,
+                        TRIM(d.device_key) AS dev_key,
+                        d.device_name
+                    FROM 
+                        sensors_data sd
+                    JOIN 
+                        devices d ON TRIM(sd.device_key) = TRIM(d.device_key)
+                )
+                SELECT DISTINCT ON (device_key)
+                    device_key, timestamp, moisture, temperature, humidity, light, device_name
+                FROM cleaned_data
+                ORDER BY device_key, timestamp DESC;
             `;
         }
 
-                const { rows: countRows } = await pool.query(countQuery, countParams);
-        
+        // Execute main query
+        const { rows } = await pool.query(query, params);
+
+        console.log("✅ Sensor data query result:", rows);
+
         // Format the response as an object with device_id as keys
         const formattedData = {};
         rows.forEach(row => {
-            formattedData[row.device_id] = {
-                device_id: row.device_id,
+            formattedData[row.device_key] = {
+                device_key: row.device_key,
                 device_name: row.device_name,
-                sensor_type: row.sensor_type,
                 plant_id: row.plant_id,
                 plant_name: row.plant_name,
                 timestamp: row.timestamp,
@@ -100,8 +97,7 @@ const getLatestSensorData = async (req, res) => {
             };
         });
         
-        res.json(formattedData);
->>>>>>> 1d1e2513b9e8ac5f36f74d326d2a76f901e82987
+        return res.json({ ok: true, data: formattedData });
     } catch (error) {
         console.error('Error fetching sensor data:', error);
         res.status(500).json({ success: false, message: error.message });

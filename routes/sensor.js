@@ -11,6 +11,7 @@ const router = express.Router();
  */
 router.get('/latest', authMiddleware, getLatestSensorData);
 
+
 /**
  * @route   GET /api/sensor/history
  * @desc    Get historical sensor data with pagination and filtering
@@ -22,7 +23,7 @@ router.get('/history', authMiddleware, async (req, res) => {
         const {
             page = 1,
             limit = 50,
-            device_id,
+            device_key,
             start_date,
             end_date,
             sensor_type
@@ -34,9 +35,9 @@ router.get('/history', authMiddleware, async (req, res) => {
         let paramIndex = 2;
 
         // Add device filter if specified
-        if (device_id) {
-            whereConditions.push(`sd.device_id = $${paramIndex}`);
-            params.push(device_id);
+        if (device_key) {
+            whereConditions.push(`sd.device_key = $${paramIndex}`);
+            params.push(device_key);
             paramIndex++;
         }
 
@@ -66,7 +67,7 @@ router.get('/history', authMiddleware, async (req, res) => {
         const dataQuery = `
             SELECT 
                 sd.data_id,
-                sd.device_id, 
+                sd.device_key, 
                 sd.timestamp, 
                 sd.soil_moisture AS moisture,
                 sd.temperature, 
@@ -77,11 +78,11 @@ router.get('/history', authMiddleware, async (req, res) => {
                 p.plant_id,
                 p.name AS plant_name
             FROM 
-                "SensorData" sd
+                "sensors_data" sd
             JOIN 
-                "Device" d ON sd.device_id = d.device_id
+                "devices" d ON sd.device_key = d.device_key
             LEFT JOIN 
-                "Plant" p ON d.device_id = p.device_id
+                "plants" p ON d.device_key = p.device_key
             WHERE 
                 ${whereClause}
             ORDER BY 
@@ -95,11 +96,11 @@ router.get('/history', authMiddleware, async (req, res) => {
         const countQuery = `
             SELECT COUNT(*) as total
             FROM 
-                "SensorData" sd
+                "sensors_data" sd
             JOIN 
-                "Device" d ON sd.device_id = d.device_id
+                "devices" d ON sd.device_key = d.device_key
             LEFT JOIN 
-                "Plant" p ON d.device_id = p.device_id
+                "plants" p ON d.device_key = p.device_key
             WHERE 
                 ${whereClause}
         `;
@@ -135,17 +136,15 @@ router.get('/history', authMiddleware, async (req, res) => {
     }
 });
 
-module.exports = router;
-
 // SELECT * FROM 'plant-system/device/+/data'
 
 router.post('/upload', async (req, res) => {
     try {
-        const { device_id, timestamp, soil_moisture, temperature, air_humidity, light_intensity } = req.body;
+        const { device_key, timestamp, soil_moisture, temperature, air_humidity, light_intensity } = req.body;
 
         await db.query(
-            "INSERT INTO sensors_data (device_id, timestamp, soil_moisture, temperature, air_humidity, light_intensity) VALUES ($1, NOW(), $3, $4, $5, $6)",
-            [device_id, timestamp, soil_moisture, temperature, air_humidity, light_intensity]
+            "INSERT INTO sensors_data (device_key, timestamp, soil_moisture, temperature, air_humidity, light_intensity) VALUES ($1, $2, $3, $4, $5, $6)",
+            [device_key, timestamp, soil_moisture, temperature, air_humidity, light_intensity]
         );
 
         res.json({ success: true, message: 'Sensor data uploaded successfully' });
@@ -154,3 +153,5 @@ router.post('/upload', async (req, res) => {
         res.status(500).json({ success: false, message: error.message });
     }
 });
+
+module.exports = router;

@@ -310,69 +310,6 @@
       "plantCare": "Plant Care",
       "troubleshooting": "Troubleshooting"
     },
-<<<<<<< HEAD
-    
-    "faqs": {
-      "setup": {
-        "title": "How do I set up my first device?",
-        "content": "To set up your first device, navigate to the Devices section after logging in. Click 'Add New Device' and follow the on-screen instructions to connect your device to your WiFi network. The setup typically takes less than 5 minutes."
-      },
-      "pairing": {
-        "title": "My sensor won't pair with the app",
-        "content": "If your sensor won't pair, try the following: 1) Make sure your sensor is charged and the LED is blinking, 2) Ensure your phone's Bluetooth is enabled, 3) Place the sensor closer to your phone during pairing, 4) Restart the sensor by removing and reinserting the battery."
-      },
-      "watering": {
-        "title": "How does automatic watering work?",
-        "content": "Automatic watering uses soil moisture sensors to detect when your plant needs water. When moisture falls below the threshold you set, the system will activate the connected water pump for a specified duration. You can customize thresholds and watering duration for each plant in the Plant Settings."
-      },
-      "accuracy": {
-        "title": "How accurate are the moisture readings?",
-        "content": "Our soil moisture sensors are accurate to within ±3% in normal conditions. For best results, place the sensor probe at least 2 inches into the soil and away from the pot's edge. Calibration may be needed for certain soil types, which you can perform in the sensor settings."
-      },
-      "battery": {
-        "title": "How long does the sensor battery last?",
-        "content": "Standard sensor batteries last 6-12 months with normal use. Premium sensors with solar recharging can last significantly longer. You'll receive a notification when battery levels are low. To preserve battery life, reduce the reading frequency in sensor settings."
-      },
-      "offline": {
-        "title": "What happens if my internet goes offline?",
-        "content": "If your internet connection is lost, sensors will continue to collect data locally (up to 7 days of storage). The automatic watering system will continue to function based on the last settings. Once connection is restored, all stored data will sync to your account."
-      },
-      "plantTypes": {
-        "title": "Does the system work for all plant types?",
-        "content": "Yes, our system works with virtually all indoor and outdoor plants. The database includes specific care information for over 5,000 plant species. For specialized plants with unique requirements, you can manually adjust thresholds and settings."
-      },
-      "subscription": {
-        "title": "What's included in the premium subscription?",
-        "content": "Premium subscription includes: AI-powered plant disease detection, unlimited plants and sensors, advanced analytics with historical data, custom care schedules, expert advice access, and priority customer support. View our Pricing page for a detailed comparison."
-      },
-      "refunds": {
-        "title": "What is your refund policy?",
-        "content": "We offer a 30-day satisfaction guarantee for hardware purchases. If you're not satisfied, contact support for a return authorization. For subscriptions, you can cancel anytime and will not be charged for the next billing cycle, but we do not provide partial refunds for unused subscription time."
-      },
-      "dataPrivacy": {
-        "title": "How is my plant data used?",
-        "content": "Your plant data is used to provide personalized care recommendations and improve our service. We anonymize data for research and analysis purposes. We never sell your personal information to third parties. See our Privacy Policy for complete details."
-      }
-    }
-  },
-  
-  "premium": {
-    "title": "Upgrade to Premium",
-    "description": "Unlock advanced features and get the most from your plant monitoring system",
-    "currentPlan": "Current Plan: {{plan}}",
-    "freeTrial": "Start 14-Day Free Trial",
-    "subscribe": "Subscribe Now",
-    "monthly": "Monthly",
-    "yearly": "Yearly (Save 20%)",
-    "yearlyDiscount": "2 months free!",
-    "features": {
-      "unlimited": "Unlimited plants and zones",
-      "ai": "AI plant disease detection",
-      "history": "12 months of historical data",
-      "export": "Data export options",
-      "support": "Priority customer support",
-      "updates": "Early access to new features"
-=======
     "testimonial2": {
       "quote": "As a busy entrepreneur, I never had time for proper plant care. The automated watering system is a game-changer. My plants have never looked better, and I get peace of mind.",
       "name": "Marcus Rodriguez",
@@ -623,7 +560,6 @@
       "light": "Light Sensor",
       "humidity": "Humidity Sensor",
       "combo": "Combo Sensor"
->>>>>>> 1d1e2513b9e8ac5f36f74d326d2a76f901e82987
     },
     "comparison": {
       "title": "Plan Comparison",
