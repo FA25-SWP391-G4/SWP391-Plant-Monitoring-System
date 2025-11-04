@@ -11,19 +11,10 @@ import WeatherWidget from '@/components/dashboard/WeatherWidget';
 import RecentActivity from '@/components/dashboard/RecentActivity';
 import WateringSchedule from '@/components/dashboard/WateringSchedule';
 import PremiumFeaturePrompt from '@/components/dashboard/PremiumFeaturePrompt';
-<<<<<<< HEAD
-<<<<<<< HEAD
-import { set } from 'date-fns';
-
-=======
-import Navbar from '@/components/Navbar';
-=======
 import Navbar from '@/components/navigation/Navbar';
->>>>>>> f6567a7fad87db2b4467364859c5c451a88cfd85
 import ThemedLoader from '@/components/ThemedLoader';
 import useMemoizedData from '@/hooks/useMemoizedData';
 import axiosClient from '@/api/axiosClient';
->>>>>>> 1d1e2513b9e8ac5f36f74d326d2a76f901e82987
 
 export default function DashboardPage() {
   const { user, loading, isPremium } = useAuth();
@@ -45,56 +36,11 @@ export default function DashboardPage() {
     console.log('[DASHBOARD] Auth check - loading:', loading, 'user:', user?.email);
     
     if (!loading && !user) {
-<<<<<<< HEAD
-      // If auth finished and there's no user, stop dashboard loading spinner
-      // and redirect to login. This prevents a stuck spinner when AuthProvider
-      // reports loading=false but dashboard's internal isLoading remains true.
-      console.debug('[dashboard] auth finished: no user, redirecting to /login');
-      setIsLoading(false);
-=======
       console.log('[DASHBOARD] No user found after loading complete - redirecting to /login');
->>>>>>> 1d1e2513b9e8ac5f36f74d326d2a76f901e82987
       router.push('/login');
     }
   }, [user, loading, router]);
 
-<<<<<<< HEAD
-  // Fetch dashboard data
-  useEffect(() => {
-    console.log('[dashboard] useEffect triggered with user:', user);
-    if (user) {
-      const fetchDashboardData = async () => {
-        setIsLoading(true);
-        try {
-          const res = await fetch(`http://localhost:3000/api/dashboard`, {
-            credentials: 'include',
-            headers: { 
-              'Authorization': `Bearer ${user.token}`,
-              'Content-Type': 'application/json' },
-            cache: 'no-store'
-          });
-          const data = await res.json();
-          console.log('Dashboard data response:', data);
-
-          if (res.ok && data.success) {
-            console.log('Dashboard data:', data.data.plants);
-            setPlants(data.data.plants);
-            setSensorData(data.data.latestReadings);
-          } else {
-            throw new Error(data.error || 'Failed to fetch devices');
-          }
-        } catch (err) {
-          console.error('Error fetching dashboard data:', err);
-          setError(t('dashboard.loadError', 'Failed to load dashboard data. Please try again later.'));
-        } finally {
-          setIsLoading(false);
-        }
-      };
-
-      fetchDashboardData();
-    }
-  },[user]);
-=======
   // Show loading state while auth is being checked
   if (loading) {
     console.log('[DASHBOARD] Still loading auth...');
@@ -168,7 +114,33 @@ export default function DashboardPage() {
       cacheKey: user ? `dashboard_sensors_${user.user_id}` : null,
       cacheDuration: 60 * 1000, // 1 minute
       onSuccess: (data) => {
-        if (data) setSensorData(data);
+        if (data?.data) {
+          //normalize keys by trimming whitespace
+          const normalized = Object.fromEntries(
+            Object.entries(data.data).map(([key, value]) => [key.trim(), 
+              {
+                ...value,
+                  // normalize fields to what PlantCard expects
+                  soil_moisture:
+                    value.soil_moisture ??
+                    value.moisture ??
+                    value.soilMoisture ??
+                    null,
+                  temperature:
+                    value.temperature ??
+                    value.temp ??
+                    null,
+                  light_intensity:
+                    value.light ??
+                    value.light_intensity ??
+                    value.lightLevel ??
+                    null,
+                },
+              ])
+            );
+          setSensorData(normalized);
+          console.log("[DEBUG] Normalized sensorData preview:", normalized);
+        }
       },
       onError: (err) => {
         console.error('Error fetching sensor data:', err);
@@ -191,9 +163,10 @@ export default function DashboardPage() {
   
   // Check if no plants or sensor data are available
   const noData = user && !isLoading && !error && (!plants || plants.length === 0);
->>>>>>> 1d1e2513b9e8ac5f36f74d326d2a76f901e82987
 
   if (loading || isLoading) {
+    console.log('[DEBUG] Full plants array:', plants);
+    console.log('[DEBUG] Full sensorData object:', sensorData);
     return (
       <div className="flex items-center justify-center h-screen bg-gray-50 dark:bg-gray-900">
         <div className="animate-pulse flex flex-col items-center">
@@ -203,6 +176,7 @@ export default function DashboardPage() {
       </div>
     );
   }
+
 
   if (error) {
     return (
@@ -225,13 +199,6 @@ export default function DashboardPage() {
   }
 
   return (
-<<<<<<< HEAD
-    <AIProvider>
-      <div className="min-h-screen bg-gray-50">
-        <DashboardHeader user={user} />
-        
-        <main className="container mx-auto px-4 py-8">
-=======
        <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       <main className="container mx-auto px-4 py-8">
         {/* No Data Message */}
@@ -253,7 +220,6 @@ export default function DashboardPage() {
           </div>
         )}
         
->>>>>>> 1d1e2513b9e8ac5f36f74d326d2a76f901e82987
         {/* Welcome Banner */}
         <div className="bg-gradient-to-r from-emerald-500 to-emerald-700 dark:from-emerald-600 dark:to-emerald-800 rounded-xl shadow-lg mb-8 p-6 text-white flex items-center justify-between">
           <div>
@@ -265,7 +231,10 @@ export default function DashboardPage() {
             </p>
           </div>
           <div className="hidden md:block">
-            <button className="bg-white dark:bg-gray-100 text-emerald-700 dark:text-emerald-800 px-4 py-2 rounded-lg font-medium hover:bg-emerald-50 dark:hover:bg-gray-200 transition-colors">
+            <button 
+            onClick={() => router.push('/add-plant')}
+            aria-label={t('dashboard.addPlant', 'Add New Plant')}
+            className="bg-white dark:bg-gray-100 text-emerald-700 dark:text-emerald-800 px-4 py-2 rounded-lg font-medium hover:bg-emerald-50 dark:hover:bg-gray-200 transition-colors">
               {t('dashboard.addPlant', 'Add New Plant')}
             </button>
           </div>
@@ -336,25 +305,24 @@ export default function DashboardPage() {
               </div>
             ) : (
               <div className="space-y-4">
-                {plants.map(plant => (
-                  <PlantCard 
-                    key={plant.plant_id} 
-                    plant={plant} 
-                    sensorData={sensorData[plant.plant_id]}
-                  />
-                ))}
+                {plants.map((plant) => {
+                    console.log('[DEBUG] Rendering plant:', plant.custom_name);
+                    console.log('[DEBUG] Matching sensorData key:', plant.device_key?.trim());
+                    console.log('[DEBUG] Matching sensorData found:', sensorData[plant.device_key?.trim()]);
+                    return (
+                      <PlantCard
+                        key={plant.plant_id}
+                        plant={plant}
+                        sensorData={sensorData[plant.device_key?.trim()]}
+                      />
+                    );
+                })}
               </div>
             )}
           </div>
           
           {/* Right column - Widgets */}
           <div className="space-y-6">
-            {/* AI Insights Widget */}
-            <AIInsightsWidget />
-            
-            {/* AI Predictions Widget */}
-            <AIPredictionsWidget />
-            
             <WeatherWidget />
             
             <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-5">
@@ -367,9 +335,6 @@ export default function DashboardPage() {
               <WateringSchedule plants={plants} />
             </div>
             
-            {/* AI History Widget */}
-            <AIHistoryWidget />
-            
             {/* Premium feature banner */}
             {user?.role === 'Regular' && (
               <PremiumFeaturePrompt />
@@ -378,6 +343,5 @@ export default function DashboardPage() {
         </div>
       </main>
     </div>
-    </AIProvider>
   );
 }

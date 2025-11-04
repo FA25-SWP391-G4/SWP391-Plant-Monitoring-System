@@ -68,8 +68,8 @@ class Device {
         try {
             const query = `
                 SELECT d.*, u.family_name as owner_name 
-                FROM Devices d
-                LEFT JOIN Users u ON d.user_id = u.user_id
+                FROM devices d
+                LEFT JOIN users u ON d.user_id = u.user_id
                 ORDER BY d.created_at DESC
             `;
             const result = await pool.query(query);
@@ -103,8 +103,8 @@ class Device {
 
             const query = `
                 SELECT d.*, u.family_name as owner_name 
-                FROM Devices d
-                LEFT JOIN Users u ON d.user_id = u.user_id
+                FROM devices d
+                LEFT JOIN users u ON d.user_id = u.user_id
                 WHERE d.device_key = $1
             `;
             const result = await pool.query(query, [deviceKey]);
@@ -135,8 +135,8 @@ class Device {
 
             const query = `
                 SELECT d.*, u.family_name as owner_name 
-                FROM Devices d
-                LEFT JOIN Users u ON d.user_id = u.user_id
+                FROM devices d
+                LEFT JOIN users u ON d.user_id = u.user_id
                 WHERE d.user_id = $1
                 ORDER BY d.created_at DESC
             `;
@@ -152,8 +152,8 @@ class Device {
         try {
             const query = `
                 SELECT d.*, u.family_name as owner_name 
-                FROM Devices d
-                LEFT JOIN Users u ON d.user_id = u.user_id
+                FROM devices d
+                LEFT JOIN users u ON d.user_id = u.user_id
                 WHERE d.status = $1
                 ORDER BY d.last_seen DESC
             `;
@@ -164,26 +164,25 @@ class Device {
         }
     }
 
-<<<<<<< HEAD
     // Static method to get device status for multiple plants
     static async getStatusForPlants(plants) {
         if (!plants || plants.length === 0) {
             return {};
         }
 
-        const deviceIds = plants.map(p => p.device_id);
+        const deviceIds = plants.map(p => p.device_key);
         const placeholders = deviceIds.map((_, idx) => `$${idx + 1}`).join(', ');
         
         const query = `
-            SELECT device_id, status, last_seen
+            SELECT device_key, status, last_seen
             FROM devices
-            WHERE device_id IN (${placeholders})
+            WHERE device_key IN (${placeholders})
         `;
         try {
             const result = await pool.query(query, deviceIds);
             const statusMap = {};
             result.rows.forEach(row => {
-                statusMap[row.device_id] = {
+                statusMap[row.device_key] = {
                     status: row.status,
                     last_seen: row.last_seen
                 };
@@ -196,9 +195,6 @@ class Device {
     }
 
     // Generate a unique device key (UUID)
-=======
-    // Generate a unique device key (UUID) - now using our UUID generator
->>>>>>> 1d1e2513b9e8ac5f36f74d326d2a76f901e82987
     static generateDeviceKey() {
         return generateUUID();
     }
@@ -209,7 +205,7 @@ class Device {
             if (this.device_key && isValidUUID(this.device_key)) {
                 // Update existing device (device_key is primary key)
                 const query = `
-                    UPDATE Devices 
+                    UPDATE devices 
                     SET user_id = $1, device_name = $2, 
                         status = $3, last_seen = $4
                     WHERE device_key = $5
@@ -237,7 +233,7 @@ class Device {
                 console.log('[DEVICE CREATE] Generated device_key:', this.device_key);
                 
                 const query = `
-                    INSERT INTO Devices (device_key, user_id, device_name, status)
+                    INSERT INTO devices (device_key, user_id, device_name, status)
                     VALUES ($1, $2, $3, $4)
                     RETURNING *
                 `;
@@ -262,7 +258,7 @@ class Device {
     async updateStatus(status) {
         try {
             const query = `
-                UPDATE Devices 
+                UPDATE devices 
                 SET status = $1, last_seen = CURRENT_TIMESTAMP
                 WHERE device_key = $2
                 RETURNING *
@@ -285,7 +281,7 @@ class Device {
     async ping() {
         try {
             const query = `
-                UPDATE Devices 
+                UPDATE devices 
                 SET last_seen = CURRENT_TIMESTAMP, status = 'online'
                 WHERE device_key = $1
                 RETURNING *
@@ -311,7 +307,7 @@ class Device {
                 throw new Error('Cannot delete device without device_key');
             }
 
-            const query = 'DELETE FROM Devices WHERE device_key = $1';
+            const query = 'DELETE FROM devices WHERE device_key = $1';
             await pool.query(query, [this.device_key]);
             
             return true;

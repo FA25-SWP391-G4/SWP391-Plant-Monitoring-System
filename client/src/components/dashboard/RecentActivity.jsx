@@ -2,9 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from '@/contexts/ThemeContext';
 
+
 export default function RecentActivity() {
   const { t } = useTranslation();
-<<<<<<< HEAD
+  const { isDark } = useTheme();
   const [activities, setActivities] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -24,39 +25,6 @@ export default function RecentActivity() {
       } finally {
         if (mounted) setLoading(false);
       }
-=======
-  const { isDark, themeColors } = useTheme();
-  
-  // Mock activity data - would come from API in a real app
-  const activities = [
-    {
-      id: 1,
-      type: 'watering',
-      plantName: 'Snake Plant',
-      timestamp: '2023-11-15T10:30:00Z',
-      details: { amount: '250ml' }
-    },
-    {
-      id: 2,
-      type: 'fertilizing',
-      plantName: 'Monstera',
-      timestamp: '2023-11-14T15:45:00Z',
-      details: { fertilizer: 'NPK 5-5-5' }
-    },
-    {
-      id: 3,
-      type: 'repotting',
-      plantName: 'Peace Lily',
-      timestamp: '2023-11-10T09:15:00Z',
-      details: { newPotSize: '15cm' }
-    },
-    {
-      id: 4,
-      type: 'pruning',
-      plantName: 'Pothos',
-      timestamp: '2023-11-08T14:20:00Z',
-      details: { notes: 'Removed yellow leaves' }
->>>>>>> 1d1e2513b9e8ac5f36f74d326d2a76f901e82987
     }
     load();
     return () => { mounted = false; };

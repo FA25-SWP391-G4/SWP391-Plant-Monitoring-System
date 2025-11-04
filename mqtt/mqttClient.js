@@ -7,6 +7,7 @@ const mqtt = require('mqtt');
 const fs = require('fs');
 const dotenv = require('dotenv');
 const SystemLog = require('../models/SystemLog');
+const db = require('../config/db');
 dotenv.config();
 
 // Determine which MQTT connection to use
@@ -41,40 +42,44 @@ client.on('connect', () => {
   console.log('Connected to MQTT broker');
   SystemLog.create('INFO', 'MQTT client connected').catch(console.error);
   
+  const topic = [
+    'smartplant/pub',
+    'plant-system/+/sensor-data',
+    'plant-system/+/status'
+  ];
+
   // Subscribe to topics
-  client.subscribe('plant-system/+/sensor-data', (err) => {
-    if (!err) {
-      console.log('Subscribed to sensor data topic');
-    } else {
-      console.error('Subscription error:', err);
-    }
-  });
-  
-  client.subscribe('plant-system/+/status', (err) => {
-    if (!err) {
-      console.log('Subscribed to device status topic');
-    } else {
-      console.error('Subscription error:', err);
-    }
+  topic.forEach((t) => {
+    client.subscribe(t, (err) => {
+      if (!err) {
+        console.log(`Subscribed to ${t}`);
+      } else {
+        console.error('Subscription error:', err);
+      }
+    });
   });
 });
 
 // Message handler
-client.on('message', (topic, payload) => {
+client.on('message', async (topic, payload) => {
   console.log(`Received message on topic: ${topic}`);
   
   try {
     const message = JSON.parse(payload.toString());
+
+    if(topic === 'smartplant/pub') {
+      console.log('Smartplant message:', message);
+      await handleSmartplantMessage(message);
+      return;
+    }
     
+    const deviceKey = topic.split('/')[1];
     // Route message based on topic structure
     if (topic.includes('/sensor-data')) {
-      // Extract device ID from topic
-      const deviceId = topic.split('/')[1];
-      processSensorData(deviceId, message);
+      // Extract device key from topic
+      await processSensorData(deviceKey, message);
     } else if (topic.includes('/status')) {
-      // Extract device ID from topic
-      const deviceId = topic.split('/')[1];
-      processDeviceStatus(deviceId, message);
+      await processDeviceStatus(deviceKey, message);
     }
   } catch (error) {
     console.error('Error processing MQTT message:', error);
@@ -89,31 +94,45 @@ client.on('error', (error) => {
 });
 
 // Process sensor data received via MQTT
-async function processSensorData(deviceId, data) {
+async function processSensorData(deviceKey, data) {
   try {
-    // In a production system, we would save this to the database
-    // This is a placeholder for that functionality
-    console.log(`Processing sensor data for device ${deviceId}:`, data);
-    
-    // Emit event or call API to process sensor data
-    // For now, we'll just log it
-    SystemLog.create('INFO', `Received sensor data from device ${deviceId}`).catch(console.error);
+    console.log(`Sensor data received from ${deviceKey}:`, data);
+
+    // Save sensor data to database
+    await db.pool.query(
+      `INSERT INTO sensors_data (, timestamp, soil_moisture, temperature, air_humidity, light_intensity)
+       VALUES ($1, NOW(), $2, $3, $4, $5)`,
+      [deviceKey, data.soilMoisture, data.temperature, data.airHumidity, data.lightIntensity]
+    );
+
+    //update device last seen
+    await db.pool.query(
+      `UPDATE devices SET last_seen = NOW(), status = 'online' WHERE device_key = $1`,
+      [deviceKey]
+    );
+    await SystemLog.create('INFO', `Inserted sensor data from device ${deviceKey}`).catch(console.error);
   } catch (error) {
     console.error('Error processing sensor data:', error);
-    SystemLog.create('ERROR', `Error processing sensor data: ${error.message}`).catch(console.error);
+    await SystemLog.create('ERROR', `Failed to process sensor data for ${deviceKey}: ${error.message}`);
   }
 }
 
 // Process device status updates
-async function processDeviceStatus(deviceId, data) {
+async function processDeviceStatus(deviceKey, data) {
   try {
-    console.log(`Processing status update for device ${deviceId}:`, data);
-    
-    // In a production system, we would update the device status in the database
-    SystemLog.create('INFO', `Device ${deviceId} status updated to ${data.status}`).catch(console.error);
+    console.log(`Device ${deviceKey} status:`, data);
+
+    const status = data.status || 'offline';
+
+    await db.pool.query(
+      `UPDATE devices SET status = $1, last_seen = NOW() WHERE device_key = $2`,
+      [status, deviceKey]
+    );
+
+    await SystemLog.create('INFO', `Device ${deviceKey} status updated to ${data.status}`).catch(console.error);
   } catch (error) {
     console.error('Error processing device status:', error);
-    SystemLog.create('ERROR', `Error processing device status: ${error.message}`).catch(console.error);
+    await SystemLog.create('ERROR', `Error updating ${deviceKey} status: ${error.message}`).catch(console.error);
   }
 }
 
@@ -146,6 +165,20 @@ function sendPumpCommand(command) {
   return sendDeviceCommand('pump', 'set_state', { state: command });
 }
 
+async function handleSmartplantMessage(message) {
+  try {
+    console.log('💡 Handling Smartplant message:', message);
+    // Example: message could contain { type: "command", deviceKey: "...", action: "reboot" }
+    if (message.type === 'command' && message.deviceKey) {
+      await sendDeviceCommand(message.deviceKey, message.action, message.parameters || {});
+    } else {
+      console.log('⚠️ Unrecognized smartplant message structure.');
+    }
+  } catch (error) {
+    console.error('❌ Error handling Smartplant message:', error);
+    await SystemLog.create('ERROR', `Smartplant message error: ${error.message}`).catch(console.error);
+  }
+}
 // Export the MQTT client and utility functions
 module.exports = {
   client,

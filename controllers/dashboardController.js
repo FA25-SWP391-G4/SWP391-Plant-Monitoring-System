@@ -38,13 +38,8 @@ const { isValidUUID } = require('../utils/uuidGenerator');
  */
 async function getDashboardData(req, res) {
     try {
-<<<<<<< HEAD
-        // Get user_id from authenticated request
-        const userId = req.user.user_id || 4;
-=======
         // Get user_id from authenticated request (now UUID)
         const userId = req.user.user_id;
->>>>>>> 1d1e2513b9e8ac5f36f74d326d2a76f901e82987
 
         // Validate UUID (should already be validated by auth middleware, but double-check)
         if (!isValidUUID(userId)) {

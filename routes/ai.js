@@ -14,44 +14,7 @@ const { isPremium } = require('../middlewares/premiumMiddleware');
 const authenticate = auth;
 const isAdmin = auth.isAdmin;
 const multer = require('multer');
-const path = require('path');
-
-// Configure multer for image uploads
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, 'uploads/images/');
-  },
-  filename: function (req, file, cb) {
-    // Generate unique filename with timestamp and random string
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-    cb(null, 'plant-image-' + uniqueSuffix + path.extname(file.originalname));
-  }
-});
-
-// File filter for images only
-const fileFilter = (req, file, cb) => {
-  const allowedMimeTypes = [
-    'image/jpeg',
-    'image/jpg', 
-    'image/png',
-    'image/webp',
-    'image/tiff'
-  ];
-  
-  if (allowedMimeTypes.includes(file.mimetype)) {
-    cb(null, true);
-  } else {
-    cb(new Error('Invalid file type. Only JPEG, PNG, WebP, and TIFF images are allowed.'), false);
-  }
-};
-
-const upload = multer({ 
-  storage: storage,
-  fileFilter: fileFilter,
-  limits: {
-    fileSize: 10 * 1024 * 1024 // 10MB limit
-  }
-});
+const upload = multer({ dest: 'uploads/' });
 const fs = require('fs');
 const FormData = require('form-data');
 
@@ -70,28 +33,6 @@ const forwardAuthHeaders = (req) => {
 console.log("AI Controller keys:", Object.keys(aiController));
 /**
  * @route POST /api/ai/watering-prediction
-<<<<<<< HEAD
- * @desc Predict watering needs using TensorFlow.js model
- * @access Private
- */
-router.post('/watering-prediction', 
-  [
-    authenticate,
-    body('plant_id').optional().custom(value => {
-      if (value !== null && value !== undefined && !Number.isInteger(Number(value))) {
-        throw new Error('Plant ID must be a number or null');
-      }
-      return true;
-    }),
-    body('sensor_data').isObject().withMessage('Sensor data must be an object'),
-    body('sensor_data.moisture').optional().isFloat({ min: 0, max: 100 }).withMessage('Moisture must be a number between 0-100'),
-    body('sensor_data.temperature').optional().isFloat({ min: -50, max: 80 }).withMessage('Temperature must be a number between -50 to 80°C'),
-    body('sensor_data.humidity').optional().isFloat({ min: 0, max: 100 }).withMessage('Humidity must be a number between 0-100'),
-    body('sensor_data.light').optional().isFloat({ min: 0, max: 10000 }).withMessage('Light must be a number between 0-10000 lux')
-  ],
-  aiController.predictWatering
-);
-=======
  * @desc Predict watering needs using AI (maps to irrigation endpoint)
  * @access Private
  */
@@ -115,7 +56,6 @@ router.post('/watering-prediction', authenticate, async (req, res) => {
     });
   }
 });
->>>>>>> 1d1e2513b9e8ac5f36f74d326d2a76f901e82987
 
 /**
  * @route POST /api/ai/plant-analysis
@@ -225,16 +165,6 @@ router.post('/historical-analysis', authenticate, async (req, res) => {
 
 /**
  * @route POST /api/ai/image-recognition
-<<<<<<< HEAD
- * @desc Enhanced plant image analysis with disease recognition using TensorFlow.js
- * @access Private
- */
-router.post('/image-recognition', 
-  [
-    // Rate limiting for image uploads
-    require('../middlewares/rateLimitMiddleware').imageUploadLimiter,
-    require('../middlewares/rateLimitMiddleware').imageUploadSpeedLimiter,
-=======
  * @desc Analyze plant image using AI
  * @access Private (Premium)
  */
@@ -260,23 +190,22 @@ router.post('/image-recognition', authenticate, isPremium, upload.single('image'
     res.json(response.data);
   } catch (error) {
     console.error('Error calling AI service for image recognition:', error);
->>>>>>> 1d1e2513b9e8ac5f36f74d326d2a76f901e82987
     
-    // Authentication
-    authenticate,
+    // Clean up temp file if it exists
+    if (req.file && req.file.path) {
+      try {
+        fs.unlinkSync(req.file.path);
+      } catch (unlinkError) {
+        console.error('Error deleting temporary file:', unlinkError);
+      }
+    }
     
-    // File upload with enhanced security
-    upload.single('image'),
-    
-    // Enhanced file security validation
-    require('../middlewares/fileSecurityMiddleware').validateFileUpload,
-    
-    // Input validation
-    body('plant_id').optional().isNumeric().withMessage('Plant ID must be a number'),
-    body('plant_type').optional().isString().trim().isLength({ max: 100 }).withMessage('Plant type must be a string (max 100 chars)')
-  ],
-  aiController.processImageRecognition
-);
+    res.status(500).json({ 
+      error: 'Failed to analyze plant image', 
+      details: error.response?.data || error.message 
+    });
+  }
+});
 
 // ==================== TEST ROUTES (NO AUTH) ====================
 /**
@@ -373,40 +302,6 @@ router.get('/test/status', async (req, res) => {
 
 /**
  * @route POST /api/ai/chatbot
-<<<<<<< HEAD
- * @desc Interact with AI chatbot via AI microservice
- * @access Private
- */
-router.post('/chatbot', 
-  [
-    authenticate,
-    body('message').notEmpty().withMessage('Message is required'),
-    body('conversation_id').optional().isString(),
-    body('plant_id').optional().isNumeric(),
-    body('context').optional().isObject()
-  ],
-  async (req, res) => {
-    try {
-      // Forward request to AI microservice
-      const AI_SERVICE_URL = process.env.AI_SERVICE_URL || 'http://localhost:8000';
-      
-      const response = await axios.post(`${AI_SERVICE_URL}/api/chatbot/query`, req.body, {
-        headers: {
-          'Authorization': req.headers.authorization,
-          'Content-Type': 'application/json'
-        }
-      });
-      
-      res.json(response.data);
-    } catch (error) {
-      console.error('Error calling AI service for chatbot:', error);
-      res.status(500).json({ 
-        success: false,
-        message: 'Failed to process chatbot request', 
-        error: error.response?.data?.message || error.message 
-      });
-    }
-=======
  * @desc Interact with AI chatbot
  * @access Private (Premium)
  */
@@ -428,9 +323,8 @@ router.post('/chatbot', authenticate, isPremium, async (req, res) => {
       message: 'AI service unavailable',
       details: error.response?.data || error.message 
     });
->>>>>>> 1d1e2513b9e8ac5f36f74d326d2a76f901e82987
   }
-);
+});
 
 /**
  * AI Model Management Routes
@@ -512,28 +406,6 @@ router.post('/models/:id/test',
 );
 
 /**
-<<<<<<< HEAD
- * AI Performance and Optimization Routes
- */
-
-// Get AI performance statistics
-router.get('/performance/stats', authenticate, aiController.getAIPerformanceStats);
-
-// Optimize AI performance - admin only
-router.post('/performance/optimize', 
-    [authenticate, isAdmin], 
-    aiController.optimizeAIPerformance
-);
-
-// Clear AI cache - admin only
-router.post('/performance/clear-cache', 
-    [
-        authenticate, 
-        isAdmin,
-        body('type').optional().isIn(['all', 'responses', 'models', 'predictions']).withMessage('Invalid cache type')
-    ], 
-    aiController.clearAICache
-=======
  * @route POST /api/ai/analyze-health
  * @desc Analyze plant health from image
  * @access Private (Premium)
@@ -580,7 +452,6 @@ router.post('/detect-disease',
   isPremium,
   upload.single('image'),
   aiController.detectDisease
->>>>>>> 1d1e2513b9e8ac5f36f74d326d2a76f901e82987
 );
 
 module.exports = router;

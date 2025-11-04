@@ -22,7 +22,6 @@ export default function AuthProvider({ children }) {
 
   // Check if the user is authenticated on mount and after navigation
   useEffect(() => {
-<<<<<<< HEAD
   console.log('[auth] current user:', user);
 }, [user]);
 
@@ -47,66 +46,6 @@ export default function AuthProvider({ children }) {
 
     Cookies.set('token', t, {secure : true, sameSite: 'lax' });
     Cookies.set('user', JSON.stringify(u), {secure : true, sameSite: 'lax' });
-=======
-    const checkAuth = async () => {
-      try {
-        // Get token from cookies
-        const cookieToken = Cookies.get('token');
-        
-        if (!cookieToken) {
-          setToken(null);
-          setUser(null);
-          setLoading(false);
-          return;
-        }
-        
-        // Try to fetch the user profile using the token from cookies in the Authorization header
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || ''}/auth/me`, {
-          credentials: 'include',
-          headers: {
-            'Authorization': `Bearer ${cookieToken}`
-          }
-        });
-
-        if (response.ok) {
-          const data = await response.json();
-          setToken(cookieToken); // Store token for future requests
-          setUser(data.user);
-        } else {
-          console.log('Auth check failed:', response.status, response.statusText);
-          // Clear state and cookie if unauthorized or token expired
-          setToken(null);
-          setUser(null);
-          Cookies.remove('token');
-          
-          // If it's a 401, redirect to login
-          if (response.status === 401) {
-            console.log('Token expired or invalid, clearing auth state');
-          }
-        }
-      } catch (error) {
-        console.error('Error checking authentication:', error);
-        // Clear token and user on error
-        setToken(null);
-        setUser(null);
-      } finally {
-        setLoading(false);
-      }
-    };
-    
-    checkAuth();
-  }, []);
-
-  const login = (t, u) => { 
-    // Store token in cookie for later use in API requests
-    Cookies.set('token', t, { 
-      expires: 1, // 1 day
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'Lax'
-    });
-    
-    // Update local state
->>>>>>> 1d1e2513b9e8ac5f36f74d326d2a76f901e82987
     setToken(t); 
     setUser(u); 
   };

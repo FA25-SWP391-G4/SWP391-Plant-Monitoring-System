@@ -383,15 +383,8 @@ async function sendWelcomeEmail(user) {
  */
 async function login(req, res) {
     try {
-<<<<<<< HEAD
-        // Debug: log incoming request for easier troubleshooting
-        console.debug('[authController.login] incoming request', { method: req.method, path: req.path, body: req.body });
-        const { email, password } = req.body;
-        console.log(`[LOGIN] Attempt for email: ${email}`);
-=======
         const { email, password, googleId, refreshToken, loginMethod } = req.body;
         console.log(`[LOGIN] Attempt for email: ${email}, googleId: ${googleId || 'none'}, method: ${loginMethod || 'password'}`);
->>>>>>> 1d1e2513b9e8ac5f36f74d326d2a76f901e82987
 
         // Validate inputs for regular login
         if (!googleId && (!email || !password)) {
@@ -404,12 +397,6 @@ async function login(req, res) {
         // Find user by email
         let user = await User.findByEmail(email);
         if (!user) {
-<<<<<<< HEAD
-            // Provide a little more debug info in non-production to help trace 404/401 causes
-            if (process.env.NODE_ENV !== 'production') {
-                console.debug('[authController.login] user not found for email:', email);
-            }
-=======
             console.log(`[LOGIN] User not found: ${email}`);
             
             // If this is a Google login and user doesn't exist, redirect to registration
@@ -421,7 +408,6 @@ async function login(req, res) {
                 return res.redirect(`${frontendUrl}/register?error=account_not_found&email=${encodeURIComponent(email)}&google=true`);
             }
             
->>>>>>> 1d1e2513b9e8ac5f36f74d326d2a76f901e82987
             return res.status(401).json({
                 error: 'Invalid email or password'
             });
@@ -487,15 +473,6 @@ async function login(req, res) {
                 });
             }
 
-<<<<<<< HEAD
-        if (!isPasswordValid) {
-            if (process.env.NODE_ENV !== 'production') {
-                console.debug('[authController.login] invalid password for user:', user.user_id);
-            }
-            return res.status(401).json({
-                error: 'Invalid email or password'
-            });
-=======
             // Validate password
             const isPasswordValid = await user.validatePassword(password);
             if (!isPasswordValid) {
@@ -504,7 +481,6 @@ async function login(req, res) {
                     error: 'Invalid email or password'
                 });
             }
->>>>>>> 1d1e2513b9e8ac5f36f74d326d2a76f901e82987
         }
 
         // Generate JWT token

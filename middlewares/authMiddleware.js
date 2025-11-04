@@ -53,29 +53,6 @@ const authMiddleware = async (req, res, next) => {
         // Verify token
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
         
-<<<<<<< HEAD
-        // Handle system-level tokens for internal API calls
-        if (decoded.user_id === 'system' && decoded.role === 'system') {
-            req.user = { 
-                user_id: 'system', 
-                role: 'system', 
-                name: 'System',
-                isSystem: true 
-            };
-        } else {
-            // Find user by ID from decoded token
-            const user = await User.findById(decoded.user_id);
-            
-            if (!user) {
-                return res.status(404).json({ 
-                    success: false,
-                    error: 'User not found. Token may be invalid.' 
-                });
-            }
-            
-            // Attach user to request
-            req.user = user;
-=======
         // Validate UUID format from token
         if (!decoded.user_id || !isValidUUID(decoded.user_id)) {
             console.error('[AUTH MIDDLEWARE] Invalid user_id UUID in token:', decoded.user_id);
@@ -96,8 +73,16 @@ const authMiddleware = async (req, res, next) => {
                 success: false,
                 error: 'User not found. Token may be invalid.' 
             });
->>>>>>> 1d1e2513b9e8ac5f36f74d326d2a76f901e82987
         }
+
+        // Attach user to request object
+        req.user = {
+            userId: user.user_id || decoded.user_id,
+            username: user.username,
+            email: user.email,
+            role: user.role
+        };
+        console.log('[AUTH MIDDLEWARE] User authenticated:', req.user.username);
         
         // Proceed to next middleware/route handler
         next();

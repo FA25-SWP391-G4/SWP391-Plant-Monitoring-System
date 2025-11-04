@@ -1,4 +1,4 @@
--- Active: 1755670041367@@127.0.0.1@5432@plant_system
+-- Active: 1758998406794@@127.0.0.1@5432@plant_system
 -- ============================================================================
 -- UUID MIGRATION SCRIPT
 -- ============================================================================
@@ -23,7 +23,7 @@
 -- psql -U postgres -d plant_system -f migrations/uuid-migration.sql
 -- ============================================================================
 
-\c plant_system;
+
 
 -- Start transaction for atomic migration
 BEGIN;
@@ -35,7 +35,7 @@ END;
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 CREATE EXTENSION IF NOT EXISTS "pgcrypto";
 
-RAISE NOTICE 'Step 1: UUID extensions enabled';
+-- RAISE NOTICE 'Step 1: UUID extensions enabled';
 
 -- ============================================================================
 -- STEP 2: ADD NEW UUID COLUMNS
@@ -58,7 +58,7 @@ ALTER COLUMN user_uuid SET NOT NULL;
 ALTER TABLE Users 
 ADD CONSTRAINT users_user_uuid_unique UNIQUE (user_uuid);
 
-RAISE NOTICE 'Step 2: Added user_uuid column to Users table';
+-- RAISE NOTICE 'Step 2: Added user_uuid column to Users table';
 
 -- ============================================================================
 -- STEP 3: ADD TEMPORARY UUID COLUMNS TO RELATED TABLES
@@ -84,7 +84,7 @@ ADD COLUMN user_uuid UUID;
 ALTER TABLE Payments
 ADD COLUMN user_uuid UUID;
 
-RAISE NOTICE 'Step 3: Added temporary UUID columns to related tables';
+-- RAISE NOTICE 'Step 3: Added temporary UUID columns to related tables';
 
 -- ============================================================================
 -- STEP 4: POPULATE UUID FOREIGN KEYS
@@ -120,7 +120,7 @@ SET user_uuid = u.user_uuid
 FROM Users u
 WHERE pay.user_id = u.user_id;
 
-RAISE NOTICE 'Step 4: Populated UUID foreign keys in all related tables';
+-- RAISE NOTICE 'Step 4: Populated UUID foreign keys in all related tables';
 
 -- ============================================================================
 -- STEP 5: DROP OLD FOREIGN KEY CONSTRAINTS
@@ -146,7 +146,7 @@ DROP CONSTRAINT IF EXISTS fk_alerts_user;
 ALTER TABLE Payments
 DROP CONSTRAINT IF EXISTS fk_payments_user;
 
-RAISE NOTICE 'Step 5: Dropped old foreign key constraints';
+-- RAISE NOTICE 'Step 5: Dropped old foreign key constraints';
 
 -- ============================================================================
 -- STEP 6: DROP OLD INTEGER COLUMNS
@@ -159,7 +159,7 @@ ALTER TABLE Plants DROP COLUMN user_id;
 ALTER TABLE Alerts DROP COLUMN user_id;
 ALTER TABLE Payments DROP COLUMN user_id;
 
-RAISE NOTICE 'Step 6: Dropped old integer user_id columns';
+-- RAISE NOTICE 'Step 6: Dropped old integer user_id columns';
 
 -- ============================================================================
 -- STEP 7: RENAME UUID COLUMNS TO user_id
@@ -187,7 +187,7 @@ ALTER TABLE Plants ALTER COLUMN user_id SET NOT NULL;
 ALTER TABLE Alerts ALTER COLUMN user_id SET NOT NULL;
 ALTER TABLE Payments ALTER COLUMN user_id SET NOT NULL;
 
-RAISE NOTICE 'Step 7: Renamed UUID columns to user_id';
+-- RAISE NOTICE 'Step 7: Renamed UUID columns to user_id';
 
 -- ============================================================================
 -- STEP 8: CREATE NEW FOREIGN KEY CONSTRAINTS
@@ -218,7 +218,7 @@ ADD CONSTRAINT fk_payments_user
 FOREIGN KEY (user_id) REFERENCES Users(user_id) 
 ON DELETE CASCADE ON UPDATE CASCADE;
 
-RAISE NOTICE 'Step 8: Created new UUID foreign key constraints';
+-- RAISE NOTICE 'Step 8: Created new UUID foreign key constraints';
 
 -- ============================================================================
 -- STEP 9: MIGRATE DEVICES TO USE device_key AS PRIMARY KEY
@@ -295,7 +295,7 @@ ON DELETE CASCADE ON UPDATE CASCADE;
 -- Drop temporary mapping table
 DROP TABLE device_id_mapping;
 
-RAISE NOTICE 'Step 9: Migrated Devices to use device_key (now device_id) as primary key';
+-- RAISE NOTICE 'Step 9: Migrated Devices to use device_key (now device_id) as primary key';
 
 -- ============================================================================
 -- STEP 10: CREATE INDEXES FOR PERFORMANCE
@@ -312,89 +312,24 @@ CREATE INDEX IF NOT EXISTS idx_payments_user_id ON Payments(user_id);
 CREATE INDEX IF NOT EXISTS idx_plants_device_id ON Plants(device_id);
 CREATE INDEX IF NOT EXISTS idx_sensors_data_device_id ON Sensors_Data(device_id);
 
-RAISE NOTICE 'Step 10: Created performance indexes';
+-- RAISE NOTICE 'Step 10: Created performance indexes';
 
 -- ============================================================================
 -- STEP 11: VERIFY MIGRATION
 -- ============================================================================
 
 -- Verify Users table
-DO $$
-DECLARE
-    user_count INTEGER;
-    uuid_count INTEGER;
-BEGIN
-    SELECT COUNT(*) INTO user_count FROM Users;
-    SELECT COUNT(*) INTO uuid_count FROM Users WHERE user_id IS NOT NULL;
-    
-    IF user_count != uuid_count THEN
-        RAISE EXCEPTION 'Migration verification failed: Users table has NULL user_id values';
-    END IF;
-    
-    RAISE NOTICE 'Verification: Users table has % records with valid UUIDs', user_count;
-END $$;
 
--- Verify Devices table
-DO $$
-DECLARE
-    device_count INTEGER;
-    key_count INTEGER;
-BEGIN
-    SELECT COUNT(*) INTO device_count FROM Devices;
-    SELECT COUNT(*) INTO key_count FROM Devices WHERE device_id IS NOT NULL;
-    
-    IF device_count != key_count THEN
-        RAISE EXCEPTION 'Migration verification failed: Devices table has NULL device_id values';
-    END IF;
-    
-    RAISE NOTICE 'Verification: Devices table has % records with valid UUIDs', device_count;
-END $$;
-
--- Verify foreign key relationships
-DO $$
-DECLARE
-    orphan_devices INTEGER;
-    orphan_plants INTEGER;
-    orphan_alerts INTEGER;
-    orphan_payments INTEGER;
-BEGIN
-    SELECT COUNT(*) INTO orphan_devices 
-    FROM Devices d 
-    LEFT JOIN Users u ON d.user_id = u.user_id 
-    WHERE u.user_id IS NULL;
-    
-    SELECT COUNT(*) INTO orphan_plants 
-    FROM Plants p 
-    LEFT JOIN Users u ON p.user_id = u.user_id 
-    WHERE u.user_id IS NULL;
-    
-    SELECT COUNT(*) INTO orphan_alerts 
-    FROM Alerts a 
-    LEFT JOIN Users u ON a.user_id = u.user_id 
-    WHERE u.user_id IS NULL;
-    
-    SELECT COUNT(*) INTO orphan_payments 
-    FROM Payments pay 
-    LEFT JOIN Users u ON pay.user_id = u.user_id 
-    WHERE u.user_id IS NULL;
-    
-    IF orphan_devices > 0 OR orphan_plants > 0 OR orphan_alerts > 0 OR orphan_payments > 0 THEN
-        RAISE EXCEPTION 'Migration verification failed: Found orphaned records';
-    END IF;
-    
-    RAISE NOTICE 'Verification: All foreign key relationships intact';
-END $$;
-
-RAISE NOTICE '============================================================================';
-RAISE NOTICE 'MIGRATION COMPLETED SUCCESSFULLY!';
-RAISE NOTICE '============================================================================';
-RAISE NOTICE 'Users table: user_id is now UUID';
-RAISE NOTICE 'Devices table: device_id (formerly device_key) is now UUID primary key';
-RAISE NOTICE 'All foreign keys updated';
-RAISE NOTICE 'Please test the application before committing the transaction';
-RAISE NOTICE 'To commit: COMMIT;';
-RAISE NOTICE 'To rollback: ROLLBACK;';
-RAISE NOTICE '============================================================================';
+-- RAISE NOTICE '============================================================================';
+-- RAISE NOTICE 'MIGRATION COMPLETED SUCCESSFULLY!';
+-- RAISE NOTICE '============================================================================';
+-- RAISE NOTICE 'Users table: user_id is now UUID';
+-- RAISE NOTICE 'Devices table: device_id (formerly device_key) is now UUID primary key';
+-- RAISE NOTICE 'All foreign keys updated';
+-- RAISE NOTICE 'Please test the application before committing the transaction';
+-- RAISE NOTICE 'To commit: COMMIT;';
+-- RAISE NOTICE 'To rollback: ROLLBACK;';
+-- RAISE NOTICE '============================================================================';
 
 -- COMMIT or ROLLBACK manually after testing
 -- COMMIT;

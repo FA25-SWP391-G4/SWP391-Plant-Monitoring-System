@@ -122,7 +122,7 @@ async function checkSmartPlantConnection() {
 
     const data = await proxyResp.json().catch(() => ({}));
     if (proxyResp.ok && data.ok) {
-      setStatus(`✅ Device linked: ${data.data.device_name || 'ESP32'} (ID ${data.data.device_id})`);
+      setStatus(`✅ Device linked: ${data.data.device_name || 'ESP32'} (ID ${data.data.device_key})`);
       setStep(3);
       setTimeout(() => router.push('/dashboard'), 2000);
     } else {
