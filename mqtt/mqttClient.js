@@ -100,7 +100,7 @@ async function processSensorData(deviceKey, data) {
 
     // Save sensor data to database
     await db.pool.query(
-      `INSERT INTO sensors_data (, timestamp, soil_moisture, temperature, air_humidity, light_intensity)
+      `INSERT INTO sensors_data (device_key, timestamp, soil_moisture, temperature, air_humidity, light_intensity)
        VALUES ($1, NOW(), $2, $3, $4, $5)`,
       [deviceKey, data.soilMoisture, data.temperature, data.airHumidity, data.lightIntensity]
     );

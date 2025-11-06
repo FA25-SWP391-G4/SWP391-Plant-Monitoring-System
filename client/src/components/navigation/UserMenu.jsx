@@ -148,10 +148,7 @@ const LoggedInUserMenu = ({ user, logout, t, i18n, theme, setLightTheme, setDark
   const availableLanguages = {
     vi: { name: 'Tiếng Việt', flag: '/flags/vi.svg', nativeName: 'Tiếng Việt' },
     en: { name: 'English', flag: '/flags/en.svg', nativeName: 'English' },
-    fr: { name: 'French', flag: '/flags/fr.svg', nativeName: 'Français' },
-    zh: { name: 'Chinese', flag: '/flags/zh.svg', nativeName: '中文' },
-    kr: { name: 'Korean', flag: '/flags/kr.svg', nativeName: '한국어' },
-    ja: { name: 'Japanese', flag: '/flags/ja.svg', nativeName: '日本語' }
+
   };
 
   // Get current language

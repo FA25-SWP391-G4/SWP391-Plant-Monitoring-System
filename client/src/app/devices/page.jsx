@@ -8,6 +8,7 @@ import AppLayout from '@/components/layout/AppLayout';
 import DashboardHeader from '@/components/dashboard/DashboardHeader';
 import deviceApi from '@/api/deviceApi';
 import { toast } from 'react-toastify';
+import { PlantCard } from '@/components/dashboard/PlantCard';
 
 export default function DevicesPage() {
   const { t } = useTranslation();
@@ -27,7 +28,12 @@ export default function DevicesPage() {
     const fetchDevices = async () => {
       try {
         setLoading(true);
-        const devicesData = await deviceApi.getAll();
+        const response = await deviceApi.getAll();
+        // Ensure we're getting an array of devices
+        const devicesData = Array.isArray(response) ? response : 
+                          response.data ? (Array.isArray(response.data) ? response.data : []) : 
+                          [];
+        console.log('Devices data:', devicesData); // For debugging
         setDevices(devicesData);
         setError(null);
       } catch (err) {
@@ -45,13 +51,7 @@ export default function DevicesPage() {
   }, [user, authLoading, router, t]);
 
   return (
-    <AppLayout>
       <div className="flex flex-col flex-1 p-4 lg:p-8">
-        <DashboardHeader 
-          title={t('devices.title', 'My Devices')} 
-          description={t('devices.description', 'Manage your connected devices and sensors')}
-        />
-
         <div className="mt-6 bg-white dark:bg-gray-800 rounded-lg shadow">
           {loading ? (
             <div className="p-8 flex justify-center">
@@ -64,6 +64,16 @@ export default function DevicesPage() {
           ) : error ? (
             <div className="p-8 text-center text-red-500">
               {error}
+              <button 
+                onClick={() => window.location.reload()} 
+                className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+              >
+                {t('common.retry', 'Retry')}
+              </button>
+            </div>
+          ) : !Array.isArray(devices) ? (
+            <div className="p-8 text-center text-red-500">
+              {t('devices.invalidData', 'Invalid data received from server')}
               <button 
                 onClick={() => window.location.reload()} 
                 className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
@@ -156,6 +166,5 @@ export default function DevicesPage() {
           )}
         </div>
       </div>
-    </AppLayout>
   );
 }

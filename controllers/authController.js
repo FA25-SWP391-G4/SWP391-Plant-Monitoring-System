@@ -1141,17 +1141,17 @@ async function getCurrentUser(req, res) {
         console.log('  - User ID:', req.user.user_id);
         console.log('  - Email:', req.user.email);
         console.log('  - Role:', req.user.role);
-        console.log('  - Given name:', req.user.given_name || req.user.givenName);
-        console.log('  - Family name:', req.user.family_name || req.user.familyName);
+        console.log('  - Given name:', req.user.given_name || req.user.given_name);
+        console.log('  - Family name:', req.user.family_name || req.user.family_name);
         
         // Return the user data without sensitive fields with consistent naming
         const userData = {
             id: req.user.user_id, // Add id field for frontend compatibility
             user_id: req.user.user_id,
             email: req.user.email,
-            given_name: req.user.given_name || req.user.givenName,
-            family_name: req.user.family_name || req.user.familyName,
-            full_name: req.user.full_name || `${req.user.given_name || req.user.givenName || ''} ${req.user.family_name || req.user.familyName || ''}`.trim(),
+            given_name: req.user.given_name || req.user.given_name,
+            family_name: req.user.family_name || req.user.family_name,
+            full_name: req.user.full_name || `${req.user.given_name || req.user.given_name || ''} ${req.user.family_name || req.user.family_name || ''}`.trim(),
             role: req.user.role,
             isPremium: req.user.role === 'Premium' || req.user.role === 'Admin',
             profile_picture: req.user.profile_picture,
@@ -1236,42 +1236,54 @@ async function sendWelcomeEmail(user) {
  */
 async function login(req, res) {
     try {
-        const { email, password } = req.body;
+        const { email, password, googleId} = req.body;
         console.log(`[LOGIN] Attempt for email: ${email}`);
+        let user = null;
 
         // Validate inputs
-        if (!email || !password) {
-            console.log('[LOGIN] Missing email or password');
-            return res.status(400).json({
-                success: false,
-                error: 'The Google account email does not match your account email'
-            });
-        }
+        if (googleId) {
+            user = await User.findByGoogleId(googleId);
+            if (user && user.email === email) {
+                console.log(`[LOGIN] Google ID matches for user: ${email}`);
+            } else {
+                console.log('[LOGIN] Missing email or password');
+                return res.status(400).json({
+                    success: false,
+                    error: 'This email is not registered with Google ID. Please link your account first.'
+                });
+            }
+        } else {
+            if (!email || !password) {
+                console.log('[LOGIN] Missing email or password');
+                return res.status(400).json({
+                    error: 'Email and password are required'
+                });
+            }
+            // Find user by email
+            user = await User.findByEmail(email);
+            if (!user) {
+                console.log(`[LOGIN] User not found: ${email}`);
+                return res.status(401).json({
+                    error: 'This email is not registered. Please sign up first.'
+                });
+            }
 
-        // Find user by email
-        const user = await User.findByEmail(email);
-        if (!user) {
-            console.log(`[LOGIN] User not found: ${email}`);
-            return res.status(401).json({
-                error: 'Invalid email or password'
-            });
-        }
+            console.log(`[LOGIN] User found: ${user.email}, checking password...`);
+            // Improved safer debug logging without exposing passwords
+            console.log(`[LOGIN] User object has password hash: ${!!user.password}`);
+            console.log(`[LOGIN] Password hash type: ${typeof user.password}`);
+            console.log(`[LOGIN] Password hash length: ${user.password ? user.password.length : 'N/A'}`);
+            console.log(`[LOGIN] Input password provided: ${!!password}`);
 
-        console.log(`[LOGIN] User found: ${user.email}, checking password...`);
-        // Improved safer debug logging without exposing passwords
-        console.log(`[LOGIN] User object has password hash: ${!!user.password}`);
-        console.log(`[LOGIN] Password hash type: ${typeof user.password}`);
-        console.log(`[LOGIN] Password hash length: ${user.password ? user.password.length : 'N/A'}`);
-        console.log(`[LOGIN] Input password provided: ${!!password}`);
+            // Validate password
+            const isPasswordValid = await user.validatePassword(password);
+            console.log(`[LOGIN] Password validation result: ${isPasswordValid}`);
 
-        // Validate password
-        const isPasswordValid = await user.validatePassword(password);
-        console.log(`[LOGIN] Password validation result: ${isPasswordValid}`);
-
-        if (!isPasswordValid) {
-            return res.status(401).json({
-                error: 'Invalid email or password'
-            });
+            if (!isPasswordValid) {
+                return res.status(401).json({
+                    error: 'Invalid email or password'
+                });
+            }
         }
 
         // Generate JWT token
@@ -1279,18 +1291,18 @@ async function login(req, res) {
         console.log(`[LOGIN] Success for user: ${user.email}`);
         
         // Include both name fields for proper display
-        const fullName = user.givenName && user.familyName 
-            ? `${user.givenName} ${user.familyName}`
-            : user.familyName || user.givenName || 'User';
+        const fullName = user.given_name && user.family_name 
+            ? `${user.given_name} ${user.family_name}`
+            : user.family_name || user.given_name || 'User';
             
-        console.log(`[LOGIN] User name fields: given_name=${user.givenName}, family_name=${user.familyName}, fullName=${fullName}`);
+        console.log(`[LOGIN] User name fields: given_name=${user.given_name}, family_name=${user.family_name}, fullName=${fullName}`);
         
         // Create user response object
         const userData = {
             user_id: user.user_id,
             email: user.email,
-            family_name: user.familyName,
-            given_name: user.givenName,
+            family_name: user.family_name,
+            given_name: user.given_name,
             full_name: fullName,
             role: user.role
         };
@@ -1345,10 +1357,39 @@ async function logout(req, res) {
     }
 }
 
-/**
- * Unlink Google account from user account
- * Only to be called after user is authenticated
- */
+async function linkGoogleAccount(req, res) {
+    try {
+        const userId = req.user.user_id; // From auth middleware
+        const { googleId, googleRefreshToken } = req.body;
+
+        // Find the user
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(404).json({
+                success: false,
+                error: 'User not found'
+            });
+        }
+
+        // Update user with Google information
+        user.google_id = googleId;
+        user.google_refresh_token = googleRefreshToken;
+
+        await user.save();
+
+        res.status(200).json({
+            success: true,
+            message: 'Google account linked successfully'
+        });
+    } catch (error) {
+        console.error('[AUTH] Link Google account error:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Failed to link Google account'
+        });
+    }
+}
+
 async function unlinkGoogleAccount(req, res) {
     try {
         const userId = req.user.user_id; // From auth middleware

@@ -146,9 +146,9 @@ const authMiddleware = async (req, res, next) => {
         // Attach user to request and include JWT decoded fields
         req.user = {
             ...user,
-            family_name: decoded.family_name || user.familyName,
-            given_name: decoded.given_name || user.givenName,
-            full_name: decoded.full_name
+            family_name: decoded.family_name || user.family_name,
+            given_name: decoded.given_name || user.given_name,
+            full_name: decoded.full_name || user.fullName
         };
         
         console.log('User data attached to request:', {

@@ -25,6 +25,7 @@ const { pool } = require('../config/db.js');
 const { connectAwsIoT } = require('../services/awsIOTClient');
 const { mqtt } = require('aws-iot-device-sdk-v2');
 const { isValidUUID } = require('../utils/uuidGenerator');
+const { data } = require('@tensorflow/tfjs');
 
 // AWS IoT connection for device communication
 let awsIoTConnection = null;
@@ -570,27 +571,40 @@ async function setSensorThresholds(req, res) {
  */
 const getUserPlants = async (req, res) => {
     try {
-        const userId = req.user.userId;
+        const userId = req.user.user_id; // Fixed: using user_id instead of userId to match JWT auth
         
         // Get all plants for the user with their devices and zones
         const query = `
             SELECT 
-                p.*,
-                d.device_key,
+                p.plant_id,
+                p.user_id,
+                p.custom_name,
+                p.profile_id,
+                p.moisture_threshold,
+                p.auto_watering_on,
+                p.status,
+                p.notes,
+                p.created_at,
+                p.device_key,
+                p.image,
+                p.zone_id,
                 d.device_name,
+                d.status as device_status,
+                d.last_seen as device_last_seen,
                 z.zone_name,
-                z.description as zone_description
-            FROM 
-                "plants" p
-            LEFT JOIN 
-                "devices" d ON p.device_key = d.device_key
-            LEFT JOIN 
-                "zones" z ON p.zone_id = z.zone_id
-            WHERE 
-                p.user_id = $1
+                z.description as zone_description,
+                pp.species_name,
+                pp.description as species_description,
+                pp.ideal_moisture
+            FROM plants p
+            LEFT JOIN devices d ON p.device_key = d.device_key
+            LEFT JOIN zones z ON p.zone_id = z.zone_id
+            LEFT JOIN plant_profiles pp ON p.profile_id = pp.profile_id
+            WHERE p.user_id = $1
             ORDER BY p.created_at DESC
         `;
-        
+
+        console.log('Fetching plants for user:', userId); // Added logging
         const { rows } = await pool.query(query, [userId]);
         
         if (rows.length === 0) {
@@ -614,7 +628,7 @@ const getUserPlants = async (req, res) => {
                 lastWatered: null, // Will be populated from watering history later
                 auto_watering_on: plant.auto_watering_on || false,
                 thresholds: plant.thresholds || {},
-                device_id: plant.device_key,
+                device_key: plant.device_key,
                 device_name: plant.device_name,
                 zone_id: plant.zone_id,
                 zone_name: plant.zone_name,
@@ -648,19 +662,46 @@ const getUserPlants = async (req, res) => {
  */
 const getPlantById = async (req, res) => {
     try {
+        console.log('\n[GET PLANT] Getting plant details');
+        console.log('[GET PLANT] Plant ID:', req.params.plantId);
+        console.log('[GET PLANT] User:', req.user.user_id);
+        console.log('[GET PLANT] Auth header:', req.headers.authorization ? 'Present' : 'Missing');
+
         const userId = req.user.user_id;
-        const plantId = req.params.id;
-        
+        const plantId = req.params.plantId;
+
         // Get the plant with its device and latest sensor data
         const query = `
+            WITH latest_sensor_data AS (
+                SELECT DISTINCT ON (device_key)
+                    device_key,
+                    timestamp,
+                    soil_moisture AS moisture,
+                    temperature,
+                    air_humidity AS humidity,
+                    light_intensity AS light
+                FROM sensors_data
+                ORDER BY device_key, timestamp DESC
+            )
             SELECT 
                 p.*,
                 d.device_key,
-                d.device_name
+                d.device_name,
+                pp.species_name,
+                pp.description AS profile_description,
+                sd.timestamp,
+                sd.moisture,
+                sd.temperature,
+                sd.humidity,
+                sd.light
             FROM 
-                "plants" p
+                plants p
             LEFT JOIN 
-                "devices" d ON p.device_key = d.device_key
+                devices d ON p.device_key = d.device_key
+            LEFT JOIN
+                plant_profiles pp ON p.profile_id = pp.profile_id
+            LEFT JOIN
+                latest_sensor_data sd ON d.device_key = sd.device_key
             WHERE 
                 p.plant_id = $1 AND p.user_id = $2
         `;
@@ -692,17 +733,22 @@ const getPlantById = async (req, res) => {
         // Format the response
         const formattedPlant = {
             plant_id: plant.plant_id,
-            name: plant.name,
-            species: plant.species || 'Unknown',
+            name: plant.custom_name,
+            species: plant.species_name || 'Unknown',
             location: plant.location || 'Not specified',
             status: plant.status || 'healthy',
-            health: plant.health || 100,
             image: plant.image_url || null,
             lastWatered: plant.last_watered || new Date().toISOString(),
             auto_watering_on: plant.auto_watering_on || false,
             device_key: plant.device_key,
             device_name: plant.device_name,
-            thresholds: thresholds
+            data: {
+                timestamp: plant.timestamp,
+                moisture: plant.moisture,
+                temperature: plant.temperature,
+                humidity: plant.humidity,
+                light: plant.light
+            }
         };
         
         res.json(formattedPlant);
@@ -851,7 +897,7 @@ const createPlant = async (req, res) => {
             lastWatered: null, // Never watered yet
             auto_watering_on: createdPlant.auto_watering_on,
             moisture_threshold: createdPlant.moisture_threshold,
-            device_id: createdPlant.device_id,
+            device_key: createdPlant.device_key,
             device_name: null, // No device assigned yet
             zone_id: createdPlant.zone_id,
             zone_name: zoneInfo ? zoneInfo.zone_name : null,

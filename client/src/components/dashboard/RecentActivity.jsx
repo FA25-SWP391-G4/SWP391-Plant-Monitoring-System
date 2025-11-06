@@ -26,7 +26,7 @@ export default function RecentActivity() {
         if (mounted) setLoading(false);
       }
     }
-  ];
+  }, []);
   
   const getActivityIcon = (type) => {
     switch(type) {
