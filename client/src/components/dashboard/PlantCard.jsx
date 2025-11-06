@@ -113,7 +113,7 @@ export default function PlantCard({ plant, sensorData = {} }) {
         </div>
         
         {/* Sensor data */}
-        <div className="grid grid-cols-3 gap-2 mb-2">
+        <div className="grid grid-cols-4 gap-2 mb-2">
           {/* Moisture level */}
           <div 
             className={`flex flex-col ${activeChart === 'soil_moisture' ? 'bg-blue-50 rounded p-1' : ''} cursor-pointer`}
@@ -161,6 +161,20 @@ export default function PlantCard({ plant, sensorData = {} }) {
                 <path d="m19.07 4.93-1.41 1.41"></path>
               </svg>
               <span className="font-medium">{sensorData?.light_intensity || 'N/A'} lux</span>
+            </div>
+          </div>
+          {/* Humidity */}
+          <div 
+            className={`flex flex-col ${activeChart === 'air_humidity' ? 'bg-cyan-50 rounded p-1' : ''} cursor-pointer`}
+            onClick={() => { setActiveChart('air_humidity'); setShowHistory(true); }}
+          >
+            <span className="text-xs text-gray-500 mb-1">{t('metrics.air_humidity', 'Air Humidity')}</span>
+            <div className="flex items-center">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-cyan-500 mr-1">
+                <path d="M12 2s-6 6.5-6 11a6 6 0 0 0 12 0c0-4.5-6-11-6-11z"></path>
+                <circle cx="12" cy="13" r="3"></circle>
+              </svg>
+              <span className="font-medium">{sensorData?.air_humidity || 'N/A'}%</span>
             </div>
           </div>
         </div>

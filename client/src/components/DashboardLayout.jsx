@@ -41,7 +41,9 @@ const DashboardLayoutInner = ({ children }) => {
       '/support',
       '/documentation',
       '/ai',
-      '/profile'
+      '/profile',
+      '/add-plant',
+      '/devices',
     ];
     
     return dashboardRoutes.some(route => 
@@ -63,7 +65,9 @@ const DashboardLayoutInner = ({ children }) => {
       '/support': 'Support',
       '/documentation': 'Documentation',
       '/ai': 'AI Assistant',
-      '/profile': 'Profile'
+      '/profile': 'Profile',
+      '/add-plant': 'Add New Plant',
+      '/devices': 'Devices',
     };
 
     // Check for exact match first

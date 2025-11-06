@@ -13,6 +13,7 @@ import { Loader2, Edit, Save, X, Lock, User as UserIcon } from 'lucide-react';
 import axios from 'axios';
 import { getAuthToken } from '@/utils/auth';
 import { useTheme } from '@/contexts/ThemeContext';
+import UserRoleBadge from '@/components/shared/UserRoleBadge';
 
 /**
  * User Profile Page
@@ -225,13 +226,7 @@ const ProfilePage = () => {
           {/* Role Badge */}
           <div className="stagger-item">
             <label className="block text-sm font-medium text-gray-700 mb-2">Role</label>
-            <span className={`inline-flex px-3 py-1 rounded-full text-sm font-medium slide-in-right ${
-              user.role === 'Admin' ? 'bg-red-100 text-red-800' :
-              user.role === 'Premium' ? 'bg-purple-100 text-purple-800' :
-              'bg-gray-100 text-gray-800'
-            }`}>
-              {user.role}
-            </span>
+              {user && <UserRoleBadge role={user.role || 'free'} className="ml-2" />}
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

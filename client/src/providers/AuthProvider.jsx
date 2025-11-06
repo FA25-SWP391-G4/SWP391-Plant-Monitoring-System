@@ -54,7 +54,6 @@ export default function AuthProvider({ children }) {
   };
 
   const logout = async () => { 
-    const logoutStart = startTiming('logout-process');
     console.log('[AUTH PROVIDER] Logout initiated');
     
     try {
@@ -102,7 +101,6 @@ export default function AuthProvider({ children }) {
       // This follows the same pattern as the Google auth callback fix
       setTimeout(() => {
         console.log('[AUTH PROVIDER] Executing delayed redirect to login page...');
-        endTiming('logout-process');
         router.push('/login');
       }, 100); // Small delay to let cleanup finish, similar to Google auth pattern
     }

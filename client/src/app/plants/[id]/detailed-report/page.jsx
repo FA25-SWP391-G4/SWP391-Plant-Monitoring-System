@@ -23,7 +23,7 @@ export default function PlantDetailedReportPage() {
   const [exporting, setExporting] = useState(false);
 
   useEffect(() => {
-    const fetchPlantData = async () => {
+    const fetchPlants = async () => {
       try {
         setLoading(true);
         const response = await plantApi.getById(id);
@@ -45,7 +45,7 @@ export default function PlantDetailedReportPage() {
     };
 
     if (id) {
-      fetchPlantData();
+      fetchPlants();
     }
   }, [id, router, t]);
 

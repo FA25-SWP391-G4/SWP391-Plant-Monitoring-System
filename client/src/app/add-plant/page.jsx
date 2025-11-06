@@ -154,7 +154,7 @@ async function checkSmartPlantConnection() {
   return (
     <div className="min-h-screen bg-gray-50 p-6">
       <div className="max-w-2xl mx-auto bg-white shadow rounded p-6">
-        <h1 className="text-xl font-semibold mb-4">Add New Plant — Wi‑Fi Setup</h1>
+        <h1 className="text-xl font-semibold mb-4">Add New Device — Wi‑Fi Setup</h1>
 
         {step === 1 && (
           <div>

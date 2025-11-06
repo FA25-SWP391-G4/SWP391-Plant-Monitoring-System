@@ -5,8 +5,12 @@ import { useAuth } from '@/providers/AuthProvider';
 import { useRouter, useParams } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
 import Link from 'next/link';
+import { toast } from 'react-toastify';
 import AIWateringPrediction from '@/components/AIWateringPrediction';
-import AIChatbot from '@/components/AIChatbot';
+import AIChatbotBubble from '@/components/ai/AIChatbotBubble';
+import ConnectDeviceModal from '@/components/modals/ConnectDeviceModal';
+import plantApi from '@/api/plantApi';
+import deviceApi from '@/api/deviceApi';
 
 export default function PlantDetailPage() {
   const { user, loading } = useAuth();
@@ -20,6 +24,28 @@ export default function PlantDetailPage() {
 
   const plantId = params.id;
 
+  const handleConnectDevice = async (deviceId) => {
+    try {
+      await plantApi.connectDevice(plantId, deviceId);
+      const updatedPlant = await plantApi.getById(plantId);
+      setPlant(updatedPlant);
+      toast.success(t('devices.connected', 'Device connected successfully'));
+    } catch (error) {
+      console.error('Error connecting device:', error);
+      toast.error(t('devices.connectionError', 'Failed to connect device'));
+    }
+  };
+
+  const handleWaterNow = async () => {
+    try {
+      await deviceApi.triggerWatering(plant.device_id);
+      toast.success(t('plants.wateringTriggered', 'Watering triggered successfully'));
+    } catch (error) {
+      console.error('Error triggering watering:', error);
+      toast.error(t('plants.wateringError', 'Failed to trigger watering'));
+    }
+  };
+
   // Redirect if not logged in
   useEffect(() => {
     if (!loading && !user) {
@@ -27,52 +53,72 @@ export default function PlantDetailPage() {
     }
   }, [user, loading, router]);
 
-  // Fetch plant data
+  const [showConnectModal, setShowConnectModal] = useState(false);
+
+  // Fetch plant and sensor data
   useEffect(() => {
     const fetchPlantData = async () => {
       try {
-        // Mock plant data - would come from API
-        const mockPlant = {
-          plant_id: parseInt(plantId),
-          name: 'Snake Plant',
-          species: 'Sansevieria trifasciata',
-          image: '/images/plants/snake-plant.jpg',
-          location: 'Living Room',
-          status: 'healthy',
-          lastWatered: '2024-10-15T10:30:00Z',
-          plantedDate: '2024-08-01T00:00:00Z',
-          notes: 'This snake plant has been thriving in low light conditions. Very low maintenance.',
-          care_instructions: {
-            watering: 'Water every 2-3 weeks, allow soil to dry completely between waterings',
-            light: 'Tolerates low light but prefers bright, indirect light',
-            temperature: '65-75°F (18-24°C)',
-            humidity: '40-50%'
-          }
+        setIsLoading(true);
+        console.log('Fetching data for plant ID:', plantId);
+        
+        // [2025-11-06] Fixed JWT malformed error by using plantApi service
+        // Instead of direct fetch to ensure consistent token handling
+        const rawData = await plantApi.getById(plantId);
+        console.log('Plant API response:', rawData);
+        console.log('Parsed plant data:', rawData);
+
+        // Map the plant data structure
+        const plantData = {
+          plant_id: rawData.plant_id,
+          name: rawData.name,
+          species: rawData.species,
+          location: rawData.location || 'Not specified',
+          status: rawData.status,
+          image: rawData.image,
+          device_id: rawData.device_key?.trim(), // Trim any padding from device key
+          device_name: rawData.device_name
         };
 
-        const mockSensorData = {
-          moisture: 72,
-          temperature: 22.5,
-          humidity: 45,
-          light: 85,
-          last_updated: '2024-10-17T10:30:00Z'
-        };
+        // Map sensor data directly from the response
+        let sensorData = null;
+        if (rawData.data) {
+          sensorData = {
+            timestamp: rawData.data.timestamp,
+            moisture: rawData.data.moisture,
+            temperature: rawData.data.temperature,
+            humidity: rawData.data.humidity,
+            light: rawData.data.light
+          };
+        }
 
-        // Simulate API delay
-        await new Promise(resolve => setTimeout(resolve, 800));
-        setPlant(mockPlant);
-        setSensorData(mockSensorData);
+        // Log the state updates
+        console.log('Setting plant state to:', plantData);
+        console.log('Setting sensor state to:', sensorData);
+
+        setPlant(plantData);
+        setSensorData(sensorData);
       } catch (error) {
-        console.error('Error fetching plant data:', error);
+        console.error('Full error details:', {
+          message: error.message,
+          stack: error.stack,
+          response: error.response
+        });
+        toast.error(t('plants.errorFetching', 'Failed to fetch plant data'));
       } finally {
         setIsLoading(false);
       }
     };
 
     if (user && plantId) {
+      console.log('Starting data fetch with:', {
+        userId: user?.id,
+        plantId: plantId,
+        token: user?.token ? 'present' : 'missing'
+      });
       fetchPlantData();
     }
-  }, [user, plantId]);
+  }, [user, plantId, t]);
 
   if (loading || isLoading) {
     return (
@@ -87,7 +133,7 @@ export default function PlantDetailPage() {
 
   if (!user || !plant) {
     return (
-      <div className="flex flex-col items-center justify-center h-screen">
+      <div className="flex flex-col items-center justify-center min-h-screen p-4">
         <div className="text-red-500 mb-4">
           <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -95,7 +141,32 @@ export default function PlantDetailPage() {
         </div>
         <h2 className="text-xl font-semibold mb-2">{t('plants.notFound', 'Plant Not Found')}</h2>
         <p className="text-gray-600 mb-4">{t('plants.notFoundDesc', 'The plant you\'re looking for doesn\'t exist or you don\'t have access to it.')}</p>
-        <Link href="/dashboard" className="px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors">
+        
+        {/* Debug Information */}
+        {process.env.NODE_ENV !== 'production' && (
+          <div className="mt-4 p-4 bg-gray-100 rounded-lg text-left w-full max-w-2xl">
+            <h3 className="font-mono text-sm mb-2">Debug Info:</h3>
+            <pre className="text-xs overflow-auto">
+              {JSON.stringify({
+                plantId,
+                user: user ? { 
+                  id: user.id,
+                  hasToken: !!user.token
+                } : null,
+                plant,
+                sensorData,
+                isLoading,
+                currentState: {
+                  hasUser: !!user,
+                  hasPlant: !!plant,
+                  hasSensorData: !!sensorData
+                }
+              }, null, 2)}
+            </pre>
+          </div>
+        )}
+
+        <Link href="/dashboard" className="mt-4 px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors">
           {t('common.backToDashboard', 'Back to Dashboard')}
         </Link>
       </div>
@@ -151,18 +222,57 @@ export default function PlantDetailPage() {
 
               {/* Quick Actions */}
               <div className="flex flex-wrap gap-3">
-                <button className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
-                  {t('plants.waterNow', 'Water Now')}
-                </button>
-                <Link href={`/ai/chat?plant=${plant.plant_id}`} className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors">
+                {plant.device_id ? (
+                  <button 
+                    className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center"
+                    onClick={handleWaterNow}
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <path d="M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5C6 11.1 5 13 5 15a7 7 0 0 0 7 7z"/>
+                    </svg>
+                    {t('plants.waterNow', 'Water Now')}
+                  </button>
+                ) : (
+                  <button 
+                    className="px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors flex items-center"
+                    onClick={() => setShowConnectModal(true)}
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <path d="M5 12h14"/>
+                      <path d="M12 5v14"/>
+                    </svg>
+                    {t('devices.connectDevice', 'Connect Device')}
+                  </button>
+                )}
+                <Link 
+                  href={`/ai/chat?plant=${plant.plant_id}`} 
+                  className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors flex items-center"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                  </svg>
                   {t('ai.askAI', 'Ask AI')}
                 </Link>
-                <Link href={`/ai/image-analysis?plant=${plant.plant_id}`} className="px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors">
+                <Link 
+                  href={`/ai/image-analysis?plant=${plant.plant_id}`} 
+                  className="px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors flex items-center"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                    <circle cx="8.5" cy="8.5" r="1.5"/>
+                    <polyline points="21 15 16 10 5 21"/>
+                  </svg>
                   {t('ai.analyzeImage', 'Analyze Image')}
                 </Link>
-                <button className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors">
+                <Link 
+                  href={`/plants/${plant.plant_id}/edit`}
+                  className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors flex items-center"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/>
+                  </svg>
                   {t('plants.editPlant', 'Edit Plant')}
-                </button>
+                </Link>
               </div>
             </div>
           </div>
@@ -267,14 +377,22 @@ export default function PlantDetailPage() {
                     {t('plants.careInstructions', 'Care Instructions')}
                   </h3>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {Object.entries(plant.care_instructions).map(([key, value]) => (
-                      <div key={key} className="bg-gray-50 p-4 rounded-lg">
-                        <h4 className="font-medium text-gray-900 mb-2 capitalize">
-                          {t(`plants.care.${key}`, key)}
-                        </h4>
-                        <p className="text-sm text-gray-600">{value}</p>
+                    {plant.care_instructions && typeof plant.care_instructions === 'object' ? (
+                      Object.entries(plant.care_instructions).map(([key, value]) => (
+                        <div key={key} className="bg-gray-50 p-4 rounded-lg">
+                          <h4 className="font-medium text-gray-900 mb-2 capitalize">
+                            {t(`plants.care.${key}`, key)}
+                          </h4>
+                          <p className="text-sm text-gray-600">{value}</p>
+                        </div>
+                      ))
+                    ) : (
+                      <div className="bg-gray-50 p-4 rounded-lg col-span-2">
+                        <p className="text-gray-500 text-center">
+                          {t('plants.noCareInstructions', 'No care instructions available')}
+                        </p>
                       </div>
-                    ))}
+                    )}
                   </div>
                 </div>
 
@@ -308,7 +426,7 @@ export default function PlantDetailPage() {
                 <h3 className="text-lg font-semibold text-gray-900 mb-4">
                   {t('ai.chat.title', 'AI Plant Care Assistant')}
                 </h3>
-                <AIChatbot initialPlantId={plant.plant_id} />
+                <AIChatbotBubble initialPlantId={plant.plant_id} />
               </div>
             )}
 
@@ -329,6 +447,14 @@ export default function PlantDetailPage() {
           </div>
         </div>
       </div>
+
+      {/* Connect Device Modal */}
+      <ConnectDeviceModal
+        isOpen={showConnectModal}
+        onClose={() => setShowConnectModal(false)}
+        onConnect={handleConnectDevice}
+        plantId={plantId}
+      />
     </div>
   );
 }

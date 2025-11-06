@@ -291,9 +291,12 @@ class Plant {
                 }
 
                 const query = `
-                    INSERT INTO plants (user_id, device_key, profile_id, custom_name, 
-                                      moisture_threshold, auto_watering_on)
-                    VALUES ($1, $2, $3, $4, $5, $6)
+                    INSERT INTO plants (
+                        user_id, device_key, profile_id, custom_name, 
+                        moisture_threshold, auto_watering_on, zone_id,
+                        status, notes
+                    )
+                    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
                     RETURNING *
                 `;
                 
@@ -303,7 +306,10 @@ class Plant {
                     this.profile_id,
                     this.custom_name,
                     this.moisture_threshold,
-                    this.auto_watering_on !== false // Default to true
+                    this.auto_watering_on !== false, // Default to true
+                    this.zone_id,
+                    this.status || 'healthy',
+                    this.notes
                 ]);
                 
                 const newPlant = new Plant(result.rows[0]);

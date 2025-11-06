@@ -26,7 +26,7 @@ An enhanced AI-powered chatbot component for plant care assistance with real-tim
 ### Basic Usage (General Plant Care)
 
 ```jsx
-import AIChatbot from '@/components/AIChatbot';
+import AIChatbot from '@/components/ai/AIChatbot';
 
 function PlantCarePage() {
   return (
@@ -40,7 +40,7 @@ function PlantCarePage() {
 ### With Plant Context
 
 ```jsx
-import AIChatbot from '@/components/AIChatbot';
+import AIChatbot from '@/components/ai/AIChatbot';
 
 function PlantDetailPage({ plant }) {
   return (

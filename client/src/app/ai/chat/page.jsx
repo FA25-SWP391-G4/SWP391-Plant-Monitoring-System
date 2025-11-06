@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { useAuth } from '@/providers/AuthProvider';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
-import AIChatbot from '@/components/AIChatbot';
+import AIChatbot from '@/components/ai/AIChatbot';
 
 export default function AIChatPage() {
   const { user, loading } = useAuth();

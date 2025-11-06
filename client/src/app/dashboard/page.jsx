@@ -15,6 +15,11 @@ import Navbar from '@/components/navigation/Navbar';
 import ThemedLoader from '@/components/ThemedLoader';
 import useMemoizedData from '@/hooks/useMemoizedData';
 import axiosClient from '@/api/axiosClient';
+import { TreePine, Settings } from 'lucide-react';
+import Link from 'next/link';
+import { useRenderDebug, useOperationTiming } from '@/utils/renderDebug';
+import { useDataFetchDebug } from '@/utils/renderDebug';
+import PlantCard from '@/components/dashboard/PlantCard';
 
 export default function DashboardPage() {
   const { user, loading, isPremium } = useAuth();
@@ -65,9 +70,6 @@ export default function DashboardPage() {
         </div>
       </div>
     );
-    
-    renderDebug.logTiming('loading-render', loadingRenderStart);
-    return loadingComponent;
   }
 
   // If not loading and no user, return null (redirect will happen via useEffect)
@@ -78,16 +80,19 @@ export default function DashboardPage() {
     return null;
   }
 
-
-
-  // Mock tree statistics - these will be non-toggleable
-  const treeStats = {
-    totalTrees: 12,
-    healthyTrees: 10,
-    needsAttention: 2,
-    co2Absorbed: 145.7, // kg per year
-    oxygenProduced: 106.2 // kg per year
-  };
+  const fetchPlants = async () => {
+      try {
+        setIsLoading(true);
+        const response = await axiosClient.get('/api/plants');
+        setPlants(response.data.data);
+        setError(null);
+      } catch (err) {
+        console.error('Error fetching plants:', err);
+        setError(t('errors.fetchFailed', 'Failed to fetch plants'));
+      } finally {
+        setIsLoading(false);
+      }
+    };
   
   // Fetch sensor data using the custom hook
   const fetchSensorData = async () => {
@@ -157,6 +162,10 @@ export default function DashboardPage() {
                     value.light_intensity ??
                     value.lightLevel ??
                     null,
+                  air_humidity:
+                    value.air_humidity ??
+                    value.humidity ??
+                    null,
                 },
               ])
             );
@@ -185,6 +194,17 @@ export default function DashboardPage() {
   
   // Check if no plants or sensor data are available
   const noData = user && !isLoading && !error && (!plants || plants.length === 0);
+  
+  // Calculate tree statistics from plants array
+  const treeStats = useMemo(() => {
+    if (!Array.isArray(plants)) return { totalTrees: 0, healthyTrees: 0, needsAttention: 0 };
+    
+    return {
+      totalTrees: plants.length,
+      healthyTrees: plants.filter(plant => plant.status === 'healthy').length,
+      needsAttention: plants.filter(plant => plant.status !== 'healthy').length
+    };
+  }, [plants]);
 
   if (loading || isLoading) {
     console.log('[DEBUG] Full plants array:', plants);
@@ -224,23 +244,6 @@ export default function DashboardPage() {
        <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       <main className="container mx-auto px-4 py-8">
         {/* No Data Message */}
-        {noData && (
-          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-8 text-center my-8">
-            <div className="flex justify-center mb-4">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 text-gray-300 dark:text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-            </div>
-            <h3 className="text-lg font-medium mb-2 text-gray-900 dark:text-white">{t('dashboard.noData', 'No dashboard data found')}</h3>
-            <p className="text-gray-500 dark:text-gray-400 mb-4">{t('dashboard.noDataDescription', 'We couldn\'t find any plants or sensor data. Add your first plant to get started.')}</p>
-            <button 
-              onClick={() => router.push('/plants')}
-              className="px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 dark:bg-emerald-700 dark:hover:bg-emerald-600 transition-colors"
-            >
-              {t('dashboard.addFirstPlant', 'Add Your First Plant')}
-            </button>
-          </div>
-        )}
         
         {/* Welcome Banner */}
         <div className="bg-gradient-to-r from-emerald-500 to-emerald-700 dark:from-emerald-600 dark:to-emerald-800 rounded-xl shadow-lg mb-8 p-6 text-white flex items-center justify-between stagger-item">
@@ -305,18 +308,19 @@ export default function DashboardPage() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Left column - AI Features */}
           <div className="lg:col-span-2 space-y-6">
-            {widgetSettings.showAIInsights && (
-              <div>
-                <div className="flex items-center justify-between mb-4">
-                  <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-200">{t('dashboard.aiFeatures', 'AI Features')}</h2>
-                  <Link href="/settings" className="text-sm text-emerald-600 hover:text-emerald-700 flex items-center gap-1">
-                    <Settings size={16} />
-                    {t('dashboard.configureWidgets', 'Configure')}
-                  </Link>
+            {noData ? (
+              <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-8 text-center my-8">
+                <div className="flex justify-center mb-4">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 text-gray-300 dark:text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
                 </div>
-                <h3 className="text-lg font-medium mb-2 text-gray-900 dark:text-white">{t('dashboard.noPlants', 'No plants added yet')}</h3>
-                <p className="text-gray-500 dark:text-gray-400 mb-4">{t('dashboard.startAdding', 'Start adding plants to your collection')}</p>
-                <button className="px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 dark:bg-emerald-700 dark:hover:bg-emerald-600 transition-colors">
+                <h3 className="text-lg font-medium mb-2 text-gray-900 dark:text-white">{t('dashboard.noData', 'No dashboard data found')}</h3>
+                <p className="text-gray-500 dark:text-gray-400 mb-4">{t('dashboard.noDataDescription', 'We couldn\'t find any plants or sensor data. Add your first plant to get started.')}</p>
+                <button 
+                  onClick={() => router.push('/plants')}
+                  className="px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 dark:bg-emerald-700 dark:hover:bg-emerald-600 transition-colors"
+                >
                   {t('dashboard.addFirstPlant', 'Add Your First Plant')}
                 </button>
               </div>
@@ -379,9 +383,4 @@ export default function DashboardPage() {
       </main>
     </div>
   );
-
-  // 🚀 RENDER DEBUG - Log main render completion
-  renderDebug.logTiming('main-dashboard-render', mainRenderStart);
-  
-  return dashboardComponent;
 }

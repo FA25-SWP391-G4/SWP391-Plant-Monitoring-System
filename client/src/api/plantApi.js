@@ -14,6 +14,8 @@ const plantApi = {
   },
 
   // Get a specific plant by ID
+  // [2025-11-06] Removed redundant token handling to fix JWT malformed error
+  // Letting axiosClient handle token management to prevent duplication
   getById: async (plantId) => {
     try {
       const response = await axiosClient.get(`/api/plants/${plantId}`);

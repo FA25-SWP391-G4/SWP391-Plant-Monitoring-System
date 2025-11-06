@@ -1310,6 +1310,179 @@ const proxyHistoricalAnalysis = async (req, res) => {
     }
 };
 
+// Not implemented - no dedicated health analysis model available
+const analyzeHealth = async (req, res) => {
+    return res.status(501).json({
+        success: false,
+        message: 'Health analysis functionality not implemented. Use disease detection instead.',
+        suggestedAlternative: '/api/ai/detect-disease'
+    });
+};
+
+// Not implemented - no plant identification model available
+const identifyPlant = async (req, res) => {
+    return res.status(501).json({
+        success: false,
+        message: 'Plant identification functionality not implemented',
+        suggestedAlternative: 'Manual plant registration'
+    });
+};
+
+const getAnalysisHistory = async (req, res) => {
+    try {
+        const userId = req.user.user_id;
+        const plantId = req.query.plant_id;
+        const startDate = req.query.start_date;
+        const endDate = req.query.end_date;
+        const type = req.query.type; // 'health', 'disease', 'identification'
+        const limit = parseInt(req.query.limit) || 10;
+        const offset = parseInt(req.query.offset) || 0;
+
+        // Build query conditions
+        const conditions = { user_id: userId };
+        if (plantId) conditions.plant_id = plantId;
+        if (type) conditions.analysis_type = type;
+        if (startDate) conditions.created_at = { $gte: new Date(startDate) };
+        if (endDate) conditions.created_at = { ...conditions.created_at, $lte: new Date(endDate) };
+
+        // Get analyses from database
+        const AnalysisHistory = require('../models/AnalysisHistory');
+        const [analyses, total] = await Promise.all([
+            AnalysisHistory.find(conditions)
+                .sort({ created_at: -1 })
+                .limit(limit)
+                .skip(offset),
+            AnalysisHistory.countDocuments(conditions)
+        ]);
+
+        // Transform and enhance the results
+        const enhancedAnalyses = analyses.map(analysis => ({
+            id: analysis.id,
+            type: analysis.analysis_type,
+            timestamp: analysis.created_at,
+            plant_id: analysis.plant_id,
+            result_summary: {
+                status: analysis.result.status,
+                confidence: analysis.result.confidence,
+                main_finding: analysis.result.main_finding
+            },
+            has_image: !!analysis.image_path,
+            recommendations: analysis.result.recommendations || []
+        }));
+
+        return res.json({
+            success: true,
+            data: {
+                analyses: enhancedAnalyses,
+                pagination: {
+                    total,
+                    limit,
+                    offset,
+                    has_more: offset + limit < total
+                }
+            }
+        });
+
+    } catch (error) {
+        console.error('Error fetching analysis history:', error);
+        await SystemLog.create({
+            log_level: 'ERROR',
+            source: 'AIService',
+            message: `Error fetching analysis history: ${error.message}`
+        });
+        return res.status(500).json({
+            success: false,
+            message: 'Failed to fetch analysis history',
+            error: error.message
+        });
+    }
+};
+
+const detectDisease = async (req, res) => {
+    const startTime = Date.now();
+    try {
+        if (!req.file) {
+            return res.status(400).json({
+                success: false,
+                message: 'No image file provided'
+            });
+        }
+
+        await SystemLog.create({
+            log_level: 'INFO',
+            source: 'AIService',
+            message: `Disease detection requested by user ${req.user.user_id}`
+        });
+
+        // Initialize image preprocessor and model loader
+        const ImagePreprocessor = require('../ai_models/disease_recognition/imagePreprocessor');
+        const EnhancedModelLoader = require('../ai_models/disease_recognition/enhancedModelLoader');
+        
+        const preprocessor = new ImagePreprocessor();
+        const modelLoader = new EnhancedModelLoader();
+
+        // Preprocess image
+        const processedImage = await preprocessor.preprocessImage(req.file.path);
+        const imageFeatures = await preprocessor.extractImageFeatures(req.file.path);
+
+        // Load and run model
+        await modelLoader.loadModel();
+        const prediction = await modelLoader.predict(processedImage);
+
+        const detectionResult = {
+            timestamp: new Date(),
+            imageId: req.file.filename,
+            analysis: {
+                diseaseDetected: prediction.disease,
+                confidence: prediction.confidence,
+                severity: prediction.severity,
+                affectedArea: prediction.affectedArea,
+                symptoms: prediction.symptoms,
+                treatment: prediction.treatments,
+                riskAssessment: prediction.riskAssessment,
+                timeline: prediction.timeline,
+                imageQuality: imageFeatures.quality
+            }
+        };
+
+        // Store detection in database
+        const DiseaseDetection = require('../models/DiseaseDetection');
+        const savedDetection = await DiseaseDetection.create({
+            user_id: req.user.user_id,
+            plant_id: req.body.plant_id,
+            image_path: req.file.path,
+            detection_result: detectionResult
+        });
+
+        // Cleanup
+        modelLoader.dispose();
+
+        return res.json({
+            success: true,
+            data: {
+                ...detectionResult,
+                detection_id: savedDetection.id,
+                processing_time_ms: Date.now() - startTime
+            }
+        });
+
+    } catch (error) {
+        console.error('Error detecting plant disease:', error);
+        await SystemLog.create({
+            log_level: 'ERROR',
+            source: 'AIService',
+            message: `Error detecting plant disease: ${error.message}`
+        });
+        return res.status(500).json({
+            success: false,
+            message: 'Failed to detect plant disease',
+            error: error.message
+        });
+    }
+};
+
+
+
 module.exports = {
     // Service methods exported for use in other parts of the application
     runPrediction,

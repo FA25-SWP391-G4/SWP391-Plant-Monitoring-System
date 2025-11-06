@@ -213,8 +213,8 @@ router.post('/test/chatbot', async (req, res) => {
       headers: {
         'Content-Type': 'application/json'
       }
-    }
-    
+    });
+  } catch (error) {
     res.status(500).json({ 
       error: 'Failed to analyze plant image', 
       details: error.response?.data || error.message 

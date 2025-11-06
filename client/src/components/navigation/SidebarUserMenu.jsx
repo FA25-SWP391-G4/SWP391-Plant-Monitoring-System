@@ -1,4 +1,4 @@
-/**
+ /**
  * SidebarUserMenu Component
  * Specialized version of UserMenu optimized for sidebar integration
  * Adapts to collapsed/expanded sidebar states
@@ -10,6 +10,7 @@ import { useTranslation } from "react-i18next";
 import { useAuth } from "@/providers/AuthProvider";
 import { useTheme } from "@/contexts/ThemeContext";
 import { useRouter } from 'next/navigation';
+import UserRoleBadge from '@/components/shared/UserRoleBadge';
 
 const SidebarUserMenu = ({ isExpanded = true }) => {
   const { t, i18n } = useTranslation();
@@ -25,11 +26,7 @@ const SidebarUserMenu = ({ isExpanded = true }) => {
   const availableLanguages = {
     vi: { name: 'Tiếng Việt', flag: '/flags/vi.svg', nativeName: 'Tiếng Việt' },
     en: { name: 'English', flag: '/flags/en.svg', nativeName: 'English' },
-    fr: { name: 'French', flag: '/flags/fr.svg', nativeName: 'Français' },
-    zh: { name: 'Chinese', flag: '/flags/zh.svg', nativeName: '中文' },
-    kr: { name: 'Korean', flag: '/flags/kr.svg', nativeName: '한국어' },
-    ja: { name: 'Japanese', flag: '/flags/ja.svg', nativeName: '日本語' },
-    es: { name: 'Spanish', flag: '/flags/es.svg', nativeName: 'Español' }
+
   };
 
   // Get current language
@@ -186,11 +183,14 @@ const SidebarUserMenu = ({ isExpanded = true }) => {
                 </div>
               )}
               <div>
-                <p className="font-medium text-gray-900 dark:text-white">
-                  {user?.given_name && user?.family_name 
-                    ? `${user.given_name} ${user.family_name}` 
-                    : user?.family_name || user?.given_name || user?.full_name || user?.name || t('common.user', 'User')}
-                </p>
+                  <div className="flex items-center gap-2 mb-0.5">
+                    <p className="font-medium text-gray-900 dark:text-white">
+                      {user?.given_name && user?.family_name 
+                        ? `${user.given_name} ${user.family_name}` 
+                        : user?.family_name || user?.given_name || user?.full_name || user?.name || t('common.user', 'User')}
+                    </p>
+                    <UserRoleBadge role={user?.role || 'free'} small />
+                  </div>
                 <p className="text-xs text-gray-500 dark:text-gray-400 truncate max-w-[160px]">
                   {user.email}
                 </p>
@@ -397,7 +397,7 @@ const SidebarUserMenu = ({ isExpanded = true }) => {
               </div>
               
               {/* Language options */}
-              {['vi', 'en', 'fr', 'kr', 'zh', 'ja'].map((langCode) => (
+              {['vi', 'en'].map((langCode) => (
                 <button
                   key={langCode}
                   onClick={() => changeLanguage(langCode)}
