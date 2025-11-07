@@ -28,7 +28,6 @@ router.get('/profile', userController.getUserProfile);
 router.put('/profile', userController.updateUserProfile);
 
 // Change password (moved to userController from authController for better organization)
-router.put('/change-password', userController.changePassword);
 
 /**
  * UC19: PREMIUM UPGRADE ROUTES

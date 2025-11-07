@@ -44,8 +44,9 @@ client.on('connect', () => {
   
   const topic = [
     'smartplant/pub',
-    'plant-system/+/sensor-data',
-    'plant-system/+/status'
+    'smartplant/+/sensor-data',
+    'smartplant/+/status',
+    'smartplant/device/88ab2b3c1c78/command'
   ];
 
   // Subscribe to topics
@@ -138,31 +139,124 @@ async function processDeviceStatus(deviceKey, data) {
 
 // Send command to a specific device
 function sendDeviceCommand(deviceId, command, parameters = {}) {
-  const topic = `plant-system/device/${deviceId}/command`;
+  console.log('🔄 [MQTT-DEVICE] Preparing device command:', {
+    deviceId,
+    command,
+    parameters
+  });
+
+  const topic = `smartplant/device/${deviceId}/command`;
+  
   const payload = JSON.stringify({
     command,
-    parameters,
-    timestamp: new Date().toISOString()
+    parameters
+  });
+  
+  console.log('📦 [MQTT-DEVICE] Command payload:', {
+    topic,
+    payload: JSON.parse(payload),
+    qos: 1
   });
   
   return new Promise((resolve, reject) => {
     client.publish(topic, payload, { qos: 1 }, (error) => {
       if (error) {
-        console.error(`Error sending command to device ${deviceId}:`, error);
-        SystemLog.create('ERROR', `Failed to send command to device ${deviceId}: ${error.message}`).catch(console.error);
+        console.error('❌ [MQTT-DEVICE] Command failed:', {
+          deviceId,
+          command,
+          error: error.message,
+          stack: error.stack,
+          timestamp
+        });
+        
+        SystemLog.create('ERROR', JSON.stringify({
+          event: 'device_command_failed',
+          deviceId,
+          command,
+          error: error.message,
+          timestamp
+        })).catch(console.error);
+        
         reject(error);
       } else {
-        console.log(`Command sent to device ${deviceId}: ${command}`);
-        SystemLog.create('INFO', `Command sent to device ${deviceId}: ${command}`).catch(console.error);
+        console.log('✅ [MQTT-DEVICE] Command sent successfully:', {
+          deviceId,
+          command,
+          timestamp,
+          topic
+        });
+        
+        SystemLog.create('INFO', JSON.stringify({
+          event: 'device_command_sent',
+          deviceId,
+          command,
+          parameters,
+          timestamp
+        })).catch(console.error);
+        
         resolve();
       }
     });
   });
 }
 
+// Validate pump command parameters
+function validatePumpCommand(command, duration) {
+  if (command !== 'pump_on' && command !== 'pump_off') {
+    throw new Error('Invalid pump command. Must be pump_on or pump_off');
+  }
+
+  if (command === 'pump_on') {
+    if (!duration) {
+      throw new Error('Duration is required for pump_on command');
+    }
+    const durationNum = parseInt(duration);
+    if (isNaN(durationNum) || durationNum < 1 || durationNum > 300) {
+      throw new Error('Duration must be between 1 and 300 seconds');
+    }
+  }
+
+  return true;
+}
+
 // Send pump control command
-function sendPumpCommand(command) {
-  return sendDeviceCommand('pump', 'set_state', { state: command });
+function sendPumpCommand(device_key, command, duration = null) {
+  try {
+    console.log('🚰 [MQTT-PUMP] Validating pump command:', { command, duration });
+    validatePumpCommand(command, duration);
+
+    const state = command === 'pump_on' ? 'ON' : 'OFF';
+    const parameters = {
+      duration: command === 'pump_on' ? parseInt(duration) : 0,
+      state: state
+    };
+
+    console.log('📤 [MQTT-PUMP] Sending pump command:', {
+      command: command,
+      parameters: parameters
+    });
+    
+    return sendDeviceCommand(device_key, command, parameters)
+      .then(() => {
+        console.log('✅ [MQTT-PUMP] Command sent successfully');
+        return true;
+      })
+      .catch(error => {
+        console.error('❌ [MQTT-PUMP] Command failed:', {
+          error: error.message,
+          command: parameters.command,
+          state: parameters.state
+        });
+        throw error;
+      });
+  } catch (error) {
+    console.error('❌ [MQTT-PUMP] Validation failed:', {
+      error: error.message,
+      command,
+      duration
+    });
+    return Promise.reject(error);
+  }
 }
 
 async function handleSmartplantMessage(message) {

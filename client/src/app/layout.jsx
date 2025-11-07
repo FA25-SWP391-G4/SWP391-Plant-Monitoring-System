@@ -11,6 +11,7 @@ import AuthProvider from '@/providers/AuthProvider'
 import { DashboardWidgetProvider } from '@/providers/DashboardWidgetProvider'
 import GoogleHeadTags from '@/components/GoogleHeadTags'
 import DashboardLayout from '@/components/DashboardLayout'
+import { SettingsProvider } from '@/providers/SettingsProvider'
 
 export default function RootLayout({ children }) {
   return (
@@ -28,12 +29,14 @@ export default function RootLayout({ children }) {
           >
             <ThemeProvider>
               <AuthProvider>
-                <DashboardWidgetProvider>
-                  <DashboardLayout>
-                    {children}
-                  </DashboardLayout>
-                  <Toaster richColors position="top-center" />
-                </DashboardWidgetProvider>
+                <SettingsProvider>
+                  <DashboardWidgetProvider>
+                    <DashboardLayout>
+                      {children}
+                    </DashboardLayout>
+                    <Toaster richColors position="top-center" />
+                  </DashboardWidgetProvider>
+                </SettingsProvider>
               </AuthProvider>
             </ThemeProvider>
           </NextThemeProvider>

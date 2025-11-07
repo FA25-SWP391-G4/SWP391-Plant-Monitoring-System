@@ -14,6 +14,7 @@ import axios from 'axios';
 import { getAuthToken } from '@/utils/auth';
 import { useTheme } from '@/contexts/ThemeContext';
 import UserRoleBadge from '@/components/shared/UserRoleBadge';
+import { authApi } from '@/api';
 
 /**
  * User Profile Page
@@ -105,23 +106,11 @@ const ProfilePage = () => {
 
     setIsSaving(true);
     try {
-      const API_URL = process.env.NEXT_PUBLIC_API_URL;
-      const token = getAuthToken();
-
-      const response = await axios.put(
-        `${API_URL}/users/change-password`,
-        {
-          currentPassword: passwordData.currentPassword,
-          newPassword: passwordData.newPassword,
-          confirmPassword: passwordData.confirmPassword,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            'Content-Type': 'application/json',
-          },
-        }
-      );
+      const response = await authApi.changePassword({
+        currentPassword: passwordData.currentPassword,
+        newPassword: passwordData.newPassword,
+        confirmPassword: passwordData.confirmPassword,
+      });
 
       if (response.data.success) {
         toast.success('Password changed successfully');

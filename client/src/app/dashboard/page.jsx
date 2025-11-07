@@ -3,9 +3,11 @@
 import { useState, useEffect, useMemo } from 'react';
 import { useAuth } from '@/providers/AuthProvider';
 import { useDashboardWidgets } from '@/providers/DashboardWidgetProvider';
+import { useSettings } from '@/providers/SettingsProvider';
 import { useRouter } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from '@/contexts/ThemeContext';
+import settingsApi from '@/api/settingsApi';
 import DashboardHeader from '@/components/dashboard/DashboardHeader';
 import WeatherWidget from '@/components/dashboard/WeatherWidget';
 import RecentActivity from '@/components/dashboard/RecentActivity';
@@ -27,6 +29,7 @@ export default function DashboardPage() {
   const router = useRouter();
   const { t } = useTranslation();
   const { isDark, themeColors } = useTheme();
+  const { settings } = useSettings();
   const [plants, setPlants] = useState([]);
   const [sensorData, setSensorData] = useState({});
   const [isLoading, setIsLoading] = useState(true);
@@ -346,17 +349,41 @@ export default function DashboardPage() {
           <div className="space-y-6">
             <WeatherWidget />
             
-            <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-5">
-              <h3 className="font-medium text-gray-900 mb-4">{t('dashboard.recentActivity', 'Recent Activity')}</h3>
-              <RecentActivity />
-            </div>
+            {settings.dashboard.showAlerts && (
+              <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-5">
+                <h3 className="font-medium text-gray-900 mb-4">{t('dashboard.recentActivity', 'Recent Activity')}</h3>
+                <RecentActivity />
+              </div>
+            )}
             
-            <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-5">
-              <h3 className="font-medium text-gray-900 mb-4">{t('dashboard.wateringSchedule', 'Watering Schedule')}</h3>
-              <WateringSchedule plants={plants} />
-            </div>
+            {settings.dashboard.showWateringStatus && (
+              <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-5">
+                <h3 className="font-medium text-gray-900 mb-4">{t('dashboard.wateringSchedule', 'Watering Schedule')}</h3>
+                <WateringSchedule plants={plants} />
+              </div>
+            )}
             
-            {/* Premium feature banner */}
+            {settings.dashboard.showSensorData && sensorData && (
+              <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-5">
+                <h3 className="font-medium text-gray-900 mb-4">{t('dashboard.sensorData', 'Sensor Data')}</h3>
+                <div className="grid grid-cols-2 gap-4">
+                  {sensorData.temperature && (
+                    <div className="p-3 bg-gray-50 rounded-lg">
+                      <div className="text-sm text-gray-600">{t('dashboard.temperature', 'Temperature')}</div>
+                      <div className="text-lg font-medium">{sensorData.temperature}°C</div>
+                    </div>
+                  )}
+                  {sensorData.humidity && (
+                    <div className="p-3 bg-gray-50 rounded-lg">
+                      <div className="text-sm text-gray-600">{t('dashboard.humidity', 'Humidity')}</div>
+                      <div className="text-lg font-medium">{sensorData.humidity}%</div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+            
+            {/* Show Premium feature banner only for Regular users */}
             {user?.role === 'Regular' && (
               <PremiumFeaturePrompt />
             )}
@@ -378,6 +405,16 @@ export default function DashboardPage() {
                 {t('dashboard.openSettings', 'Open Settings')}
               </Link>
             </div>
+
+            {settings.dashboard.enableAIFeatures && user?.role === 'Ultimate' && (
+              <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-5">
+                <h3 className="font-medium text-gray-900 mb-4">{t('dashboard.aiInsights', 'AI Insights')}</h3>
+                {/* AI insights component would go here */}
+                <div className="text-sm text-gray-600">
+                  {t('dashboard.aiInsightsComingSoon', 'AI-powered plant insights are coming soon')}
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </main>

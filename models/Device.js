@@ -95,11 +95,6 @@ class Device {
     // Static method to find device by device_key (primary key)
     static async findById(deviceKey) {
         try {
-            // Validate UUID format
-            if (!deviceKey || !isValidUUID(deviceKey)) {
-                console.error('[DEVICE FINDBYID] Invalid UUID format:', deviceKey);
-                return null;
-            }
 
             const query = `
                 SELECT d.*, u.family_name as owner_name 

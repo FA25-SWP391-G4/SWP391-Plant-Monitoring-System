@@ -6,7 +6,10 @@ const { getUserPlants,
   setWateringSchedule,
   toggleAutoWatering,
   setSensorThresholds,
-createPlant } = require('../controllers/plantController');
+  createPlant,
+  getWateringHistory,
+  getSensorHistory,
+  getSensorStats } = require('../controllers/plantController');
 const { authMiddleware } = require('../middlewares/authMiddleware');
 const db = require('../config/db');
 const router = express.Router();
@@ -45,5 +48,13 @@ router.post('/:plantId/auto-watering', authMiddleware, toggleAutoWatering);
 //set sensor thresholds
 router.post('/:plantId/thresholds', authMiddleware, setSensorThresholds);
 
+//get watering history
+router.get('/:plantId/history/watering', authMiddleware, getWateringHistory);
+
+//get sensor data history
+router.get('/:plantId/history/sensors', authMiddleware, getSensorHistory);
+
+//get sensor stats
+router.get('/:plantId/stats/sensors', authMiddleware, getSensorStats);
 
 module.exports = router;
