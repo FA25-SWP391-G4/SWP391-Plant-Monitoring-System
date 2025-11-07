@@ -1,14 +1,40 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { useTranslation } from 'react-i18next';
-import { useTheme } from '@/contexts/ThemeContext';
+import { useTranslation } from 'react-i18next'
 import PlantHistoryChart from './PlantHistoryChart';
+import ManualWateringControl from '../plants/ManualWateringControl';
+import { useTheme } from '@/contexts/ThemeContext';
 
 export default function PlantCard({ plant, sensorData = {} }) {
   const { t } = useTranslation();
   const { isDark, themeColors } = useTheme();
   const [showHistory, setShowHistory] = useState(false);
-  const [activeChart, setActiveChart] = useState('moisture');
+  const [activeChart, setActiveChart] = useState('soil_moisture');
+  const [sensorHistory, setSensorHistory] = useState(null);
+
+  const loadSensorHistory = async () => {
+    if (!showHistory) return;
+    try {
+      const history = await plantApi.getSensorHistory(plant.plant_id);
+      setSensorHistory(history);
+    } catch (error) {
+      console.error('Error loading sensor history:', error);
+    }
+  };
+
+  useEffect(() => {
+    if (showHistory) {
+      loadSensorHistory();
+    }
+  }, [showHistory, plant.plant_id]);
+
+  /*useEffect(() => {
+    // Reset watering state when device goes offline
+    const [deviceStatus, setDeviceStatus] = useState('offline');
+    if (deviceStatus !== 'online') {
+      setIsWatering(false);
+    }
+  }, [deviceStatus]);*/
   
   // Calculate health status and water status
   const getStatusInfo = () => {
@@ -127,6 +153,26 @@ export default function PlantCard({ plant, sensorData = {} }) {
               <span className="font-medium">{sensorData?.soil_moisture ?? 'N/A'}%</span>
             </div>
           </div>
+
+          {/* Device Status Indicator */}
+  {/* <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+            <span className="text-sm font-medium text-gray-700">
+              {t('watering.deviceStatus', 'Device Status')}
+            </span>
+            <div className="flex items-center">
+              <div className={`w-2 h-2 rounded-full mr-2 ${
+                deviceStatus === 'online' ? 'bg-green-500' : 'bg-red-500'
+              }`}></div>
+              <span className={`text-sm font-medium ${
+                deviceStatus === 'online' ? 'text-green-700' : 'text-red-700'
+              }`}>
+                {deviceStatus === 'online' 
+                  ? t('devices.online', 'Online') 
+                  : t('devices.offline', 'Offline')
+                }
+              </span>
+            </div>
+          </div> */}
           
           {/* Temperature */}
           <div 
@@ -180,7 +226,7 @@ export default function PlantCard({ plant, sensorData = {} }) {
         </div>
         
         {/* History chart - conditionally shown */}
-        {showHistory && sensorData && sensorData.history && (
+        {showHistory && (
           <div className="mt-2 mb-4">
             <div className="flex justify-between items-center mb-2">
               <h4 className="text-sm font-medium">{t('charts.history', 'Sensor History')}</h4>
@@ -192,7 +238,7 @@ export default function PlantCard({ plant, sensorData = {} }) {
               </button>
             </div>
             <PlantHistoryChart 
-              data={(sensorData.history && sensorData.history[activeChart]) || []} 
+              data={sensorHistory?.[activeChart] || []}
               dataType={activeChart}
               timeRange="day"
             />
@@ -229,17 +275,19 @@ export default function PlantCard({ plant, sensorData = {} }) {
         )}
 
         {/* Actions */}
-        <div className="flex flex-wrap gap-2">
+                <div className="flex flex-wrap gap-2">
           <Link href={`/plants/${plant.plant_id}`} className="px-3 py-1.5 bg-emerald-600 text-white text-sm rounded hover:bg-emerald-700 transition-colors">
             {t('common.viewDetails', 'View Details')}
           </Link>
-          <button className="px-3 py-1.5 bg-blue-50 text-blue-600 text-sm rounded hover:bg-blue-100 transition-colors border border-blue-200">
-            {t('plants.water', 'Water Now')}
-          </button>
-          <Link href={`/ai/chat?plant=${plant.plant_id}`} className="px-3 py-1.5 bg-purple-50 text-purple-600 text-sm rounded hover:bg-purple-100 transition-colors border border-purple-200">
+          <ManualWateringControl 
+            plantId={plant.plant_id}
+            deviceStatus={plant.device_key ? 'online' : 'offline'}
+            className="px-3 py-1.5 bg-blue-600 text-white text-sm rounded hover:bg-blue-700 transition-colors"
+          />
+          <Link href={`/ai/chat?plant=${plant.plant_id}`} className="px-3 py-1.5 bg-purple-600 text-white text-sm rounded hover:bg-purple-700 transition-colors">
             {t('ai.askAI', 'Ask AI')}
           </Link>
-          <button className="px-3 py-1.5 bg-gray-50 text-gray-600 text-sm rounded hover:bg-gray-100 transition-colors">
+          <button className="px-3 py-1.5 bg-gray-600 text-white text-sm rounded hover:bg-gray-700 transition-colors">
             {t('plants.log', 'Log Activity')}
           </button>
         </div>

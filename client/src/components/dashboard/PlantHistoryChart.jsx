@@ -29,8 +29,8 @@ ChartJS.register(
 /**
  * Renders a line chart for displaying plant sensor history
  * @param {Object} props
- * @param {Array} props.data - Array of data points
- * @param {String} props.dataType - Type of data (moisture, light, temperature, humidity)
+ * @param {Array} props.data - Array of data points from sensors_data table
+ * @param {String} props.dataType - Type of data (soil_moisture, light_intensity, temperature, air_humidity)
  * @param {String} props.timeRange - Time range to display (day, week, month)
  */
 export default function PlantHistoryChart({ data, dataType, timeRange }) {
@@ -129,13 +129,13 @@ export default function PlantHistoryChart({ data, dataType, timeRange }) {
 // Helper functions for chart formatting
 function getChartLabel(dataType) {
   switch (dataType) {
-    case 'moisture':
+    case 'soil_moisture':
       return 'Soil Moisture';
     case 'temperature':
       return 'Temperature';
-    case 'light':
+    case 'light_intensity':
       return 'Light Level';
-    case 'humidity':
+    case 'air_humidity':
       return 'Air Humidity';
     default:
       return 'Sensor Data';
@@ -144,13 +144,13 @@ function getChartLabel(dataType) {
 
 function getUnitLabel(dataType) {
   switch (dataType) {
-    case 'moisture':
+    case 'soil_moisture':
       return '%';
     case 'temperature':
       return '°C';
-    case 'light':
+    case 'light_intensity':
       return ' lux';
-    case 'humidity':
+    case 'air_humidity':
       return '%';
     default:
       return '';
@@ -159,13 +159,13 @@ function getUnitLabel(dataType) {
 
 function getChartColor(dataType, alpha = 1) {
   switch (dataType) {
-    case 'moisture':
+    case 'soil_moisture':
       return `rgba(59, 130, 246, ${alpha})`;
     case 'temperature':
       return `rgba(239, 68, 68, ${alpha})`;
-    case 'light':
+    case 'light_intensity':
       return `rgba(245, 158, 11, ${alpha})`;
-    case 'humidity':
+    case 'air_humidity':
       return `rgba(16, 185, 129, ${alpha})`;
     default:
       return `rgba(107, 114, 128, ${alpha})`;

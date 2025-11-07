@@ -1,10 +1,16 @@
 import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from '@/contexts/ThemeContext';
+import { useSettings } from '@/providers/SettingsProvider';
 
 export default function WateringSchedule({ plants = [] }) {
   const { t } = useTranslation();
   const { isDark, themeColors } = useTheme();
+  const { settings } = useSettings();
+
+  if (!settings.dashboard.showWateringStatus) {
+    return null;
+  }
   
   // Sort plants by those needing water first - memoized to avoid unnecessary re-sorting
   const sortedPlants = useMemo(() => {

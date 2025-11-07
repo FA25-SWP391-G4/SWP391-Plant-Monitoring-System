@@ -2,10 +2,10 @@
 
 import { useState, useEffect } from 'react';
 import { useAuth } from '@/providers/AuthProvider';
+import { useSettings } from '@/providers/SettingsProvider';
 import { useRouter } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
 import Link from 'next/link';
-import DashboardAppearanceSettings from '@/components/settings/DashboardAppearanceSettings';
 import settingsApi from '@/api/settingsApi';
 
 export default function SettingsPage() {
@@ -38,6 +38,14 @@ export default function SettingsPage() {
       shareData: false,
       anonymousAnalytics: true,
       locationAccess: 'while-using'
+    },
+    dashboard: {
+      showWateringStatus: true,
+      showPlantHealth: true,
+      showWeatherInfo: true,
+      showSensorData: true,
+      showAlerts: true,
+      enableAIFeatures: false // Only available for ultimate tier
     }
   });
   const [error, setError] = useState(null);
@@ -55,6 +63,15 @@ export default function SettingsPage() {
     }
   }, [isAuthenticated]);
   
+  const defaultDashboardSettings = {
+    showWateringStatus: true,
+    showPlantHealth: true,
+    showWeatherInfo: true,
+    showSensorData: true,
+    showAlerts: true,
+    enableAIFeatures: false
+  };
+
   const fetchSettings = async () => {
     try {
       setIsLoading(true);
@@ -63,7 +80,14 @@ export default function SettingsPage() {
       const response = await settingsApi.getUserSettings();
       
       if (response.data.success) {
-        setSettings(response.data.data);
+        const serverSettings = response.data.data;
+        setSettings({
+          ...serverSettings,
+          dashboard: {
+            ...defaultDashboardSettings,
+            ...(serverSettings.dashboard || {})
+          }
+        });
       } else {
         throw new Error(response.data.error || 'Failed to fetch settings');
       }
@@ -221,7 +245,118 @@ export default function SettingsPage() {
             <div className="p-6">
               {/* Dashboard Settings */}
               {activeTab === 'dashboard' && (
-                <DashboardAppearanceSettings />
+                <>
+                  <h2 className="text-xl font-semibold text-gray-900 mb-6">
+                    {t('settings.dashboardSettings', 'Dashboard Settings')}
+                  </h2>
+
+                  <div className="mb-6">
+                    <h3 className="text-sm font-medium text-gray-700 mb-3">
+                      {t('settings.dashboardVisibility', 'Dashboard Components')}
+                    </h3>
+                    <div className="space-y-4">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <p className="text-sm font-medium">{t('settings.wateringStatus', 'Watering Status')}</p>
+                          <p className="text-xs text-gray-500">{t('settings.wateringStatusDesc', 'Show plant watering schedules and status')}</p>
+                        </div>
+                        <label className="relative inline-flex items-center cursor-pointer">
+                          <input 
+                            type="checkbox" 
+                            className="sr-only peer" 
+                            checked={settings.dashboard.showWateringStatus}
+                            onChange={(e) => handleSettingChange('dashboard', 'showWateringStatus', e.target.checked)}
+                          />
+                          <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-emerald-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-600"></div>
+                        </label>
+                      </div>
+
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <p className="text-sm font-medium">{t('settings.plantHealth', 'Plant Health')}</p>
+                          <p className="text-xs text-gray-500">{t('settings.plantHealthDesc', 'Display plant health indicators and status')}</p>
+                        </div>
+                        <label className="relative inline-flex items-center cursor-pointer">
+                          <input 
+                            type="checkbox" 
+                            className="sr-only peer" 
+                            checked={settings.dashboard.showPlantHealth}
+                            onChange={(e) => handleSettingChange('dashboard', 'showPlantHealth', e.target.checked)}
+                          />
+                          <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-emerald-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-600"></div>
+                        </label>
+                      </div>
+
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <p className="text-sm font-medium">{t('settings.weatherInfo', 'Weather Information')}</p>
+                          <p className="text-xs text-gray-500">{t('settings.weatherInfoDesc', 'Show local weather data and forecasts')}</p>
+                        </div>
+                        <label className="relative inline-flex items-center cursor-pointer">
+                          <input 
+                            type="checkbox" 
+                            className="sr-only peer" 
+                            checked={settings.dashboard.showWeatherInfo}
+                            onChange={(e) => handleSettingChange('dashboard', 'showWeatherInfo', e.target.checked)}
+                          />
+                          <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-emerald-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-600"></div>
+                        </label>
+                      </div>
+
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <p className="text-sm font-medium">{t('settings.sensorData', 'Sensor Data')}</p>
+                          <p className="text-xs text-gray-500">{t('settings.sensorDataDesc', 'Display real-time sensor readings')}</p>
+                        </div>
+                        <label className="relative inline-flex items-center cursor-pointer">
+                          <input 
+                            type="checkbox" 
+                            className="sr-only peer" 
+                            checked={settings.dashboard.showSensorData}
+                            onChange={(e) => handleSettingChange('dashboard', 'showSensorData', e.target.checked)}
+                          />
+                          <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-emerald-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-600"></div>
+                        </label>
+                      </div>
+
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <p className="text-sm font-medium">{t('settings.alerts', 'System Alerts')}</p>
+                          <p className="text-xs text-gray-500">{t('settings.alertsDesc', 'Show important system notifications and alerts')}</p>
+                        </div>
+                        <label className="relative inline-flex items-center cursor-pointer">
+                          <input 
+                            type="checkbox" 
+                            className="sr-only peer" 
+                            checked={settings.dashboard.showAlerts}
+                            onChange={(e) => handleSettingChange('dashboard', 'showAlerts', e.target.checked)}
+                          />
+                          <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-emerald-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-600"></div>
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+
+                  {user?.role === 'Ultimate' && (
+                    <div className="mb-6 border-t border-gray-100 pt-6">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <h3 className="text-sm font-medium text-gray-700">{t('settings.aiFeatures', 'AI Features')}</h3>
+                          <p className="text-xs text-gray-500 mt-1">{t('settings.aiFeaturesDesc', 'Enable advanced AI-powered plant care recommendations')}</p>
+                        </div>
+                        <label className="relative inline-flex items-center cursor-pointer">
+                          <input 
+                            type="checkbox" 
+                            className="sr-only peer" 
+                            checked={settings.dashboard.enableAIFeatures}
+                            onChange={(e) => handleSettingChange('dashboard', 'enableAIFeatures', e.target.checked)}
+                          />
+                          <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-emerald-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-600"></div>
+                        </label>
+                      </div>
+                    </div>
+                  )}
+                </>
               )}
 
               {/* Appearance Settings */}
@@ -624,9 +759,19 @@ export default function SettingsPage() {
                 </>
               )}
               
-              {/* Save button */}
+              {/* Save and Reset buttons */}
               <div className="border-t border-gray-100 pt-6 mt-6">
-                <div className="flex justify-end">
+                <div className="flex justify-between items-center">
+                  <button
+                    className="px-6 py-2 border border-gray-200 text-gray-600 rounded-lg hover:bg-gray-50 transition-colors flex items-center"
+                    onClick={() => fetchSettings()} // Re-fetch settings to reset
+                    disabled={isLoading}
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                    </svg>
+                    {t('common.resetDefaults', 'Reset to Defaults')}
+                  </button>
                   <button
                     className="px-6 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors flex items-center"
                     onClick={saveSettings}
@@ -638,7 +783,12 @@ export default function SettingsPage() {
                         {t('common.saving', 'Saving...')}
                       </>
                     ) : (
-                      t('common.saveChanges', 'Save Changes')
+                      <>
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                        </svg>
+                        {t('common.saveChanges', 'Save Changes')}
+                      </>
                     )}
                   </button>
                 </div>
