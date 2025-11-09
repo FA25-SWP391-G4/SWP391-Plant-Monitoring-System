@@ -79,7 +79,8 @@ export function SettingsProvider({ children }) {
     try {
       const response = await settingsApi.updateUserSettings(newSettings);
       if (response.data.success) {
-        setSettings(newSettings);
+        // Refetch settings from server to get the correctly merged result
+        await fetchSettings();
         return { success: true };
       }
       return { success: false, error: response.data.error };

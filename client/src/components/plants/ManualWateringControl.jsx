@@ -3,10 +3,10 @@ import { useTranslation } from 'react-i18next';
 import { Button } from '../ui/Button';
 import plantApi from '@/api/plantApi';
 
-const ManualWateringControl = ({ plantId, deviceStatus, className }) => {
+const ManualWateringControl = ({ plantId, deviceStatus, className, isEmbedded = false }) => {
   const { t } = useTranslation();
   const [isWatering, setIsWatering] = useState(false);
-  const [showControls, setShowControls] = useState(false);
+  const [showControls, setShowControls] = useState(isEmbedded);
   const [duration, setDuration] = useState(30);
   const [wateringHistory, setWateringHistory] = useState(null);
 
@@ -78,30 +78,31 @@ const ManualWateringControl = ({ plantId, deviceStatus, className }) => {
   ];
 
   return (
-    <div className="relative">
-      <button
-        onClick={() => deviceStatus === 'online' && setShowControls(!showControls)}
-        disabled={deviceStatus !== 'online' || isWatering}
-        className={`${className} flex items-center justify-center ${isWatering ? 'animate-pulse' : ''}`}
-      >
-        <div className={`w-2 h-2 rounded-full mr-2 ${
-          deviceStatus === 'online' ? (isWatering ? 'bg-white' : 'bg-white opacity-75') : 'bg-red-500'
-        }`} />
-        {isWatering ? t('watering.inProgress', 'Watering...') : t('watering.water', 'Water')}
-      </button>
-
-      {showControls && (
-        <div className="absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-lg border border-gray-200 p-4 z-50">
-          <div className="flex justify-between items-center mb-4">
-            <h3 className="text-sm font-medium">{t('watering.controls', 'Watering Controls')}</h3>
-            <button onClick={() => setShowControls(false)} className="text-gray-400 hover:text-gray-600">
-              ✕
-            </button>
-          </div>
-        </div>
+    <div className="w-full">
+      {!isEmbedded && (
+        <button
+          onClick={() => deviceStatus === 'online' && setShowControls(!showControls)}
+          disabled={deviceStatus !== 'online' || isWatering}
+          className={`${className} flex items-center justify-center ${isWatering ? 'animate-pulse' : ''}`}
+        >
+          <div className={`w-2 h-2 rounded-full mr-2 ${
+            deviceStatus === 'online' ? (isWatering ? 'bg-white' : 'bg-white opacity-75') : 'bg-red-500'
+          }`} />
+          {isWatering ? t('watering.inProgress', 'Watering...') : t('watering.water', 'Water')}
+        </button>
       )}
 
-      {/* Duration Selection */}
+      {showControls && (
+        <div className={`${isEmbedded ? '' : 'mt-2 mb-4'} w-full ${isEmbedded ? '' : 'bg-white rounded-lg shadow-lg border border-gray-200'} p-4`}>
+          {!isEmbedded && (
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-sm font-medium">{t('watering.controls', 'Watering Controls')}</h3>
+              <button onClick={() => setShowControls(false)} className="text-gray-400 hover:text-gray-600">
+                ✕
+              </button>
+            </div>
+          )}
+                {/* Duration Selection */}
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-2">
           {t('watering.duration', 'Watering Duration')}
@@ -186,6 +187,8 @@ const ManualWateringControl = ({ plantId, deviceStatus, className }) => {
       <div className="text-xs text-gray-500 text-center">
         {t('watering.tip', 'Tip: Monitor your plant after watering to ensure optimal moisture levels.')}
       </div>
+        </div>
+      )}
     </div>
   );
 };
