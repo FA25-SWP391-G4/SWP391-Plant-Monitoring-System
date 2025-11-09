@@ -43,6 +43,14 @@ const DEFAULT_SETTINGS = {
     anonymousAnalytics: true,
     locationAccess: 'while-using'
   },
+  dashboard: {
+    showWateringStatus: true,
+    showPlantHealth: true,
+    showWeatherInfo: true,
+    showSensorData: true,
+    showAlerts: true,
+    enableAIFeatures: false
+  },
   widgets: {
     // Main dashboard widgets
     showPlantOverview: true,
@@ -113,6 +121,7 @@ async function getUserSettings(req, res) {
       language: { ...DEFAULT_SETTINGS.language, ...(settings.language || {}) },
       notifications: { ...DEFAULT_SETTINGS.notifications, ...(settings.notifications || {}) },
       privacy: { ...DEFAULT_SETTINGS.privacy, ...(settings.privacy || {}) },
+      dashboard: { ...DEFAULT_SETTINGS.dashboard, ...(settings.dashboard || {}) },
       widgets: { ...DEFAULT_SETTINGS.widgets, ...(settings.widgets || {}) }
     };
 
@@ -177,6 +186,7 @@ async function updateUserSettings(req, res) {
       language: { ...existingSettings.language, ...(newSettings.language || {}) },
       notifications: { ...existingSettings.notifications, ...(newSettings.notifications || {}) },
       privacy: { ...existingSettings.privacy, ...(newSettings.privacy || {}) },
+      dashboard: { ...existingSettings.dashboard, ...(newSettings.dashboard || {}) },
       widgets: { ...existingSettings.widgets, ...(newSettings.widgets || {}) }
     };
 

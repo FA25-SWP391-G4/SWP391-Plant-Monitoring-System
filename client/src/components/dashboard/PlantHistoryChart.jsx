@@ -45,9 +45,11 @@ export default function PlantHistoryChart({ data, dataType, timeRange }) {
     );
   }
 
-  // Format the data for Chart.js
+  // Format the data for Chart.js - sort by timestamp ascending (left to right)
+  const sortedData = [...data].sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
+  
   const chartData = {
-    labels: data.map(item => {
+    labels: sortedData.map(item => {
       const date = new Date(item.timestamp);
       // Format labels based on time range
       if (timeRange === 'day') {
@@ -61,13 +63,15 @@ export default function PlantHistoryChart({ data, dataType, timeRange }) {
     datasets: [
       {
         label: getChartLabel(dataType),
-        data: data.map(item => item.value),
+        data: sortedData.map(item => item.value),
         borderColor: getChartColor(dataType),
         backgroundColor: getChartColor(dataType, 0.1),
         tension: 0.3,
         fill: true,
-        pointRadius: 2,
-        pointHoverRadius: 5,
+        pointRadius: 3,
+        pointHoverRadius: 6,
+        pointBorderColor: '#ffffff',
+        pointBorderWidth: 2,
       }
     ]
   };
@@ -98,19 +102,31 @@ export default function PlantHistoryChart({ data, dataType, timeRange }) {
     scales: {
       x: {
         grid: {
-          display: false
+          display: true,
+          color: 'rgba(203, 213, 225, 0.3)',
+          lineWidth: 1,
         },
         ticks: {
           maxRotation: 0,
           autoSkip: true,
-          maxTicksLimit: 6
+          maxTicksLimit: 6,
+          color: '#6B7280',
+          font: {
+            size: 11,
+          }
         }
       },
       y: {
         grid: {
-          color: 'rgba(203, 213, 225, 0.5)'
+          display: true,
+          color: 'rgba(203, 213, 225, 0.5)',
+          lineWidth: 1,
         },
         ticks: {
+          color: '#6B7280',
+          font: {
+            size: 11,
+          },
           callback: function(value) {
             return value + getUnitLabel(dataType);
           }

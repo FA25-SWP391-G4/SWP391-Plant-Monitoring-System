@@ -363,26 +363,6 @@ export default function DashboardPage() {
               </div>
             )}
             
-            {settings.dashboard.showSensorData && sensorData && (
-              <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-5">
-                <h3 className="font-medium text-gray-900 mb-4">{t('dashboard.sensorData', 'Sensor Data')}</h3>
-                <div className="grid grid-cols-2 gap-4">
-                  {sensorData.temperature && (
-                    <div className="p-3 bg-gray-50 rounded-lg">
-                      <div className="text-sm text-gray-600">{t('dashboard.temperature', 'Temperature')}</div>
-                      <div className="text-lg font-medium">{sensorData.temperature}°C</div>
-                    </div>
-                  )}
-                  {sensorData.humidity && (
-                    <div className="p-3 bg-gray-50 rounded-lg">
-                      <div className="text-sm text-gray-600">{t('dashboard.humidity', 'Humidity')}</div>
-                      <div className="text-lg font-medium">{sensorData.humidity}%</div>
-                    </div>
-                  )}
-                </div>
-              </div>
-            )}
-            
             {/* Show Premium feature banner only for Regular users */}
             {user?.role === 'Regular' && (
               <PremiumFeaturePrompt />

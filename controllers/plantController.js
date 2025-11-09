@@ -962,9 +962,12 @@ const createPlant = async (req, res) => {
 const getWateringHistory = async (req, res) => {
     try {
         const { plantId } = req.params;
+        console.log('[WATERING HISTORY] Plant ID:', plantId);
+        
         const plant = await Plant.findById(plantId);
         
         if (!plant) {
+            console.log('[WATERING HISTORY] Plant not found');
             return res.status(404).json({
                 success: false,
                 error: 'Plant not found'
@@ -973,20 +976,42 @@ const getWateringHistory = async (req, res) => {
 
         // Verify ownership
         if (plant.user_id !== req.user.user_id) {
+            console.log('[WATERING HISTORY] Unauthorized access');
             return res.status(403).json({
                 success: false,
                 error: 'Unauthorized access to plant'
             });
         }
 
-        const history = await WateringHistory.findByPlantId(plantId);
+        console.log('[WATERING HISTORY] Executing direct query for plant:', plantId);
+        
+        // Use direct query instead of WateringHistory model to avoid any potential issues
+        const query = `
+            SELECT 
+                wh.history_id,
+                wh.plant_id,
+                wh.timestamp,
+                wh.trigger_type,
+                wh.duration_seconds,
+                wh.device_key,
+                d.device_name
+            FROM watering_history wh
+            LEFT JOIN devices d ON wh.device_key = d.device_key
+            WHERE wh.plant_id = $1
+            ORDER BY wh.timestamp DESC 
+            LIMIT 50
+        `;
+
+        const result = await pool.query(query, [plantId]);
+        console.log('[WATERING HISTORY] Found records:', result.rows.length);
         
         return res.json({
             success: true,
-            data: history
+            data: result.rows
         });
 
     } catch (error) {
+        console.error('[WATERING HISTORY] Error:', error);
         await SystemLog.error('plantController', `Error fetching watering history for plant ${req.params.plantId}: ${error.message}`);
         return res.status(500).json({
             success: false,
@@ -1105,7 +1130,7 @@ const getSensorStats = async (req, res) => {
             });
         }
 
-        // Get statistics for each sensor type
+        // Get statistics for each sensor type - simplified approach
         const query = `
             SELECT 
                 ROUND(AVG(soil_moisture)::numeric, 2) as avg_soil_moisture,
@@ -1125,7 +1150,7 @@ const getSensorStats = async (req, res) => {
                 MAX(timestamp) as last_reading
             FROM sensors_data
             WHERE plant_id = $1
-            AND timestamp >= NOW() - INTERVAL '24 hours'
+            AND timestamp >= NOW() - INTERVAL '1 day'
         `;
 
         const result = await pool.query(query, [plantId]);
@@ -1144,6 +1169,103 @@ const getSensorStats = async (req, res) => {
     }
 };
 
+/**
+ * Get last watered information for a specific plant
+ */
+const getLastWatered = async (req, res) => {
+    try {
+        const { plantId } = req.params;
+        console.log('[LAST WATERED] Plant ID:', plantId);
+        
+        const plant = await Plant.findById(plantId);
+        
+        if (!plant) {
+            console.log('[LAST WATERED] Plant not found');
+            return res.status(404).json({
+                success: false,
+                error: 'Plant not found'
+            });
+        }
+
+        // Verify ownership
+        if (plant.user_id !== req.user.user_id) {
+            console.log('[LAST WATERED] Unauthorized access');
+            return res.status(403).json({
+                success: false,
+                error: 'Unauthorized access to plant'
+            });
+        }
+
+        console.log('[LAST WATERED] Executing query for plant:', plantId);
+        const query = `
+            SELECT 
+                wh.history_id,
+                wh.timestamp,
+                wh.trigger_type,
+                wh.duration_seconds,
+                d.device_name,
+                EXTRACT(EPOCH FROM (NOW() - wh.timestamp)) as seconds_ago
+            FROM watering_history wh
+            LEFT JOIN devices d ON wh.device_key = d.device_key
+            WHERE wh.plant_id = $1
+            ORDER BY wh.timestamp DESC
+            LIMIT 1
+        `;
+
+        const result = await pool.query(query, [plantId]);
+        console.log('[LAST WATERED] Query result rows:', result.rows.length);
+        
+        if (result.rows.length === 0) {
+            console.log('[LAST WATERED] No watering history found');
+            return res.json({
+                success: true,
+                data: {
+                    last_watered: null,
+                    message: 'No watering history found for this plant'
+                }
+            });
+        }
+
+        const lastWatering = result.rows[0];
+        console.log('[LAST WATERED] Found watering record:', lastWatering);
+        
+        const hoursAgo = Math.floor(lastWatering.seconds_ago / 3600);
+        const daysAgo = Math.floor(hoursAgo / 24);
+        
+        let timeAgoText;
+        if (daysAgo > 0) {
+            timeAgoText = `${daysAgo} day${daysAgo > 1 ? 's' : ''} ago`;
+        } else if (hoursAgo > 0) {
+            timeAgoText = `${hoursAgo} hour${hoursAgo > 1 ? 's' : ''} ago`;
+        } else {
+            const minutesAgo = Math.floor(lastWatering.seconds_ago / 60);
+            timeAgoText = minutesAgo > 0 ? `${minutesAgo} minute${minutesAgo > 1 ? 's' : ''} ago` : 'Just now';
+        }
+        
+        return res.json({
+            success: true,
+            data: {
+                last_watered: {
+                    timestamp: lastWatering.timestamp,
+                    trigger_type: lastWatering.trigger_type,
+                    duration_seconds: lastWatering.duration_seconds,
+                    device_name: lastWatering.device_name,
+                    time_ago: timeAgoText,
+                    hours_ago: Math.round(lastWatering.seconds_ago / 3600 * 100) / 100
+                }
+            }
+        });
+
+    } catch (error) {
+        console.error('[LAST WATERED] Error:', error);
+        await SystemLog.error('plantController', `Error fetching last watered for plant ${req.params.plantId}: ${error.message}`);
+        return res.status(500).json({
+            success: false,
+            error: 'Server error while fetching last watered information'
+        });
+    }
+};
+
 module.exports = {
     waterPlant,
     getWateringSchedule,
@@ -1155,5 +1277,6 @@ module.exports = {
     createPlant,
     getWateringHistory,
     getSensorHistory,
-    getSensorStats
+    getSensorStats,
+    getLastWatered
 };

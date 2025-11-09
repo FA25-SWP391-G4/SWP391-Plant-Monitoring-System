@@ -11,10 +11,13 @@ import settingsApi from '@/api/settingsApi';
 export default function SettingsPage() {
   const { t } = useTranslation();
   const { user, loading } = useAuth();
+  const { updateSettings: updateGlobalSettings } = useSettings();
   const router = useRouter();
   const isAuthenticated = !!user;
   const [activeTab, setActiveTab] = useState('dashboard');
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [success, setSuccess] = useState(null);
   const [settings, setSettings] = useState({
     appearance: {
       theme: 'system',
@@ -48,8 +51,6 @@ export default function SettingsPage() {
       enableAIFeatures: false // Only available for ultimate tier
     }
   });
-  const [error, setError] = useState(null);
-  const [success, setSuccess] = useState(null);
   
   useEffect(() => {
     if (!loading && !isAuthenticated) {
@@ -119,6 +120,12 @@ export default function SettingsPage() {
       const response = await settingsApi.updateUserSettings(settings);
       
       if (response.data.success) {
+        // Update global settings context
+        await updateGlobalSettings(settings);
+        
+        // Refetch settings to ensure local state matches what was saved
+        await fetchSettings();
+        
         // Settings saved successfully
         setSuccess(t('settings.saveSuccess', 'Settings saved successfully'));
         setTimeout(() => setSuccess(null), 3000);

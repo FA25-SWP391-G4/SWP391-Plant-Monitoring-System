@@ -51,11 +51,7 @@ const plantApi = {
   // Get sensor history for last 12 hours
   getSensorHistory: async (plantId) => {
     try {
-      const response = await axiosClient.get(`/api/plants/${plantId}/sensors/history`, {
-        params: {
-          hours: 12 // Get last 12 hours of data
-        }
-      });
+      const response = await axiosClient.get(`/api/plants/${plantId}/history/sensors`);
       return response.data;
     } catch (error) {
       console.error('Error fetching sensor history:', error);
@@ -63,13 +59,35 @@ const plantApi = {
     }
   },
 
+  // Get sensor statistics
+  getSensorStats: async (plantId) => {
+    try {
+      const response = await axiosClient.get(`/api/plants/${plantId}/stats/sensors`);
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching sensor stats:', error);
+      throw error;
+    }
+  },
+
   // Get recent watering history
   getWateringHistory: async (plantId) => {
     try {
-      const response = await axiosClient.get(`/api/plants/${plantId}/watering/history`);
+      const response = await axiosClient.get(`/api/plants/${plantId}/history/watering`);
       return response.data;
     } catch (error) {
       console.error('Error fetching watering history:', error);
+      throw error;
+    }
+  },
+
+  // Get last watered information
+  getLastWatered: async (plantId) => {
+    try {
+      const response = await axiosClient.get(`/api/plants/${plantId}/last-watered`);
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching last watered info:', error);
       throw error;
     }
   },
