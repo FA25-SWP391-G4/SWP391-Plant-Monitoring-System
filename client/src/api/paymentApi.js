@@ -10,49 +10,47 @@ const paymentApi = {
    * @param {Object} data Payment data
    * @param {number} data.amount Payment amount in VND
    * @param {string} data.orderInfo Order information description
-   * @param {string} data.orderType Order type (premium_upgrade, subscription, feature_access)
+   * @param {string} data.planType Plan type (premium_upgrade, ultimate_upgrade)
    * @param {string} data.bankCode Bank code (optional)
-   * @param {boolean} data.directRedirect If true, server will redirect directly to VNPay instead of returning URL
-   * @returns {Promise} Promise with payment URL data (unless directRedirect=true, then browser redirects)
+   * @returns {Promise} Promise with payment URL data
    */
   createPaymentUrl: async (data) => {
     try {
-      console.log('[PAYMENT] Creating payment URL with data:', {
-        ...data,
-        directRedirect: data.directRedirect ? true : false
-      });
+      console.log('[PAYMENT API] Creating payment URL with data:', data);
 
-      if (data.directRedirect) {
-        // For direct redirect, open the URL in a new window/tab
-        // This avoids CORS issues with redirects
-        const response = await axiosClient.post("/payment/create", {
-          ...data,
-          returnUrl: window.location.origin + "/payment-return"
-        }, {
-          // Don't use blob responseType as it causes issues with CORS
-          headers: {
-            'X-Direct-Redirect': 'true'
-          }
-        });
+      // Prepare payment data - only include bankCode if explicitly provided
+      const paymentData = {
+        amount: data.amount,
+        orderInfo: data.orderInfo,
+        planType: data.planType
+      };
 
-        console.log('[PAYMENT] Received payment URL:', response.data);
-        
-        // Handle the redirect manually by opening payment URL
-        if (response.data && response.data.data && response.data.data.paymentUrl) {
-          console.log('[PAYMENT] Opening payment URL:', response.data.data.paymentUrl);
-          window.open(response.data.data.paymentUrl, '_blank');
-          return response.data;
-        } else {
-          throw new Error('Invalid payment URL response');
-        }
+      // Only add bankCode if it's explicitly provided and not empty
+      if (data.bankCode && data.bankCode.trim() !== '' && data.bankCode.trim() !== 'null') {
+        paymentData.bankCode = data.bankCode.trim();
+        console.log('[PAYMENT API] Using specific bank code:', data.bankCode.trim());
+      } else {
+        console.log('[PAYMENT API] No bank code specified - VNPay will show all payment methods');
+        // Don't include bankCode property at all
       }
+
+      const response = await axiosClient.post("/payment/create", paymentData);
+
+      console.log('[PAYMENT API] Payment URL created:', response.data);
       
-      // Regular JSON response
-      const response = await axiosClient.post("/payment/create", data);
-      console.log('[PAYMENT] Payment URL created:', response.data);
-      return response.data;
+      // Check if we got a payment URL in the response
+      if (response.data && response.data.success && response.data.paymentUrl) {
+        console.log('[PAYMENT API] Redirecting to VNPay URL:', response.data.paymentUrl);
+        
+        // Redirect to VNPay payment URL
+        window.location.href = response.data.paymentUrl;
+        
+        return response.data;
+      } else {
+        throw new Error('Invalid payment URL response: ' + JSON.stringify(response.data));
+      }
     } catch (error) {
-      console.error('[PAYMENT] Error creating payment URL:', error);
+      console.error('[PAYMENT API] Error creating payment URL:', error);
       throw error;
     }
   },

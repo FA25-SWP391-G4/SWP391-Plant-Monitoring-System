@@ -952,6 +952,130 @@ createPasswordResetToken() {
             throw error;
         }
     }
+
+    /**
+     * ADMIN METHODS - Support for UC24-31
+     * Methods needed for admin dashboard and user management
+     */
+
+    // Count all users
+    static async countAll(filters = {}) {
+        try {
+            let query = 'SELECT COUNT(*) as count FROM users WHERE 1=1';
+            const params = [];
+            let paramIndex = 1;
+
+            if (filters.search) {
+                query += ` AND (email ILIKE $${paramIndex} OR full_name ILIKE $${paramIndex})`;
+                params.push(`%${filters.search}%`);
+                paramIndex++;
+            }
+
+            if (filters.role) {
+                query += ` AND role = $${paramIndex}`;
+                params.push(filters.role);
+                paramIndex++;
+            }
+
+            const result = await pool.query(query, params);
+            return parseInt(result.rows[0].count);
+        } catch (error) {
+            console.error('[USER COUNT ERROR] Error counting users:', error.message);
+            throw error;
+        }
+    }
+
+    // Count users by role
+    static async countByRole(role) {
+        try {
+            const query = 'SELECT COUNT(*) as count FROM users WHERE role = $1';
+            const result = await pool.query(query, [role]);
+            return parseInt(result.rows[0].count);
+        } catch (error) {
+            console.error('[USER COUNT BY ROLE ERROR] Error counting users by role:', error.message);
+            throw error;
+        }
+    }
+
+    // Find all users with pagination and filters
+    static async findAll(options = {}) {
+        try {
+            let query = `
+                SELECT user_id, email, full_name, role, created_at, updated_at, last_login_at, is_active
+                FROM users WHERE 1=1
+            `;
+            const params = [];
+            let paramIndex = 1;
+
+            // Apply search filter
+            if (options.search) {
+                query += ` AND (email ILIKE $${paramIndex} OR full_name ILIKE $${paramIndex})`;
+                params.push(`%${options.search}%`);
+                paramIndex++;
+            }
+
+            // Apply role filter
+            if (options.role) {
+                query += ` AND role = $${paramIndex}`;
+                params.push(options.role);
+                paramIndex++;
+            }
+
+            // Add ordering
+            query += ' ORDER BY created_at DESC';
+
+            // Add pagination
+            if (options.limit) {
+                query += ` LIMIT $${paramIndex}`;
+                params.push(options.limit);
+                paramIndex++;
+            }
+
+            if (options.offset) {
+                query += ` OFFSET $${paramIndex}`;
+                params.push(options.offset);
+                paramIndex++;
+            }
+
+            const result = await pool.query(query, params);
+            return result.rows.map(row => new User(row));
+        } catch (error) {
+            console.error('[USER FIND ALL ERROR] Error finding users:', error.message);
+            throw error;
+        }
+    }
+
+    // Find users by user ID (for admin operations)
+    static async findByUserId(userId) {
+        try {
+            const query = `
+                SELECT user_id, email, full_name, role, created_at, updated_at, last_login_at, is_active
+                FROM users WHERE user_id = $1
+            `;
+            const result = await pool.query(query, [userId]);
+            
+            if (result.rows.length === 0) {
+                return null;
+            }
+            
+            return new User(result.rows[0]);
+        } catch (error) {
+            console.error('[USER FIND BY USER ID ERROR] Error finding user by user ID:', error.message);
+            throw error;
+        }
+    }
+
+    // Delete user (admin operation)
+    async delete() {
+        try {
+            const query = 'DELETE FROM users WHERE user_id = $1';
+            const result = await pool.query(query, [this.user_id]);
+            return result.rowCount > 0;
+        } catch (error) {
+            console.error('[USER DELETE ERROR] Error deleting user:', error.message);
+            throw error;
+        }
+    }
 }
 
 module.exports = User;

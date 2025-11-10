@@ -551,7 +551,8 @@ async function login(req, res) {
                 secure: process.env.NODE_ENV === 'production',
                 sameSite: 'lax',
                 path: '/',
-                maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
+                maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+                domain: process.env.NODE_ENV === 'production' ? process.env.COOKIE_DOMAIN : 'localhost'
             };
             
             console.log(`[LOGIN] Setting cookies with options:`, cookieOptions);
@@ -570,14 +571,24 @@ async function login(req, res) {
             
             console.log(`[LOGIN] ✅ Both cookies set successfully for Google auth user`);
             
-            // Construct redirect URL
-            const callbackUrl = `${frontendUrl}/auth/callback?token=${token}&redirect=${encodeURIComponent(redirectUrl)}`;
+            // Instead of passing token in URL (less secure), use a session-based approach
+            // Store temporary auth success in session
+            req.session.authSuccess = {
+                token: token,
+                userData: userData,
+                timestamp: Date.now()
+            };
+            
+            // Construct redirect URL without token in query string
+            const callbackUrl = `${frontendUrl}/auth/callback?success=true&redirect=${encodeURIComponent(redirectUrl)}`;
             console.log(`[LOGIN] Final redirect URL: ${callbackUrl}`);
             console.log(`[LOGIN] Redirect URL length: ${callbackUrl.length}`);
             
-            // Redirect to frontend auth callback with token
+            // Use a proper 302 redirect instead of default redirect
             console.log(`[LOGIN] ✅ Executing redirect to frontend callback...`);
-            return res.redirect(callbackUrl);
+            res.writeHead(302, { 'Location': callbackUrl });
+            res.end();
+            return;
         }
 
         // For regular login, send JSON response with cookie
@@ -586,7 +597,8 @@ async function login(req, res) {
             secure: process.env.NODE_ENV === 'production',
             sameSite: 'lax',
             path: '/',
-            maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
+            maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+            domain: process.env.NODE_ENV === 'production' ? process.env.COOKIE_DOMAIN : 'localhost'
         };
         
         // HttpOnly cookie for server-side auth (secure)
@@ -1211,151 +1223,6 @@ async function sendWelcomeEmail(user) {
     }
 }
 
-/**
- * UC2: USER LOGIN CONTROLLER
- * =====================================
- * Implements user authentication with JWT token generation
- * 
- * Flow:
- * 1. Validate user input (email, password)
- * 2. Find user by email
- * 3. Validate password
- * 4. Generate JWT token
- * 5. Return success with user data and token
- * 
- * Security Features:
- * - Secure password comparison with bcrypt
- * - JWT token with user ID and role
- * - No sensitive data exposure
- * 
- * Error Handling:
- * - Input validation
- * - User not found
- * - Invalid credentials
- * - Database errors
- */
-async function login(req, res) {
-    try {
-        const { email, password, googleId} = req.body;
-        console.log(`[LOGIN] Attempt for email: ${email}`);
-        let user = null;
-
-        // Validate inputs
-        if (googleId) {
-            user = await User.findByGoogleId(googleId);
-            if (user && user.email === email) {
-                console.log(`[LOGIN] Google ID matches for user: ${email}`);
-            } else {
-                console.log('[LOGIN] Missing email or password');
-                return res.status(400).json({
-                    success: false,
-                    error: 'This email is not registered with Google ID. Please link your account first.'
-                });
-            }
-        } else {
-            if (!email || !password) {
-                console.log('[LOGIN] Missing email or password');
-                return res.status(400).json({
-                    error: 'Email and password are required'
-                });
-            }
-            // Find user by email
-            user = await User.findByEmail(email);
-            if (!user) {
-                console.log(`[LOGIN] User not found: ${email}`);
-                return res.status(401).json({
-                    error: 'This email is not registered. Please sign up first.'
-                });
-            }
-
-            console.log(`[LOGIN] User found: ${user.email}, checking password...`);
-            // Improved safer debug logging without exposing passwords
-            console.log(`[LOGIN] User object has password hash: ${!!user.password}`);
-            console.log(`[LOGIN] Password hash type: ${typeof user.password}`);
-            console.log(`[LOGIN] Password hash length: ${user.password ? user.password.length : 'N/A'}`);
-            console.log(`[LOGIN] Input password provided: ${!!password}`);
-
-            // Validate password
-            const isPasswordValid = await user.validatePassword(password);
-            console.log(`[LOGIN] Password validation result: ${isPasswordValid}`);
-
-            if (!isPasswordValid) {
-                return res.status(401).json({
-                    error: 'Invalid email or password'
-                });
-            }
-        }
-
-        // Generate JWT token
-        const token = generateToken(user);
-        console.log(`[LOGIN] Success for user: ${user.email}`);
-        
-        // Include both name fields for proper display
-        const fullName = user.given_name && user.family_name 
-            ? `${user.given_name} ${user.family_name}`
-            : user.family_name || user.given_name || 'User';
-            
-        console.log(`[LOGIN] User name fields: given_name=${user.given_name}, family_name=${user.family_name}, fullName=${fullName}`);
-        
-        // Create user response object
-        const userData = {
-            user_id: user.user_id,
-            email: user.email,
-            family_name: user.family_name,
-            given_name: user.given_name,
-            full_name: fullName,
-            role: user.role
-        };
-        
-        console.log(`[LOGIN] User data being sent to client:`, JSON.stringify(userData));
-
-        res.status(200).json({
-            success: true,
-            message: 'Login successful',
-            data: {
-                user: userData,
-                token
-            }
-        });
-    } catch (error) {
-        console.error('Login error:', error);
-        res.status(500).json({
-            error: 'Login failed. Please try again later.'
-        });
-    }
-}
-
-/**
- * UC3: USER LOGOUT CONTROLLER
- * =====================================
- * Implements user logout functionality
- * 
- * Note: Since we're using JWT tokens which are stateless,
- * actual token invalidation would require additional infrastructure
- * like a token blacklist in Redis or similar.
- * 
- * This function serves mainly as a hook for client-side logout.
- */
-async function logout(req, res) {
-    try {
-        // Since JWT is stateless, we can't invalidate tokens server-side without additional infrastructure
-        // In a production app, we would maintain a blacklist of tokens in Redis or similar
-
-        // Log the logout action (could be saved to SystemLog in a real implementation)
-        console.log(`User logged out: ${req.user ? req.user.user_id : 'Unknown'}`);
-
-        res.status(200).json({
-            success: true,
-            message: 'Google account linked successfully'
-        });
-    } catch (error) {
-        console.error('[AUTH] Link Google account error:', error);
-        res.status(500).json({
-            success: false,
-            message: 'Failed to link Google account'
-        });
-    }
-}
 
 async function linkGoogleAccount(req, res) {
     try {

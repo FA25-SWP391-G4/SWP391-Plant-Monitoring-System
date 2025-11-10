@@ -1,3 +1,5 @@
+=And(Weekday(CurrentDateTime)>=1, Weekday(CurrentDateTime)>=5, Or((Hour(CurrentDateTime)=21, Minute(CurrentDateTime)=59),(Hour(CurrentDateTime)=11, Minute(CurrentDateTime)=44)))
+
 require('dotenv').config({ path: './ai_service/.env' });
 const { Pool } = require('pg');
 

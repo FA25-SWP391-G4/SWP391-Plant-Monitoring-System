@@ -46,7 +46,9 @@ client.on('connect', () => {
     'smartplant/pub',
     'smartplant/+/sensor-data',
     'smartplant/+/status',
-    'smartplant/device/88ab2b3c1c78/command'
+    'smartplant/+/response',  // Add response topic
+    'smartplant/device/+/command',
+    'smartplant/device/+/response'  // Add device response topic
   ];
 
   // Subscribe to topics
@@ -74,13 +76,18 @@ client.on('message', async (topic, payload) => {
       return;
     }
     
-    const deviceKey = topic.split('/')[1];
+    const topicParts = topic.split('/');
+    const deviceKey = topicParts[1];
+    
     // Route message based on topic structure
     if (topic.includes('/sensor-data')) {
       // Extract device key from topic
       await processSensorData(deviceKey, message);
     } else if (topic.includes('/status')) {
       await processDeviceStatus(deviceKey, message);
+    } else if (topic.includes('/response')) {
+      // Handle device responses (acknowledgments)
+      await processDeviceResponse(deviceKey, message);
     }
   } catch (error) {
     console.error('Error processing MQTT message:', error);
@@ -137,64 +144,120 @@ async function processDeviceStatus(deviceKey, data) {
   }
 }
 
+// Process device command responses
+async function processDeviceResponse(deviceKey, data) {
+  try {
+    console.log(`✅ [MQTT-RESPONSE] Device ${deviceKey} response:`, data);
+    
+    // Log the response
+    await SystemLog.create('INFO', `Device ${deviceKey} responded: ${JSON.stringify(data)}`);
+    
+    // Handle specific response types
+    if (data.command === 'pump_on' || data.command === 'pump_off') {
+      const status = data.status || 'unknown';
+      const message = data.message || 'No message';
+      
+      console.log(`🚰 [PUMP-RESPONSE] Pump command ${data.command} status: ${status} - ${message}`);
+      
+      // Update device status if pump operation affects it
+      if (status === 'success') {
+        await db.pool.query(
+          `UPDATE devices SET last_seen = NOW(), status = 'online' WHERE device_key = $1`,
+          [deviceKey.trim()]
+        );
+      }
+    }
+  } catch (error) {
+    console.error('Error processing device response:', error);
+    await SystemLog.create('ERROR', `Error processing response from ${deviceKey}: ${error.message}`).catch(console.error);
+  }
+}
+
 // Send command to a specific device
 function sendDeviceCommand(deviceId, command, parameters = {}) {
+  // Trim device ID to remove any padding spaces
+  const trimmedDeviceId = deviceId.trim();
+  
   console.log('🔄 [MQTT-DEVICE] Preparing device command:', {
-    deviceId,
+    originalDeviceId: deviceId,
+    trimmedDeviceId: trimmedDeviceId,
     command,
     parameters
   });
 
-  const topic = `smartplant/device/${deviceId}/command`;
+  const topic = `smartplant/device/${trimmedDeviceId}/command`;
   
   const payload = JSON.stringify({
     command,
-    parameters
-  });
-  
-  console.log('📦 [MQTT-DEVICE] Command payload:', {
-    topic,
-    payload: JSON.parse(payload),
-    qos: 1
+    parameters,
+    timestamp: new Date().toISOString()
   });
   
   return new Promise((resolve, reject) => {
-    client.publish(topic, payload, { qos: 1 }, (error) => {
+    // Set up timeout for command response
+    const timeoutMs = 10000; // 10 seconds timeout
+    const commandId = `cmd_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    
+    // Add command ID to payload for tracking
+    const payloadWithId = {
+      command,
+      parameters,
+      commandId,
+      timestamp: new Date().toISOString()
+    };
+    const finalPayload = JSON.stringify(payloadWithId);
+    
+    console.log('📦 [MQTT-DEVICE] Command payload:', {
+      topic,
+      payload: payloadWithId,
+      qos: 1
+    });
+    
+    const timeout = setTimeout(() => {
+      console.log(`⏰ [MQTT-DEVICE] Command timeout for device ${trimmedDeviceId}:`, {
+        command,
+        commandId,
+        timeoutMs
+      });
+      resolve({ status: 'timeout', message: 'Device did not respond within timeout period' });
+    }, timeoutMs);
+    
+    client.publish(topic, finalPayload, { qos: 1 }, (error) => {
       if (error) {
+        clearTimeout(timeout);
         console.error('❌ [MQTT-DEVICE] Command failed:', {
-          deviceId,
+          deviceId: trimmedDeviceId,
           command,
           error: error.message,
-          stack: error.stack,
-          timestamp
+          stack: error.stack
         });
         
         SystemLog.create('ERROR', JSON.stringify({
           event: 'device_command_failed',
-          deviceId,
+          deviceId: trimmedDeviceId,
           command,
-          error: error.message,
-          timestamp
+          error: error.message
         })).catch(console.error);
         
         reject(error);
       } else {
+        clearTimeout(timeout);
         console.log('✅ [MQTT-DEVICE] Command sent successfully:', {
-          deviceId,
+          deviceId: trimmedDeviceId,
           command,
-          timestamp,
+          commandId,
           topic
         });
         
         SystemLog.create('INFO', JSON.stringify({
           event: 'device_command_sent',
-          deviceId,
+          deviceId: trimmedDeviceId,
           command,
           parameters,
-          timestamp
+          commandId
         })).catch(console.error);
         
-        resolve();
+        resolve({ status: 'sent', message: 'Command sent successfully' });
       }
     });
   });
@@ -237,14 +300,14 @@ function sendPumpCommand(device_key, command, duration = null) {
     });
     
     return sendDeviceCommand(device_key, command, parameters)
-      .then(() => {
-        console.log('✅ [MQTT-PUMP] Command sent successfully');
-        return true;
+      .then((result) => {
+        console.log('✅ [MQTT-PUMP] Command result:', result);
+        return result;
       })
       .catch(error => {
         console.error('❌ [MQTT-PUMP] Command failed:', {
           error: error.message,
-          command: parameters.command,
+          command: command,
           state: parameters.state
         });
         throw error;

@@ -63,10 +63,13 @@ const authMiddleware = async (req, res, next) => {
                     return acc;
                 }, {});
                 
-                token = cookies.token;
+                // Check for both 'token' and 'token_client' cookies
+                token = cookies.token || cookies.token_client;
                 console.log('[AUTH MIDDLEWARE] Cookie parsing result:');
                 console.log('  - Cookies found:', Object.keys(cookies));
-                console.log('  - Token in cookies:', !!token);
+                console.log('  - Token from "token" cookie:', !!cookies.token);
+                console.log('  - Token from "token_client" cookie:', !!cookies.token_client);
+                console.log('  - Final token found:', !!token);
                 
                 if (token) {
                     console.log('[AUTH MIDDLEWARE] ✅ Token found in cookies');

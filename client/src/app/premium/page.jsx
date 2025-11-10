@@ -95,6 +95,7 @@ export default function PremiumPage() {
         amount,
         orderInfo: description,
         planType: paymentType
+        // Don't include bankCode - let VNPay show all payment methods
       };
       
       // Create payment URL through backend

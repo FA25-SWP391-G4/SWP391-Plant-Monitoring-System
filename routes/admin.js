@@ -60,6 +60,9 @@ router.get('/dashboard', adminController.getSystemDashboard);
 // Get system reports (users, devices, sensors, watering)
 router.get('/reports', adminController.getSystemReports);
 
+// Get detailed profit analysis
+router.get('/profit-analysis', adminController.getProfitAnalysis);
+
 /**
  * UC26: CONFIGURE GLOBAL SETTINGS ROUTES
  */

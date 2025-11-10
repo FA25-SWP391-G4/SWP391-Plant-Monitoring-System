@@ -23,7 +23,7 @@ const User = require('../models/User');
 const adminMiddleware = async (req, res, next) => {
   try {
     // req.user should be set by the authMiddleware
-    if (!req.user || !req.user.id) {
+    if (!req.user || !req.user.user_id) {
       return res.status(401).json({ 
         success: false, 
         message: 'Authentication required for admin access' 
@@ -31,7 +31,7 @@ const adminMiddleware = async (req, res, next) => {
     }
 
     // Get the complete user data with role information
-    const user = await User.findByPk(req.user.id);
+    const user = await User.findById(req.user.user_id);
     
     if (!user) {
       return res.status(401).json({ 
@@ -41,7 +41,7 @@ const adminMiddleware = async (req, res, next) => {
     }
 
     // Check if the user has admin role
-    if (user.role !== 'ADMIN') {
+    if (user.role !== 'Admin') {
       return res.status(403).json({ 
         success: false, 
         message: 'Admin privileges required for this operation' 
@@ -49,11 +49,11 @@ const adminMiddleware = async (req, res, next) => {
     }
 
     // Optional: Log admin actions for audit purposes
-    console.log(`Admin action: ${req.method} ${req.originalUrl} by user ${user.id} (${user.email})`);
+    console.log(`Admin action: ${req.method} ${req.originalUrl} by user ${user.user_id} (${user.email})`);
     
     // Store admin information for potential use in controllers
     req.admin = {
-      id: user.id,
+      id: user.user_id,
       email: user.email,
       role: user.role
     };

@@ -3,6 +3,7 @@ import { useCallback, useState } from 'react';
 import { useAuth } from '@/providers/AuthProvider';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
+import { lazyRetry } from '@/utils/lazyRetry';
 /**
  * Custom hook for handling Google OAuth authentication with improved security
  * 
@@ -26,8 +27,8 @@ export function useGoogleAuth() {
     try {
       setIsAuthenticating(true);
       
-      // Dynamic import to ensure proper chunking with webpack
-      const { default: authApi } = await import('@/api/authApi');
+      // Dynamic import with retry logic to handle chunk loading errors
+      const { default: authApi } = await lazyRetry(() => import('@/api/authApi'));
       
       const result = await authApi.loginWithGoogle(token);
       

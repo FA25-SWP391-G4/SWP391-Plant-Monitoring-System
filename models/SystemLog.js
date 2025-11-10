@@ -462,6 +462,186 @@ class SystemLog {
             level_color: this.getLevelColor()
         };
     }
+
+    /**
+     * ADMIN METHODS - Additional methods for admin dashboard
+     */
+    static async findByUserId(userId, limit = 50) {
+        try {
+            const query = `
+                SELECT * FROM system_logs 
+                WHERE user_id = $1 
+                ORDER BY timestamp DESC 
+                LIMIT $2
+            `;
+            const result = await pool.query(query, [userId, limit]);
+            return result.rows.map(row => new SystemLog(row));
+        } catch (error) {
+            console.error('[SYSTEM LOG FIND BY USER ID ERROR] Error finding logs by user ID:', error.message);
+            throw error;
+        }
+    }
+
+    static async countAll(filters = {}) {
+        try {
+            let query = 'SELECT COUNT(*) as count FROM system_logs WHERE 1=1';
+            const params = [];
+            let paramIndex = 1;
+
+            if (filters.log_level) {
+                query += ` AND log_level = $${paramIndex}`;
+                params.push(filters.log_level);
+                paramIndex++;
+            }
+
+            if (filters.source) {
+                query += ` AND source = $${paramIndex}`;
+                params.push(filters.source);
+                paramIndex++;
+            }
+
+            if (filters.startDate) {
+                query += ` AND timestamp >= $${paramIndex}`;
+                params.push(filters.startDate);
+                paramIndex++;
+            }
+
+            if (filters.endDate) {
+                query += ` AND timestamp <= $${paramIndex}`;
+                params.push(filters.endDate);
+                paramIndex++;
+            }
+
+            if (filters.search) {
+                query += ` AND message ILIKE $${paramIndex}`;
+                params.push(`%${filters.search}%`);
+                paramIndex++;
+            }
+
+            if (filters.user_id) {
+                query += ` AND user_id = $${paramIndex}`;
+                params.push(filters.user_id);
+                paramIndex++;
+            }
+
+            const result = await pool.query(query, params);
+            return parseInt(result.rows[0].count);
+        } catch (error) {
+            console.error('[SYSTEM LOG COUNT ERROR] Error counting logs:', error.message);
+            throw error;
+        }
+    }
+
+    static async findAll(options = {}) {
+        try {
+            let query = 'SELECT * FROM system_logs WHERE 1=1';
+            const params = [];
+            let paramIndex = 1;
+
+            // Apply filters
+            if (options.log_level) {
+                query += ` AND log_level = $${paramIndex}`;
+                params.push(options.log_level);
+                paramIndex++;
+            }
+
+            if (options.source) {
+                query += ` AND source = $${paramIndex}`;
+                params.push(options.source);
+                paramIndex++;
+            }
+
+            if (options.startDate) {
+                query += ` AND timestamp >= $${paramIndex}`;
+                params.push(options.startDate);
+                paramIndex++;
+            }
+
+            if (options.endDate) {
+                query += ` AND timestamp <= $${paramIndex}`;
+                params.push(options.endDate);
+                paramIndex++;
+            }
+
+            if (options.search) {
+                query += ` AND message ILIKE $${paramIndex}`;
+                params.push(`%${options.search}%`);
+                paramIndex++;
+            }
+
+            if (options.user_id) {
+                query += ` AND user_id = $${paramIndex}`;
+                params.push(options.user_id);
+                paramIndex++;
+            }
+
+            // Add ordering
+            const orderBy = options.orderBy || 'timestamp DESC';
+            query += ` ORDER BY ${orderBy}`;
+
+            // Add pagination
+            if (options.limit) {
+                query += ` LIMIT $${paramIndex}`;
+                params.push(options.limit);
+                paramIndex++;
+            }
+
+            if (options.offset) {
+                query += ` OFFSET $${paramIndex}`;
+                params.push(options.offset);
+                paramIndex++;
+            }
+
+            const result = await pool.query(query, params);
+            return result.rows.map(row => new SystemLog(row));
+        } catch (error) {
+            console.error('[SYSTEM LOG FIND ALL ERROR] Error finding logs:', error.message);
+            throw error;
+        }
+    }
+
+    static async getDistinctValues(column) {
+        try {
+            const query = `SELECT DISTINCT ${column} FROM system_logs ORDER BY ${column}`;
+            const result = await pool.query(query);
+            return result.rows.map(row => row[column]);
+        } catch (error) {
+            console.error('[SYSTEM LOG DISTINCT VALUES ERROR] Error getting distinct values:', error.message);
+            throw error;
+        }
+    }
+
+    static async deleteAll(filters = {}) {
+        try {
+            let query = 'DELETE FROM system_logs WHERE 1=1';
+            const params = [];
+            let paramIndex = 1;
+
+            if (filters.log_level) {
+                query += ` AND log_level = $${paramIndex}`;
+                params.push(filters.log_level);
+                paramIndex++;
+            }
+
+            if (filters.source) {
+                query += ` AND source = $${paramIndex}`;
+                params.push(filters.source);
+                paramIndex++;
+            }
+
+            if (filters.before) {
+                query += ` AND timestamp < $${paramIndex}`;
+                params.push(filters.before);
+                paramIndex++;
+            }
+
+            const result = await pool.query(query, params);
+            return result.rowCount;
+        } catch (error) {
+            console.error('[SYSTEM LOG DELETE ERROR] Error deleting logs:', error.message);
+            throw error;
+        }
+    }
 }
 
 module.exports = SystemLog;

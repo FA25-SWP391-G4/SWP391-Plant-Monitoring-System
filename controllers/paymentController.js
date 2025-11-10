@@ -23,6 +23,7 @@ class PaymentController {
             // Validate required fields
             if (!amount || !orderInfo) {
                 return res.status(400).json({
+                    success: false,
                     error: 'Missing required fields: amount and orderInfo'
                 });
             }
@@ -30,6 +31,7 @@ class PaymentController {
             // Validate amount
             if (!VNPayService.validateAmount(amount)) {
                 return res.status(400).json({
+                    success: false,
                     error: 'Invalid amount. Must be between 5,000 and 500,000,000 VND'
                 });
             }
@@ -57,13 +59,25 @@ class PaymentController {
             console.log('[PAYMENT CONTROLLER] Created payment record:', paymentId);
 
             // Generate VNPay payment URL
-            const paymentUrl = VNPayService.createPaymentUrl({
+            const paymentUrlParams = {
                 amount: parseFloat(amount),
                 orderId,
                 orderInfo,
-                ipAddr,
-                bankCode: bankCode || ''
-            });
+                ipAddr
+            };
+
+            // Only add bankCode if it's explicitly provided and not empty
+            if (bankCode && bankCode.trim() !== '' && bankCode.trim() !== 'null' && bankCode.trim() !== 'undefined') {
+                paymentUrlParams.bankCode = bankCode.trim();
+                console.log('[PAYMENT CONTROLLER] Using specific bank code:', bankCode.trim());
+            } else {
+                console.log('[PAYMENT CONTROLLER] No bank code specified - VNPay will show all payment methods');
+                // Don't include bankCode in the params at all
+            }
+
+            const paymentUrl = VNPayService.createPaymentUrl(paymentUrlParams);
+
+            console.log('[PAYMENT CONTROLLER] Generated payment URL:', paymentUrl);
 
             // Log successful payment creation
             await SystemLog.log('payment', 'create_payment', 
@@ -83,6 +97,7 @@ class PaymentController {
             await SystemLog.error('payment', 'create_payment', error.message, req.user?.user_id);
 
             res.status(500).json({
+                success: false,
                 error: 'Failed to create payment',
                 message: error.message
             });
@@ -235,6 +250,52 @@ class PaymentController {
             await SystemLog.error('payment', 'vnpay_ipn', error.message);
 
             res.json({ RspCode: '99', Message: 'Unknown error' });
+        }
+    }
+
+    // Get payment status by order ID
+    static async getPaymentStatus(req, res) {
+        try {
+            const { orderId } = req.params;
+            const userId = req.user.user_id;
+
+            console.log('[PAYMENT CONTROLLER] Getting payment status for order:', orderId, 'user:', userId);
+
+            // Find payment by order ID and user ID to ensure security
+            const payment = await Payment.findByOrderIdAndUserId(orderId, userId);
+
+            if (!payment) {
+                return res.status(404).json({
+                    success: false,
+                    error: 'Payment not found'
+                });
+            }
+
+            // Format the payment data
+            const paymentData = {
+                ...payment,
+                formatted_amount: VNPayService.formatAmount(payment.amount),
+                status_message: payment.response_code ? 
+                    VNPayService.getTransactionStatusMessage(payment.response_code) : null
+            };
+
+            res.json({
+                success: payment.status === 'SUCCESS',
+                payment: paymentData,
+                message: payment.status === 'SUCCESS' ? 'Payment completed successfully' : 'Payment not completed'
+            });
+
+        } catch (error) {
+            console.error('[PAYMENT CONTROLLER] Error getting payment status:', error);
+            
+            // Log error
+            await SystemLog.error('payment', 'get_status', error.message, req.user?.user_id);
+
+            res.status(500).json({
+                success: false,
+                error: 'Failed to get payment status',
+                message: error.message
+            });
         }
     }
 

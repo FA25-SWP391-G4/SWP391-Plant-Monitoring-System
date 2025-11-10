@@ -9,6 +9,7 @@ const { getUserPlants,
   createPlant,
   getWateringHistory,
   getSensorHistory,
+  getCurrentSensorData,
   getSensorStats,
   getLastWatered } = require('../controllers/plantController');
 const { authMiddleware } = require('../middlewares/authMiddleware');
@@ -54,6 +55,9 @@ router.get('/:plantId/history/watering', authMiddleware, getWateringHistory);
 
 //get sensor data history
 router.get('/:plantId/history/sensors', authMiddleware, getSensorHistory);
+
+//get current sensor data
+router.get('/:plantId/sensors/current', authMiddleware, getCurrentSensorData);
 
 //get sensor stats
 router.get('/:plantId/stats/sensors', authMiddleware, getSensorStats);

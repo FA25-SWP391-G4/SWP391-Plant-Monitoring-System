@@ -114,6 +114,28 @@ const plantApi = {
     }
   },
 
+  // Connect device to plant
+  connectDevice: async (plantId, deviceId) => {
+    try {
+      const response = await axiosClient.put(`/api/plants/${plantId}/connect-device`, { deviceId });
+      return response.data;
+    } catch (error) {
+      console.error(`Error connecting device to plant ${plantId}:`, error);
+      throw error;
+    }
+  },
+
+  // Get current sensor data for a plant
+  getCurrentSensorData: async (plantId) => {
+    try {
+      const response = await axiosClient.get(`/api/plants/${plantId}/sensors/current`);
+      return response.data;
+    } catch (error) {
+      console.error(`Error fetching current sensor data for plant ${plantId}:`, error);
+      throw error;
+    }
+  },
+
   // Set sensor thresholds for a plant
   setSensorThresholds: async (plantId, thresholds) => {
     try {
