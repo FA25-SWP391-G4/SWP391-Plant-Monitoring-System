@@ -5,6 +5,7 @@ import PlantHistoryChart from './PlantHistoryChart';
 import ManualWateringControl from '../plants/ManualWateringControl';
 import { useTheme } from '@/contexts/ThemeContext';
 import plantApi from '@/api/plantApi';
+import deviceApi from '@/api/deviceApi';
 
 export default function PlantCard({ plant, sensorData = {} }) {
   const { t } = useTranslation();
@@ -16,11 +17,22 @@ export default function PlantCard({ plant, sensorData = {} }) {
   const [wateringHistory, setWateringHistory] = useState(null);
   const [showWateringLog, setShowWateringLog] = useState(false);
   const [showWateringControls, setShowWateringControls] = useState(false);
+  const [currentSensorData, setCurrentSensorData] = useState(sensorData);
+  const [refreshInterval, setRefreshInterval] = useState(null);
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const [lastRefresh, setLastRefresh] = useState(new Date());
 
   const loadSensorHistory = async () => {
     if (!showHistory) return;
     try {
-      const response = await plantApi.getSensorHistory(plant.plant_id);
+      let response;
+      
+      // Use deviceApi if plant has a device_id, otherwise use plantApi
+      if (plant.device_id) {
+        response = await deviceApi.getSensorHistory(plant.device_id, { timeRange: '24h' });
+      } else {
+        response = await plantApi.getSensorHistory(plant.plant_id);
+      }
       
       // Transform the API response data for chart consumption
       if (response?.data && Array.isArray(response.data)) {
@@ -86,6 +98,37 @@ export default function PlantCard({ plant, sensorData = {} }) {
     }
   };
 
+  const refreshSensorData = async () => {
+    try {
+      setIsRefreshing(true);
+      
+      // Use deviceApi if plant has a device_id, otherwise use plantApi as fallback
+      if (plant.device_id) {
+        // Get latest sensor data from device
+        const response = await deviceApi.getLatestSensorData();
+        if (response?.data) {
+          // Find sensor data for this plant's device
+          const deviceSensorData = response.data.find(d => d.device_id === plant.device_id);
+          if (deviceSensorData) {
+            setCurrentSensorData(deviceSensorData);
+            setLastRefresh(new Date());
+          }
+        }
+      } else {
+        // Fallback to plant-specific sensor data
+        const response = await plantApi.getCurrentSensorData(plant.plant_id);
+        if (response?.data) {
+          setCurrentSensorData(response.data);
+          setLastRefresh(new Date());
+        }
+      }
+    } catch (error) {
+      console.error('Error refreshing sensor data:', error);
+    } finally {
+      setIsRefreshing(false);
+    }
+  };
+
   useEffect(() => {
     if (showHistory) {
       loadSensorHistory();
@@ -97,6 +140,27 @@ export default function PlantCard({ plant, sensorData = {} }) {
     loadLastWatered();
   }, [plant.plant_id]);
 
+  // Set up auto-refresh interval for sensor data (1 minute)
+  useEffect(() => {
+    const interval = setInterval(() => {
+      refreshSensorData();
+    }, 60000); // 60 seconds
+
+    setRefreshInterval(interval);
+
+    // Cleanup interval on component unmount
+    return () => {
+      if (interval) {
+        clearInterval(interval);
+      }
+    };
+  }, [plant.plant_id]);
+
+  // Update current sensor data when prop changes
+  useEffect(() => {
+    setCurrentSensorData(sensorData);
+  }, [sensorData]);
+
   /*useEffect(() => {
     // Reset watering state when device goes offline
     const [deviceStatus, setDeviceStatus] = useState('offline');
@@ -107,12 +171,16 @@ export default function PlantCard({ plant, sensorData = {} }) {
   
   // Calculate device status based on last sensor data timestamp
   const getDeviceStatus = () => {
-    if (!plant.last_sensor_data) return 'offline';
+    // Check if we have current sensor data with timestamp
+    const lastDataTimestamp = currentSensorData?.timestamp || plant.last_sensor_data;
     
-    const lastUpdate = new Date(plant.last_sensor_data);
+    if (!lastDataTimestamp) return 'offline';
+    
+    const lastUpdate = new Date(lastDataTimestamp);
     const now = new Date();
     const timeDiffMinutes = (now - lastUpdate) / (1000 * 60);
     
+    // Device is online if last data was received within 5 minutes
     return timeDiffMinutes <= 5 ? 'online' : 'offline';
   };
   
@@ -243,6 +311,26 @@ export default function PlantCard({ plant, sensorData = {} }) {
             }`} />
             {deviceStatus === 'online' ? t('device.online', 'Online') : t('device.offline', 'Offline')}
           </div>
+          {/* Auto-refresh indicator */}
+          <div className="flex items-center text-xs text-gray-400" title={`Last updated: ${lastRefresh.toLocaleTimeString()}`}>
+            <svg 
+              xmlns="http://www.w3.org/2000/svg" 
+              width="12" 
+              height="12" 
+              viewBox="0 0 24 24" 
+              fill="none" 
+              stroke="currentColor" 
+              strokeWidth="2" 
+              strokeLinecap="round" 
+              strokeLinejoin="round" 
+              className={`${isRefreshing ? 'animate-spin' : ''}`}
+            >
+              <path d="M23 4v6h-6"/>
+              <path d="M1 20v-6h6"/>
+              <path d="m3.51 9a9 9 0 0 1 14.85-3.36L23 10"/>
+              <path d="M20.49 15a9 9 0 0 1-14.85 3.36L1 14"/>
+            </svg>
+          </div>
         </div>
         </div>
         
@@ -269,7 +357,7 @@ export default function PlantCard({ plant, sensorData = {} }) {
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-blue-500 mr-1">
                 <path d="M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5C6 11.1 5 15 5 15a7 7 0 0 0 7 7z"></path>
               </svg>
-              <span className="font-medium">{sensorData?.soil_moisture ?? 'N/A'}%</span>
+              <span className="font-medium">{currentSensorData?.soil_moisture ?? 'N/A'}%</span>
             </div>
           </div>
 
@@ -303,7 +391,7 @@ export default function PlantCard({ plant, sensorData = {} }) {
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-red-500 mr-1">
                 <path d="M14 4v10.54a4 4 0 1 1-4 0V4a2 2 0 0 1 4 0Z"></path>
               </svg>
-              <span className="font-medium">{sensorData?.temperature || 'N/A'}°C</span>
+              <span className="font-medium">{currentSensorData?.temperature || 'N/A'}°C</span>
             </div>
           </div>
           
@@ -325,7 +413,7 @@ export default function PlantCard({ plant, sensorData = {} }) {
                 <path d="m6.34 17.66-1.41 1.41"></path>
                 <path d="m19.07 4.93-1.41 1.41"></path>
               </svg>
-              <span className="font-medium">{sensorData?.light_intensity || 'N/A'} lux</span>
+              <span className="font-medium">{currentSensorData?.light_intensity || 'N/A'} lux</span>
             </div>
           </div>
           {/* Humidity */}
@@ -339,7 +427,7 @@ export default function PlantCard({ plant, sensorData = {} }) {
                 <path d="M12 2s-6 6.5-6 11a6 6 0 0 0 12 0c0-4.5-6-11-6-11z"></path>
                 <circle cx="12" cy="13" r="3"></circle>
               </svg>
-              <span className="font-medium">{sensorData?.air_humidity || 'N/A'}%</span>
+              <span className="font-medium">{currentSensorData?.air_humidity || 'N/A'}%</span>
             </div>
           </div>
         </div>
@@ -386,7 +474,7 @@ export default function PlantCard({ plant, sensorData = {} }) {
         </div>
         
         {/* AI Prediction Banner */}
-        {sensorData?.moisture && sensorData.moisture < 40 && (
+        {currentSensorData?.moisture && currentSensorData.moisture < 40 && (
           <div className="bg-gradient-to-r from-blue-50 to-blue-100 border border-blue-200 rounded-lg p-3 mb-4">
             <div className="flex items-center">
               <div className="text-blue-600 mr-2">🤖</div>
@@ -492,7 +580,7 @@ export default function PlantCard({ plant, sensorData = {} }) {
         )}
 
         {/* Sensor Chart */}
-        <PlantHistoryChart sensorData={sensorData} plantName={plant.plant_name} />
+        <PlantHistoryChart sensorData={currentSensorData} plantName={plant.plant_name} />
       </div>
     </div>
   );

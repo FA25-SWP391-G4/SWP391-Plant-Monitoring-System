@@ -25,6 +25,7 @@ const Plant = require('../models/Plant');
 const Device = require('../models/Device');
 const SensorData = require('../models/SensorData');
 const WateringHistory = require('../models/WateringHistory');
+const Payment = require('../models/Payment');
 const { pool } = require('../config/db');
 const { exec } = require('child_process');
 const fs = require('fs');
@@ -578,7 +579,8 @@ async function getSystemDashboard(req, res) {
             plantCount,
             todaySensorReadings,
             todayWateringEvents,
-            recentErrors
+            recentErrors,
+            financialMetrics
         ] = await Promise.all([
             User.countAll(),
             User.countByRole('Premium'),
@@ -587,7 +589,8 @@ async function getSystemDashboard(req, res) {
             Plant.countAll(),
             SensorData.countToday(),
             WateringHistory.countToday(),
-            SystemLog.findByLevel('ERROR', 10)
+            SystemLog.findByLevel('ERROR', 10),
+            getFinancialMetrics()
         ]);
         
         // Get system health
@@ -612,7 +615,13 @@ async function getSystemDashboard(req, res) {
         } catch (error) {
             systemHealth.storage = false;
         }
-        
+
+        // Get user growth data (last 7 days)
+        const userGrowth = await getUserGrowthData();
+
+        // Get device statistics
+        const deviceStats = await getDeviceStatistics();
+
         // Log admin access
         await SystemLog.create({
             log_level: 'INFO',
@@ -627,12 +636,14 @@ async function getSystemDashboard(req, res) {
                 users: {
                     total: userCount,
                     premium: premiumUserCount,
-                    percentagePremium: (premiumUserCount / userCount * 100).toFixed(1)
+                    percentagePremium: userCount > 0 ? (premiumUserCount / userCount * 100).toFixed(1) : 0,
+                    growth: userGrowth
                 },
                 devices: {
                     total: deviceCount,
                     active: activeDeviceCount,
-                    percentageActive: (activeDeviceCount / deviceCount * 100).toFixed(1)
+                    percentageActive: deviceCount > 0 ? (activeDeviceCount / deviceCount * 100).toFixed(1) : 0,
+                    statistics: deviceStats
                 },
                 plants: {
                     total: plantCount
@@ -641,6 +652,7 @@ async function getSystemDashboard(req, res) {
                     todaySensorReadings,
                     todayWateringEvents
                 },
+                financial: financialMetrics,
                 systemHealth,
                 recentErrors
             }
@@ -1869,6 +1881,443 @@ async function updateTranslations(req, res) {
 }
 
 /**
+ * Helper: Get financial metrics
+ * @returns {Object} Financial metrics data
+ */
+async function getFinancialMetrics() {
+    try {
+        // Get revenue data
+        const revenueQuery = `
+            SELECT 
+                COUNT(*) as total_payments,
+                SUM(CASE WHEN status = 'completed' THEN amount ELSE 0 END) as total_revenue,
+                SUM(CASE WHEN status = 'completed' AND created_at >= NOW() - INTERVAL '30 days' THEN amount ELSE 0 END) as monthly_revenue,
+                SUM(CASE WHEN status = 'completed' AND created_at >= NOW() - INTERVAL '7 days' THEN amount ELSE 0 END) as weekly_revenue,
+                SUM(CASE WHEN status = 'completed' AND DATE(created_at) = CURRENT_DATE THEN amount ELSE 0 END) as daily_revenue
+            FROM payments
+        `;
+        
+        const revenueResult = await pool.query(revenueQuery);
+        const revenue = revenueResult.rows[0];
+
+        // Get revenue trend (last 30 days)
+        const trendQuery = `
+            SELECT 
+                DATE(created_at) as date,
+                SUM(CASE WHEN status = 'completed' THEN amount ELSE 0 END) as daily_revenue,
+                COUNT(*) as daily_transactions
+            FROM payments
+            WHERE created_at >= NOW() - INTERVAL '30 days'
+            GROUP BY DATE(created_at)
+            ORDER BY date
+        `;
+        
+        const trendResult = await pool.query(trendQuery);
+        const revenueTrend = trendResult.rows;
+
+        // Calculate monthly recurring revenue (MRR)
+        const mrrQuery = `
+            SELECT COUNT(*) * 9.99 as estimated_mrr
+            FROM users 
+            WHERE role = 'Premium' 
+            AND updated_at >= NOW() - INTERVAL '30 days'
+        `;
+        
+        const mrrResult = await pool.query(mrrQuery);
+        const mrr = mrrResult.rows[0].estimated_mrr || 0;
+
+        // Get payment statistics
+        const paymentStatsQuery = `
+            SELECT 
+                status,
+                COUNT(*) as count,
+                SUM(amount) as total_amount
+            FROM payments
+            WHERE created_at >= NOW() - INTERVAL '30 days'
+            GROUP BY status
+        `;
+        
+        const paymentStatsResult = await pool.query(paymentStatsQuery);
+        const paymentStats = paymentStatsResult.rows;
+
+        return {
+            totalRevenue: parseFloat(revenue.total_revenue) || 0,
+            monthlyRevenue: parseFloat(revenue.monthly_revenue) || 0,
+            weeklyRevenue: parseFloat(revenue.weekly_revenue) || 0,
+            dailyRevenue: parseFloat(revenue.daily_revenue) || 0,
+            totalPayments: parseInt(revenue.total_payments) || 0,
+            monthlyRecurringRevenue: parseFloat(mrr) || 0,
+            revenueTrend,
+            paymentStats
+        };
+    } catch (error) {
+        console.error('Error getting financial metrics:', error);
+        return {
+            totalRevenue: 0,
+            monthlyRevenue: 0,
+            weeklyRevenue: 0,
+            dailyRevenue: 0,
+            totalPayments: 0,
+            monthlyRecurringRevenue: 0,
+            revenueTrend: [],
+            paymentStats: [],
+            error: 'Failed to load financial data'
+        };
+    }
+}
+
+/**
+ * Helper: Get user growth data
+ * @returns {Array} User growth data for the last 7 days
+ */
+async function getUserGrowthData() {
+    try {
+        const query = `
+            SELECT 
+                DATE(created_at) as date,
+                COUNT(*) as new_users,
+                SUM(CASE WHEN role = 'Premium' THEN 1 ELSE 0 END) as new_premium_users
+            FROM users
+            WHERE created_at >= NOW() - INTERVAL '7 days'
+            GROUP BY DATE(created_at)
+            ORDER BY date
+        `;
+        
+        const result = await pool.query(query);
+        return result.rows;
+    } catch (error) {
+        console.error('Error getting user growth data:', error);
+        return [];
+    }
+}
+
+/**
+ * Helper: Get device statistics
+ * @returns {Object} Device statistics
+ */
+async function getDeviceStatistics() {
+    try {
+        const statsQuery = `
+            SELECT 
+                device_type,
+                COUNT(*) as total,
+                SUM(CASE WHEN last_online >= NOW() - INTERVAL '1 hour' THEN 1 ELSE 0 END) as online,
+                SUM(CASE WHEN last_online < NOW() - INTERVAL '24 hours' THEN 1 ELSE 0 END) as offline
+            FROM devices
+            GROUP BY device_type
+        `;
+        
+        const result = await pool.query(statsQuery);
+        return result.rows;
+    } catch (error) {
+        console.error('Error getting device statistics:', error);
+        return [];
+    }
+}
+
+/**
+ * GET PROFIT ANALYSIS
+ * ===============================
+ * Get detailed profit analysis and financial reports
+ * 
+ * @route GET /api/admin/profit-analysis
+ * @access Private - Admin only
+ * @param {string} period - Time period (day, week, month, year)
+ * @returns {Object} Detailed profit analysis
+ */
+async function getProfitAnalysis(req, res) {
+    try {
+        const { period = 'month' } = req.query;
+        
+        // Get comprehensive financial data
+        const [
+            revenueAnalysis,
+            customerAnalysis,
+            profitMargins,
+            forecastData
+        ] = await Promise.all([
+            getRevenueAnalysis(period),
+            getCustomerAnalysis(period),
+            getProfitMargins(period),
+            getRevenueForecast()
+        ]);
+
+        // Log admin access
+        await SystemLog.create({
+            log_level: 'INFO',
+            source: 'AdminController',
+            message: `Admin ${req.user.user_id} viewed profit analysis for ${period}`,
+            user_id: req.user.user_id
+        });
+
+        res.status(200).json({
+            success: true,
+            data: {
+                period,
+                revenue: revenueAnalysis,
+                customers: customerAnalysis,
+                profitMargins,
+                forecast: forecastData,
+                generatedAt: new Date().toISOString()
+            }
+        });
+    } catch (error) {
+        console.error('Error getting profit analysis:', error);
+        res.status(500).json({
+            success: false,
+            error: 'Failed to retrieve profit analysis'
+        });
+    }
+}
+
+/**
+ * Helper: Get revenue analysis
+ */
+async function getRevenueAnalysis(period) {
+    try {
+        let timeFrame, groupBy;
+        
+        switch (period) {
+            case 'day':
+                timeFrame = "created_at >= NOW() - INTERVAL '1 day'";
+                groupBy = "date_trunc('hour', created_at)";
+                break;
+            case 'week':
+                timeFrame = "created_at >= NOW() - INTERVAL '7 days'";
+                groupBy = "DATE(created_at)";
+                break;
+            case 'month':
+                timeFrame = "created_at >= NOW() - INTERVAL '30 days'";
+                groupBy = "DATE(created_at)";
+                break;
+            case 'year':
+                timeFrame = "created_at >= NOW() - INTERVAL '365 days'";
+                groupBy = "date_trunc('month', created_at)";
+                break;
+            default:
+                timeFrame = "created_at >= NOW() - INTERVAL '30 days'";
+                groupBy = "DATE(created_at)";
+        }
+
+        const query = `
+            SELECT 
+                ${groupBy} as period,
+                SUM(CASE WHEN status = 'completed' THEN amount ELSE 0 END) as revenue,
+                COUNT(CASE WHEN status = 'completed' THEN 1 END) as successful_transactions,
+                COUNT(*) as total_transactions,
+                AVG(CASE WHEN status = 'completed' THEN amount END) as avg_transaction_value
+            FROM payments
+            WHERE ${timeFrame}
+            GROUP BY ${groupBy}
+            ORDER BY period
+        `;
+        
+        const result = await pool.query(query);
+        
+        // Calculate growth rates
+        const data = result.rows;
+        let totalRevenue = 0;
+        let totalTransactions = 0;
+        
+        for (const row of data) {
+            totalRevenue += parseFloat(row.revenue) || 0;
+            totalTransactions += parseInt(row.successful_transactions) || 0;
+        }
+        
+        return {
+            periodData: data,
+            summary: {
+                totalRevenue,
+                totalTransactions,
+                averageTransactionValue: totalTransactions > 0 ? totalRevenue / totalTransactions : 0,
+                conversionRate: data.length > 0 ? 
+                    (data.reduce((sum, d) => sum + parseInt(d.successful_transactions), 0) / 
+                     data.reduce((sum, d) => sum + parseInt(d.total_transactions), 0) * 100) : 0
+            }
+        };
+    } catch (error) {
+        console.error('Error getting revenue analysis:', error);
+        return { periodData: [], summary: { totalRevenue: 0, totalTransactions: 0, averageTransactionValue: 0, conversionRate: 0 } };
+    }
+}
+
+/**
+ * Helper: Get customer analysis
+ */
+async function getCustomerAnalysis(period) {
+    try {
+        let timeFrame;
+        
+        switch (period) {
+            case 'day':
+                timeFrame = "created_at >= NOW() - INTERVAL '1 day'";
+                break;
+            case 'week':
+                timeFrame = "created_at >= NOW() - INTERVAL '7 days'";
+                break;
+            case 'month':
+                timeFrame = "created_at >= NOW() - INTERVAL '30 days'";
+                break;
+            case 'year':
+                timeFrame = "created_at >= NOW() - INTERVAL '365 days'";
+                break;
+            default:
+                timeFrame = "created_at >= NOW() - INTERVAL '30 days'";
+        }
+
+        // Customer acquisition cost and lifetime value
+        const query = `
+            WITH customer_stats AS (
+                SELECT 
+                    u.user_id,
+                    u.role,
+                    u.created_at as signup_date,
+                    COALESCE(SUM(CASE WHEN p.status = 'completed' THEN p.amount END), 0) as total_spent,
+                    COUNT(CASE WHEN p.status = 'completed' THEN 1 END) as total_payments,
+                    MAX(p.created_at) as last_payment
+                FROM users u
+                LEFT JOIN payments p ON u.user_id = p.user_id
+                WHERE u.${timeFrame}
+                GROUP BY u.user_id, u.role, u.created_at
+            )
+            SELECT 
+                role,
+                COUNT(*) as customer_count,
+                AVG(total_spent) as avg_customer_value,
+                SUM(total_spent) as total_customer_value,
+                AVG(total_payments) as avg_payments_per_customer,
+                COUNT(CASE WHEN total_spent > 0 THEN 1 END) as paying_customers,
+                COUNT(CASE WHEN last_payment >= NOW() - INTERVAL '30 days' THEN 1 END) as active_customers
+            FROM customer_stats
+            GROUP BY role
+        `;
+        
+        const result = await pool.query(query);
+        
+        // Calculate customer acquisition and retention metrics
+        const totalCustomers = result.rows.reduce((sum, row) => sum + parseInt(row.customer_count), 0);
+        const totalPayingCustomers = result.rows.reduce((sum, row) => sum + parseInt(row.paying_customers), 0);
+        const conversionRate = totalCustomers > 0 ? (totalPayingCustomers / totalCustomers * 100) : 0;
+        
+        return {
+            byRole: result.rows,
+            summary: {
+                totalCustomers,
+                payingCustomers: totalPayingCustomers,
+                conversionRate: conversionRate.toFixed(2),
+                averageCustomerValue: result.rows.reduce((sum, row) => sum + parseFloat(row.avg_customer_value || 0), 0) / result.rows.length || 0
+            }
+        };
+    } catch (error) {
+        console.error('Error getting customer analysis:', error);
+        return { byRole: [], summary: { totalCustomers: 0, payingCustomers: 0, conversionRate: 0, averageCustomerValue: 0 } };
+    }
+}
+
+/**
+ * Helper: Get profit margins
+ */
+async function getProfitMargins(period) {
+    try {
+        // Simplified profit margin calculation
+        // In a real app, you'd factor in operational costs, server costs, etc.
+        const operationalCostPerUser = 1.50; // Monthly cost per user
+        const serverCosts = 500; // Monthly server costs
+        
+        const query = `
+            SELECT 
+                SUM(CASE WHEN status = 'completed' THEN amount ELSE 0 END) as total_revenue,
+                COUNT(DISTINCT user_id) as unique_customers
+            FROM payments
+            WHERE created_at >= NOW() - INTERVAL '${period === 'year' ? '365' : '30'} days'
+        `;
+        
+        const result = await pool.query(query);
+        const { total_revenue, unique_customers } = result.rows[0];
+        
+        const revenue = parseFloat(total_revenue) || 0;
+        const operationalCosts = (parseInt(unique_customers) || 0) * operationalCostPerUser;
+        const totalCosts = operationalCosts + serverCosts;
+        const grossProfit = revenue - totalCosts;
+        const profitMargin = revenue > 0 ? ((grossProfit / revenue) * 100) : 0;
+        
+        return {
+            revenue,
+            operationalCosts,
+            serverCosts,
+            totalCosts,
+            grossProfit,
+            profitMargin: profitMargin.toFixed(2),
+            revenuePerCustomer: unique_customers > 0 ? (revenue / unique_customers) : 0
+        };
+    } catch (error) {
+        console.error('Error calculating profit margins:', error);
+        return {
+            revenue: 0,
+            operationalCosts: 0,
+            serverCosts: 0,
+            totalCosts: 0,
+            grossProfit: 0,
+            profitMargin: 0,
+            revenuePerCustomer: 0
+        };
+    }
+}
+
+/**
+ * Helper: Get revenue forecast
+ */
+async function getRevenueForecast() {
+    try {
+        // Simple linear regression forecast based on last 30 days
+        const query = `
+            SELECT 
+                DATE(created_at) as date,
+                SUM(CASE WHEN status = 'completed' THEN amount ELSE 0 END) as daily_revenue
+            FROM payments
+            WHERE created_at >= NOW() - INTERVAL '30 days'
+            GROUP BY DATE(created_at)
+            ORDER BY date
+        `;
+        
+        const result = await pool.query(query);
+        const data = result.rows;
+        
+        if (data.length < 7) {
+            return { forecast: [], confidence: 'low' };
+        }
+        
+        // Calculate simple moving average for next 7 days
+        const recentDays = data.slice(-7);
+        const avgDailyRevenue = recentDays.reduce((sum, day) => sum + parseFloat(day.daily_revenue), 0) / 7;
+        
+        const forecast = [];
+        const today = new Date();
+        
+        for (let i = 1; i <= 7; i++) {
+            const forecastDate = new Date(today);
+            forecastDate.setDate(today.getDate() + i);
+            
+            forecast.push({
+                date: forecastDate.toISOString().split('T')[0],
+                predictedRevenue: avgDailyRevenue.toFixed(2),
+                confidence: 'medium'
+            });
+        }
+        
+        return {
+            forecast,
+            methodology: 'moving_average',
+            basedOnDays: 7,
+            averageDailyRevenue: avgDailyRevenue.toFixed(2)
+        };
+    } catch (error) {
+        console.error('Error generating revenue forecast:', error);
+        return { forecast: [], confidence: 'low' };
+    }
+}
+
+/**
  * Helper: Check disk space
  * @returns {Object} Disk space information
  */
@@ -1926,6 +2375,7 @@ module.exports = {
     // UC25: View System-Wide Reports
     getSystemDashboard,
     getSystemReports,
+    getProfitAnalysis,
     
     // UC26: Configure Global Settings
     getSystemSettings,

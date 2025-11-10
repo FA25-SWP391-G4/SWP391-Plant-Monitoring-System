@@ -1083,11 +1083,12 @@ const getSensorHistory = async (req, res) => {
         }
 
         const query = `
-            SELECT data_id, timestamp, soil_moisture, temperature, 
-                   air_humidity, light_intensity 
-            FROM sensors_data
-            WHERE plant_id = $1
-            ORDER BY timestamp DESC
+            SELECT sd.data_id, sd.timestamp, sd.soil_moisture, sd.temperature, 
+                   sd.air_humidity, sd.light_intensity 
+            FROM sensors_data sd
+            INNER JOIN plants p ON TRIM(sd.device_key) = TRIM(p.device_key)
+            WHERE p.plant_id = $1
+            ORDER BY sd.timestamp DESC
             LIMIT 100
         `;
 
@@ -1103,6 +1104,63 @@ const getSensorHistory = async (req, res) => {
         return res.status(500).json({
             success: false,
             error: 'Server error while fetching sensor history'
+        });
+    }
+};
+
+/**
+ * Get current sensor data for a specific plant
+ */
+const getCurrentSensorData = async (req, res) => {
+    try {
+        const { plantId } = req.params;
+        const plant = await Plant.findById(plantId);
+        
+        if (!plant) {
+            return res.status(404).json({
+                success: false,
+                error: 'Plant not found'
+            });
+        }
+
+        // Verify ownership
+        if (plant.user_id !== req.user.user_id) {
+            return res.status(403).json({
+                success: false,
+                error: 'Unauthorized access to plant'
+            });
+        }
+
+        const query = `
+            SELECT sd.data_id, sd.timestamp, sd.soil_moisture, sd.temperature, 
+                   sd.air_humidity, sd.light_intensity 
+            FROM sensors_data sd
+            INNER JOIN plants p ON TRIM(sd.device_key) = TRIM(p.device_key)
+            WHERE p.plant_id = $1
+            ORDER BY sd.timestamp DESC
+            LIMIT 1
+        `;
+
+        const result = await pool.query(query, [plantId]);
+        
+        if (result.rows.length === 0) {
+            return res.json({
+                success: true,
+                data: null,
+                message: 'No sensor data available'
+            });
+        }
+
+        return res.json({
+            success: true,
+            data: result.rows[0]
+        });
+
+    } catch (error) {
+        await SystemLog.error('plantController', `Error fetching current sensor data for plant ${req.params.plantId}: ${error.message}`);
+        return res.status(500).json({
+            success: false,
+            error: 'Server error while fetching current sensor data'
         });
     }
 };
@@ -1277,6 +1335,7 @@ module.exports = {
     createPlant,
     getWateringHistory,
     getSensorHistory,
+    getCurrentSensorData,
     getSensorStats,
     getLastWatered
 };

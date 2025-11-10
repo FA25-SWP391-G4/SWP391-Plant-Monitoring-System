@@ -372,6 +372,33 @@ class Payment {
         }
     }
 
+    // Static method to find payment by order ID and user ID for security
+    static async findByOrderIdAndUserId(orderId, userId) {
+        // Validate UUID
+        if (!isValidUUID(userId)) {
+            console.error('[PAYMENT] Invalid user_id UUID:', userId);
+            return null;
+        }
+
+        try {
+            const query = `
+                SELECT p.*, CONCAT(u.given_name, ' ', u.family_name) as user_name, u.email 
+                FROM payments p
+                LEFT JOIN users u ON p.user_id = u.user_id
+                WHERE p.order_id = $1 AND p.user_id = $2
+            `;
+            const result = await pool.query(query, [orderId, userId]);
+            
+            if (result.rows.length === 0) {
+                return null;
+            }
+            
+            return new Payment(result.rows[0]);
+        } catch (error) {
+            throw error;
+        }
+    }
+
     // Static method to create payment with enhanced fields
     static async create(paymentData) {
         // Validate required fields

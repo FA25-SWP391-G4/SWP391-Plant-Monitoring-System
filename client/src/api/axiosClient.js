@@ -31,8 +31,8 @@ axiosClient.interceptors.request.use(
     // Get the JWT token from cookies first, then fallback to localStorage
     let token = null;
     if (typeof window !== 'undefined') {
-      // Try to get token from cookies first
-      token = Cookies.get("token");
+      // Try to get token from cookies first (check both token and token_client)
+      token = Cookies.get("token") || Cookies.get("token_client");
       
       // Fallback to localStorage only if no token in cookies
       if (!token) {
@@ -48,7 +48,7 @@ axiosClient.interceptors.request.use(
     // Debug logging only in development mode
     if (isDev) {
       console.log(`[AXIOS DEBUG] Making ${config.method.toUpperCase()} request to: ${config.baseURL}${config.url}`);
-      console.log(`[AXIOS DEBUG] Token source:`, token ? (Cookies.get("token") ? 'Cookies' : 'LocalStorage') : 'None');
+      console.log(`[AXIOS DEBUG] Token source:`, token ? (Cookies.get("token") ? 'Cookies (token)' : Cookies.get("token_client") ? 'Cookies (token_client)' : 'LocalStorage') : 'None');
       console.log(`[AXIOS DEBUG] Token found:`, token ? 'Yes' : 'No');
       if (token) {
         // Log first and last 10 chars of token for debugging
@@ -58,9 +58,6 @@ axiosClient.interceptors.request.use(
       }
       console.log(`[AXIOS DEBUG] All headers:`, config.headers);
     }
-
-    // Add explicit origin header for CORS
-    config.headers["Origin"] = window.location.origin;
 
     if (isDev && config.data) {
       // Log data but mask passwords

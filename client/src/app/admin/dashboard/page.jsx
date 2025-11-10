@@ -1,19 +1,28 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/providers/AuthProvider';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
-import { Users, Settings, BarChart3, Shield, Database, FileText } from 'lucide-react';
+import { Users, Settings, BarChart3, Shield, Database, FileText, DollarSign, Activity, Smartphone, RefreshCw } from 'lucide-react';
+import StatCard from '@/components/admin/StatCard';
+import LineChart from '@/components/admin/LineChart';
+import DoughnutChart from '@/components/admin/DoughnutChart';
+import BarChart from '@/components/admin/BarChart';
+import axiosClient from '@/api/axiosClient';
 
 /**
  * Admin Dashboard Page
- * Administrative control panel for system management
+ * Comprehensive administrative control panel for system management
  */
 export default function AdminDashboard() {
   const router = useRouter();
   const { user, loading } = useAuth();
+  const [dashboardData, setDashboardData] = useState(null);
+  const [profitData, setProfitData] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [refreshKey, setRefreshKey] = useState(0);
 
   useEffect(() => {
     // Redirect non-admin users
@@ -23,7 +32,36 @@ export default function AdminDashboard() {
     }
   }, [user, loading, router]);
 
-  if (loading) {
+  useEffect(() => {
+    if (user && (user.role === 'Admin' || user.role === 'ADMIN')) {
+      fetchDashboardData();
+    }
+  }, [user, refreshKey]);
+
+  const fetchDashboardData = async () => {
+    try {
+      setIsLoading(true);
+      
+      // Fetch dashboard and profit data in parallel
+      const [dashboardResponse, profitResponse] = await Promise.all([
+        axiosClient.get('/api/admin/dashboard'),
+        axiosClient.get('/api/admin/profit-analysis?period=month')
+      ]);
+
+      setDashboardData(dashboardResponse.data.data);
+      setProfitData(profitResponse.data.data);
+    } catch (error) {
+      console.error('Error fetching dashboard data:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleRefresh = () => {
+    setRefreshKey(prev => prev + 1);
+  };
+
+  if (loading || isLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-center">
@@ -103,117 +141,251 @@ export default function AdminDashboard() {
     },
   ];
 
+  // Prepare chart data
+  const userGrowthChartData = {
+    labels: dashboardData?.users?.growth?.map(item => 
+      new Date(item.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
+    ) || [],
+    datasets: [
+      {
+        label: 'New Users',
+        data: dashboardData?.users?.growth?.map(item => item.new_users) || [],
+        borderColor: 'rgb(59, 130, 246)',
+        backgroundColor: 'rgba(59, 130, 246, 0.1)',
+        tension: 0.3,
+      },
+      {
+        label: 'Premium Users',
+        data: dashboardData?.users?.growth?.map(item => item.new_premium_users) || [],
+        borderColor: 'rgb(16, 185, 129)',
+        backgroundColor: 'rgba(16, 185, 129, 0.1)',
+        tension: 0.3,
+      },
+    ],
+  };
+
+  const deviceStatusChartData = {
+    labels: ['Online', 'Offline'],
+    datasets: [
+      {
+        data: [
+          dashboardData?.devices?.active || 0,
+          (dashboardData?.devices?.total || 0) - (dashboardData?.devices?.active || 0)
+        ],
+        backgroundColor: ['#10B981', '#EF4444'],
+        borderColor: ['#059669', '#DC2626'],
+        borderWidth: 2,
+      },
+    ],
+  };
+
+  const revenueChartData = {
+    labels: profitData?.revenue?.periodData?.map(item => 
+      new Date(item.period).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
+    ) || [],
+    datasets: [
+      {
+        label: 'Daily Revenue ($)',
+        data: profitData?.revenue?.periodData?.map(item => parseFloat(item.revenue) || 0) || [],
+        backgroundColor: 'rgba(16, 185, 129, 0.8)',
+        borderColor: 'rgb(16, 185, 129)',
+        borderWidth: 2,
+      },
+    ],
+  };
+
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container mx-auto px-4 py-8 space-y-8">
       {/* Header */}
-      <div className="mb-8">
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-3xl font-bold text-gray-900">Admin Dashboard</h1>
-            <p className="mt-2 text-gray-600">
-              Welcome back, {user.given_name || user.full_name || 'Administrator'}
-            </p>
-          </div>
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-bold text-gray-900">Admin Dashboard</h1>
+          <p className="mt-2 text-gray-600">
+            Welcome back, {user.given_name || user.full_name || 'Administrator'}
+          </p>
+        </div>
+        <div className="flex space-x-3">
+          <Button variant="outline" onClick={handleRefresh}>
+            <RefreshCw className="w-4 h-4 mr-2" />
+            Refresh
+          </Button>
           <Button variant="outline" onClick={() => router.push('/dashboard')}>
             View User Dashboard
           </Button>
         </div>
       </div>
 
-      {/* Admin Features Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {adminFeatures.map((feature) => {
-          const Icon = feature.icon;
-          return (
-            <Card
-              key={feature.href}
-              className="hover:shadow-lg transition-shadow cursor-pointer"
-              onClick={() => router.push(feature.href)}
-            >
-              <CardHeader>
-                <div className={`w-12 h-12 rounded-lg ${feature.bgColor} flex items-center justify-center mb-4`}>
-                  <Icon className={`w-6 h-6 ${feature.color}`} />
+      {/* Key Metrics */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <StatCard
+          title="Total Users"
+          value={dashboardData?.users?.total?.toLocaleString() || '0'}
+          description={`${dashboardData?.users?.percentagePremium || 0}% premium users`}
+          icon={Users}
+          color="blue"
+        />
+        <StatCard
+          title="Active Devices"
+          value={`${dashboardData?.devices?.active || 0}/${dashboardData?.devices?.total || 0}`}
+          description={`${dashboardData?.devices?.percentageActive || 0}% online`}
+          icon={Smartphone}
+          color="green"
+        />
+        <StatCard
+          title="Monthly Revenue"
+          value={`$${profitData?.revenue?.summary?.totalRevenue?.toFixed(2) || '0.00'}`}
+          description={`${profitData?.revenue?.summary?.totalTransactions || 0} transactions`}
+          icon={DollarSign}
+          color="purple"
+        />
+        <StatCard
+          title="System Health"
+          value={Object.values(dashboardData?.systemHealth || {}).filter(Boolean).length}
+          description={`${Object.keys(dashboardData?.systemHealth || {}).length} services monitored`}
+          icon={Activity}
+          color="indigo"
+        />
+      </div>
+
+      {/* Charts Row 1 */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <LineChart
+          title="User Growth Trend"
+          description="Daily new user registrations and premium upgrades"
+          data={userGrowthChartData}
+          height={300}
+        />
+        <DoughnutChart
+          title="Device Status"
+          description="Current online/offline device distribution"
+          data={deviceStatusChartData}
+          height={300}
+        />
+      </div>
+
+      {/* Charts Row 2 */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <BarChart
+          title="Revenue Trend"
+          description="Daily revenue for the last 30 days"
+          data={revenueChartData}
+          height={300}
+        />
+        
+        {/* System Health Status */}
+        <Card>
+          <CardHeader>
+            <CardTitle>System Health Status</CardTitle>
+            <CardDescription>Current status of all system components</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-3">
+              {Object.entries(dashboardData?.systemHealth || {}).map(([service, status]) => (
+                <div key={service} className="flex items-center justify-between">
+                  <span className="capitalize font-medium">{service}</span>
+                  <div className={`w-3 h-3 rounded-full ${status ? 'bg-green-500' : 'bg-red-500'}`} />
                 </div>
-                <CardTitle className="text-lg">{feature.title}</CardTitle>
-                <CardDescription>{feature.description}</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <Button variant="ghost" className="w-full justify-start">
-                  Access {feature.title} →
-                </Button>
-              </CardContent>
-            </Card>
-          );
-        })}
-      </div>
-
-      {/* Quick Stats */}
-      <div className="mt-8 grid grid-cols-1 md:grid-cols-4 gap-4">
-        <Card>
-          <CardHeader className="pb-2">
-            <CardDescription>Total Users</CardDescription>
-            <CardTitle className="text-3xl">1,234</CardTitle>
-          </CardHeader>
-        </Card>
-        <Card>
-          <CardHeader className="pb-2">
-            <CardDescription>Active Sessions</CardDescription>
-            <CardTitle className="text-3xl">156</CardTitle>
-          </CardHeader>
-        </Card>
-        <Card>
-          <CardHeader className="pb-2">
-            <CardDescription>System Health</CardDescription>
-            <CardTitle className="text-3xl text-green-600">98%</CardTitle>
-          </CardHeader>
-        </Card>
-        <Card>
-          <CardHeader className="pb-2">
-            <CardDescription>Premium Users</CardDescription>
-            <CardTitle className="text-3xl">342</CardTitle>
-          </CardHeader>
+              ))}
+            </div>
+          </CardContent>
         </Card>
       </div>
 
-      {/* Recent Activity */}
-      <Card className="mt-8">
-        <CardHeader>
-          <CardTitle>Recent System Activity</CardTitle>
-          <CardDescription>Latest events and changes in the system</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
-            <div className="flex items-center justify-between border-b pb-3">
-              <div>
-                <p className="font-medium">New user registration</p>
-                <p className="text-sm text-gray-500">john.doe@example.com joined the platform</p>
-              </div>
-              <span className="text-xs text-gray-400">2 minutes ago</span>
+      {/* Admin Features Grid */}
+      <div>
+        <h2 className="text-2xl font-bold text-gray-900 mb-6">Administrative Tools</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {adminFeatures.map((feature) => {
+            const Icon = feature.icon;
+            return (
+              <Card
+                key={feature.href}
+                className="hover:shadow-lg transition-shadow cursor-pointer"
+                onClick={() => router.push(feature.href)}
+              >
+                <CardHeader>
+                  <div className={`w-12 h-12 rounded-lg ${feature.bgColor} flex items-center justify-center mb-4`}>
+                    <Icon className={`w-6 h-6 ${feature.color}`} />
+                  </div>
+                  <CardTitle className="text-lg">{feature.title}</CardTitle>
+                  <CardDescription>{feature.description}</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <Button variant="ghost" className="w-full justify-start">
+                    Access {feature.title} →
+                  </Button>
+                </CardContent>
+              </Card>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Recent Errors */}
+      {dashboardData?.recentErrors && dashboardData.recentErrors.length > 0 && (
+        <Card>
+          <CardHeader>
+            <CardTitle>Recent System Errors</CardTitle>
+            <CardDescription>Latest error events that require attention</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              {dashboardData.recentErrors.slice(0, 5).map((error, index) => (
+                <div key={index} className="flex items-start justify-between border-b pb-3 last:border-b-0">
+                  <div>
+                    <p className="font-medium text-red-600">{error.source}</p>
+                    <p className="text-sm text-gray-600">{error.message}</p>
+                  </div>
+                  <span className="text-xs text-gray-400">
+                    {new Date(error.timestamp).toLocaleString()}
+                  </span>
+                </div>
+              ))}
             </div>
-            <div className="flex items-center justify-between border-b pb-3">
-              <div>
-                <p className="font-medium">Premium upgrade</p>
-                <p className="text-sm text-gray-500">User upgraded to premium plan</p>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Financial Summary */}
+      {profitData && (
+        <Card>
+          <CardHeader>
+            <CardTitle>Financial Overview</CardTitle>
+            <CardDescription>Key financial metrics and profit analysis</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="text-center">
+                <div className="text-2xl font-bold text-green-600">
+                  ${profitData.profitMargins?.grossProfit?.toFixed(2) || '0.00'}
+                </div>
+                <div className="text-sm text-gray-500">Gross Profit</div>
+                <div className="text-xs text-gray-400">
+                  {profitData.profitMargins?.profitMargin || 0}% margin
+                </div>
               </div>
-              <span className="text-xs text-gray-400">15 minutes ago</span>
-            </div>
-            <div className="flex items-center justify-between border-b pb-3">
-              <div>
-                <p className="font-medium">System backup completed</p>
-                <p className="text-sm text-gray-500">Daily backup successful</p>
+              <div className="text-center">
+                <div className="text-2xl font-bold text-blue-600">
+                  ${profitData.profitMargins?.revenue?.toFixed(2) || '0.00'}
+                </div>
+                <div className="text-sm text-gray-500">Total Revenue</div>
+                <div className="text-xs text-gray-400">
+                  ${profitData.profitMargins?.revenuePerCustomer?.toFixed(2) || '0.00'} per customer
+                </div>
               </div>
-              <span className="text-xs text-gray-400">1 hour ago</span>
-            </div>
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="font-medium">Security alert resolved</p>
-                <p className="text-sm text-gray-500">Failed login attempt from unknown IP</p>
+              <div className="text-center">
+                <div className="text-2xl font-bold text-orange-600">
+                  ${profitData.profitMargins?.totalCosts?.toFixed(2) || '0.00'}
+                </div>
+                <div className="text-sm text-gray-500">Operating Costs</div>
+                <div className="text-xs text-gray-400">
+                  Fixed + Variable costs
+                </div>
               </div>
-              <span className="text-xs text-gray-400">3 hours ago</span>
             </div>
-          </div>
-        </CardContent>
-      </Card>
+          </CardContent>
+        </Card>
+      )}
     </div>
   );
 }

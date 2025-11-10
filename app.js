@@ -258,6 +258,7 @@ app.use('/api/plants', plantRouter);              // 🔄 UC5-9: Plant managemen
 app.use('/api/zones', zoneRouter);              // 🔄 UC14: Zone management API
 app.use('/api/plant-profiles', plantProfileRouter); // Plant profile database API
 app.use('/api/devices', deviceRouter);          // IoT device management API
+app.use('/api/admin', adminRouter);             // ✅ UC24-31: Admin functions
 // app.use('/api/report', reportRouter);            // 🔄 UC8-9, UC15, UC17: Reports API
 // app.use('/api/premium', premiumRouter);          // 🔄 UC14-23: Premium features API
 

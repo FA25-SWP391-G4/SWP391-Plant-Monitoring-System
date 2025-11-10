@@ -7,9 +7,15 @@ import { toast } from 'sonner';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { Loader2 } from 'lucide-react';
+import { safeNavigate, setupChunkErrorHandler, preloadCriticalChunks } from '@/utils/safeNavigation';
+import { extractUserFromJWT } from '@/utils/jwtUtils';
 
 // Module-level log to verify file is loaded
 console.log('🚀 AUTH CALLBACK MODULE LOADED');
+
+// Setup chunk error handling
+setupChunkErrorHandler();
+preloadCriticalChunks();
 
 /**
  * Auth callback handler for OAuth flows
@@ -42,13 +48,13 @@ export default function AuthCallback() {
         
         // Get URL parameters
         const params = new URLSearchParams(window.location.search);
-        const token = params.get('token');
+        const success = params.get('success');
         const redirect = params.get('redirect') || '/dashboard';
         const error = params.get('error');
         const email = params.get('email');
         
         console.log('[AUTH CALLBACK] Parsed params:', { 
-          token: token ? `${token.substring(0, 20)}...` : 'missing', 
+          success,
           redirect, 
           error, 
           email 
@@ -74,35 +80,102 @@ export default function AuthCallback() {
           return;
         }
         
-        if (!token) {
-          console.error('[AUTH CALLBACK] No token provided in URL');
-          setError('No authentication token provided');
-          toast.error('Login failed: Missing authentication token');
+        if (!success) {
+          console.error('[AUTH CALLBACK] No success indicator in URL');
+          setError('Invalid callback - no success indicator');
+          toast.error('Login failed: Invalid callback');
           return;
         }
         
-        console.log('[AUTH CALLBACK] Token received, decoding...');
+        console.log('[AUTH CALLBACK] Success callback detected, checking for auth cookies...');
         
-        // Decode the token to get user info (JWT payload)
-        let payload, user;
+        // The backend sets two cookies: 'token' (HttpOnly) and 'token_client' (readable by JS)
+        // We'll read the token_client cookie directly
+        const getCookie = (name) => {
+          const value = `; ${document.cookie}`;
+          const parts = value.split(`; ${name}=`);
+          if (parts.length === 2) return parts.pop().split(';').shift();
+        };
+        
+        const token = getCookie('token_client');
+        
+        console.log('[AUTH CALLBACK] Cookie check results:', {
+          allCookies: document.cookie,
+          tokenFound: !!token,
+          tokenPreview: token ? `${token.substring(0, 20)}...` : 'missing'
+        });
+        
+        if (!token) {
+          console.error('[AUTH CALLBACK] No auth token found in cookies');
+          
+          // Fallback: try to retrieve from session endpoint  
+          console.log('[AUTH CALLBACK] Attempting session endpoint fallback...');
+          try {
+            const backendUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3010';
+            const response = await fetch(`${backendUrl}/auth/session-auth`, {
+              method: 'GET',
+              credentials: 'include'
+            });
+            
+            if (response.ok) {
+              const authData = await response.json();
+              if (authData.success && authData.token && authData.user) {
+                console.log('[AUTH CALLBACK] Session endpoint fallback successful');
+                const { token: sessionToken, user } = authData;
+                
+                // Use session data
+                login(sessionToken, user);
+                
+                // Set redirect path
+                let finalRedirectPath = redirect;
+                if (user.role === 'Admin' || user.role === 'ADMIN') {
+                  finalRedirectPath = '/admin/dashboard';
+                }
+                setRedirectPath(finalRedirectPath);
+                toast.success('Login successful! Redirecting...');
+                
+                // Start countdown
+                const interval = setInterval(() => {
+                  setCountdown((prev) => {
+                    if (prev <= 1) {
+                      clearInterval(interval);
+                      safeNavigate(router, finalRedirectPath).catch(() => window.location.href = finalRedirectPath);
+                      return 0;
+                    }
+                    return prev - 1;
+                  });
+                }, 1000);
+                
+                return;
+              }
+            }
+          } catch (sessionError) {
+            console.error('[AUTH CALLBACK] Session endpoint fallback failed:', sessionError);
+          }
+          
+          setError('Authentication token not found. Please try logging in again.');
+          toast.error('Login failed: Token not found');
+          return;
+        }
+        
+        // Decode token to get user data (JWT format)
+        let user;
         try {
-          payload = JSON.parse(atob(token.split('.')[1]));
-          console.log('[AUTH CALLBACK] Decoded JWT payload:', payload);
+          user = extractUserFromJWT(token);
+          if (!user) {
+            throw new Error('Failed to extract user data from token');
+          }
           
-          // The JWT payload contains user data directly, not nested under 'user'
-          user = {
-            user_id: payload.user_id,
-            email: payload.email,
-            role: payload.role,
-            full_name: payload.full_name,
-            family_name: payload.family_name,
-            given_name: payload.given_name
-          };
-          
-          console.log('[AUTH CALLBACK] Extracted user:', user);
+          console.log('[AUTH CALLBACK] Token decoded successfully:', {
+            user_id: user.user_id,
+            email: user.email,
+            role: user.role,
+            given_name: user.given_name,
+            family_name: user.family_name
+          });
         } catch (decodeError) {
           console.error('[AUTH CALLBACK] Failed to decode token:', decodeError);
-          setError('Invalid authentication token format');
+          setError('Invalid authentication token. Please try logging in again.');
           toast.error('Login failed: Invalid token');
           return;
         }
@@ -143,7 +216,17 @@ export default function AuthCallback() {
             if (prev <= 1) {
               clearInterval(interval);
               console.log('[AUTH CALLBACK] Countdown complete, redirecting to:', finalRedirectPath);
-              router.push(finalRedirectPath);
+              
+              // Use safe navigation to handle potential chunk loading errors
+              safeNavigate(router, finalRedirectPath, {
+                maxRetries: 3,
+                retryDelay: 1000
+              }).catch((navError) => {
+                console.error('[AUTH CALLBACK] Safe navigation failed:', navError);
+                // Fallback to hard navigation
+                window.location.href = finalRedirectPath;
+              });
+              
               return 0;
             }
             return prev - 1;
@@ -186,7 +269,10 @@ export default function AuthCallback() {
           {error ? (
             <div className="text-center space-y-4">
               <p className="text-destructive">{error}</p>
-              <Button onClick={() => router.push('/login')} className="w-full">
+              <Button 
+                onClick={() => safeNavigate(router, '/login').catch(() => window.location.href = '/login')} 
+                className="w-full"
+              >
                 Return to Login
               </Button>
             </div>
@@ -197,7 +283,10 @@ export default function AuthCallback() {
                 <p>Login successful! Redirecting you in {countdown} seconds...</p>
               </div>
               
-              <Button onClick={() => router.push(redirectPath)} className="w-full">
+              <Button 
+                onClick={() => safeNavigate(router, redirectPath).catch(() => window.location.href = redirectPath)} 
+                className="w-full"
+              >
                 Continue to {redirectPath.includes('admin') ? 'Admin Dashboard' : 'Dashboard'}
               </Button>
             </div>

@@ -9,6 +9,7 @@ import { toast } from 'react-toastify';
 import AIWateringPrediction from '@/components/AIWateringPrediction';
 import AIChatbotBubble from '@/components/ai/AIChatbotBubble';
 import ConnectDeviceModal from '@/components/modals/ConnectDeviceModal';
+import PlantHistoryChart from '@/components/dashboard/PlantHistoryChart';
 import plantApi from '@/api/plantApi';
 import deviceApi from '@/api/deviceApi';
 
@@ -19,8 +20,10 @@ export default function PlantDetailPage() {
   const { t } = useTranslation();
   const [plant, setPlant] = useState(null);
   const [sensorData, setSensorData] = useState(null);
+  const [sensorHistory, setSensorHistory] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('overview');
+  const [activeChart, setActiveChart] = useState('moisture');
 
   const plantId = params.id;
 
@@ -38,11 +41,65 @@ export default function PlantDetailPage() {
 
   const handleWaterNow = async () => {
     try {
-      await deviceApi.triggerWatering(plant.device_id);
+      await plantApi.waterPlant(plantId, 5); // Default 5 seconds duration
       toast.success(t('plants.wateringTriggered', 'Watering triggered successfully'));
     } catch (error) {
       console.error('Error triggering watering:', error);
       toast.error(t('plants.wateringError', 'Failed to trigger watering'));
+    }
+  };
+
+  const loadSensorHistory = async () => {
+    try {
+      let response;
+      
+      // Use deviceApi if plant has a device_id, otherwise use plantApi
+      if (plant?.device_id) {
+        response = await deviceApi.getSensorHistory(plant.device_id, { timeRange: '24h' });
+      } else {
+        response = await plantApi.getSensorHistory(plantId);
+      }
+      
+      if (response?.data && Array.isArray(response.data)) {
+        const transformedData = {
+          moisture: response.data.map(item => ({
+            timestamp: item.timestamp,
+            value: item.soil_moisture || item.moisture
+          })).filter(item => item.value !== null),
+          
+          temperature: response.data.map(item => ({
+            timestamp: item.timestamp,
+            value: item.temperature
+          })).filter(item => item.value !== null),
+          
+          humidity: response.data.map(item => ({
+            timestamp: item.timestamp,
+            value: item.air_humidity || item.humidity
+          })).filter(item => item.value !== null),
+          
+          light: response.data.map(item => ({
+            timestamp: item.timestamp,
+            value: item.light_intensity || item.light
+          })).filter(item => item.value !== null)
+        };
+        
+        setSensorHistory(transformedData);
+      } else {
+        setSensorHistory({
+          moisture: [],
+          temperature: [],
+          humidity: [],
+          light: []
+        });
+      }
+    } catch (error) {
+      console.error('Error loading sensor history:', error);
+      setSensorHistory({
+        moisture: [],
+        temperature: [],
+        humidity: [],
+        light: []
+      });
     }
   };
 
@@ -119,6 +176,13 @@ export default function PlantDetailPage() {
       fetchPlantData();
     }
   }, [user, plantId, t]);
+
+  // Load sensor history when history tab is active
+  useEffect(() => {
+    if (user && plantId && activeTab === 'history' && !sensorHistory) {
+      loadSensorHistory();
+    }
+  }, [user, plantId, activeTab]);
 
   if (loading || isLoading) {
     return (
@@ -436,12 +500,95 @@ export default function PlantDetailPage() {
                 <h3 className="text-lg font-semibold text-gray-900 mb-4">
                   {t('plants.history', 'Plant History')}
                 </h3>
-                <div className="text-center py-8">
-                  <div className="text-4xl mb-4">📈</div>
-                  <p className="text-gray-500">
-                    {t('plants.historyComingSoon', 'Plant history and analytics coming soon')}
-                  </p>
+                
+                {/* Chart Selection */}
+                <div className="flex flex-wrap gap-2 mb-6">
+                  {[
+                    { key: 'moisture', label: t('metrics.moisture', 'Moisture'), color: 'bg-blue-100 text-blue-700', icon: '💧' },
+                    { key: 'temperature', label: t('metrics.temperature', 'Temperature'), color: 'bg-red-100 text-red-700', icon: '🌡️' },
+                    { key: 'humidity', label: t('metrics.humidity', 'Humidity'), color: 'bg-green-100 text-green-700', icon: '💨' },
+                    { key: 'light', label: t('metrics.light', 'Light'), color: 'bg-amber-100 text-amber-700', icon: '☀️' }
+                  ].map(chart => (
+                    <button
+                      key={chart.key}
+                      onClick={() => setActiveChart(chart.key)}
+                      className={`px-4 py-2 rounded-lg font-medium transition-colors flex items-center space-x-2 ${
+                        activeChart === chart.key
+                          ? chart.color + ' ring-2 ring-offset-1 ring-gray-300'
+                          : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                      }`}
+                    >
+                      <span>{chart.icon}</span>
+                      <span>{chart.label}</span>
+                    </button>
+                  ))}
                 </div>
+
+                {/* Chart Display */}
+                {sensorHistory ? (
+                  <div className="bg-white border border-gray-200 rounded-lg p-6">
+                    <div className="flex justify-between items-center mb-4">
+                      <h4 className="text-lg font-medium text-gray-900">
+                        {t(`metrics.${activeChart}`, activeChart)} {t('charts.over24Hours', 'Over Last 24 Hours')}
+                      </h4>
+                      <button 
+                        onClick={loadSensorHistory}
+                        className="text-sm text-emerald-600 hover:text-emerald-700 flex items-center space-x-1"
+                      >
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                          <path d="M23 4v6h-6"/>
+                          <path d="M1 20v-6h6"/>
+                          <path d="m3.51 9a9 9 0 0 1 14.85-3.36L23 10"/>
+                          <path d="M20.49 15a9 9 0 0 1-14.85 3.36L1 14"/>
+                        </svg>
+                        <span>{t('common.refresh', 'Refresh')}</span>
+                      </button>
+                    </div>
+                    
+                    <div className="h-80">
+                      <PlantHistoryChart 
+                        data={sensorHistory[activeChart] || []}
+                        dataType={activeChart === 'moisture' ? 'soil_moisture' : activeChart === 'light' ? 'light_intensity' : activeChart === 'humidity' ? 'air_humidity' : activeChart}
+                        timeRange="day"
+                      />
+                    </div>
+                    
+                    {/* Chart Statistics */}
+                    {sensorHistory[activeChart] && sensorHistory[activeChart].length > 0 && (
+                      <div className="mt-4 grid grid-cols-3 gap-4 pt-4 border-t border-gray-100">
+                        <div className="text-center">
+                          <p className="text-sm text-gray-500">{t('stats.average', 'Average')}</p>
+                          <p className="text-lg font-semibold text-gray-900">
+                            {(sensorHistory[activeChart].reduce((sum, item) => sum + item.value, 0) / sensorHistory[activeChart].length).toFixed(1)}
+                            {activeChart === 'temperature' ? '°C' : activeChart === 'light' ? ' lux' : '%'}
+                          </p>
+                        </div>
+                        <div className="text-center">
+                          <p className="text-sm text-gray-500">{t('stats.minimum', 'Minimum')}</p>
+                          <p className="text-lg font-semibold text-gray-900">
+                            {Math.min(...sensorHistory[activeChart].map(item => item.value))}
+                            {activeChart === 'temperature' ? '°C' : activeChart === 'light' ? ' lux' : '%'}
+                          </p>
+                        </div>
+                        <div className="text-center">
+                          <p className="text-sm text-gray-500">{t('stats.maximum', 'Maximum')}</p>
+                          <p className="text-lg font-semibold text-gray-900">
+                            {Math.max(...sensorHistory[activeChart].map(item => item.value))}
+                            {activeChart === 'temperature' ? '°C' : activeChart === 'light' ? ' lux' : '%'}
+                          </p>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  <div className="flex flex-col items-center justify-center h-64 bg-gray-50 rounded-lg border border-gray-200">
+                    <div className="animate-pulse flex flex-col items-center">
+                      <div className="w-12 h-12 rounded-full bg-gray-200 mb-4"></div>
+                      <div className="h-4 w-32 bg-gray-200 rounded"></div>
+                    </div>
+                    <p className="text-gray-500 mt-2">{t('charts.loading', 'Loading chart data...')}</p>
+                  </div>
+                )}
               </div>
             )}
           </div>
