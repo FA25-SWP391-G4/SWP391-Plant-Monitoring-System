@@ -1,0 +1,18 @@
+{
+  "payment": {
+    "selectPaymentMethod": "Vui lòng chọn phương thức thanh toán:",
+    "vnpayQR": "Thanh toán quét mã QR",
+    "vnbank": "Thẻ ATM - Tài khoản ngân hàng nội địa",
+    "intcard": "Thẻ thanh toán quốc tế",
+    "processing": "Đang xử lý...",
+    "confirmPayment": "Xác nhận thanh toán",
+    "payMonthly": "Thanh toán 20,000₫ cho Gói Hàng Tháng",
+    "payAnnual": "Thanh toán 200,000₫ cho Gói Hàng Năm",
+    "payLifetime": "Thanh toán 399,000₫ cho Gói Vĩnh Viễn",
+    "paymentSuccess": "Thanh toán thành công",
+    "paymentFailed": "Thanh toán thất bại",
+    "authError": "Bạn phải đăng nhập để thực hiện thanh toán. Vui lòng đăng nhập và thử lại.",
+    "createPaymentError": "Không thể tạo yêu cầu thanh toán. Vui lòng thử lại.",
+    "genericError": "Đã xảy ra lỗi. Vui lòng thử lại sau."
+  }
+}
