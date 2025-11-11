@@ -131,7 +131,79 @@ async function sendCommand(command) {
   console.log(`🚀 Sent command to ESP32: ${command}`);
 }
 
+// Enhanced pump command function that matches the interface expected by plantController
+async function sendPumpCommand(device_key, command, duration = null) {
+  try {
+    console.log('🚰 [AWS-IOT-PUMP] Sending pump command:', { device_key, command, duration });
+    
+    // Validate command
+    if (command !== 'pump_on' && command !== 'pump_off') {
+      throw new Error('Invalid pump command. Must be pump_on or pump_off');
+    }
+
+    if (command === 'pump_on' && (!duration || duration < 1 || duration > 300)) {
+      throw new Error('Duration must be between 1 and 300 seconds for pump_on command');
+    }
+
+    const state = command === 'pump_on' ? 'ON' : 'OFF';
+    const parameters = {
+      duration: command === 'pump_on' ? parseInt(duration) : 0,
+      state: state
+    };
+
+    // Generate command ID for tracking
+    const commandId = `cmd_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    
+    // Prepare the command payload
+    const commandPayload = {
+      command,
+      parameters,
+      commandId,
+      timestamp: new Date().toISOString(),
+      responseRequired: true
+    };
+
+    // Use the device-specific topic structure
+    const topic = `smartplant/device/${device_key.trim()}/command`;
+    const payload = JSON.stringify(commandPayload);
+
+    console.log('📦 [AWS-IOT-PUMP] Command payload:', {
+      topic,
+      payload: commandPayload,
+      qos: mqtt.QoS.AtLeastOnce
+    });
+
+    // Publish the command using AWS IoT v2 SDK
+    await connection.publish(topic, payload, mqtt.QoS.AtLeastOnce);
+    
+    console.log('✅ [AWS-IOT-PUMP] Pump command sent successfully via AWS IoT');
+    
+    // Return success response (matching the expected interface)
+    return {
+      status: 'sent',
+      message: 'Command sent successfully via AWS IoT',
+      commandId: commandId,
+      topic: topic
+    };
+
+  } catch (error) {
+    console.error('❌ [AWS-IOT-PUMP] Failed to send pump command:', {
+      device_key,
+      command,
+      error: error.message
+    });
+    
+    // Return error response (matching the expected interface)
+    return {
+      status: 'error',
+      message: error.message,
+      device_key: device_key
+    };
+  }
+}
+
 module.exports = {
   connectAwsIoT,
-  sendCommand
+  sendCommand,
+  sendPumpCommand
 };

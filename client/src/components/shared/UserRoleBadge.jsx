@@ -2,7 +2,7 @@ import React from "react";
 
 const UserRoleBadge = ({ role, small }) => {
   const baseStyles = "inline-flex items-center justify-center font-semibold uppercase tracking-wide rounded-full";
-  const sizeStyles = small ? "text-[10px] px-2 py-0.5 leading-none" : "text-xs px-3 py-1";
+  const sizeStyles = small ? "text-[10px] px-4 py-0.5 leading-none" : "text-xs px-3 py-1";
   
   const badgeStyles = {
     Regular: `${baseStyles} ${sizeStyles} bg-gray-100 text-gray-600`,

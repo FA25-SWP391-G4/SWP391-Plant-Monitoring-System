@@ -303,6 +303,9 @@
     "termsOfService": "Terms of Service",
     "cookies": "Cookies"
   },
+  "status": {
+    "healthy": "Healthy"
+  },
   "testimonials": {
     "heading": "Don't just take our word for it. See what our community of plant lovers has to say about their PlantSmart experience.",
     "verified": "Verified Review",

@@ -19,6 +19,7 @@
 
 const admin = require('firebase-admin');
 const nodemailer = require('nodemailer');
+const { pool } = require('../config/db');
 const Alert = require('../models/Alert');
 const User = require('../models/User');
 const SystemLog = require('../models/SystemLog');
@@ -581,6 +582,252 @@ async function createNotification(userId, type, message, title, details = {}) {
     }
 }
 
+/**
+ * UC9: GET NOTIFICATION STATISTICS
+ * ===============================
+ * Gets notification statistics for the authenticated user
+ * 
+ * @route GET /api/notifications/stats
+ * @access Private - Requires authentication
+ * @returns {Object} Notification statistics
+ */
+async function getNotificationStats(req, res) {
+    try {
+        const userId = req.user.user_id;
+
+        if (!isValidUUID(userId)) {
+            return res.status(400).json({
+                success: false,
+                error: 'Invalid user ID format'
+            });
+        }
+
+        // Use the database function to get comprehensive stats
+        const query = 'SELECT get_notification_stats($1) as stats';
+        const result = await pool.query(query, [userId]);
+        
+        const stats = result.rows[0]?.stats || {
+            total: 0,
+            unread: 0,
+            critical: 0,
+            high_priority: 0,
+            recent: 0,
+            by_type: {}
+        };
+
+        res.status(200).json({
+            success: true,
+            data: stats
+        });
+
+    } catch (error) {
+        console.error('Get notification stats error:', error);
+        res.status(500).json({
+            success: false,
+            error: 'Failed to retrieve notification statistics'
+        });
+    }
+}
+
+/**
+ * UC9: GET NOTIFICATIONS BY TYPE
+ * ===============================
+ * Gets notifications filtered by type
+ * 
+ * @route GET /api/notifications/by-type/:type
+ * @access Private - Requires authentication
+ * @returns {Object} Filtered notifications
+ */
+async function getNotificationsByType(req, res) {
+    try {
+        const userId = req.user.user_id;
+        const { type } = req.params;
+        const { limit = 50, status } = req.query;
+
+        if (!isValidUUID(userId)) {
+            return res.status(400).json({
+                success: false,
+                error: 'Invalid user ID format'
+            });
+        }
+
+        let query = `
+            SELECT * FROM user_notifications 
+            WHERE user_id = $1 AND type = $2
+            AND (expires_at IS NULL OR expires_at > CURRENT_TIMESTAMP)
+        `;
+        const params = [userId, type];
+
+        if (status) {
+            query += ` AND status = $${params.length + 1}`;
+            params.push(status);
+        }
+
+        query += ` ORDER BY priority ASC, created_at DESC LIMIT $${params.length + 1}`;
+        params.push(parseInt(limit));
+
+        const result = await pool.query(query, params);
+
+        res.status(200).json({
+            success: true,
+            data: result.rows,
+            filter: { type, status },
+            count: result.rows.length
+        });
+
+    } catch (error) {
+        console.error('Get notifications by type error:', error);
+        res.status(500).json({
+            success: false,
+            error: 'Failed to retrieve notifications by type'
+        });
+    }
+}
+
+/**
+ * UC9: DELETE EXPIRED NOTIFICATIONS
+ * ===============================
+ * Deletes expired notifications for the authenticated user
+ * 
+ * @route DELETE /api/notifications/expired
+ * @access Private - Requires authentication
+ * @returns {Object} Deletion result
+ */
+async function deleteExpiredNotifications(req, res) {
+    try {
+        const userId = req.user.user_id;
+
+        if (!isValidUUID(userId)) {
+            return res.status(400).json({
+                success: false,
+                error: 'Invalid user ID format'
+            });
+        }
+
+        const query = `
+            DELETE FROM Alerts 
+            WHERE user_id = $1 
+            AND expires_at IS NOT NULL 
+            AND expires_at < CURRENT_TIMESTAMP 
+            AND is_persistent = FALSE
+        `;
+        
+        const result = await pool.query(query, [userId]);
+
+        await SystemLog.info('notifications', 'delete_expired', 
+            `User ${userId} deleted ${result.rowCount} expired notifications`);
+
+        res.status(200).json({
+            success: true,
+            message: `Deleted ${result.rowCount} expired notifications`,
+            deleted_count: result.rowCount
+        });
+
+    } catch (error) {
+        console.error('Delete expired notifications error:', error);
+        res.status(500).json({
+            success: false,
+            error: 'Failed to delete expired notifications'
+        });
+    }
+}
+
+/**
+ * UC9: CREATE TEST NOTIFICATION
+ * ===============================
+ * Creates a test notification (development only)
+ * 
+ * @route POST /api/notifications/test
+ * @access Private - Requires authentication (development only)
+ * @returns {Object} Created notification
+ */
+async function createTestNotification(req, res) {
+    try {
+        if (process.env.NODE_ENV !== 'development') {
+            return res.status(403).json({
+                success: false,
+                error: 'Test notifications are only available in development mode'
+            });
+        }
+
+        const userId = req.user.user_id;
+        const { 
+            title = 'Test Notification',
+            message = 'This is a test notification created via API',
+            type = 'info',
+            priority = 3
+        } = req.body;
+
+        if (!isValidUUID(userId)) {
+            return res.status(400).json({
+                success: false,
+                error: 'Invalid user ID format'
+            });
+        }
+
+        const notificationId = await createNotification(
+            userId,
+            title,
+            message,
+            type,
+            priority,
+            { test: true, created_via_api: true },
+            null, // no expiration
+            null, // no action URL
+            null, // no action label
+            'api_test'
+        );
+
+        res.status(201).json({
+            success: true,
+            message: 'Test notification created successfully',
+            data: { notification_id: notificationId }
+        });
+
+    } catch (error) {
+        console.error('Create test notification error:', error);
+        res.status(500).json({
+            success: false,
+            error: 'Failed to create test notification'
+        });
+    }
+}
+
+/**
+ * ENHANCED CREATE NOTIFICATION FUNCTION
+ * ===============================
+ * Updated to support enhanced notification features
+ */
+async function createNotification(userId, title, message, type = 'general', priority = 3, details = {}, expiresAt = null, actionUrl = null, actionLabel = null, source = 'system') {
+    try {
+        if (!isValidUUID(userId)) {
+            throw new Error('Invalid user ID format');
+        }
+
+        const query = `
+            SELECT create_notification($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11) as notification_id
+        `;
+        
+        const params = [
+            userId, title, message, type, priority,
+            JSON.stringify(details), expiresAt, actionUrl, actionLabel, source, false
+        ];
+
+        const result = await pool.query(query, params);
+        const notificationId = result.rows[0]?.notification_id;
+
+        // Log the notification creation
+        await SystemLog.info('notifications', 'create', 
+            `Created notification for user ${userId}: ${title}`);
+
+        return notificationId;
+    } catch (error) {
+        await SystemLog.error('notifications', 'create', 
+            `Failed to create notification: ${error.message}`);
+        throw error;
+    }
+}
+
 module.exports = {
     // API routes
     getUserNotifications,
@@ -590,6 +837,12 @@ module.exports = {
     deleteNotification,
     updateNotificationPreferences,
     getNotificationPreferences,
+    
+    // Enhanced API routes
+    getNotificationStats,
+    getNotificationsByType,
+    deleteExpiredNotifications,
+    createTestNotification,
     
     // Internal functions to be used by other controllers/services
     createNotification,

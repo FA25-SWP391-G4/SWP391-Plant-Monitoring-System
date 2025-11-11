@@ -6,8 +6,8 @@
 
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import DashboardSidebar from './DashboardSidebar';
-import DashboardTopBar from './DashboardTopBar';
+import DashboardSidebar from './layout/DashboardSidebar';
+import DashboardTopBar from './layout/DashboardTopBar';
 
 // Mock user data for demo
 const mockUser = {

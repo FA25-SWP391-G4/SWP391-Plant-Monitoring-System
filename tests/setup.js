@@ -1,31 +1,51 @@
-// Jest setup file for all tests
-// This file is loaded before all test files
+// Test setup for Jest tests
+// This file is loaded before all tests run
 
 // Set test environment variables
 process.env.NODE_ENV = 'test';
-process.env.JWT_SECRET = 'test-jwt-secret-for-testing';
-process.env.VNPAY_TMN_CODE = 'TEST_TMN_CODE';
-process.env.VNPAY_HASH_SECRET = 'TEST_HASH_SECRET';
-process.env.VNPAY_URL = 'https://sandbox.vnpayment.vn';
-process.env.VNPAY_RETURN_URL = 'http://localhost:3000/api/payment/vnpay-return';
-process.env.CLIENT_URL = 'http://localhost:3001';
+process.env.APP_URL = process.env.APP_URL || 'http://localhost:3000';
 
-// Mock console methods to reduce noise in test output
-global.console = {
-    ...console,
-    log: jest.fn(), // Mock console.log
-    warn: jest.fn(), // Mock console.warn
-    error: console.error // Keep console.error for debugging
+// Increase Jest timeout for Selenium tests
+jest.setTimeout(60000);
+
+// Global test utilities
+global.sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
+// Setup console logging for tests
+const originalLog = console.log;
+const originalError = console.error;
+const originalWarn = console.warn;
+
+console.log = (...args) => {
+  if (process.env.JEST_VERBOSE === 'true') {
+    originalLog(...args);
+  }
 };
 
-// Global test timeout
-jest.setTimeout(30000);
+console.error = (...args) => {
+  originalError(...args);
+};
 
-// Setup and teardown
-beforeAll(() => {
-    console.error('Starting test suite...');
+console.warn = (...args) => {
+  if (process.env.JEST_VERBOSE === 'true') {
+    originalWarn(...args);
+  }
+};
+
+// Setup test database connection if needed
+beforeAll(async () => {
+  // Add any global setup here
+  console.log('🧪 Starting test suite...');
 });
 
-afterAll(() => {
-    console.error('Test suite completed.');
+afterAll(async () => {
+  // Add any global cleanup here
+  console.log('✅ Test suite completed');
 });
+
+// Handle unhandled promise rejections in tests
+process.on('unhandledRejection', (reason, promise) => {
+  console.error('Unhandled Rejection at:', promise, 'reason:', reason);
+});
+
+module.exports = {};

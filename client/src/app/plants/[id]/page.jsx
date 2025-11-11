@@ -9,7 +9,7 @@ import { toast } from 'react-toastify';
 import AIWateringPrediction from '@/components/AIWateringPrediction';
 import AIChatbotBubble from '@/components/ai/AIChatbotBubble';
 import ConnectDeviceModal from '@/components/modals/ConnectDeviceModal';
-import PlantHistoryChart from '@/components/dashboard/PlantHistoryChart';
+import PlantHistoryChart from '@/components/plants/PlantHistoryChart';
 import plantApi from '@/api/plantApi';
 import deviceApi from '@/api/deviceApi';
 
@@ -247,17 +247,17 @@ export default function PlantDetailPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       <div className="container mx-auto px-4 py-8">
         {/* Header */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 mb-6">
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6 mb-6">
           <div className="flex flex-col md:flex-row md:items-start md:space-x-6">
             {/* Plant Image */}
-            <div className="w-full md:w-48 h-48 rounded-lg bg-gray-100 flex items-center justify-center overflow-hidden mb-4 md:mb-0">
+            <div className="w-full md:w-48 h-48 rounded-lg bg-gray-100 dark:bg-gray-700 flex items-center justify-center overflow-hidden mb-4 md:mb-0">
               {plant.image ? (
                 <img src={plant.image} alt={plant.name} className="w-full h-full object-cover" />
               ) : (
-                <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" className="text-gray-300">
+                <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" className="text-gray-300 dark:text-gray-600">
                   <path d="M12 10a6 6 0 0 0-6-6H4v12h2a6 6 0 0 0 6-6Z"></path>
                   <path d="M12 10a6 6 0 0 1 6-6h2v12h-2a6 6 0 0 1-6-6Z"></path>
                   <path d="M12 22v-8.3"></path>
@@ -269,9 +269,9 @@ export default function PlantDetailPage() {
             <div className="flex-1">
               <div className="flex items-start justify-between mb-4">
                 <div>
-                  <h1 className="text-3xl font-bold text-gray-900 mb-2">{plant.name}</h1>
-                  <p className="text-lg text-gray-600 mb-2">{plant.species}</p>
-                  <div className="flex items-center text-gray-500 mb-2">
+                  <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-2">{plant.name}</h1>
+                  <p className="text-lg text-gray-600 dark:text-gray-400 mb-2">{plant.species}</p>
+                  <div className="flex items-center text-gray-500 dark:text-gray-400 mb-2">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-1">
                       <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"></path>
                       <circle cx="12" cy="10" r="3"></circle>
@@ -343,8 +343,8 @@ export default function PlantDetailPage() {
         </div>
 
         {/* Tabs */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-100 mb-6">
-          <div className="border-b border-gray-200">
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 mb-6">
+          <div className="border-b border-gray-200 dark:border-gray-600">
             <nav className="flex space-x-8 px-6">
               {[
                 { key: 'overview', label: t('plants.tabs.overview', 'Overview'), icon: '📊' },
@@ -357,8 +357,8 @@ export default function PlantDetailPage() {
                   onClick={() => setActiveTab(tab.key)}
                   className={`py-4 px-2 border-b-2 font-medium text-sm transition-colors ${
                     activeTab === tab.key
-                      ? 'border-emerald-500 text-emerald-600'
-                      : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                      ? 'border-emerald-500 text-emerald-600 dark:text-emerald-400'
+                      : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-gray-500'
                   }`}
                 >
                   <span className="mr-2">{tab.icon}</span>
@@ -374,7 +374,7 @@ export default function PlantDetailPage() {
               <div className="space-y-6">
                 {/* Current Sensor Data */}
                 <div>
-                  <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                  <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">
                     {t('plants.currentConditions', 'Current Conditions')}
                   </h3>
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -430,7 +430,7 @@ export default function PlantDetailPage() {
                         </svg>
                         <span className="text-sm font-medium text-gray-700">{t('metrics.light', 'Light')}</span>
                       </div>
-                      <p className="text-2xl font-bold text-amber-600">{sensorData?.light}%</p>
+                      <p className="text-2xl font-bold text-amber-600">{sensorData?.light} lux</p>
                     </div>
                   </div>
                 </div>
@@ -526,14 +526,14 @@ export default function PlantDetailPage() {
 
                 {/* Chart Display */}
                 {sensorHistory ? (
-                  <div className="bg-white border border-gray-200 rounded-lg p-6">
+                  <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-6">
                     <div className="flex justify-between items-center mb-4">
-                      <h4 className="text-lg font-medium text-gray-900">
+                      <h4 className="text-lg font-medium text-gray-900 dark:text-gray-100">
                         {t(`metrics.${activeChart}`, activeChart)} {t('charts.over24Hours', 'Over Last 24 Hours')}
                       </h4>
                       <button 
                         onClick={loadSensorHistory}
-                        className="text-sm text-emerald-600 hover:text-emerald-700 flex items-center space-x-1"
+                        className="text-sm text-emerald-600 dark:text-emerald-400 hover:text-emerald-700 dark:hover:text-emerald-300 flex items-center space-x-1"
                       >
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                           <path d="M23 4v6h-6"/>

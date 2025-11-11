@@ -484,6 +484,59 @@ class Alert {
             age_string: this.getAgeString()
         };
     }
+
+    // Additional methods for event notification testing
+
+    // Static method to find alerts by user ID and type
+    static async findByUserAndType(userId, type, limit = 50) {
+        try {
+            const query = `
+                SELECT a.*, u.full_name as user_name 
+                FROM alerts a
+                LEFT JOIN users u ON a.user_id = u.user_id
+                WHERE a.user_id = $1 AND a.type = $2
+                ORDER BY a.created_at DESC 
+                LIMIT $3
+            `;
+            const result = await pool.query(query, [userId, type, limit]);
+            return result.rows.map(row => new Alert(row));
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    // Static method to find alerts by type (for system notifications)
+    static async findByType(type, limit = 50) {
+        try {
+            const query = `
+                SELECT a.*, u.full_name as user_name 
+                FROM alerts a
+                LEFT JOIN users u ON a.user_id = u.user_id
+                WHERE a.type = $1
+                ORDER BY a.created_at DESC 
+                LIMIT $2
+            `;
+            const result = await pool.query(query, [type, limit]);
+            return result.rows.map(row => new Alert(row));
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    // Static method to delete alerts by pattern (for testing)
+    static async deleteByPattern(pattern) {
+        try {
+            const query = `
+                DELETE FROM alerts 
+                WHERE message LIKE $1 OR title LIKE $1
+            `;
+            const result = await pool.query(query, [`%${pattern}%`]);
+            return result.rowCount;
+        } catch (error) {
+            console.error('Error deleting alerts by pattern:', error);
+            return 0;
+        }
+    }
 }
 
 module.exports = Alert;

@@ -28,7 +28,12 @@ router.use(authMiddleware);
 router.get('/', settingsController.getUserSettings);
 
 // Update user settings (complete replacement)
-router.put('/', settingsController.updateUserSettings);
+router.put('/', (req, res, next) => {
+  console.log('🔥🔥🔥 SETTINGS ROUTE PUT MIDDLEWARE HIT 🔥🔥🔥');
+  console.log('[ROUTE] PUT /api/settings request received');
+  console.log('[ROUTE] Request body:', JSON.stringify(req.body, null, 2));
+  next();
+}, settingsController.updateUserSettings);
 
 // Update specific setting category
 router.patch('/:category', settingsController.updateSettingCategory);

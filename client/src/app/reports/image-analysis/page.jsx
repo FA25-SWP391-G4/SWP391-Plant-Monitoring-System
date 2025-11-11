@@ -153,35 +153,44 @@ export default function ImageAnalysisPage() {
 
   if (authLoading) {
     return (
-      <AppLayout>
-        <div className="flex flex-col items-center justify-center min-h-[60vh]">
-          <Loader size="lg" className="text-emerald-500" />
-          <p className="mt-4 text-gray-600">
-            {t('reports.loading', 'Loading...')}
-          </p>
-        </div>
-      </AppLayout>
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex flex-col items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-500 mb-4"></div>
+        <p className="text-gray-600 dark:text-gray-400">
+          {t('reports.loading', 'Loading...')}
+        </p>
+      </div>
     );
   }
 
   return (
-    <AppLayout>
-      <div className="container mx-auto px-4 py-8">
-        <div className="mb-8">
-          <h1 className="text-2xl font-bold mb-2">{t('reports.aiImageAnalysis', 'AI Plant Image Analysis')}</h1>
-          <p className="text-gray-600">
-            {t('reports.aiImageDesc', 'Upload a photo of your plant to get AI-powered health analysis and care recommendations')}
-          </p>
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+      <main className="container mx-auto px-4 py-8">
+        {/* Welcome Banner */}
+        <div className="bg-gradient-to-r from-emerald-500 to-emerald-700 dark:from-emerald-600 dark:to-emerald-800 rounded-xl shadow-lg mb-8 p-6 text-white flex items-center justify-between">
+          <div className="flex items-center space-x-4">
+            <div className="bg-white/20 backdrop-blur-sm p-3 rounded-lg">
+              <Camera className="h-8 w-8" />
+            </div>
+            
+            <div>
+              <h1 className="text-2xl font-bold mb-2">
+                {t('reports.aiImageAnalysis', 'AI Plant Image Analysis')}
+              </h1>
+              <p className="opacity-90">
+                {t('reports.aiImageDesc', 'Upload a photo of your plant to get AI-powered health analysis and care recommendations')}
+              </p>
+            </div>
+          </div>
         </div>
         
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Upload section */}
           <div className="lg:col-span-1">
-            <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-6">
-              <h2 className="text-lg font-medium mb-4">{t('reports.uploadImage', 'Upload Plant Image')}</h2>
+            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
+              <h2 className="text-lg font-medium mb-4 text-gray-900 dark:text-white">{t('reports.uploadImage', 'Upload Plant Image')}</h2>
               
               <div className="mb-6">
-                <p className="text-sm text-gray-600 mb-4">{t('reports.uploadGuidelines', 'For best results, ensure the image is well-lit and clearly shows the entire plant or the specific area of concern.')}</p>
+                <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">{t('reports.uploadGuidelines', 'For best results, ensure the image is well-lit and clearly shows the entire plant or the specific area of concern.')}</p>
                 
                 <div className="flex flex-col space-y-3">
                   <Button
@@ -294,17 +303,17 @@ export default function ImageAnalysisPage() {
           {/* Results section */}
           <div className="lg:col-span-2">
             {results || analyzing ? (
-              <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-6">
+              <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-100 dark:border-gray-700 p-6">
                 {analyzing ? (
                   <div className="flex flex-col items-center justify-center py-12">
                     <div className="relative w-20 h-20">
-                      <div className="absolute top-0 left-0 w-full h-full border-4 border-emerald-100 rounded-full"></div>
-                      <div className="absolute top-0 left-0 w-full h-full border-4 border-emerald-500 rounded-full border-t-transparent animate-spin"></div>
+                      <div className="absolute top-0 left-0 w-full h-full border-4 border-emerald-100 dark:border-emerald-900/30 rounded-full"></div>
+                      <div className="absolute top-0 left-0 w-full h-full border-4 border-emerald-500 dark:border-emerald-400 rounded-full border-t-transparent animate-spin"></div>
                     </div>
-                    <p className="mt-4 text-gray-600">
+                    <p className="mt-4 text-gray-600 dark:text-gray-400">
                       {t('reports.analyzingYourPlant', 'Analyzing your plant...')}
                     </p>
-                    <p className="text-sm text-gray-500 mt-2">
+                    <p className="text-sm text-gray-500 dark:text-gray-500 mt-2">
                       {t('reports.analyzingTakes', 'This may take a few moments')}
                     </p>
                   </div>
@@ -312,10 +321,10 @@ export default function ImageAnalysisPage() {
                   <>
                     <div className="flex justify-between items-start mb-6">
                       <div>
-                        <h2 className="text-xl font-semibold">
+                        <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100">
                           {t('reports.analysisResults', 'Analysis Results')}
                         </h2>
-                        <p className="text-sm text-gray-600">
+                        <p className="text-sm text-gray-600 dark:text-gray-400">
                           {new Date().toLocaleDateString()} {new Date().toLocaleTimeString()}
                         </p>
                       </div>
@@ -330,13 +339,13 @@ export default function ImageAnalysisPage() {
                     
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       {/* Plant identification */}
-                      <div className="bg-gray-50 rounded-lg p-4">
-                        <h3 className="font-medium mb-3 flex items-center">
-                          <Leaf size={18} className="mr-2 text-emerald-600" />
+                      <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-4">
+                        <h3 className="font-medium mb-3 flex items-center text-gray-900 dark:text-gray-100">
+                          <Leaf size={18} className="mr-2 text-emerald-600 dark:text-emerald-400" />
                           {t('reports.plantIdentification', 'Plant Identification')}
                         </h3>
-                        <p className="text-lg font-semibold text-gray-900">{mockResults.plant_identification.name}</p>
-                        <p className="text-sm text-gray-600">
+                        <p className="text-lg font-semibold text-gray-900 dark:text-gray-100">{mockResults.plant_identification.name}</p>
+                        <p className="text-sm text-gray-600 dark:text-gray-400">
                           {t('reports.confidenceLevel', 'Confidence Level')}: {Math.round(mockResults.plant_identification.confidence * 100)}%
                         </p>
                       </div>
@@ -359,9 +368,9 @@ export default function ImageAnalysisPage() {
                       <h3 className="font-medium mb-3">{t('reports.healthDetails', 'Health Details')}</h3>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                         {mockResults.health_details.map((detail, index) => (
-                          <div key={index} className="bg-white border border-gray-100 rounded-lg p-3 flex justify-between items-center">
-                            <span>{detail.aspect}</span>
-                            <span className={detail.status === 'good' ? 'text-green-600 flex items-center' : 'text-amber-600 flex items-center'}>
+                          <div key={index} className="bg-white dark:bg-gray-600 border border-gray-100 dark:border-gray-500 rounded-lg p-3 flex justify-between items-center">
+                            <span className="text-gray-900 dark:text-gray-100">{detail.aspect}</span>
+                            <span className={detail.status === 'good' ? 'text-green-600 dark:text-green-400 flex items-center' : 'text-amber-600 dark:text-amber-400 flex items-center'}>
                               {detail.status === 'good' 
                                 ? <><FileCheck size={16} className="mr-1" /> {t('reports.good', 'Good')}</> 
                                 : <><AlertCircle size={16} className="mr-1" /> {t('reports.needsAttention', 'Needs Attention')}</>
@@ -375,15 +384,15 @@ export default function ImageAnalysisPage() {
                     {/* Issues */}
                     {mockResults.detected_issues.length > 0 && (
                       <div className="mt-6">
-                        <h3 className="font-medium mb-3">{t('reports.detectedIssues', 'Detected Issues')}</h3>
+                        <h3 className="font-medium mb-3 text-gray-900 dark:text-gray-100">{t('reports.detectedIssues', 'Detected Issues')}</h3>
                         <div className="space-y-3">
                           {mockResults.detected_issues.map((issue, index) => (
-                            <div key={index} className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+                            <div key={index} className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-700 rounded-lg p-4">
                               <div className="flex items-center mb-2">
-                                <AlertCircle size={18} className="text-yellow-600 mr-2" />
-                                <h4 className="font-medium text-yellow-800">{issue.name}</h4>
+                                <AlertCircle size={18} className="text-yellow-600 dark:text-yellow-400 mr-2" />
+                                <h4 className="font-medium text-yellow-800 dark:text-yellow-300">{issue.name}</h4>
                               </div>
-                              <p className="text-sm text-gray-700">{issue.description}</p>
+                              <p className="text-sm text-gray-700 dark:text-gray-300">{issue.description}</p>
                             </div>
                           ))}
                         </div>
@@ -420,15 +429,15 @@ export default function ImageAnalysisPage() {
                 )}
               </div>
             ) : (
-              <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-6 flex flex-col items-center justify-center min-h-[400px]">
+              <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-100 dark:border-gray-700 p-6 flex flex-col items-center justify-center min-h-[400px]">
                 <div className="text-center max-w-md">
-                  <div className="mx-auto w-16 h-16 mb-4 rounded-full bg-emerald-100 flex items-center justify-center">
-                    <Camera size={24} className="text-emerald-600" />
+                  <div className="mx-auto w-16 h-16 mb-4 rounded-full bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center">
+                    <Camera size={24} className="text-emerald-600 dark:text-emerald-400" />
                   </div>
-                  <h3 className="text-lg font-medium text-gray-900 mb-2">
+                  <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-2">
                     {t('reports.getAiAnalysis', 'Get AI-Powered Plant Analysis')}
                   </h3>
-                  <p className="text-gray-600 mb-6">
+                  <p className="text-gray-600 dark:text-gray-400 mb-6">
                     {t('reports.uploadImagePrompt', 'Upload a clear photo of your plant to get instant analysis of its health, detect any issues, and receive care recommendations.')}
                   </p>
                   <Button
@@ -445,9 +454,9 @@ export default function ImageAnalysisPage() {
             
             {/* Analysis history */}
             {isPremium && analysisHistory.length > 0 && (
-              <div className="mt-8 bg-white rounded-lg shadow-sm border border-gray-100 p-6">
+              <div className="mt-8 bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-100 dark:border-gray-700 p-6">
                 <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-lg font-semibold flex items-center">
+                  <h3 className="text-lg font-semibold flex items-center text-gray-900 dark:text-gray-100">
                     <History size={18} className="mr-2" />
                     {t('reports.analysisHistory', 'Analysis History')}
                   </h3>
@@ -458,7 +467,7 @@ export default function ImageAnalysisPage() {
                 
                 <div className="space-y-4">
                   {analysisHistory.map((item) => (
-                    <div key={item.id} className="flex items-center p-3 bg-gray-50 rounded-lg">
+                    <div key={item.id} className="flex items-center p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
                       <div className="w-12 h-12 rounded-md overflow-hidden mr-4">
                         <Image
                           src={item.imageUrl}
@@ -486,7 +495,7 @@ export default function ImageAnalysisPage() {
             )}
           </div>
         </div>
-      </div>
-    </AppLayout>
+      </main>
+    </div>
   );
 }

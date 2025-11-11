@@ -103,27 +103,40 @@ export default function ReportsPage() {
   };
 
   return (
-    <AppLayout>
-      <div className="flex flex-col flex-1 p-4 lg:p-8">
-        <DashboardHeader 
-          title={t('reports.title', 'Reports & Analytics')} 
-          description={t('reports.description', 'Visualize data from your plants and devices')}
-        />
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+      <main className="container mx-auto px-4 py-8">
+        {/* Welcome Banner */}
+        <div className="bg-gradient-to-r from-emerald-500 to-emerald-700 dark:from-emerald-600 dark:to-emerald-800 rounded-xl shadow-lg mb-8 p-6 text-white flex items-center justify-between">
+          <div className="flex items-center space-x-4">
+            <div className="bg-white/20 backdrop-blur-sm p-3 rounded-lg">
+              <FileBarChart className="h-8 w-8" />
+            </div>
+            
+            <div>
+              <h1 className="text-2xl font-bold mb-2">
+                {t('reports.title', 'Reports & Analytics')}
+              </h1>
+              <p className="opacity-90">
+                {t('reports.description', 'Visualize data from your plants and devices')}
+              </p>
+            </div>
+          </div>
+        </div>
 
         {/* Report Type Cards */}
         <div className="mb-8">
-          <h2 className="text-xl font-semibold mb-4">{t('reports.availableReports', 'Available Reports')}</h2>
+          <h2 className="text-xl font-semibold mb-4 text-gray-900 dark:text-white">{t('reports.availableReports', 'Available Reports')}</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             {reportCards.map((card, index) => (
               <div 
                 key={index} 
-                className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden hover:shadow-md transition-shadow"
+                className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden hover:shadow-md transition-shadow"
               >
                 <div className="p-5">
                   <div className="flex justify-center mb-4">
                     {card.icon}
                   </div>
-                  <h3 className="text-lg font-medium mb-2 text-center">{card.title}</h3>
+                  <h3 className="text-lg font-medium mb-2 text-center text-gray-900 dark:text-white">{card.title}</h3>
                   <p className="text-sm text-gray-600 dark:text-gray-400 text-center mb-4">
                     {card.description}
                   </p>
@@ -136,7 +149,7 @@ export default function ReportsPage() {
                       </div>
                       <Link 
                         href="/upgrade"
-                        className="block w-full py-2 px-4 bg-amber-500 hover:bg-amber-600 text-white text-center font-medium rounded-md"
+                        className="block w-full py-2 px-4 bg-amber-500 hover:bg-amber-600 text-white text-center font-medium rounded-lg transition-colors"
                       >
                         {t('common.upgrade', 'Upgrade')}
                       </Link>
@@ -144,7 +157,7 @@ export default function ReportsPage() {
                   ) : (
                     <Link 
                       href={card.link}
-                      className="block w-full py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white text-center font-medium rounded-md"
+                      className="block w-full py-2 px-4 bg-emerald-600 hover:bg-emerald-700 text-white text-center font-medium rounded-lg transition-colors"
                     >
                       {t('common.viewReport', 'View Report')}
                     </Link>
@@ -285,7 +298,7 @@ export default function ReportsPage() {
 
         {/* Historical Data Table */}
         {!loading && !error && reports?.historicalData && (
-          <div className="mt-8 bg-white dark:bg-gray-800 rounded-lg shadow overflow-hidden">
+          <div className="mt-8 bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden">
             <h3 className="text-lg font-medium p-6 border-b border-gray-200 dark:border-gray-700 text-gray-800 dark:text-gray-100">
               {t('reports.historicalData', 'Historical Data')}
             </h3>
@@ -343,7 +356,7 @@ export default function ReportsPage() {
             </div>
           </div>
         )}
+        </main>
       </div>
-    </AppLayout>
   );
 }
