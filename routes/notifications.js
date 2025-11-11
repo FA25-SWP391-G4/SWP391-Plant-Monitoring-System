@@ -9,7 +9,7 @@
 
 const express = require('express');
 const router = express.Router();
-const notificationController = require('../__mocks__/notificationController');
+const notificationController = require('../controllers/notificationController');
 const authenticate = require('../middlewares/authMiddleware');
 
 /**
@@ -46,6 +46,36 @@ router.put('/read-all', authenticate, notificationController.markAllNotification
  * @access  Private
  */
 router.delete('/:notificationId', authenticate, notificationController.deleteNotification);
+
+/**
+ * @route   GET /api/notifications/stats
+ * @desc    Get notification statistics for the authenticated user
+ * @access  Private
+ */
+router.get('/stats', authenticate, notificationController.getNotificationStats);
+
+/**
+ * @route   GET /api/notifications/by-type/:type
+ * @desc    Get notifications by type
+ * @access  Private
+ */
+router.get('/by-type/:type', authenticate, notificationController.getNotificationsByType);
+
+/**
+ * @route   DELETE /api/notifications/expired
+ * @desc    Delete expired notifications
+ * @access  Private
+ */
+router.delete('/expired', authenticate, notificationController.deleteExpiredNotifications);
+
+/**
+ * @route   POST /api/notifications/test
+ * @desc    Create a test notification (development only)
+ * @access  Private
+ */
+if (process.env.NODE_ENV === 'development') {
+    router.post('/test', authenticate, notificationController.createTestNotification);
+}
 
 /**
  * @route   GET /api/notifications/preferences

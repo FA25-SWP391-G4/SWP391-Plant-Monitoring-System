@@ -11,7 +11,7 @@ export default function RecentActivity() {
   const [activities, setActivities] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  if (!settings.dashboard.showAlerts) {
+  if (!settings.widgets?.showNotifications) {
     return null;
   }
   const [error, setError] = useState(null);

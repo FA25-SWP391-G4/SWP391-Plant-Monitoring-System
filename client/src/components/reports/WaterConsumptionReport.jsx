@@ -129,45 +129,45 @@ export default function WaterConsumptionReport({ plant }) {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-        <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-4">
-          <h3 className="text-sm font-medium text-gray-500 mb-1">
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-100 dark:border-gray-700 p-4">
+          <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">
             {t('reports.totalWaterUsed', 'Total Water Used')}
           </h3>
           <div className="flex items-end">
-            <span className="text-2xl font-bold text-blue-600">{data.totalWaterUsed}</span>
-            <span className="ml-1 text-gray-600">L</span>
+            <span className="text-2xl font-bold text-blue-600 dark:text-blue-400">{data.totalWaterUsed}</span>
+            <span className="ml-1 text-gray-600 dark:text-gray-400">L</span>
           </div>
         </div>
         
-        <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-4">
-          <h3 className="text-sm font-medium text-gray-500 mb-1">
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-100 dark:border-gray-700 p-4">
+          <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">
             {t('reports.averagePerDay', 'Average Per Day')}
           </h3>
           <div className="flex items-end">
-            <span className="text-2xl font-bold text-emerald-600">{data.averagePerDay}</span>
-            <span className="ml-1 text-gray-600">L</span>
+            <span className="text-2xl font-bold text-emerald-600 dark:text-emerald-400">{data.averagePerDay}</span>
+            <span className="ml-1 text-gray-600 dark:text-gray-400">L</span>
           </div>
         </div>
         
-        <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-4">
-          <h3 className="text-sm font-medium text-gray-500 mb-1">
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-100 dark:border-gray-700 p-4">
+          <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">
             {t('reports.efficiencyScore', 'Efficiency Score')}
           </h3>
           <div className="flex items-end">
             <span className={`text-2xl font-bold ${
               parseFloat(data.efficiencyScore) > 80 
-                ? 'text-emerald-600' 
+                ? 'text-emerald-600 dark:text-emerald-400' 
                 : parseFloat(data.efficiencyScore) > 50 
-                  ? 'text-amber-600' 
-                  : 'text-red-600'
+                  ? 'text-amber-600 dark:text-amber-400' 
+                  : 'text-red-600 dark:text-red-400'
             }`}>{data.efficiencyScore}</span>
-            <span className="ml-1 text-gray-600">%</span>
+            <span className="ml-1 text-gray-600 dark:text-gray-400">%</span>
           </div>
         </div>
       </div>
 
-      <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-4 mb-6">
-        <h3 className="font-medium text-gray-900 mb-4">
+      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-100 dark:border-gray-700 p-4 mb-6">
+        <h3 className="font-medium text-gray-900 dark:text-gray-100 mb-4">
           {t('reports.waterUsageOverTime', 'Water Usage Over Time')}
         </h3>
         <div className="h-72">
@@ -201,46 +201,46 @@ export default function WaterConsumptionReport({ plant }) {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-        <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-4">
-          <h3 className="font-medium text-gray-900 mb-4">
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-100 dark:border-gray-700 p-4">
+          <h3 className="font-medium text-gray-900 dark:text-gray-100 mb-4">
             {t('reports.wateringFrequency', 'Watering Frequency')}
           </h3>
           <div className="space-y-3">
             {data.frequency.map((item, index) => (
               <div key={index} className="flex items-center">
-                <div className="w-32 text-sm text-gray-600">{item.day}</div>
+                <div className="w-32 text-sm text-gray-600 dark:text-gray-400">{item.day}</div>
                 <div className="flex-1">
-                  <div className="h-4 bg-gray-100 rounded-full overflow-hidden">
+                  <div className="h-4 bg-gray-100 dark:bg-gray-600 rounded-full overflow-hidden">
                     <div 
-                      className="h-full bg-blue-500" 
+                      className="h-full bg-blue-500 dark:bg-blue-400" 
                       style={{ width: `${item.percentage}%` }}
                     ></div>
                   </div>
                 </div>
-                <div className="w-12 text-right text-sm font-medium">{item.percentage}%</div>
+                <div className="w-12 text-right text-sm font-medium text-gray-900 dark:text-gray-100">{item.percentage}%</div>
               </div>
             ))}
           </div>
         </div>
         
-        <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-4">
-          <h3 className="font-medium text-gray-900 mb-4">
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-100 dark:border-gray-700 p-4">
+          <h3 className="font-medium text-gray-900 dark:text-gray-100 mb-4">
             {t('reports.waterEfficiency', 'Water Efficiency')}
           </h3>
           {data.efficiency.map((item, index) => (
             <div key={index} className="mb-4">
               <div className="flex justify-between mb-1">
-                <span className="text-sm text-gray-600">{item.category}</span>
-                <span className="text-sm font-medium text-gray-900">{item.value}%</span>
+                <span className="text-sm text-gray-600 dark:text-gray-400">{item.category}</span>
+                <span className="text-sm font-medium text-gray-900 dark:text-gray-100">{item.value}%</span>
               </div>
-              <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
+              <div className="h-2 bg-gray-100 dark:bg-gray-600 rounded-full overflow-hidden">
                 <div 
                   className={`h-full ${
                     item.value > 80 
-                      ? 'bg-emerald-500' 
+                      ? 'bg-emerald-500 dark:bg-emerald-400' 
                       : item.value > 50 
-                        ? 'bg-amber-500' 
-                        : 'bg-red-500'
+                        ? 'bg-amber-500 dark:bg-amber-400' 
+                        : 'bg-red-500 dark:bg-red-400'
                   }`}
                   style={{ width: `${item.value}%` }}
                 ></div>
@@ -250,19 +250,19 @@ export default function WaterConsumptionReport({ plant }) {
         </div>
       </div>
 
-      <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-4 mb-6">
-        <h3 className="font-medium text-gray-900 mb-4">
+      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-100 dark:border-gray-700 p-4 mb-6">
+        <h3 className="font-medium text-gray-900 dark:text-gray-100 mb-4">
           {t('reports.recommendations', 'Water Saving Recommendations')}
         </h3>
         <ul className="space-y-3">
           {data.recommendations.map((recommendation, index) => (
             <li key={index} className="flex">
               <div className="flex-shrink-0 pt-0.5">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-blue-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-blue-500 dark:text-blue-400 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
               </div>
-              <span className="text-gray-700">{recommendation}</span>
+              <span className="text-gray-700 dark:text-gray-300">{recommendation}</span>
             </li>
           ))}
         </ul>

@@ -10,7 +10,7 @@ export default function WateringSchedule({ plants = [] }) {
   const { settings } = useSettings();
   const [lastWateredData, setLastWateredData] = useState({});
 
-  if (!settings.dashboard.showWateringStatus) {
+  if (!settings.widgets?.showWateringSchedule) {
     return null;
   }
 

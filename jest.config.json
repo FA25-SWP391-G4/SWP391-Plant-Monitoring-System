@@ -1,17 +1,39 @@
 {
-  "testEnvironment": "node",
-  "testTimeout": 30000,
-  "setupFilesAfterEnv": ["<rootDir>/tests/setup.js"],
-  "testMatch": [
-    "<rootDir>/tests/**/*.test.js"
-  ],
-  "transform": {},
-  "transformIgnorePatterns": [],
-  "collectCoverageFrom": [
-    "controllers/**/*.js",
-    "models/**/*.js",
-    "routes/**/*.js",
-    "!**/node_modules/**"
+  "projects": [
+    {
+      "displayName": "Unit Tests",
+      "testEnvironment": "node",
+      "testTimeout": 30000,
+      "setupFilesAfterEnv": ["<rootDir>/tests/setup.js"],
+      "testMatch": [
+        "<rootDir>/tests/unit/**/*.test.js",
+        "<rootDir>/tests/integration/**/*.test.js"
+      ],
+      "transform": {},
+      "transformIgnorePatterns": [],
+      "collectCoverageFrom": [
+        "controllers/**/*.js",
+        "models/**/*.js",
+        "routes/**/*.js",
+        "!**/node_modules/**"
+      ]
+    },
+    {
+      "displayName": "UI Tests (Selenium)",
+      "testEnvironment": "node",
+      "testTimeout": 60000,
+      "setupFilesAfterEnv": ["<rootDir>/tests/ui/setup/selenium.setup.js"],
+      "testMatch": [
+        "<rootDir>/tests/ui/**/*.test.js"
+      ],
+      "transform": {},
+      "transformIgnorePatterns": [],
+      "maxWorkers": 1,
+      "globals": {
+        "SELENIUM_TIMEOUT": 10000,
+        "APP_URL": "http://localhost:3000"
+      }
+    }
   ],
   "coverageDirectory": "coverage",
   "coverageReporters": [

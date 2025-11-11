@@ -13,10 +13,16 @@ export default function WeatherWidget() {
   const { isDark, themeColors } = useTheme();
   const { settings } = useSettings();
 
-  // Hide the widget if weather info is disabled in settings
-  if (!settings.dashboard.showWeatherInfo) {
+  // Hide the widget if weather widget is disabled in settings
+  if (!settings.widgets?.showWeatherWidget) {
     return null;
   }
+
+  // Widget settings
+  const showTitles = settings?.widgets?.showWidgetTitles ?? true;
+  const showIcons = settings?.widgets?.showWidgetIcons ?? true;
+  const compactMode = settings?.widgets?.compactMode ?? false;
+  const animationsEnabled = settings?.widgets?.animationsEnabled ?? true;
   
   const [weatherData, setWeatherData] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -279,13 +285,13 @@ export default function WeatherWidget() {
 
   if (loading) {
     return (
-      <div className={`rounded-xl shadow-sm border overflow-hidden p-5 h-40 ${
+      <div className={`rounded-xl shadow-sm border overflow-hidden ${compactMode ? 'p-3 h-32' : 'p-5 h-40'} ${animationsEnabled ? 'transition-all duration-200 ease-in-out' : ''} ${
         isDark 
           ? 'bg-gray-800 border-gray-700' 
           : 'bg-white border-gray-100'
       }`}>
         <div className="flex items-center justify-between mb-4">
-          <h3 className={`font-medium ${
+          <h3 className={`${showTitles ? 'font-medium' : 'hidden'} ${
             isDark ? 'text-white' : 'text-gray-900'
           }`}>{t('dashboard.weather', 'Local Weather')}</h3>
         </div>
@@ -301,13 +307,13 @@ export default function WeatherWidget() {
 
   if (error && !weatherData) {
     return (
-      <div className={`rounded-xl shadow-sm border overflow-hidden p-5 ${
+      <div className={`rounded-xl shadow-sm border overflow-hidden ${compactMode ? 'p-3' : 'p-5'} ${animationsEnabled ? 'transition-all duration-200 ease-in-out' : ''} ${
         isDark 
           ? 'bg-gray-800 border-gray-700' 
           : 'bg-white border-gray-100'
       }`}>
         <div className="flex items-center justify-between mb-4">
-          <h3 className={`font-medium ${
+          <h3 className={`${showTitles ? 'font-medium' : 'hidden'} ${
             isDark ? 'text-white' : 'text-gray-900'
           }`}>{t('dashboard.weather', 'Local Weather')}</h3>
         </div>
@@ -322,17 +328,17 @@ export default function WeatherWidget() {
   }
 
   return (
-    <div className={`rounded-xl shadow-sm border overflow-hidden ${
+    <div className={`rounded-xl shadow-sm border overflow-hidden ${animationsEnabled ? 'transition-all duration-200 ease-in-out hover:shadow-md' : ''} ${
       isDark 
         ? 'bg-gray-800 border-gray-700' 
         : 'bg-white border-gray-100'
     }`}>
       {/* Current weather */}
-      <div className={`p-5 border-b ${
+      <div className={`${compactMode ? 'p-3' : 'p-5'} border-b ${
         isDark ? 'border-gray-700' : 'border-gray-100'
       }`}>
         <div className="flex items-center justify-between mb-4">
-          <h3 className={`font-medium ${
+          <h3 className={`${showTitles ? 'font-medium' : 'hidden'} ${
             isDark ? 'text-white' : 'text-gray-900'
           }`}>{t('dashboard.weather', 'Local Weather')}</h3>
           {lastUpdated && (
@@ -362,7 +368,7 @@ export default function WeatherWidget() {
           </div>
           
           <div className="w-16 h-16 flex items-center justify-center">
-            {getWeatherIcon(weatherData.condition)}
+            {showIcons && getWeatherIcon(weatherData.condition)}
           </div>
         </div>
       </div>
@@ -372,12 +378,12 @@ export default function WeatherWidget() {
         isDark ? 'divide-gray-700' : 'divide-gray-100'
       }`}>
         {weatherData.forecast.map((day, index) => (
-          <div key={index} className="p-3 text-center">
+          <div key={index} className={`${compactMode ? 'p-2' : 'p-3'} text-center`}>
             <div className={`text-sm font-medium ${
               isDark ? 'text-gray-200' : 'text-gray-900'
             }`}>{day.day}</div>
             <div className="my-2 flex justify-center">
-              {getWeatherIcon(day.condition)}
+              {showIcons && getWeatherIcon(day.condition)}
             </div>
             <div className="text-xs">
               <span className={`font-medium ${
@@ -395,18 +401,20 @@ export default function WeatherWidget() {
       </div>
       
       {/* Plant tip based on weather */}
-      <div className={`p-3 text-sm flex items-start ${
+      <div className={`${compactMode ? 'p-2' : 'p-3'} text-sm flex items-start ${
         isDark 
           ? 'bg-emerald-900/30 text-emerald-200' 
           : 'bg-emerald-50 text-emerald-800'
       }`}>
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={`mr-2 flex-shrink-0 mt-0.5 ${
-          isDark ? 'text-emerald-300' : 'text-emerald-700'
-        }`}>
-          <circle cx="12" cy="12" r="9"></circle>
-          <line x1="12" y1="8" x2="12" y2="12"></line>
-          <line x1="12" y1="16" x2="12.01" y2="16"></line>
-        </svg>
+        {showIcons && (
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={`mr-2 flex-shrink-0 mt-0.5 ${
+            isDark ? 'text-emerald-300' : 'text-emerald-700'
+          }`}>
+            <circle cx="12" cy="12" r="9"></circle>
+            <line x1="12" y1="8" x2="12" y2="12"></line>
+            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+          </svg>
+        )}
         <span>{getWeatherTip(weatherData)}</span>
       </div>
     </div>

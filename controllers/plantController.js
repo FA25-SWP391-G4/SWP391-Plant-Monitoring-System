@@ -139,7 +139,7 @@ async function waterPlant(req, res) {
                 timestamp: wateringCommand.timestamp
             });
 
-            const { sendPumpCommand } = require('../mqtt/mqttClient');
+            const { sendPumpCommand } = require('../services/awsIOTClient');
             
             // Log pre-command device state
             console.log('🔍 [PUMP DEBUG] Current device state:', {

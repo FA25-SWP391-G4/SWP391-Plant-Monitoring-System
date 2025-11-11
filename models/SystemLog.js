@@ -1,5 +1,14 @@
 const { pool } = require('../config/db');
 
+// Import event notification service (avoid circular dependency)
+let eventNotificationService = null;
+try {
+    eventNotificationService = require('../services/eventNotificationService');
+} catch (error) {
+    // Service may not be available during testing or initialization
+    console.log('EventNotificationService not available:', error.message);
+}
+
 class SystemLog {
     constructor(logData) {
         this.log_id = logData.log_id;
@@ -10,7 +19,7 @@ class SystemLog {
     }
 
     //create log 
-    static async create(level, source, message) {
+    static async create(level, source, message, metadata = {}) {
         try {
             let log_level, log_source, log_message;
 
@@ -19,6 +28,8 @@ class SystemLog {
                 log_level = level.log_level || 'INFO';
                 log_source = level.source || 'System';
                 log_message = level.message || '';
+                // Extract metadata from object syntax
+                metadata = { ...metadata, ...level.metadata };
             } else if (typeof level === 'string') {
                 log_level = level || 'INFO';
                 log_source = source || 'System';
@@ -38,7 +49,28 @@ class SystemLog {
             message: log_message,
             timestamp: new Date()
         });
-        return await systemLog.save();
+        const savedLog = await systemLog.save();
+        
+        // Trigger event notification processing with metadata
+        if (savedLog && eventNotificationService) {
+            try {
+                await eventNotificationService.processEvent({
+                    level: log_level,
+                    source: log_source,
+                    message: log_message,
+                    metadata: {
+                        ...metadata,
+                        log_id: savedLog.log_id,
+                        timestamp: savedLog.timestamp
+                    }
+                });
+            } catch (error) {
+                // Don't throw error to avoid disrupting the logging process
+                console.error('Failed to trigger event notification from create:', error.message);
+            }
+        }
+        
+        return savedLog;
         } catch (error) {
             // Don't throw error in logging to avoid infinite loops
             console.error('Failed to create system log:', error);
@@ -281,6 +313,10 @@ class SystemLog {
                 
                 const updatedLog = new SystemLog(result.rows[0]);
                 Object.assign(this, updatedLog);
+                
+                // Trigger event notification processing
+                await this.triggerEventNotification();
+                
                 return this;
             } else {
                 // Create new log entry
@@ -299,6 +335,10 @@ class SystemLog {
                 
                 const newLog = new SystemLog(result.rows[0]);
                 Object.assign(this, newLog);
+                
+                // Trigger event notification processing
+                await this.triggerEventNotification();
+                
                 return this;
             }
         } catch (error) {
@@ -322,8 +362,29 @@ class SystemLog {
         }
     }
 
+    // Trigger event notification processing for this log entry
+    async triggerEventNotification() {
+        try {
+            // Only trigger if the event notification service is available
+            if (eventNotificationService) {
+                await eventNotificationService.processEvent({
+                    level: this.log_level,
+                    source: this.source,
+                    message: this.message,
+                    metadata: {
+                        log_id: this.log_id,
+                        timestamp: this.timestamp
+                    }
+                });
+            }
+        } catch (error) {
+            // Don't throw error to avoid disrupting the logging process
+            console.error('Failed to trigger event notification:', error.message);
+        }
+    }
+
     // Static logging methods for different levels
-    static async log(level, source, message) {
+    static async log(level, source, message, metadata = {}) {
         try {
             const systemLog = new SystemLog({
                 log_level: level.toUpperCase(),
@@ -332,7 +393,28 @@ class SystemLog {
                 timestamp: new Date()
             });
             
-            return await systemLog.save();
+            const savedLog = await systemLog.save();
+            
+            // Trigger event notification processing with metadata
+            if (savedLog && eventNotificationService) {
+                try {
+                    await eventNotificationService.processEvent({
+                        level: level.toUpperCase(),
+                        source: source,
+                        message: message,
+                        metadata: {
+                            ...metadata,
+                            log_id: savedLog.log_id,
+                            timestamp: savedLog.timestamp
+                        }
+                    });
+                } catch (error) {
+                    // Don't throw error to avoid disrupting the logging process
+                    console.error('Failed to trigger event notification from log:', error.message);
+                }
+            }
+            
+            return savedLog;
         } catch (error) {
             // Don't throw error in logging to avoid infinite loops
             console.error('Failed to save system log:', error);
@@ -340,20 +422,20 @@ class SystemLog {
         }
     }
 
-    static async info(source, message) {
-        return await SystemLog.log('INFO', source, message);
+    static async info(source, message, metadata = {}) {
+        return await SystemLog.log('INFO', source, message, metadata);
     }
 
-    static async warning(source, message) {
-        return await SystemLog.log('WARNING', source, message);
+    static async warning(source, message, metadata = {}) {
+        return await SystemLog.log('WARNING', source, message, metadata);
     }
 
-    static async error(source, message) {
-        return await SystemLog.log('ERROR', source, message);
+    static async error(source, message, metadata = {}) {
+        return await SystemLog.log('ERROR', source, message, metadata);
     }
 
-    static async debug(source, message) {
-        return await SystemLog.log('DEBUG', source, message);
+    static async debug(source, message, metadata = {}) {
+        return await SystemLog.log('DEBUG', source, message, metadata);
     }
 
     // Static method to cleanup old logs
@@ -640,6 +722,21 @@ class SystemLog {
         } catch (error) {
             console.error('[SYSTEM LOG DELETE ERROR] Error deleting logs:', error.message);
             throw error;
+        }
+    }
+
+    // Static method to delete logs by pattern (for testing)
+    static async deleteByPattern(pattern) {
+        try {
+            const query = `
+                DELETE FROM system_logs 
+                WHERE message LIKE $1 OR source LIKE $1
+            `;
+            const result = await pool.query(query, [`%${pattern}%`]);
+            return result.rowCount;
+        } catch (error) {
+            console.error('Error deleting logs by pattern:', error);
+            return 0;
         }
     }
 }

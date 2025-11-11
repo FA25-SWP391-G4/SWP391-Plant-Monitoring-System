@@ -97,6 +97,17 @@ constructor(userData) {
     this.google_id = userData.google_id || userData.googleId;
     this.google_refresh_token = userData.google_refresh_token || userData.googleRefreshToken;
     this.profile_picture = userData.profile_picture || userData.profilePicture;
+    
+    // Handle settings assignment with debugging
+    console.log('[USER CONSTRUCTOR] userData.settings before assignment:', userData.settings);
+    if (userData.settings) {
+            this.settings = userData.settings;
+            console.log('[USER CONSTRUCTOR] Assigned settings object directly:', this.settings);
+        console.log('[USER CONSTRUCTOR] Final this.settings.widgets.showPlantOverview:', this.settings?.widgets?.showPlantOverview);
+    } else {
+        this.settings = null;
+        console.log('[USER CONSTRUCTOR] No settings in userData, set to null');
+    }
 }
 
 /**
@@ -809,6 +820,8 @@ createPasswordResetToken() {
             }
             
             const userData = result.rows[0];
+            console.log('[USER] Raw settings JSON from database:', userData.settings);
+            
             return new User(userData);
         } catch (error) {
             console.error('[USER ERROR] Error finding user by ID:', error.message);
@@ -887,6 +900,12 @@ createPasswordResetToken() {
     static async updateUserSettings(userId, settingsJson) {
         try {
             console.log('[USER SETTINGS] Updating settings for user:', userId);
+            console.log('[USER SETTINGS] JSON being saved to database:', settingsJson);
+            
+            // Parse and re-stringify to validate JSON format
+            const parsed = JSON.parse(settingsJson);
+            console.log('[USER SETTINGS] Parsed settings object:', JSON.stringify(parsed, null, 2));
+            console.log('[USER SETTINGS] showPlantOverview value in parsed object:', parsed.widgets?.showPlantOverview);
             
             if (!isValidUUID(userId)) {
                 throw new Error('Invalid user ID format');

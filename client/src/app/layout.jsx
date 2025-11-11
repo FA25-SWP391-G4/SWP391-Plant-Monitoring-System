@@ -10,8 +10,9 @@ import i18n from '@/i18n/i18n'
 import AuthProvider from '@/providers/AuthProvider'
 import { DashboardWidgetProvider } from '@/providers/DashboardWidgetProvider'
 import GoogleHeadTags from '@/components/GoogleHeadTags'
-import DashboardLayout from '@/components/DashboardLayout'
+import DashboardLayout from '@/components/layout/DashboardLayout'
 import { SettingsProvider } from '@/providers/SettingsProvider'
+import { NotificationProvider } from '@/contexts/NotificationContext'
 // Temporarily removing ChunkErrorBoundary and chunkErrorManager to fix app loading issue
 // import ChunkErrorBoundary from '@/components/ChunkErrorBoundary'
  import { initializeChunkErrorManagement } from '@/utils/chunkErrorManager'
@@ -43,12 +44,14 @@ export default function RootLayout({ children }) {
             <ThemeProvider>
                 <AuthProvider>
                   <SettingsProvider>
-                    <DashboardWidgetProvider>
-                      <DashboardLayout>
-                        {children}
-                      </DashboardLayout>
-                      <Toaster richColors position="top-center" />
-                    </DashboardWidgetProvider>
+                    <NotificationProvider>
+                      <DashboardWidgetProvider>
+                        <DashboardLayout>
+                          {children}
+                        </DashboardLayout>
+                        <Toaster richColors position="top-center" />
+                      </DashboardWidgetProvider>
+                    </NotificationProvider>
                   </SettingsProvider>
                 </AuthProvider>
               </ThemeProvider>

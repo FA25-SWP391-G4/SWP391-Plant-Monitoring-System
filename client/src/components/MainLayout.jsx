@@ -3,7 +3,7 @@
 import { useAuth } from '@/providers/AuthProvider';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
-import Navbar from '@/components/navigation/Navbar';
+import Navbar from '@/components/dashboard/navigation/Navbar';
 import Footer from '@/components/Footer';
 
 export default function MainLayout({ children }) {
