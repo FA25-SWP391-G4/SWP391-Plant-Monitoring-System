@@ -1,9 +1,9 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
-import aiApi from '../api/aiApi';
-import { Card, CardHeader, CardTitle, CardContent } from './ui/Card';
-import { Button } from './ui/Button';
-import { Input } from './ui/Input';
+import aiApi from '../../api/aiApi';
+import { Card, CardHeader, CardTitle, CardContent } from '../ui/Card';
+import { Button } from '../ui/Button';
+import { Input } from '../ui/Input';
 
 const AIChatbot = ({ plant = null, className = '' }) => {
   const { t } = useTranslation();
@@ -151,12 +151,11 @@ const AIChatbot = ({ plant = null, className = '' }) => {
         }))
       });
       
-<<<<<<<<< Temporary merge branch 1:client/src/components/AIChatbot.jsx
       // Clear typing indicator
       setIsTyping(false);
       if (typingTimeoutRef.current) {
         clearTimeout(typingTimeoutRef.current);
-=========
+      }
       // Handle authentication errors
       if (!response.success) {
         let errorMessage = response.error || 'Sorry, I encountered an error. Please try again.';
@@ -177,7 +176,6 @@ const AIChatbot = ({ plant = null, className = '' }) => {
         setMessages(prev => [...prev, errorBotMessage]);
         setIsLoading(false);
         return;
->>>>>>>>> Temporary merge branch 2:client/src/components/ai/AIChatbot.jsx
       }
       
       // Add bot response

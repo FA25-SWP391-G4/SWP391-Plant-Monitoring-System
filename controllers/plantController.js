@@ -1,7 +1,13 @@
 /**
  * ============================================================================
  * PLANT CONTROLLER - PLANT & WATERING MANAGEMENT
- * ============================================================================
+ * ===            });
+
+            await sendPumpCommand(device.device_key, 'pump_on', duration); // Pass parameters in correct order: device_key, command, duration
+            
+            console.log('✅ [PUMP DEBUG] Pump command sent successfully');
+            
+            // Log to system logs for tracking==================================================================
  * 
  * This controller handles plant management and watering functionality:
  * - UC5: Manual Watering - Direct pump control
@@ -25,6 +31,9 @@ const { pool } = require('../config/db.js');
 const { connectAwsIoT } = require('../services/awsIOTClient');
 const { mqtt } = require('aws-iot-device-sdk-v2');
 const { isValidUUID } = require('../utils/uuidGenerator');
+const { data } = require('@tensorflow/tfjs');
+const mqttClient = require('../mqtt/mqttClient');
+const db = require('../config/db');
 
 // AWS IoT connection for device communication
 let awsIoTConnection = null;
@@ -42,6 +51,7 @@ async function getAwsIoTConnection() {
     }
     return awsIoTConnection;
 }
+
 
 /**
  * UC5: MANUAL WATERING
@@ -65,15 +75,6 @@ async function waterPlant(req, res) {
         const { plantId } = req.params;
         const { duration = 10 } = req.body; // Default 10 seconds if not provided
 
-        // Validate UUID format
-        if (!isValidUUID(plantId)) {
-            console.error('[WATER PLANT] Invalid plant UUID:', plantId);
-            return res.status(400).json({
-                success: false,
-                error: 'Invalid plant ID format'
-            });
-        }
-
         // Validate duration
         if (duration < 1 || duration > 300) { // Limit to 5 minutes max
             return res.status(400).json({
@@ -82,7 +83,7 @@ async function waterPlant(req, res) {
             });
         }
 
-        console.log('[WATER PLANT] Watering plant UUID:', plantId, 'for', duration, 'seconds');
+        console.log('[WATER PLANT] Watering plant:', plantId, 'for', duration, 'seconds');
 
         // Find the plant
         const plant = await Plant.findById(plantId);
@@ -104,7 +105,7 @@ async function waterPlant(req, res) {
         }
 
         // Get device associated with this plant
-        const device = await Device.findByPlantId(plantId);
+        const device = await Device.findById(plant.device_key);
         
         if (!device) {
             return res.status(404).json({
@@ -114,49 +115,81 @@ async function waterPlant(req, res) {
         }
 
         // Check if device is online
-        if (!device.is_online) {
+        if (!device.isOnline) {
             return res.status(400).json({
                 success: false,
                 error: 'Device is offline. Cannot water plant.'
             });
         }
 
-        // Send command to device to start watering via AWS IoT Core
+        // Send command to device to start watering via MQTT
         const wateringCommand = {
-            command: 'water',
-            duration: duration,
+            command: 'pump_on',
+            parameters: {
+                duration: duration,
+                state: 'ON'
+            },
             plantId: plantId,
             timestamp: new Date().toISOString()
         };
 
-        // Send command via AWS IoT Core
+        // Send command via MQTT
         try {
-            const connection = await getAwsIoTConnection();
-            const topic = `smartplant/device/${device.device_key}/command`;
+            console.log('🌿 [PUMP DEBUG] Preparing to send pump command:', {
+                device_key: device.device_key,
+                command: wateringCommand.command,
+                parameters: wateringCommand.parameters,
+                timestamp: wateringCommand.timestamp
+            });
+
+            // Log pre-command device state
+            console.log('🔍 [PUMP DEBUG] Current device state:', {
+                deviceId: device.device_key,
+                deviceStatus: device.status,
+                lastSeen: device.last_seen,
+                plantId: plantId
+            });
+
+            await mqttClient.sendPumpCommand(device.device_key.trim(), wateringCommand.command, wateringCommand.parameters.duration);
             
-            connection.publish(
-                topic,
-                JSON.stringify(wateringCommand),
-                mqtt.QoS.AtLeastOnce
-            );
+            console.log('✅ [PUMP DEBUG] Pump command sent successfully');
             
-            console.log(`Command sent to AWS IoT Core on topic: ${topic}`);
+            // Log to system logs for tracking
+            await SystemLog.create({
+                log_level: 'DEBUG',
+                source: 'PlantController-PumpCommand',
+                message: JSON.stringify({
+                    action: 'pump_command_sent',
+                    device_key: device.deviceKey,
+                    command: wateringCommand.command,
+                    parameters: wateringCommand.parameters,
+                    user_id: req.user.user_id,
+                    plant_id: plantId
+                })
+            });
+
         } catch (error) {
-            console.error('AWS IoT Core publishing error:', error);
+            console.error('❌ [PUMP DEBUG] Failed to send pump command:', {
+                error: error.message,
+                deviceKey: device.device_key,
+                command: wateringCommand.command,
+                stack: error.stack
+            });
+            
             // Log error but continue - we already saved the watering record
-            await SystemLog.error('PlantController', `AWS IoT publish error: ${error.message}`);
+            await SystemLog.error('PlantController', 
+                `Pump command failed - Device: ${device.device_key}, Error: ${error.message}`);
         }
 
         // Create watering history record
-        const wateringRecord = {
-            plant_id: plantId,
-            duration: duration,
-            water_amount: calculateWaterAmount(duration), // ml of water
-            method: 'manual',
-            created_by: req.user.user_id
-        };
+        const wateringHistory = await WateringHistory.logWatering(
+            plantId,           // plantId
+            'manual',         // triggerType
+            duration         // durationSeconds
+        );
 
-        const wateringHistory = await WateringHistory.create(wateringRecord);
+        // Calculate water amount for response
+        const waterAmount = calculateWaterAmount(duration);
 
         // Log the action
         await SystemLog.create({
@@ -170,8 +203,8 @@ async function waterPlant(req, res) {
             message: `Watering initiated for ${duration} seconds`,
             data: {
                 wateringId: wateringHistory.watering_id,
-                waterAmount: wateringRecord.water_amount,
-                timestamp: wateringHistory.created_at
+                waterAmount: waterAmount,
+                timestamp: wateringHistory.timestamp
             }
         });
 
@@ -570,27 +603,40 @@ async function setSensorThresholds(req, res) {
  */
 const getUserPlants = async (req, res) => {
     try {
-        const userId = req.user.userId;
+        const userId = req.user.user_id; // Fixed: using user_id instead of userId to match JWT auth
         
         // Get all plants for the user with their devices and zones
         const query = `
             SELECT 
-                p.*,
-                d.device_key,
+                p.plant_id,
+                p.user_id,
+                p.custom_name,
+                p.profile_id,
+                p.moisture_threshold,
+                p.auto_watering_on,
+                p.status,
+                p.notes,
+                p.created_at,
+                p.device_key,
+                p.image,
+                p.zone_id,
                 d.device_name,
+                d.status as device_status,
+                d.last_seen as device_last_seen,
                 z.zone_name,
-                z.description as zone_description
-            FROM 
-                "plants" p
-            LEFT JOIN 
-                "devices" d ON p.device_key = d.device_key
-            LEFT JOIN 
-                "zones" z ON p.zone_id = z.zone_id
-            WHERE 
-                p.user_id = $1
+                z.description as zone_description,
+                pp.species_name,
+                pp.description as species_description,
+                pp.ideal_moisture
+            FROM plants p
+            LEFT JOIN devices d ON p.device_key = d.device_key
+            LEFT JOIN zones z ON p.zone_id = z.zone_id
+            LEFT JOIN plant_profiles pp ON p.profile_id = pp.profile_id
+            WHERE p.user_id = $1
             ORDER BY p.created_at DESC
         `;
-        
+
+        console.log('Fetching plants for user:', userId); // Added logging
         const { rows } = await pool.query(query, [userId]);
         
         if (rows.length === 0) {
@@ -614,7 +660,7 @@ const getUserPlants = async (req, res) => {
                 lastWatered: null, // Will be populated from watering history later
                 auto_watering_on: plant.auto_watering_on || false,
                 thresholds: plant.thresholds || {},
-                device_id: plant.device_key,
+                device_key: plant.device_key,
                 device_name: plant.device_name,
                 zone_id: plant.zone_id,
                 zone_name: plant.zone_name,
@@ -648,19 +694,46 @@ const getUserPlants = async (req, res) => {
  */
 const getPlantById = async (req, res) => {
     try {
+        console.log('\n[GET PLANT] Getting plant details');
+        console.log('[GET PLANT] Plant ID:', req.params.plantId);
+        console.log('[GET PLANT] User:', req.user.user_id);
+        console.log('[GET PLANT] Auth header:', req.headers.authorization ? 'Present' : 'Missing');
+
         const userId = req.user.user_id;
-        const plantId = req.params.id;
-        
+        const plantId = req.params.plantId;
+
         // Get the plant with its device and latest sensor data
         const query = `
+            WITH latest_sensor_data AS (
+                SELECT DISTINCT ON (device_key)
+                    device_key,
+                    timestamp,
+                    soil_moisture AS moisture,
+                    temperature,
+                    air_humidity AS humidity,
+                    light_intensity AS light
+                FROM sensors_data
+                ORDER BY device_key, timestamp DESC
+            )
             SELECT 
                 p.*,
                 d.device_key,
-                d.device_name
+                d.device_name,
+                pp.species_name,
+                pp.description AS profile_description,
+                sd.timestamp,
+                sd.moisture,
+                sd.temperature,
+                sd.humidity,
+                sd.light
             FROM 
-                "plants" p
+                plants p
             LEFT JOIN 
-                "devices" d ON p.device_key = d.device_key
+                devices d ON p.device_key = d.device_key
+            LEFT JOIN
+                plant_profiles pp ON p.profile_id = pp.profile_id
+            LEFT JOIN
+                latest_sensor_data sd ON d.device_key = sd.device_key
             WHERE 
                 p.plant_id = $1 AND p.user_id = $2
         `;
@@ -692,17 +765,22 @@ const getPlantById = async (req, res) => {
         // Format the response
         const formattedPlant = {
             plant_id: plant.plant_id,
-            name: plant.name,
-            species: plant.species || 'Unknown',
+            name: plant.custom_name,
+            species: plant.species_name || 'Unknown',
             location: plant.location || 'Not specified',
             status: plant.status || 'healthy',
-            health: plant.health || 100,
             image: plant.image_url || null,
             lastWatered: plant.last_watered || new Date().toISOString(),
             auto_watering_on: plant.auto_watering_on || false,
             device_key: plant.device_key,
             device_name: plant.device_name,
-            thresholds: thresholds
+            data: {
+                timestamp: plant.timestamp,
+                moisture: plant.moisture,
+                temperature: plant.temperature,
+                humidity: plant.humidity,
+                light: plant.light
+            }
         };
         
         res.json(formattedPlant);
@@ -851,7 +929,7 @@ const createPlant = async (req, res) => {
             lastWatered: null, // Never watered yet
             auto_watering_on: createdPlant.auto_watering_on,
             moisture_threshold: createdPlant.moisture_threshold,
-            device_id: createdPlant.device_id,
+            device_key: createdPlant.device_key,
             device_name: null, // No device assigned yet
             zone_id: createdPlant.zone_id,
             zone_name: zoneInfo ? zoneInfo.zone_name : null,
@@ -879,6 +957,364 @@ const createPlant = async (req, res) => {
     }
 };
 
+/**
+ * Get watering history actions for a specific plant
+ */
+const getWateringHistory = async (req, res) => {
+    try {
+        const { plantId } = req.params;
+        console.log('[WATERING HISTORY] Plant ID:', plantId);
+        
+        const plant = await Plant.findById(plantId);
+        
+        if (!plant) {
+            console.log('[WATERING HISTORY] Plant not found');
+            return res.status(404).json({
+                success: false,
+                error: 'Plant not found'
+            });
+        }
+
+        // Verify ownership
+        if (plant.user_id !== req.user.user_id) {
+            console.log('[WATERING HISTORY] Unauthorized access');
+            return res.status(403).json({
+                success: false,
+                error: 'Unauthorized access to plant'
+            });
+        }
+
+        console.log('[WATERING HISTORY] Executing direct query for plant:', plantId);
+        
+        // Use direct query instead of WateringHistory model to avoid any potential issues
+        const query = `
+            SELECT 
+                wh.history_id,
+                wh.plant_id,
+                wh.timestamp,
+                wh.trigger_type,
+                wh.duration_seconds,
+                wh.device_key,
+                d.device_name
+            FROM watering_history wh
+            LEFT JOIN devices d ON wh.device_key = d.device_key
+            WHERE wh.plant_id = $1
+            ORDER BY wh.timestamp DESC 
+            LIMIT 50
+        `;
+
+        const result = await pool.query(query, [plantId]);
+        console.log('[WATERING HISTORY] Found records:', result.rows.length);
+        
+        return res.json({
+            success: true,
+            data: result.rows
+        });
+
+    } catch (error) {
+        console.error('[WATERING HISTORY] Error:', error);
+        await SystemLog.error('plantController', `Error fetching watering history for plant ${req.params.plantId}: ${error.message}`);
+        return res.status(500).json({
+            success: false,
+            error: 'Server error while fetching watering history'
+        });
+    }
+};
+
+/**
+ * Get watering history statistics for a specific plant
+ */
+const getWateringStats = async (req, res) => {
+    try {
+        const { plantId } = req.params;
+        const plant = await Plant.findById(plantId);
+        
+        if (!plant) {
+            return res.status(404).json({
+                success: false,
+                error: 'Plant not found'
+            });
+        }
+
+        // Verify ownership
+        if (plant.user_id !== req.user.user_id) {
+            return res.status(403).json({
+                success: false,
+                error: 'Unauthorized access to plant'
+            });
+        }
+
+        const stats = await WateringHistory.getStatsByPlantId(plantId);
+        
+        return res.json({
+            success: true,
+            data: stats
+        });
+
+    } catch (error) {
+        await SystemLog.error('plantController', `Error fetching watering stats for plant ${req.params.plantId}: ${error.message}`);
+        return res.status(500).json({
+            success: false,
+            error: 'Server error while fetching watering stats'
+        });
+    }
+};
+
+/**
+ * Get sensor data history for a specific plant
+ */
+const getSensorHistory = async (req, res) => {
+    try {
+        const { plantId } = req.params;
+        const plant = await Plant.findById(plantId);
+        
+        if (!plant) {
+            return res.status(404).json({
+                success: false,
+                error: 'Plant not found'
+            });
+        }
+
+        // Verify ownership
+        if (plant.user_id !== req.user.user_id) {
+            return res.status(403).json({
+                success: false,
+                error: 'Unauthorized access to plant'
+            });
+        }
+
+        const query = `
+            SELECT data_id, timestamp, soil_moisture, temperature, 
+                   air_humidity, light_intensity 
+            FROM sensors_data
+            WHERE plant_id = $1
+            ORDER BY timestamp DESC
+            LIMIT 100
+        `;
+
+        const result = await pool.query(query, [plantId]);
+        
+        return res.json({
+            success: true,
+            data: result.rows
+        });
+
+    } catch (error) {
+        await SystemLog.error('plantController', `Error fetching sensor history for plant ${req.params.plantId}: ${error.message}`);
+        return res.status(500).json({
+            success: false,
+            error: 'Server error while fetching sensor history'
+        });
+    }
+};
+
+/**
+ * Get sensor data statistics for a specific plant
+ */
+const getSensorStats = async (req, res) => {
+    try {
+        const { plantId } = req.params;
+        const plant = await Plant.findById(plantId);
+        
+        if (!plant) {
+            return res.status(404).json({
+                success: false,
+                error: 'Plant not found'
+            });
+        }
+
+        // Verify ownership
+        if (plant.user_id !== req.user.user_id) {
+            return res.status(403).json({
+                success: false,
+                error: 'Unauthorized access to plant'
+            });
+        }
+
+        // Get statistics for each sensor type - simplified approach
+        const query = `
+            SELECT 
+                ROUND(AVG(soil_moisture)::numeric, 2) as avg_soil_moisture,
+                ROUND(MIN(soil_moisture)::numeric, 2) as min_soil_moisture,
+                ROUND(MAX(soil_moisture)::numeric, 2) as max_soil_moisture,
+                ROUND(AVG(temperature)::numeric, 2) as avg_temperature,
+                ROUND(MIN(temperature)::numeric, 2) as min_temperature,
+                ROUND(MAX(temperature)::numeric, 2) as max_temperature,
+                ROUND(AVG(air_humidity)::numeric, 2) as avg_humidity,
+                ROUND(MIN(air_humidity)::numeric, 2) as min_humidity,
+                ROUND(MAX(air_humidity)::numeric, 2) as max_humidity,
+                ROUND(AVG(light_intensity)::numeric, 2) as avg_light,
+                ROUND(MIN(light_intensity)::numeric, 2) as min_light,
+                ROUND(MAX(light_intensity)::numeric, 2) as max_light,
+                COUNT(*) as total_readings,
+                MIN(timestamp) as first_reading,
+                MAX(timestamp) as last_reading
+            FROM sensors_data
+            WHERE plant_id = $1
+            AND timestamp >= NOW() - INTERVAL '1 day'
+        `;
+
+        const result = await pool.query(query, [plantId]);
+        
+        return res.json({
+            success: true,
+            data: result.rows[0]
+        });
+
+    } catch (error) {
+        await SystemLog.error('plantController', `Error fetching sensor stats for plant ${req.params.plantId}: ${error.message}`);
+        return res.status(500).json({
+            success: false,
+            error: 'Server error while fetching sensor stats'
+        });
+    }
+};
+
+/**
+ * Get last watered information for a specific plant
+ */
+const getLastWatered = async (req, res) => {
+    try {
+        const { plantId } = req.params;
+        console.log('[LAST WATERED] Plant ID:', plantId);
+        
+        const plant = await Plant.findById(plantId);
+        
+        if (!plant) {
+            console.log('[LAST WATERED] Plant not found');
+            return res.status(404).json({
+                success: false,
+                error: 'Plant not found'
+            });
+        }
+
+        // Verify ownership
+        if (plant.user_id !== req.user.user_id) {
+            console.log('[LAST WATERED] Unauthorized access');
+            return res.status(403).json({
+                success: false,
+                error: 'Unauthorized access to plant'
+            });
+        }
+
+        console.log('[LAST WATERED] Executing query for plant:', plantId);
+        const query = `
+            SELECT 
+                wh.history_id,
+                wh.timestamp,
+                wh.trigger_type,
+                wh.duration_seconds,
+                d.device_name,
+                EXTRACT(EPOCH FROM (NOW() - wh.timestamp)) as seconds_ago
+            FROM watering_history wh
+            LEFT JOIN devices d ON wh.device_key = d.device_key
+            WHERE wh.plant_id = $1
+            ORDER BY wh.timestamp DESC
+            LIMIT 1
+        `;
+
+        const result = await pool.query(query, [plantId]);
+        console.log('[LAST WATERED] Query result rows:', result.rows.length);
+        
+        if (result.rows.length === 0) {
+            console.log('[LAST WATERED] No watering history found');
+            return res.json({
+                success: true,
+                data: {
+                    last_watered: null,
+                    message: 'No watering history found for this plant'
+                }
+            });
+        }
+
+        const lastWatering = result.rows[0];
+        console.log('[LAST WATERED] Found watering record:', lastWatering);
+        
+        const hoursAgo = Math.floor(lastWatering.seconds_ago / 3600);
+        const daysAgo = Math.floor(hoursAgo / 24);
+        
+        let timeAgoText;
+        if (daysAgo > 0) {
+            timeAgoText = `${daysAgo} day${daysAgo > 1 ? 's' : ''} ago`;
+        } else if (hoursAgo > 0) {
+            timeAgoText = `${hoursAgo} hour${hoursAgo > 1 ? 's' : ''} ago`;
+        } else {
+            const minutesAgo = Math.floor(lastWatering.seconds_ago / 60);
+            timeAgoText = minutesAgo > 0 ? `${minutesAgo} minute${minutesAgo > 1 ? 's' : ''} ago` : 'Just now';
+        }
+        
+        return res.json({
+            success: true,
+            data: {
+                last_watered: {
+                    timestamp: lastWatering.timestamp,
+                    trigger_type: lastWatering.trigger_type,
+                    duration_seconds: lastWatering.duration_seconds,
+                    device_name: lastWatering.device_name,
+                    time_ago: timeAgoText,
+                    hours_ago: Math.round(lastWatering.seconds_ago / 3600 * 100) / 100
+                }
+            }
+        });
+
+    } catch (error) {
+        console.error('[LAST WATERED] Error:', error);
+        await SystemLog.error('plantController', `Error fetching last watered for plant ${req.params.plantId}: ${error.message}`);
+        return res.status(500).json({
+            success: false,
+            error: 'Server error while fetching last watered information'
+        });
+    }
+};
+
+// Replace or update your existing waterPlant handler with this safe version
+exports.waterPlant = async (req, res) => {
+  try {
+    // Accept both numeric IDs and UUIDs from the route
+    const rawId = req.params.plantId || req.params.id;
+    if (!rawId) return res.status(400).json({ success: false, message: 'Missing plant id' });
+
+    // Determine numeric vs UUID
+    let plantId = rawId;
+    if (/^\d+$/.test(String(rawId))) {
+      plantId = parseInt(rawId, 10);
+    }
+
+    // Read payload
+    const { duration, action } = req.body;
+    let cmd = 'pump_on';
+    let dur = duration;
+    if (action === 'pump_off' || dur === 0) {
+      cmd = 'pump_off';
+      dur = null;
+    }
+
+    // Load plant record (Plant.findById should accept either int or uuid)
+    const plant = await Plant.findById(plantId);
+    if (!plant) return res.status(404).json({ success: false, message: 'Plant not found' });
+
+    const deviceKey = plant.device_key ? String(plant.device_key).trim() : null;
+    if (!deviceKey) {
+      // Optionally continue but warn; keep behavior consistent with your app:
+      console.warn(`[WATER] Plant ${plantId} has no device_key`);
+      // return res.status(400).json({ success:false, message:'No device linked to this plant' });
+    }
+
+    // Send MQTT command (will generate commandId on server side)
+    const result = await mqttClient.sendPumpCommand(deviceKey, cmd, dur);
+
+    // Record watering history and include device_key (may be null)
+    const recordedDuration = cmd === 'pump_on' ? (parseInt(duration, 10) || 0) : 0;
+    await WateringHistory.logWatering(plant.plant_id || plantId, 'manual', recordedDuration, deviceKey);
+
+    return res.json({ success: true, result, message: `Watering initiated for ${recordedDuration} seconds` });
+  } catch (error) {
+    console.error('Error in waterPlant:', error);
+    await SystemLog.create('ERROR', `waterPlant error: ${error.message}`).catch(()=>{});
+    return res.status(500).json({ success: false, message: 'Internal server error' });
+  }
+};
+
 module.exports = {
     waterPlant,
     getWateringSchedule,
@@ -887,5 +1323,9 @@ module.exports = {
     setSensorThresholds,
     getUserPlants,
     getPlantById,
-    createPlant
+    createPlant,
+    getWateringHistory,
+    getSensorHistory,
+    getSensorStats,
+    getLastWatered
 };

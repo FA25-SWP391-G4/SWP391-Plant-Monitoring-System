@@ -8,6 +8,7 @@ class WateringHistory {
         this.timestamp = historyData.timestamp;
         this.trigger_type = historyData.trigger_type;
         this.duration_seconds = historyData.duration_seconds;
+        this.device_key = historyData.device_key || null;
     }
 
     // Static method to find all watering history
@@ -170,15 +171,14 @@ class WateringHistory {
         }
     }
 
-    // Create watering history entry
+    // Create or update entry
     async save() {
         try {
             if (this.history_id) {
-                // Update existing entry (rarely needed)
                 const query = `
                     UPDATE watering_history 
-                    SET plant_id = $1, timestamp = $2, trigger_type = $3, duration_seconds = $4
-                    WHERE history_id = $5
+                    SET plant_id = $1, timestamp = $2, trigger_type = $3, duration_seconds = $4, device_key = $5
+                    WHERE history_id = $6
                     RETURNING *
                 `;
                 
@@ -187,6 +187,7 @@ class WateringHistory {
                     this.timestamp || new Date(),
                     this.trigger_type,
                     this.duration_seconds,
+                    this.device_key,
                     this.history_id
                 ]);
                 
@@ -194,10 +195,9 @@ class WateringHistory {
                 Object.assign(this, updatedHistory);
                 return this;
             } else {
-                // Create new watering history
                 const query = `
-                    INSERT INTO watering_history (plant_id, timestamp, trigger_type, duration_seconds)
-                    VALUES ($1, $2, $3, $4)
+                    INSERT INTO watering_history (plant_id, timestamp, trigger_type, duration_seconds, device_key)
+                    VALUES ($1, $2, $3, $4, $5)
                     RETURNING *
                 `;
                 
@@ -205,7 +205,8 @@ class WateringHistory {
                     this.plant_id,
                     this.timestamp || new Date(),
                     this.trigger_type,
-                    this.duration_seconds
+                    this.duration_seconds,
+                    this.device_key
                 ]);
                 
                 const newHistory = new WateringHistory(result.rows[0]);
@@ -217,14 +218,15 @@ class WateringHistory {
         }
     }
 
-    // Static method to log watering event
-    static async logWatering(plantId, triggerType, durationSeconds = null) {
+    // Static method to log watering event (accept deviceKey)
+    static async logWatering(plantId, triggerType, durationSeconds = null, deviceKey = null) {
         try {
             const wateringHistory = new WateringHistory({
                 plant_id: plantId,
                 timestamp: new Date(),
                 trigger_type: triggerType,
-                duration_seconds: durationSeconds
+                duration_seconds: durationSeconds,
+                device_key: deviceKey
             });
             
             return await wateringHistory.save();
@@ -290,6 +292,7 @@ class WateringHistory {
             timestamp: this.timestamp,
             trigger_type: this.trigger_type,
             duration_seconds: this.duration_seconds,
+            device_key: this.device_key,
             duration_string: this.getDurationString()
         };
     }

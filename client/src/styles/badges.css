@@ -1,0 +1,32 @@
+/* Styles for the UserRoleBadge component animations */
+@keyframes pulse-gradient {
+  0%, 100% {
+    background-position: 0% 50%;
+    opacity: 1;
+  }
+  50% {
+    background-position: 100% 50%;
+    opacity: 0.8;
+  }
+}
+
+@keyframes wave {
+  0% {
+    transform: translateX(-100%) skewX(-15deg);
+  }
+  50% {
+    transform: translateX(0%) skewX(-15deg);
+  }
+  100% {
+    transform: translateX(100%) skewX(-15deg);
+  }
+}
+
+.animate-pulse-gradient {
+  animation: pulse-gradient 3s ease infinite;
+  background-size: 200% 100%;
+}
+
+.animate-wave {
+  animation: wave 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}

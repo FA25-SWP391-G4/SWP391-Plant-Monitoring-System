@@ -14,6 +14,8 @@ const plantApi = {
   },
 
   // Get a specific plant by ID
+  // [2025-11-06] Removed redundant token handling to fix JWT malformed error
+  // Letting axiosClient handle token management to prevent duplication
   getById: async (plantId) => {
     try {
       const response = await axiosClient.get(`/api/plants/${plantId}`);
@@ -25,9 +27,11 @@ const plantApi = {
   },
 
   // Water a plant manually
-  waterPlant: async (plantId, duration) => {
+  waterPlant: async (plantId, duration, action) => {
     try {
-      const response = await axiosClient.post(`/api/plants/${plantId}/water`, { duration });
+      // If frontend wants to stop watering, call with action = 'pump_off'
+      const payload = action ? { action } : { duration };
+      const response = await axiosClient.post(`/api/plants/${plantId}/water`, payload);
       return response.data;
     } catch (error) {
       console.error(`Error watering plant ${plantId}:`, error);
@@ -42,6 +46,50 @@ const plantApi = {
       return response.data;
     } catch (error) {
       console.error(`Error fetching watering schedule for plant ${plantId}:`, error);
+      throw error;
+    }
+  },
+
+  // Get sensor history for last 12 hours
+  getSensorHistory: async (plantId) => {
+    try {
+      const response = await axiosClient.get(`/api/plants/${plantId}/history/sensors`);
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching sensor history:', error);
+      throw error;
+    }
+  },
+
+  // Get sensor statistics
+  getSensorStats: async (plantId) => {
+    try {
+      const response = await axiosClient.get(`/api/plants/${plantId}/stats/sensors`);
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching sensor stats:', error);
+      throw error;
+    }
+  },
+
+  // Get recent watering history
+  getWateringHistory: async (plantId) => {
+    try {
+      const response = await axiosClient.get(`/api/plants/${plantId}/history/watering`);
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching watering history:', error);
+      throw error;
+    }
+  },
+
+  // Get last watered information
+  getLastWatered: async (plantId) => {
+    try {
+      const response = await axiosClient.get(`/api/plants/${plantId}/last-watered`);
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching last watered info:', error);
       throw error;
     }
   },

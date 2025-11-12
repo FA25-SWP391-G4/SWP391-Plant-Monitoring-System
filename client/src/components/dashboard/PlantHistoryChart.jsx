@@ -29,8 +29,8 @@ ChartJS.register(
 /**
  * Renders a line chart for displaying plant sensor history
  * @param {Object} props
- * @param {Array} props.data - Array of data points
- * @param {String} props.dataType - Type of data (moisture, light, temperature, humidity)
+ * @param {Array} props.data - Array of data points from sensors_data table
+ * @param {String} props.dataType - Type of data (soil_moisture, light_intensity, temperature, air_humidity)
  * @param {String} props.timeRange - Time range to display (day, week, month)
  */
 export default function PlantHistoryChart({ data, dataType, timeRange }) {
@@ -45,9 +45,11 @@ export default function PlantHistoryChart({ data, dataType, timeRange }) {
     );
   }
 
-  // Format the data for Chart.js
+  // Format the data for Chart.js - sort by timestamp ascending (left to right)
+  const sortedData = [...data].sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
+  
   const chartData = {
-    labels: data.map(item => {
+    labels: sortedData.map(item => {
       const date = new Date(item.timestamp);
       // Format labels based on time range
       if (timeRange === 'day') {
@@ -61,13 +63,15 @@ export default function PlantHistoryChart({ data, dataType, timeRange }) {
     datasets: [
       {
         label: getChartLabel(dataType),
-        data: data.map(item => item.value),
+        data: sortedData.map(item => item.value),
         borderColor: getChartColor(dataType),
         backgroundColor: getChartColor(dataType, 0.1),
         tension: 0.3,
         fill: true,
-        pointRadius: 2,
-        pointHoverRadius: 5,
+        pointRadius: 3,
+        pointHoverRadius: 6,
+        pointBorderColor: '#ffffff',
+        pointBorderWidth: 2,
       }
     ]
   };
@@ -98,19 +102,31 @@ export default function PlantHistoryChart({ data, dataType, timeRange }) {
     scales: {
       x: {
         grid: {
-          display: false
+          display: true,
+          color: 'rgba(203, 213, 225, 0.3)',
+          lineWidth: 1,
         },
         ticks: {
           maxRotation: 0,
           autoSkip: true,
-          maxTicksLimit: 6
+          maxTicksLimit: 6,
+          color: '#6B7280',
+          font: {
+            size: 11,
+          }
         }
       },
       y: {
         grid: {
-          color: 'rgba(203, 213, 225, 0.5)'
+          display: true,
+          color: 'rgba(203, 213, 225, 0.5)',
+          lineWidth: 1,
         },
         ticks: {
+          color: '#6B7280',
+          font: {
+            size: 11,
+          },
           callback: function(value) {
             return value + getUnitLabel(dataType);
           }
@@ -129,13 +145,13 @@ export default function PlantHistoryChart({ data, dataType, timeRange }) {
 // Helper functions for chart formatting
 function getChartLabel(dataType) {
   switch (dataType) {
-    case 'moisture':
+    case 'soil_moisture':
       return 'Soil Moisture';
     case 'temperature':
       return 'Temperature';
-    case 'light':
+    case 'light_intensity':
       return 'Light Level';
-    case 'humidity':
+    case 'air_humidity':
       return 'Air Humidity';
     default:
       return 'Sensor Data';
@@ -144,13 +160,13 @@ function getChartLabel(dataType) {
 
 function getUnitLabel(dataType) {
   switch (dataType) {
-    case 'moisture':
+    case 'soil_moisture':
       return '%';
     case 'temperature':
       return '°C';
-    case 'light':
+    case 'light_intensity':
       return ' lux';
-    case 'humidity':
+    case 'air_humidity':
       return '%';
     default:
       return '';
@@ -159,13 +175,13 @@ function getUnitLabel(dataType) {
 
 function getChartColor(dataType, alpha = 1) {
   switch (dataType) {
-    case 'moisture':
+    case 'soil_moisture':
       return `rgba(59, 130, 246, ${alpha})`;
     case 'temperature':
       return `rgba(239, 68, 68, ${alpha})`;
-    case 'light':
+    case 'light_intensity':
       return `rgba(245, 158, 11, ${alpha})`;
-    case 'humidity':
+    case 'air_humidity':
       return `rgba(16, 185, 129, ${alpha})`;
     default:
       return `rgba(107, 114, 128, ${alpha})`;

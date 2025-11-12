@@ -4,18 +4,17 @@ import { useAuth } from "@/providers/AuthProvider";
 import { useTranslation } from "react-i18next";
 import UserMenu from './UserMenu';
 import { useState, useRef, useEffect } from "react";
-<<<<<<< HEAD
-=======
 import { useTheme } from '@/contexts/ThemeContext';
 import LogoutConfirmationModal from '../LogoutConfirmationModal';
->>>>>>> 238337da54f3c9ad3ad777d8b53c3984f6cdc290
 
-export default function Navbar({ hiddenOnPages = ["login", "register", "forgot-password"] }) {
+export default function Navbar({ appearOnPages = ["/", "login", "register", "forgot-password"] }) {
   const { user, logout } = useAuth();
   const { t } = useTranslation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-<<<<<<< HEAD
   const [notificationDropdownOpen, setNotificationDropdownOpen] = useState(false);
+
+  const { getThemeColor } = useTheme();
+
   // UserMenu component manages its own open/close state
   const [notifications, setNotifications] = useState([
     {
@@ -101,10 +100,6 @@ export default function Navbar({ hiddenOnPages = ["login", "register", "forgot-p
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [notificationRef]);
-=======
-  const [showLogoutModal, setShowLogoutModal] = useState(false);
-  const { isDark, isLight, getThemeColor } = useTheme();
->>>>>>> 238337da54f3c9ad3ad777d8b53c3984f6cdc290
 
   // No longer needed since UserMenu handles its own state
 
@@ -114,23 +109,18 @@ export default function Navbar({ hiddenOnPages = ["login", "register", "forgot-p
   const isAuthenticated = !!user;
 
   // Check if we're on a page where navbar should be hidden
-<<<<<<< HEAD
-  const isHiddenPage = () => {
+  const isPage = () => {
     if (typeof window !== "undefined") {
       const pathname = window.location.pathname;
-      return hiddenOnPages.some(page => pathname.includes(page));
+      return appearOnPages.some(page => pathname.includes(page));
     }
     return false;
   };
 
   // Don't render navbar on login, register, or forgot password pages
-  if (isHiddenPage()) {
+  if (!isPage()) {
     return null;
   }
-=======
-  const location = typeof window !== 'undefined' ? window.location : { pathname: '' };
-  const isAuthPage = location.pathname.includes('/login') || location.pathname.includes('/register') || location.pathname.includes('/forget-password') || location.pathname.includes('/reset-password');
->>>>>>> 238337da54f3c9ad3ad777d8b53c3984f6cdc290
 
   // Toggle mobile menu
   const toggleMobileMenu = () => {
@@ -170,7 +160,7 @@ export default function Navbar({ hiddenOnPages = ["login", "register", "forgot-p
       </div>
 
       {/* Desktop Navigation - Only show on non-auth pages */}
-        {!isAuthPage && (
+        {isPage && (
           <>
             <nav className="hidden md:flex space-x-8">
           <Link href="/features" className="text-gray-600 hover:text-green-600 transition">
@@ -204,11 +194,6 @@ export default function Navbar({ hiddenOnPages = ["login", "register", "forgot-p
             
             {/* Language and theme for non-authenticated users */}
             <UserMenu />
-<<<<<<< HEAD
-          </>
-        )}
-=======
->>>>>>> 238337da54f3c9ad3ad777d8b53c3984f6cdc290
       </div>
 
       {/* Mobile Menu - Shows when menu button is clicked */}
@@ -272,11 +257,7 @@ export default function Navbar({ hiddenOnPages = ["login", "register", "forgot-p
                   <Link href="/settings" className="text-gray-600 hover:text-green-600 font-medium py-2" onClick={() => setMobileMenuOpen(false)}>
                     {t('navigation.settings')}
                   </Link>
-<<<<<<< HEAD
                   <button onClick={() => { logout(); setMobileMenuOpen(false); }} className="text-left text-red-600 hover:text-red-800 py-2">
-=======
-                  <button onClick={() => { setShowLogoutModal(true); setMobileMenuOpen(false); }} className="text-left text-red-600 hover:text-red-800 py-2">
->>>>>>> 238337da54f3c9ad3ad777d8b53c3984f6cdc290
                     {t('auth.logout')}
                   </button>
                 </div>
@@ -294,12 +275,6 @@ export default function Navbar({ hiddenOnPages = ["login", "register", "forgot-p
           </nav>
         </div>
       )}
-
-      {/* Logout Confirmation Modal */}
-      <LogoutConfirmationModal 
-        isOpen={showLogoutModal} 
-        onClose={() => setShowLogoutModal(false)} 
-      />
     </header>
   );
 }

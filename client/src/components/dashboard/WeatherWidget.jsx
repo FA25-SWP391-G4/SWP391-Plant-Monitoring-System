@@ -1,13 +1,23 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from '@/contexts/ThemeContext';
+import { useSettings } from '@/providers/SettingsProvider';
+import { formatDateTime } from '@/utils/dateFormat';
 import axios from 'axios';
 import ThemedLoader from '../ThemedLoader';
+import { format } from 'date-fns';
 import { useRenderDebug, useDataFetchDebug } from '@/utils/renderDebug';
 
 export default function WeatherWidget() {
   const { t } = useTranslation();
   const { isDark, themeColors } = useTheme();
+  const { settings } = useSettings();
+
+  // Hide the widget if weather info is disabled in settings
+  if (!settings.dashboard.showWeatherInfo) {
+    return null;
+  }
+  
   const [weatherData, setWeatherData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -329,11 +339,11 @@ export default function WeatherWidget() {
             <span className={`text-xs ${
               isDark ? 'text-gray-400' : 'text-gray-500'
             }`}>
-              {t('weather.updatedAt', 'Updated at')} {lastUpdated.toLocaleTimeString(getCurrentLocale(), { 
-                hour: '2-digit', 
-                minute: '2-digit',
-                hour12: getTimeFormat()
-              })}
+              {t('weather.updatedAt', 'Updated at')} {formatDateTime(
+                lastUpdated, 
+                settings.language.dateFormat,
+                settings.language.timeFormat === '24h'
+              )}
             </span>
           )}
         </div>

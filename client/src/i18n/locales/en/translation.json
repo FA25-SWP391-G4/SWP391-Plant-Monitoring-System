@@ -137,7 +137,8 @@
     "reporting": "Reporting",
     "checkIns": "Check-ins",
     "objectives": "Objectives",
-    "careerHub": "Career Hub"
+    "careerHub": "Career Hub",
+    "devices": "Devices"
   },
   "dashboard": {
     "wateringHistory": "Watering History",
@@ -663,5 +664,15 @@
       "feedback": "Please tell us why you're leaving:",
       "success": "Account successfully deleted"
     }
+  },
+  "watering": {
+    "duration": "Watering Duration",
+    "startWatering": "Start Watering",
+    "deviceOfflineWarning": "Device Offline",
+    "checkConnection": "Please check your device connection and try again.",
+    "tip": "Tip: Monitor your plant after watering to ensure optimal moisture levels.",
+    "inProgress": "Watering...",
+    "manualControl": "Manual Watering",
+    "waterNow": "Water Now"
   }
 }

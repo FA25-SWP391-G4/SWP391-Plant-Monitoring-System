@@ -1,14 +1,144 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { useTranslation } from 'react-i18next';
-import { useTheme } from '@/contexts/ThemeContext';
+import { useTranslation } from 'react-i18next'
 import PlantHistoryChart from './PlantHistoryChart';
+import ManualWateringControl from '../plants/ManualWateringControl';
+import { useTheme } from '@/contexts/ThemeContext';
+import plantApi from '@/api/plantApi';
 
 export default function PlantCard({ plant, sensorData = {} }) {
   const { t } = useTranslation();
   const { isDark, themeColors } = useTheme();
   const [showHistory, setShowHistory] = useState(false);
-  const [activeChart, setActiveChart] = useState('moisture');
+  const [activeChart, setActiveChart] = useState('soil_moisture');
+  const [sensorHistory, setSensorHistory] = useState(null);
+  const [lastWatered, setLastWatered] = useState(null);
+  const [wateringHistory, setWateringHistory] = useState(null);
+  const [showWateringLog, setShowWateringLog] = useState(false);
+  const [showWateringControls, setShowWateringControls] = useState(false);
+
+  const loadSensorHistory = async () => {
+    if (!showHistory) return;
+    try {
+      const response = await plantApi.getSensorHistory(plant.plant_id);
+      
+      // Transform the API response data for chart consumption
+      if (response?.data && Array.isArray(response.data)) {
+        const transformedData = {
+          soil_moisture: response.data.map(item => ({
+            timestamp: item.timestamp,
+            value: item.soil_moisture
+          })).filter(item => item.value !== null),
+          
+          temperature: response.data.map(item => ({
+            timestamp: item.timestamp,
+            value: item.temperature
+          })).filter(item => item.value !== null),
+          
+          air_humidity: response.data.map(item => ({
+            timestamp: item.timestamp,
+            value: item.air_humidity
+          })).filter(item => item.value !== null),
+          
+          light_intensity: response.data.map(item => ({
+            timestamp: item.timestamp,
+            value: item.light_intensity
+          })).filter(item => item.value !== null)
+        };
+        
+        setSensorHistory(transformedData);
+      } else {
+        // Fallback for empty or invalid response
+        setSensorHistory({
+          soil_moisture: [],
+          temperature: [],
+          air_humidity: [],
+          light_intensity: []
+        });
+      }
+    } catch (error) {
+      console.error('Error loading sensor history:', error);
+      // Set empty arrays on error
+      setSensorHistory({
+        soil_moisture: [],
+        temperature: [],
+        air_humidity: [],
+        light_intensity: []
+      });
+    }
+  };
+
+  const loadLastWatered = async () => {
+    try {
+      const lastWateredData = await plantApi.getLastWatered(plant.plant_id);
+      setLastWatered(lastWateredData);
+    } catch (error) {
+      console.error('Error loading last watered info:', error);
+    }
+  };
+
+  const loadWateringHistory = async () => {
+    try {
+      const history = await plantApi.getWateringHistory(plant.plant_id);
+      setWateringHistory(history);
+    } catch (error) {
+      console.error('Error loading watering history:', error);
+    }
+  };
+
+  useEffect(() => {
+    if (showHistory) {
+      loadSensorHistory();
+    }
+  }, [showHistory, plant.plant_id]);
+
+  useEffect(() => {
+    // Load last watered info on component mount
+    loadLastWatered();
+  }, [plant.plant_id]);
+
+  /*useEffect(() => {
+    // Reset watering state when device goes offline
+    const [deviceStatus, setDeviceStatus] = useState('offline');
+    if (deviceStatus !== 'online') {
+      setIsWatering(false);
+    }
+  }, [deviceStatus]);*/
+  
+  // Calculate device status based on last sensor data timestamp
+  const getDeviceStatus = () => {
+    const now = new Date();
+    // Priority: realtime sensorData (from prop) -> plant.device_last_seen -> plant.last_sensor_data
+    const candidates = [
+      // common keys where timestamp may be present
+      sensorData?.timestamp,
+      sensorData?.ts,
+      plant.device_last_seen,
+      plant.last_sensor_data,
+      plant.lastSeen,
+      plant.device_lastSeen
+    ];
+
+    // Find first valid timestamp candidate
+    let lastUpdate = null;
+    for (const c of candidates) {
+      if (!c) continue;
+      const parsed = (typeof c === 'number') ? new Date(c) : new Date(c);
+      if (!isNaN(parsed.getTime())) {
+        lastUpdate = parsed;
+        break;
+      }
+    }
+
+    // If no timestamp available, treat as offline
+    if (!lastUpdate) return 'offline';
+
+    const timeDiffMinutes = (now - lastUpdate) / (1000 * 60);
+    const THRESHOLD_MINUTES = 5; // adjust if you want a different recency window
+    return timeDiffMinutes <= THRESHOLD_MINUTES ? 'online' : 'offline';
+  };
+  
+  const deviceStatus = getDeviceStatus();
   
   // Calculate health status and water status
   const getStatusInfo = () => {
@@ -54,7 +184,32 @@ export default function PlantCard({ plant, sensorData = {} }) {
   };
 
   const statusInfo = getStatusInfo();
-  const lastWateredDate = new Date(plant.lastWatered).toLocaleDateString();
+  
+  // Get last watered date from API data or fallback to plant data
+  const getLastWateredDisplay = () => {
+    if (lastWatered?.data?.last_watered) {
+      const lastWateredDate = new Date(lastWatered.data.last_watered.timestamp);
+      return {
+        date: lastWateredDate.toLocaleDateString(),
+        timeAgo: lastWatered.data.last_watered.time_ago,
+        triggerType: lastWatered.data.last_watered.trigger_type
+      };
+    }
+    if (plant.lastWatered) {
+      return {
+        date: new Date(plant.lastWatered).toLocaleDateString(),
+        timeAgo: null,
+        triggerType: null
+      };
+    }
+    return {
+      date: t('plants.neverWatered', 'Never watered'),
+      timeAgo: null,
+      triggerType: null
+    };
+  };
+
+  const lastWateredInfo = getLastWateredDisplay();
   
   return (
     <div className={`rounded-xl shadow-sm border p-4 flex flex-col sm:flex-row hover:shadow-md transition-shadow ${
@@ -95,10 +250,22 @@ export default function PlantCard({ plant, sensorData = {} }) {
               isDark ? 'text-gray-400' : 'text-gray-500'
             }`}>{plant.species}</p>
           </div>
+        <div className="flex items-center space-x-2">
           <div className={`${statusInfo.bgColor} ${statusInfo.color} px-2 py-1 rounded-full flex items-center text-xs font-medium`}>
             {statusInfo.icon}
             {statusInfo.text}
           </div>
+          <div className={`px-2 py-1 rounded-full flex items-center text-xs font-medium ${
+            deviceStatus === 'online' 
+              ? 'bg-green-100 text-green-800' 
+              : 'bg-red-100 text-red-800'
+          }`}>
+            <div className={`w-2 h-2 rounded-full mr-1 ${
+              deviceStatus === 'online' ? 'bg-green-500' : 'bg-red-500'
+            }`} />
+            {deviceStatus === 'online' ? t('device.online', 'Online') : t('device.offline', 'Offline')}
+          </div>
+        </div>
         </div>
         
         {/* Plant Location */}
@@ -113,7 +280,7 @@ export default function PlantCard({ plant, sensorData = {} }) {
         </div>
         
         {/* Sensor data */}
-        <div className="grid grid-cols-3 gap-2 mb-2">
+        <div className="grid grid-cols-4 gap-2 mb-2">
           {/* Moisture level */}
           <div 
             className={`flex flex-col ${activeChart === 'soil_moisture' ? 'bg-blue-50 rounded p-1' : ''} cursor-pointer`}
@@ -127,6 +294,26 @@ export default function PlantCard({ plant, sensorData = {} }) {
               <span className="font-medium">{sensorData?.soil_moisture ?? 'N/A'}%</span>
             </div>
           </div>
+
+          {/* Device Status Indicator */}
+  {/* <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+            <span className="text-sm font-medium text-gray-700">
+              {t('watering.deviceStatus', 'Device Status')}
+            </span>
+            <div className="flex items-center">
+              <div className={`w-2 h-2 rounded-full mr-2 ${
+                deviceStatus === 'online' ? 'bg-green-500' : 'bg-red-500'
+              }`}></div>
+              <span className={`text-sm font-medium ${
+                deviceStatus === 'online' ? 'text-green-700' : 'text-red-700'
+              }`}>
+                {deviceStatus === 'online' 
+                  ? t('devices.online', 'Online') 
+                  : t('devices.offline', 'Offline')
+                }
+              </span>
+            </div>
+          </div> */}
           
           {/* Temperature */}
           <div 
@@ -163,10 +350,24 @@ export default function PlantCard({ plant, sensorData = {} }) {
               <span className="font-medium">{sensorData?.light_intensity || 'N/A'} lux</span>
             </div>
           </div>
+          {/* Humidity */}
+          <div 
+            className={`flex flex-col ${activeChart === 'air_humidity' ? 'bg-cyan-50 rounded p-1' : ''} cursor-pointer`}
+            onClick={() => { setActiveChart('air_humidity'); setShowHistory(true); }}
+          >
+            <span className="text-xs text-gray-500 mb-1">{t('metrics.air_humidity', 'Air Humidity')}</span>
+            <div className="flex items-center">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-cyan-500 mr-1">
+                <path d="M12 2s-6 6.5-6 11a6 6 0 0 0 12 0c0-4.5-6-11-6-11z"></path>
+                <circle cx="12" cy="13" r="3"></circle>
+              </svg>
+              <span className="font-medium">{sensorData?.air_humidity || 'N/A'}%</span>
+            </div>
+          </div>
         </div>
         
         {/* History chart - conditionally shown */}
-        {showHistory && sensorData && sensorData.history && (
+        {showHistory && (
           <div className="mt-2 mb-4">
             <div className="flex justify-between items-center mb-2">
               <h4 className="text-sm font-medium">{t('charts.history', 'Sensor History')}</h4>
@@ -178,7 +379,7 @@ export default function PlantCard({ plant, sensorData = {} }) {
               </button>
             </div>
             <PlantHistoryChart 
-              data={(sensorData.history && sensorData.history[activeChart]) || []} 
+              data={sensorHistory?.[activeChart] || []}
               dataType={activeChart}
               timeRange="day"
             />
@@ -191,7 +392,19 @@ export default function PlantCard({ plant, sensorData = {} }) {
             <circle cx="12" cy="12" r="10"></circle>
             <polyline points="12 6 12 12 16 14"></polyline>
           </svg>
-          {t('plants.lastWatered', 'Last watered')}: {lastWateredDate}
+          <span>
+            {t('plants.lastWatered', 'Last watered')}: {lastWateredInfo.date}
+            {lastWateredInfo.timeAgo && (
+              <span className="text-xs text-gray-400 ml-2">
+                ({lastWateredInfo.timeAgo})
+              </span>
+            )}
+            {lastWateredInfo.triggerType && (
+              <span className="text-xs bg-gray-100 text-gray-600 px-1 rounded ml-2">
+                {lastWateredInfo.triggerType}
+              </span>
+            )}
+          </span>
         </div>
         
         {/* AI Prediction Banner */}
@@ -215,20 +428,93 @@ export default function PlantCard({ plant, sensorData = {} }) {
         )}
 
         {/* Actions */}
-        <div className="flex flex-wrap gap-2">
+        <div className="flex flex-wrap gap-2 mb-4">
           <Link href={`/plants/${plant.plant_id}`} className="px-3 py-1.5 bg-emerald-600 text-white text-sm rounded hover:bg-emerald-700 transition-colors">
             {t('common.viewDetails', 'View Details')}
           </Link>
-          <button className="px-3 py-1.5 bg-blue-50 text-blue-600 text-sm rounded hover:bg-blue-100 transition-colors border border-blue-200">
-            {t('plants.water', 'Water Now')}
+          <button 
+            onClick={() => setShowWateringControls(!showWateringControls)}
+            className="px-3 py-1.5 bg-blue-600 text-white text-sm rounded hover:bg-blue-700 transition-colors"
+          >
+            {t('watering.waterNow', 'Water Now')}
           </button>
-          <Link href={`/ai/chat?plant=${plant.plant_id}`} className="px-3 py-1.5 bg-purple-50 text-purple-600 text-sm rounded hover:bg-purple-100 transition-colors border border-purple-200">
+          <Link href={`/ai/chat?plant=${plant.plant_id}`} className="px-3 py-1.5 bg-purple-600 text-white text-sm rounded hover:bg-purple-700 transition-colors">
             {t('ai.askAI', 'Ask AI')}
           </Link>
-          <button className="px-3 py-1.5 bg-gray-50 text-gray-600 text-sm rounded hover:bg-gray-100 transition-colors">
+          <button 
+            onClick={() => {
+              setShowWateringLog(!showWateringLog);
+              if (!showWateringLog && !wateringHistory) {
+                loadWateringHistory();
+              }
+            }}
+            className="px-3 py-1.5 bg-gray-600 text-white text-sm rounded hover:bg-gray-700 transition-colors"
+          >
             {t('plants.log', 'Log Activity')}
           </button>
         </div>
+
+        {/* Manual Watering Controls - conditionally shown */}
+        {showWateringControls && (
+          <div className="mb-4 p-3 bg-blue-50 rounded-lg border border-blue-200">
+            <div className="flex justify-between items-center mb-3">
+              <h4 className="text-sm font-medium text-blue-900">{t('watering.manualControl', 'Manual Watering')}</h4>
+              <button 
+                onClick={() => setShowWateringControls(false)}
+                className="text-xs text-blue-600 hover:text-blue-800"
+              >
+                {t('common.hide', 'Hide')}
+              </button>
+            </div>
+            <ManualWateringControl 
+              plantId={plant.plant_id}
+              deviceStatus={deviceStatus}
+              isEmbedded={true}
+            />
+          </div>
+        )}
+
+        {/* Watering History Log - conditionally shown */}
+        {showWateringLog && (
+          <div className="mt-4 p-3 bg-gray-50 rounded-lg">
+            <div className="flex justify-between items-center mb-3">
+              <h4 className="text-sm font-medium">{t('plants.wateringHistory', 'Watering History')}</h4>
+              <button 
+                onClick={() => setShowWateringLog(false)}
+                className="text-xs text-gray-500 hover:text-gray-700"
+              >
+                {t('common.hide', 'Hide')}
+              </button>
+            </div>
+            {wateringHistory?.data && wateringHistory.data.length > 0 ? (
+              <div className="space-y-2 max-h-40 overflow-y-auto">
+                {wateringHistory.data.slice(0, 10).map((entry, index) => (
+                  <div key={entry.history_id || index} className="flex justify-between items-center text-xs bg-white p-2 rounded">
+                    <div>
+                      <span className="font-medium">
+                        {new Date(entry.timestamp).toLocaleDateString()} {new Date(entry.timestamp).toLocaleTimeString()}
+                      </span>
+                      {entry.trigger_type && (
+                        <span className="ml-2 px-1 bg-blue-100 text-blue-600 rounded">
+                          {entry.trigger_type}
+                        </span>
+                      )}
+                    </div>
+                    <div className="text-gray-500">
+                      {entry.duration_seconds ? `${entry.duration_seconds}s` : 'N/A'}
+                      {entry.device_name && ` • ${entry.device_name}`}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p className="text-sm text-gray-500">{t('plants.noWateringHistory', 'No watering history available')}</p>
+            )}
+          </div>
+        )}
+
+        {/* Sensor Chart */}
+        <PlantHistoryChart sensorData={sensorData} plantName={plant.plant_name} />
       </div>
     </div>
   );

@@ -23,24 +23,44 @@ const axiosClient = axios.create({
   maxRedirects: 0,
 });
 
-// Request interceptor for API calls
+// [2025-11-06] Centralized token management for JWT handling
+// This interceptor ensures consistent token handling across all API calls
+// and prevents token malformation issues
 axiosClient.interceptors.request.use(
   (config) => {
-    // Get the JWT token from localStorage (fallback to cookies for backward compatibility)
+    // Get the JWT token from cookies first, then fallback to localStorage
     let token = null;
     if (typeof window !== 'undefined') {
-      token = localStorage.getItem("auth_token") || Cookies.get("token");
+      // Try to get token from cookies first
+      token = Cookies.get("token");
+      
+      // Fallback to localStorage only if no token in cookies
+      if (!token) {
+        token = localStorage.getItem("auth_token");
+      }
+      
+      // Add Authorization header if token exists
+      if (token) {
+        config.headers.Authorization = `Bearer ${token.trim()}`; // Ensure no whitespace
+      }
     }
     
     // Debug logging only in development mode
     if (isDev) {
       console.log(`[AXIOS DEBUG] Making ${config.method.toUpperCase()} request to: ${config.baseURL}${config.url}`);
-      console.log(`[AXIOS DEBUG] Request headers:`, config.headers);
+      console.log(`[AXIOS DEBUG] Token source:`, token ? (Cookies.get("token") ? 'Cookies' : 'LocalStorage') : 'None');
       console.log(`[AXIOS DEBUG] Token found:`, token ? 'Yes' : 'No');
+      if (token) {
+        // Log first and last 10 chars of token for debugging
+        const tokenPreview = `${token.substring(0, 10)}...${token.substring(token.length - 10)}`;
+        console.log(`[AXIOS DEBUG] Token preview:`, tokenPreview);
+        console.log(`[AXIOS DEBUG] Authorization header:`, config.headers.Authorization);
+      }
+      console.log(`[AXIOS DEBUG] All headers:`, config.headers);
     }
 
     // Add explicit origin header for CORS
-    config.headers["Origin"] = window.location.origin;
+    // config.headers["Origin"] = window.location.origin;
 
     if (isDev && config.data) {
       // Log data but mask passwords
@@ -49,26 +69,12 @@ axiosClient.interceptors.request.use(
       console.log(`[AXIOS DEBUG] Request payload:`, sanitizedData);
     }
 
-    // If token exists, add it to Authorization header
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
-      
-      if (isDev) {
-        // Show a truncated version of the token for debugging
-        const truncatedToken = token.length > 20 ? `${token.substring(0, 10)}...${token.substring(token.length - 5)}` : token;
-        console.log(`[AXIOS DEBUG] Token found, added to Authorization header: ${truncatedToken}`);
-      }
-      
-      // Add special logging for payment-related requests
-      if (isDev && config.url.includes('/payment/')) {
+    // Log payment-related requests
+    if (isDev && config.url.includes('/payment/')) {
+      if (token) {
         const truncatedToken = token.length > 20 ? `${token.substring(0, 10)}...${token.substring(token.length - 5)}` : token;
         console.log(`[PAYMENT DEBUG] Payment request with auth token: ${truncatedToken}`);
-      }
-    } else if (isDev) {
-      console.log(`[AXIOS DEBUG] No token found in cookies`);
-      
-      // Warn about payment requests without authentication
-      if (isDev && config.url.includes('/payment/')) {
+      } else {
         console.warn(`[PAYMENT DEBUG] WARNING: Making payment request without authentication token!`);
       }
     }

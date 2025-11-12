@@ -27,78 +27,64 @@ const connection = client.new_connection(config);
 connection.on("connect", async () => {
   console.log("✅ Connected to AWS IoT Core");
 
-  await connection.subscribe(
-    "smartplant/pub",
-    mqtt.QoS.AtLeastOnce,
-    async (topic, payload) => {
-      const data = JSON.parse(new TextDecoder().decode(payload));
-      console.log("📩 Received message from ESP32:", data);
+    const handleIncomingMessage = async (topic, payload) => {
+    const data = JSON.parse(new TextDecoder().decode(payload));
+    console.log("📩 Received message from ESP32:", topic, data);
 
       try {
         const { pool } = require("../config/db");
         const payloadObj = data || {};
 
-        if (
-          payloadObj.deviceId ||
-          payloadObj.device_id ||
-          payloadObj.soil_moisture !== undefined
-        ) {
-          const deviceId = payloadObj.deviceId || payloadObj.device_id;
-          const ts = payloadObj.timestamp
-            ? new Date(payloadObj.timestamp)
-            : new Date();
-          const soil = payloadObj.soil_moisture ?? payloadObj.soilMoisture ?? null;
-          const temp = payloadObj.temperature ?? null;
-          const humidity = payloadObj.air_humidity ?? payloadObj.humidity ?? null;
-          const light = payloadObj.light_intensity ?? payloadObj.light ?? null;
+        // determine device id (payload-first, then topic)
+        let deviceId = payloadObj.deviceId || payloadObj.device_id || null;
 
-          await pool.query(
-            `INSERT INTO sensors_data(device_key, timestamp, soil_moisture, temperature, air_humidity, light_intensity)
-             VALUES($1, $2, $3, $4, $5, $6)`,
-            [deviceId, ts, soil, temp, humidity, light]
-          );
-          console.log(`📥 Stored sensor data for device ${deviceId}`);
-          return;
+        // If payload didn't include a device id, try to extract from topic
+        if (!deviceId && typeof topic === 'string') {
+          // match smartplant/device/<deviceKey>/...
+          const m = topic.match(/^smartplant\/device\/([^\/]+)\/?/);
+          if (m && m[1]) deviceId = m[1];
         }
 
-        if (payloadObj.event === "watering" || payloadObj.type === "watering") {
-          const plantId = payloadObj.plantId || payloadObj.plant_id;
-          const trigger = payloadObj.trigger_type || payloadObj.trigger || "manual";
-          const duration = payloadObj.duration_seconds || payloadObj.duration || null;
-
+        // Normalize/truncate device key and guard
+        if (deviceId && typeof deviceId === 'string') {
+          deviceId = deviceId.trim().substring(0, 36); // match DB length if needed
+        } else {
+          console.warn(`⚠️ Missing device id for incoming message on ${topic}. Skipping sensors_data insert.`);
           await pool.query(
-            `INSERT INTO watering_history(plant_id, timestamp, trigger_type, duration_seconds)
-             VALUES($1, NOW(), $2, $3)`,
-            [plantId, trigger, duration]
+            `INSERT INTO system_logs (log_level, source, message)
+             VALUES ($1, $2, $3)`,
+            ["warn", "awsIotClient", JSON.stringify({ topic, payload: payloadObj, note: 'no device key' })]
           );
-          console.log(`💧 Logged watering event for plant ${plantId}`);
-          return;
+          return; // bail out: avoid inserting null device_key
         }
 
-        if (payloadObj.alert_message || payloadObj.alert) {
-          const userId = payloadObj.userId || payloadObj.user_id || null;
-          const msg = payloadObj.alert_message || payloadObj.alert;
-
-          await pool.query(
-            `INSERT INTO alerts(user_id, message, created_at) VALUES($1, $2, NOW())`,
-            [userId, msg]
-          );
-          console.log(`⚠️ Stored alert for user ${userId || "unknown"}`);
-          return;
-        }
+        // now deviceId is safe to use in DB insert
+        const ts = payloadObj.timestamp
+          ? new Date(payloadObj.timestamp)
+          : new Date();
+        const soil = payloadObj.soil_moisture ?? payloadObj.soilMoisture ?? null;
+        const temp = payloadObj.temperature ?? null;
+        const humidity = payloadObj.air_humidity ?? payloadObj.humidity ?? null;
+        const light = payloadObj.light_intensity ?? payloadObj.light ?? null;
 
         await pool.query(
-          `INSERT INTO system_logs (log_level, source, message) VALUES($1, $2, $3)`,
-          ["info", "awsIOTClient", JSON.stringify(payloadObj)]
+          `INSERT INTO sensors_data(device_key, timestamp, soil_moisture, temperature, air_humidity, light_intensity)
+           VALUES($1, $2, $3, $4, $5, $6)`,
+          [deviceId, ts, soil, temp, humidity, light]
         );
-        console.log("🪵 Logged unrecognized message to system_logs");
+        console.log(`📥 Stored sensor data for device ${deviceId}`);
+        return;
       } catch (dbErr) {
         console.error("❌ Failed to save IoT payload to DB", dbErr);
       }
-    }
-  );
+    };
 
+    // 🌿 Subscribe to both topics
+  await connection.subscribe("smartplant/pub", mqtt.QoS.AtLeastOnce, handleIncomingMessage);
   console.log("🌿 Subscribed to smartplant/pub");
+
+  await connection.subscribe("smartplant/device/+/response", mqtt.QoS.AtLeastOnce, handleIncomingMessage);
+  console.log("🌿 Subscribed to smartplant/device/+/response");
 });
 
 async function connectAwsIoT() {

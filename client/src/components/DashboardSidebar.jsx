@@ -50,7 +50,8 @@ const DashboardSidebar = ({ isOpen = true, onToggle, demoUser = null }) => {
   // Determine user role for conditional rendering
   const isPremium = currentUser?.role === "Premium";
   const isAdmin = currentUser?.role === "Admin";
-  const isRegular = currentUser?.role === "Regular";
+  const isUltimate = currentUser?.role === "Ultimate";
+
   const isAuthenticated = !!currentUser;
 
   // Calculate unread notifications
@@ -72,12 +73,51 @@ const DashboardSidebar = ({ isOpen = true, onToggle, demoUser = null }) => {
         icon: (
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-sprout-icon lucide-sprout"><path d="M14 9.536V7a4 4 0 0 1 4-4h1.5a.5.5 0 0 1 .5.5V5a4 4 0 0 1-4 4 4 4 0 0 0-4 4c0 2 1 3 1 5a5 5 0 0 1-1 3"/><path d="M4 9a5 5 0 0 1 8 4 5 5 0 0 1-8-4"/><path d="M5 21h14"/></svg>
         )
+      },
+      { 
+        name: t('navigation.devices'),
+        href: '/devices',
+        icon: (
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 16 16" id="device-16px">
+              <rect id="Retângulo_223" data-name="Retângulo 223" width="16" height="16" fill="#ccc" opacity="0"/>
+              <g id="Icone" transform="translate(0.648 0.648)">
+                <g id="Retângulo_203" data-name="Retângulo 203" transform="translate(2.352 2.352)" fill="none" stroke="#000000" stroke-linecap="round" stroke-linejoin="round" stroke-width="1">
+                  <rect width="10" height="10" stroke="none"/>
+                  <rect x="0.5" y="0.5" width="9" height="9" fill="none"/>
+                </g>
+                <g id="Retângulo_206" data-name="Retângulo 206" transform="translate(5.352 5.352)" fill="none" stroke="#000000" stroke-linecap="round" stroke-linejoin="round" stroke-width="1">
+                  <rect width="4" height="4" stroke="none"/>
+                  <rect x="0.5" y="0.5" width="3" height="3" fill="none"/>
+                </g>
+                <g id="Grupo_327" data-name="Grupo 327" transform="translate(-0.191 1)">
+                  <line id="Linha_24" data-name="Linha 24" y1="3" transform="translate(5.543 10.852)" fill="none" stroke="#000000" stroke-linecap="round" stroke-width="1"/>
+                  <line id="Linha_28" data-name="Linha 28" y1="3" transform="translate(7.543 10.852)" fill="none" stroke="#000000" stroke-linecap="round" stroke-width="1"/>
+                  <line id="Linha_29" data-name="Linha 29" y1="3" transform="translate(9.543 10.852)" fill="none" stroke="#000000" stroke-linecap="round" stroke-width="1"/>
+                </g>
+                <g id="Grupo_328" data-name="Grupo 328" transform="translate(-0.191 -11)">
+                  <line id="Linha_24-2" data-name="Linha 24" y1="3" transform="translate(5.543 10.852)" fill="none" stroke="#000000" stroke-linecap="round" stroke-width="1"/>
+                  <line id="Linha_28-2" data-name="Linha 28" y1="3" transform="translate(7.543 10.852)" fill="none" stroke="#000000" stroke-linecap="round" stroke-width="1"/>
+                  <line id="Linha_29-2" data-name="Linha 29" y1="3" transform="translate(9.543 10.852)" fill="none" stroke="#000000" stroke-linecap="round" stroke-width="1"/>
+                </g>
+                <g id="Grupo_329" data-name="Grupo 329" transform="translate(1 14.895) rotate(-90)">
+                  <line id="Linha_24-3" data-name="Linha 24" y1="3" transform="translate(5.543 10.852)" fill="none" stroke="#000000" stroke-linecap="round" stroke-width="1"/>
+                  <line id="Linha_28-3" data-name="Linha 28" y1="3" transform="translate(7.543 10.852)" fill="none" stroke="#000000" stroke-linecap="round" stroke-width="1"/>
+                  <line id="Linha_29-3" data-name="Linha 29" y1="3" transform="translate(9.543 10.852)" fill="none" stroke="#000000" stroke-linecap="round" stroke-width="1"/>
+                </g>
+                <g id="Grupo_330" data-name="Grupo 330" transform="translate(-11 14.895) rotate(-90)">
+                  <line id="Linha_24-4" data-name="Linha 24" y1="3" transform="translate(5.543 10.852)" fill="none" stroke="#000000" stroke-linecap="round" stroke-width="1"/>
+                  <line id="Linha_28-4" data-name="Linha 28" y1="3" transform="translate(7.543 10.852)" fill="none" stroke="#000000" stroke-linecap="round" stroke-width="1"/>
+                  <line id="Linha_29-4" data-name="Linha 29" y1="3" transform="translate(9.543 10.852)" fill="none" stroke="#000000" stroke-linecap="round" stroke-width="1"/>
+                </g>
+              </g>
+            </svg>
+        )
       }
     ];
 
     // Add premium section for premium/admin users
-    if (isPremium || isAdmin) {
-      const premiumItems = [
+    if (isUltimate || isAdmin) {
+      const ultimateItems = [
         {
           name: t('navigation.aiAssistant', 'AI Assistant'),
           href: '/ai',
@@ -85,7 +125,12 @@ const DashboardSidebar = ({ isOpen = true, onToggle, demoUser = null }) => {
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-brain-circuit-icon lucide-brain-circuit"><path d="M12 5a3 3 0 1 0-5.997.125 4 4 0 0 0-2.526 5.77 4 4 0 0 0 .556 6.588A4 4 0 1 0 12 18Z"/><path d="M9 13a4.5 4.5 0 0 0 3-4"/><path d="M6.003 5.125A3 3 0 0 0 6.401 6.5"/><path d="M3.477 10.896a4 4 0 0 1 .585-.396"/><path d="M6 18a4 4 0 0 1-1.967-.516"/><path d="M12 13h4"/><path d="M12 18h6a2 2 0 0 1 2 2v1"/><path d="M12 8h8"/><path d="M16 8V5a2 2 0 0 1 2-2"/><circle cx="16" cy="13" r=".5"/><circle cx="18" cy="3" r=".5"/><circle cx="20" cy="21" r=".5"/><circle cx="20" cy="8" r=".5"/></svg>
           ),
           isPremium: true
-        },
+        }
+      ]
+      baseItems.push(...ultimateItems);
+    }
+    if (isPremium || isAdmin || isUltimate) {
+      const premiumItems = [
         {
           name: t('navigation.reporting'),
           href: '#',
