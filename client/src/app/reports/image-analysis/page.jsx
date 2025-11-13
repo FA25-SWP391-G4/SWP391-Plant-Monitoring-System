@@ -50,7 +50,7 @@ export default function ImageAnalysisPage() {
   };
 
   const handleAnalyzeClick = async () => {
-    if (!isPremium) {
+    if (!isPremium || user.role !== 'Ultimate') {
       router.push('/upgrade');
       return;
     }

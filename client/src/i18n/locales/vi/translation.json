@@ -659,5 +659,123 @@
       "light": "Sáng",
       "dark": "Tối"
     }
+  },
+
+  "payment": {
+    "success": {
+      "title": "Thanh toán thành công!",
+      "premium": {
+        "subtitle": "Chào mừng bạn đến với Premium! Bạn hiện có quyền truy cập vào các tính năng nâng cao."
+      },
+      "ultimate": {
+        "subtitle": "Chào mừng bạn đến với Ultimate! Bạn hiện có quyền truy cập vào tất cả các tính năng premium."
+      },
+      "general": {
+        "subtitle": "Tài khoản của bạn đã được nâng cấp thành công."
+      },
+      "verifying": {
+        "title": "Đang xác minh thanh toán...",
+        "description": "Vui lòng đợi trong khi chúng tôi xác nhận thanh toán và nâng cấp tài khoản của bạn."
+      },
+      "details": {
+        "title": "Chi tiết thanh toán",
+        "orderId": "Mã đơn hàng",
+        "amount": "Số tiền",
+        "date": "Ngày",
+        "status": "Trạng thái",
+        "statusValue": "Hoàn thành"
+      },
+      "upgrade": {
+        "title": "Tài khoản đã được nâng cấp!",
+        "premium": "Bạn hiện có quyền truy cập vào các tính năng Premium bao gồm giám sát nâng cao, dự đoán AI và phân tích cải tiến.",
+        "ultimate": "Bạn hiện có quyền truy cập vào tất cả các tính năng Ultimate bao gồm số lượng cây không giới hạn, dự đoán AI nâng cao và hỗ trợ ưu tiên.",
+        "general": "Tài khoản của bạn đã được nâng cấp với các tính năng và khả năng mới."
+      },
+      "features": {
+        "monitoring": "Giám sát cây nâng cao",
+        "ai": "Dự đoán sức khỏe AI",
+        "analytics": "Phân tích cải tiến",
+        "support": "Hỗ trợ ưu tiên"
+      },
+      "actions": {
+        "dashboard": "Đến Dashboard",
+        "explore": "Khám phá tính năng Premium"
+      },
+      "toast": {
+        "title": "Thanh toán thành công!",
+        "description": "Chào mừng bạn đến với Premium! Tài khoản của bạn đã được nâng cấp."
+      },
+      "error": {
+        "title": "Đã nhận thanh toán",
+        "description": "Thanh toán của bạn đã được nhận, nhưng chúng tôi vẫn đang xử lý việc nâng cấp tài khoản. Vui lòng kiểm tra lại sau vài phút.",
+        "dashboard": "Đến Dashboard",
+        "refresh": "Làm mới trang"
+      }
+    },
+    "failed": {
+      "title": "Thanh toán thất bại",
+      "description": "Chúng tôi không thể xử lý thanh toán của bạn. Vui lòng thử lại.",
+      "loading": {
+        "title": "Đang tải...",
+        "description": "Vui lòng đợi trong khi chúng tôi tải thông tin thanh toán của bạn."
+      },
+      "details": {
+        "title": "Thông tin thanh toán",
+        "orderId": "Mã đơn hàng",
+        "amount": "Số tiền",
+        "date": "Ngày",
+        "status": "Trạng thái",
+        "statusValue": "Thất bại",
+        "reason": "Lý do"
+      },
+      "errors": {
+        "invalidSignature": {
+          "title": "Lỗi bảo mật",
+          "description": "Xác minh thanh toán thất bại do vấn đề bảo mật. Vui lòng thử lại."
+        },
+        "systemError": {
+          "title": "Lỗi hệ thống",
+          "description": "Đã xảy ra lỗi kỹ thuật khi xử lý thanh toán. Đội ngũ của chúng tôi đã được thông báo."
+        },
+        "cancelled": {
+          "title": "Thanh toán đã hủy",
+          "description": "Bạn đã hủy quá trình thanh toán. Bạn có thể thử lại bất cứ lúc nào."
+        },
+        "insufficientFunds": {
+          "title": "Không đủ tiền",
+          "description": "Tài khoản của bạn không có đủ tiền cho giao dịch này."
+        },
+        "expired": {
+          "title": "Thanh toán đã hết hạn",
+          "description": "Phiên thanh toán đã hết hạn. Vui lòng bắt đầu thanh toán mới."
+        },
+        "bankError": {
+          "title": "Lỗi ngân hàng",
+          "description": "Có vấn đề với ngân hàng hoặc phương thức thanh toán của bạn. Vui lòng thử phương thức thanh toán khác."
+        },
+        "unknown": {
+          "title": "Thanh toán thất bại",
+          "description": "Không thể xử lý thanh toán của bạn. Vui lòng thử lại hoặc liên hệ hỗ trợ."
+        }
+      },
+      "troubleshoot": {
+        "title": "Bạn có thể làm gì?",
+        "step1": "Kiểm tra kết nối internet và thử lại",
+        "step2": "Xác minh phương thức thanh toán có đủ tiền",
+        "step3": "Thử sử dụng phương thức thanh toán khác",
+        "step4": "Liên hệ đội ngũ hỗ trợ nếu vấn đề vẫn tiếp tục"
+      },
+      "actions": {
+        "retry": "Thử lại",
+        "dashboard": "Đến Dashboard",
+        "support": "Liên hệ hỗ trợ",
+        "back": "Quay lại"
+      },
+      "support": {
+        "needHelp": "Cần giúp đỡ? Liên hệ đội ngũ hỗ trợ:",
+        "title": "Liên hệ hỗ trợ",
+        "description": "Vui lòng gửi email cho chúng tôi tại support@plantmonitor.com hoặc gọi đường dây nóng."
+      }
+    }
   }
 }

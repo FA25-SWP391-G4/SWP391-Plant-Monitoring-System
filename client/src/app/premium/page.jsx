@@ -6,14 +6,50 @@ import { useTranslation } from 'react-i18next';
 import { useAuth } from '@/providers/AuthProvider';
 import { useRouter } from 'next/navigation';
 import paymentApi from '@/api/paymentApi';
+import planApi from '@/api/planApi';
+import { userApi } from '@/api';
 
 export default function PremiumPage() {
   const { t } = useTranslation();
   const { user, loading } = useAuth();
   const router = useRouter();
-  const [selectedPlan, setSelectedPlan] = useState('monthly');
+  const [selectedPlan, setSelectedPlan] = useState('annual'); // Default to annual
   const [isProcessing, setIsProcessing] = useState(false);
   const [paymentError, setPaymentError] = useState(null);
+  const [plans, setPlans] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [userSubscription, setUserSubscription] = useState(null);
+  const [hasLifetimeSubscription, setHasLifetimeSubscription] = useState(false);
+  
+  // Helper function to get plan by name
+  const getPlanByName = (name) => {
+    return plans.find(plan => plan.name === name);
+  };
+  
+  // Helper function to format price
+  const formatPrice = (price) => {
+    if (!price) return '0';
+    return new Intl.NumberFormat('vi-VN').format(price);
+  };
+
+  // Helper function to format date
+  const formatDate = (dateString) => {
+    if (!dateString) return '';
+    return new Date(dateString).toLocaleDateString('vi-VN', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
+  };
+
+  // Helper function to check if user has active premium subscription
+  const hasActivePremiumSubscription = () => {
+    return userSubscription && 
+           userSubscription.isActive && 
+           (userSubscription.planName === 'Premium' || userSubscription.planName === 'Ultimate');
+  };
+
+  const isPremium = user?.role === "Premium";
   
   // Redirect if not logged in
   useEffect(() => {
@@ -27,6 +63,56 @@ export default function PremiumPage() {
       console.log(`User authenticated: ID=${user.user_id}, Name=${user.full_name || 'Not available'}, Email=${user.email || 'Not available'}`);
     }
   }, [user, loading, router]);
+  
+  // Fetch plans and user subscription data
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setIsLoading(true);
+        
+        // Fetch public plans
+        const plansResponse = await planApi.getPublicPlans();
+        if (plansResponse.success) {
+          setPlans(plansResponse.data);
+        }
+        
+        // Fetch user subscription if logged in
+        if (user) {
+          try {
+            const subscriptionResponse = await userApi.getUserSubscription();
+            if (subscriptionResponse.success) {
+              setUserSubscription(subscriptionResponse.data);
+              
+              // Check if user has a lifetime subscription
+              const isLifetime = subscriptionResponse.data && 
+                                subscriptionResponse.data.subscriptionType === 'lifetime' &&
+                                subscriptionResponse.data.isActive;
+              setHasLifetimeSubscription(isLifetime);
+              
+              console.log('User subscription detected:', {
+                type: subscriptionResponse.data?.subscriptionType,
+                isActive: subscriptionResponse.data?.isActive,
+                hasLifetime: isLifetime
+              });
+            }
+          } catch (error) {
+            // It's okay if this fails - user might not have a subscription
+            console.log('No active subscription found');
+          }
+        }
+      } catch (error) {
+        console.error('Error fetching plans:', error);
+        setPaymentError('Failed to load pricing information. Please refresh the page.');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    
+    // Only fetch if user data is loaded (or we know user is not logged in)
+    if (!loading) {
+      fetchData();
+    }
+  }, [user, loading]);
   
   // Clean up any stored order IDs when component mounts
   useEffect(() => {
@@ -69,32 +155,59 @@ export default function PremiumPage() {
       
       console.log(`Processing payment for user ID: ${user.user_id}, Name: ${user.full_name || 'Not set'}`);
       
-      // Determine amount based on selected plan and payment type
+      // Determine amount and plan based on payment type
       let amount = 0;
       let description = '';
+      let planName = '';
+      let subscriptionType = 'monthly';
       
-      if (paymentType === 'monthly') {
-        amount = 15000; // 15,000 VND per month
-        description = 'Monthly Premium Subscription - Plant Monitoring System';
-      } else if (paymentType === 'annual') {
-        amount = 150000; // 150,000 VND per year (17% off)
-        description = 'Annual Premium Subscription - Plant Monitoring System (17% off)';
-      } else if (paymentType === 'lifetime') {
-        amount = 299000; // 299,000 VND one-time payment
-        description = 'Lifetime Premium Subscription - Plant Monitoring System';
-      } else if (paymentType === 'ultimate-monthly') {
-        amount = 45000; // 45,000 VND per month
-        description = 'Monthly Ultimate Subscription - Plant Monitoring System';
-      } else if (paymentType === 'ultimate-annual') {
-        amount = 399000; // 399,000 VND per year (26% off)
-        description = 'Annual Ultimate Subscription - Plant Monitoring System (26% off)';
+      // Find the appropriate plan and pricing
+      if (paymentType === 'monthly' || paymentType === 'annual' || paymentType === 'lifetime') {
+        const premiumPlan = plans.find(p => p.name === 'Premium');
+        if (premiumPlan) {
+          planName = 'Premium';
+          if (paymentType === 'monthly') {
+            amount = premiumPlan.priceMonthly;
+            description = 'Monthly Premium Subscription - Plant Monitoring System';
+            subscriptionType = 'monthly';
+          } else if (paymentType === 'annual') {
+            amount = premiumPlan.priceYearly;
+            description = 'Annual Premium Subscription - Plant Monitoring System';
+            subscriptionType = 'yearly';
+          } else if (paymentType === 'lifetime') {
+            amount = premiumPlan.priceLifetime;
+            description = 'Lifetime Premium Subscription - Plant Monitoring System';
+            subscriptionType = 'lifetime';
+          }
+        }
+      } else if (paymentType === 'ultimate-monthly' || paymentType === 'ultimate-annual') {
+        const ultimatePlan = plans.find(p => p.name === 'Ultimate');
+        if (ultimatePlan) {
+          planName = 'Ultimate';
+          if (paymentType === 'ultimate-monthly') {
+            amount = ultimatePlan.priceMonthly;
+            description = 'Monthly Ultimate Subscription - Plant Monitoring System';
+            subscriptionType = 'monthly';
+          } else if (paymentType === 'ultimate-annual') {
+            amount = ultimatePlan.priceYearly;
+            description = 'Annual Ultimate Subscription - Plant Monitoring System';
+            subscriptionType = 'yearly';
+          }
+        }
+      }
+      
+      if (!amount || !planName) {
+        setPaymentError('Invalid plan selected or pricing not available. Please try again.');
+        return;
       }
       
       // Create payment data without bankCode to allow all payment methods
       const paymentData = {
         amount,
         orderInfo: description,
-        planType: paymentType
+        planType: paymentType,
+        planName: planName,
+        subscriptionType: subscriptionType
         // Don't include bankCode - let VNPay show all payment methods
       };
       
@@ -105,7 +218,7 @@ export default function PremiumPage() {
       // For server-side redirection, the browser will be redirected by the server
       // This client-side code should not execute if server-side redirect works
       // But we keep it as fallback
-      if (response.data && response.data.paymentUrl) {
+      {/*if (response.data && response.data.paymentUrl) {
         // Store order ID for verification on return
         if (response.data.orderId) {
           localStorage.setItem('pendingOrderId', response.data.orderId);
@@ -116,7 +229,7 @@ export default function PremiumPage() {
         window.location.href = response.data.paymentUrl;
       } else {
         setPaymentError(t('payment.createPaymentError', 'Failed to create payment. Please try again.'));
-      }
+      }*/}
     } catch (error) {
       console.error('Payment error:', error);
       setPaymentError(t('payment.genericError', 'An error occurred. Please try again later.'));
@@ -127,20 +240,6 @@ export default function PremiumPage() {
   
   return (
     <div className="container mx-auto px-4 py-8">
-      <div className="mb-8">
-        <div className="text-sm breadcrumbs">
-          <ul>
-            <li>
-              <a href="/dashboard">
-                {t('navigation.dashboard', 'Dashboard')}
-              </a>
-            </li>
-            <li className="font-medium">
-              {t('navigation.premium', 'Premium')}
-            </li>
-          </ul>
-        </div>
-      </div>
       
       {/* Premium Header */}
       <div className="text-center max-w-3xl mx-auto mb-12">
@@ -179,10 +278,19 @@ export default function PremiumPage() {
         </div>
       </div>
       
+      {/* Loading State */}
+      {isLoading && (
+        <div className="flex justify-center items-center py-12">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-600"></div>
+          <span className="ml-4 text-lg">{t('common.loading', 'Loading...')}</span>
+        </div>
+      )}
+      
       {/* Pricing Comparison */}
-      <div className="max-w-7xl mx-auto mb-12">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {/* Free Plan */}
+      {!isLoading && (
+        <div className="max-w-7xl mx-auto mb-12">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {/* Free Plan */}
           <div className="bg-white rounded-xl overflow-hidden border border-gray-200 shadow-sm">
             <div className="p-6">
               <h2 className="text-xl font-semibold text-gray-900 mb-2">
@@ -195,12 +303,14 @@ export default function PremiumPage() {
                 <span className="text-3xl font-bold text-gray-900">0₫</span>
                 <span className="text-gray-500 ml-1">{t('premium.forever', 'forever')}</span>
               </div>
-              <button
-                className="w-full bg-gray-100 hover:bg-gray-200 text-gray-700 py-2 px-4 rounded-lg font-medium transition-colors"
-                disabled
-              >
-                {t('premium.currentPlan', 'Current Plan')}
-              </button>
+              {!hasActivePremiumSubscription() && (
+                <button
+                  className="w-full bg-gray-100 hover:bg-gray-200 text-gray-700 py-2 px-4 rounded-lg font-medium transition-colors"
+                  disabled
+                >
+                  {t('premium.currentPlan', 'Current Plan')}
+                </button>
+              )}
             </div>
             <div className="border-t border-gray-200 p-6">
               <h3 className="font-medium text-gray-900 mb-4">
@@ -215,11 +325,18 @@ export default function PremiumPage() {
               </ul>
             </div>
           </div>
-          
+
           {/* Premium Plan */}
           <div className="bg-white rounded-xl overflow-hidden border border-emerald-200 shadow-sm relative">
-            <div className="absolute top-0 right-0 bg-emerald-500 text-white text-xs font-bold py-1 px-3 rounded-bl-lg">
-              {t('premium.recommended', 'RECOMMENDED')}
+            <div className={`absolute top-0 right-0 text-white text-xs font-bold py-1 px-3 rounded-bl-lg ${
+              hasActivePremiumSubscription() && userSubscription?.planName === 'Premium'
+                ? 'bg-green-600' 
+                : 'bg-emerald-500'
+            }`}>
+              {hasActivePremiumSubscription() && userSubscription?.planName === 'Premium'
+                ? t('premium.active', 'ACTIVE')
+                : t('premium.recommended', 'RECOMMENDED')
+              }
             </div>
             <div className="p-6">
               <h2 className="text-xl font-semibold text-gray-900 mb-2">
@@ -229,36 +346,102 @@ export default function PremiumPage() {
                 {t('premium.premiumDesc', 'Advanced features for serious plant enthusiasts')}
               </p>
               <div className="mb-6">
-                {selectedPlan === 'monthly' ? (
+                {hasActivePremiumSubscription() && userSubscription?.planName === 'Premium' ? (
+                  // Show expiry date for active subscribers
                   <>
-                    <span className="text-3xl font-bold text-emerald-600">15,000₫</span>
-                    <span className="text-gray-500 ml-1">{t('premium.perMonth', 'per month')}</span>
-                  </>
-                ) : (
-                  <>
-                    <span className="text-3xl font-bold text-emerald-600">150,000₫</span>
-                    <span className="text-gray-500 ml-1">{t('premium.perYear', 'per year')}</span>
-                    <div className="text-sm text-emerald-600 font-medium mt-1">
-                      {t('premium.billed', 'Billed annually (17% off)')}
+                    <div className="text-center">
+                      <span className="text-lg font-medium text-gray-600 block mb-2">
+                        {t('premium.currentPlan', 'Current Plan')}
+                      </span>
+                      <div className="text-2xl font-bold text-emerald-600 mb-2">
+                        {userSubscription?.subscriptionType === 'lifetime' 
+                          ? t('premium.lifetime', 'Lifetime Access')
+                          : `${t('premium.expiresOn', 'Expires on')} ${formatDate(userSubscription?.subEnd)}`
+                        }
+                      </div>
+                      {userSubscription?.subscriptionType !== 'lifetime' && (
+                        <div className="text-sm text-gray-500">
+                          {userSubscription?.subscriptionType === 'yearly' 
+                            ? t('premium.yearlySubscription', 'Annual Subscription')
+                            : t('premium.monthlySubscription', 'Monthly Subscription')
+                          }
+                        </div>
+                      )}
                     </div>
                   </>
+                ) : (
+                  // Show pricing for non-subscribers
+                  selectedPlan === 'monthly' ? (
+                    <>
+                      <span className="text-3xl font-bold text-emerald-600">
+                        {formatPrice(getPlanByName('Premium')?.priceMonthly)}₫
+                      </span>
+                      <span className="text-gray-500 ml-1">{t('premium.perMonth', 'per month')}</span>
+                    </>
+                  ) : (
+                    <>
+                      <span className="text-3xl font-bold text-emerald-600">
+                        {formatPrice(getPlanByName('Premium')?.priceYearly)}₫
+                      </span>
+                      <span className="text-gray-500 ml-1">{t('premium.perYear', 'per year')}</span>
+                      <div className="text-sm text-emerald-600 font-medium mt-1">
+                        {t('premium.billed', 'Billed annually (17% off)')}
+                      </div>
+                    </>
+                  )
                 )}
               </div>
               <div className="space-y-2">
-                <button
-                  className="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-2 px-4 rounded-lg font-medium transition-colors"
-                  onClick={() => handleUpgradeClick(selectedPlan)}
-                >
-                  {selectedPlan === 'monthly' ? 
-                    t('premium.monthlyUpgrade', 'Get Monthly Plan') : 
-                    t('premium.annualUpgrade', 'Get Annual Plan')}
-                </button>
-                <button
-                  className="w-full bg-white border border-emerald-600 hover:bg-emerald-50 text-emerald-600 py-2 px-4 rounded-lg font-medium transition-colors"
-                  onClick={() => handleUpgradeClick('lifetime')}
-                >
-                  {t('premium.lifetimeUpgrade', 'Lifetime Access - 299,000₫')}
-                </button>
+                {hasActivePremiumSubscription() && userSubscription?.planName === 'Premium' ? (
+                  // Show extend buttons for active subscribers
+                  userSubscription?.subscriptionType === 'lifetime' ? (
+                    <button
+                      className="w-full bg-green-100 text-green-800 py-2 px-4 rounded-lg font-medium cursor-default"
+                      disabled
+                    >
+                      {t('premium.lifetimeActive', 'Lifetime Access Active')}
+                    </button>
+                  ) : (
+                    <>
+                      <button
+                        className="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-2 px-4 rounded-lg font-medium transition-colors"
+                        onClick={() => handleUpgradeClick(userSubscription?.subscriptionType)}
+                      >
+                        {t('premium.extendSubscription', 'Extend by {duration}', {
+                          duration: userSubscription?.subscriptionType === 'yearly' 
+                            ? t('premium.oneYear', '1 Year')
+                            : t('premium.oneMonth', '1 Month')
+                        })}
+                      </button>
+                      {userSubscription?.subscriptionType === 'monthly' && (
+                        <button
+                          className="w-full bg-white border border-emerald-600 hover:bg-emerald-50 text-emerald-600 py-2 px-4 rounded-lg font-medium transition-colors"
+                          onClick={() => handleUpgradeClick('annual')}
+                        >
+                          {t('premium.upgradeToYearly', 'Upgrade to Annual Plan')}
+                        </button>
+                      )}
+                    </>
+                  )
+                ) : (
+                  // Show upgrade buttons for non-subscribers
+                  <>
+                    <button
+                      className="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-2 px-4 rounded-lg font-medium transition-colors"
+                      onClick={() => handleUpgradeClick(selectedPlan)}
+                    >
+                      {selectedPlan === 'monthly' ? 
+                        t('premium.monthlyUpgrade', 'Get Monthly Plan') : 
+                        t('premium.annualUpgrade', 'Get Annual Plan')}
+                    </button>
+                    <button
+                      className="w-full bg-white border border-emerald-600 hover:bg-emerald-50 text-emerald-600 py-2 px-4 rounded-lg font-medium transition-colors"
+                      onClick={() => handleUpgradeClick('lifetime')}
+                    >
+                      {t('premium.lifetimeUpgrade', 'Lifetime Access - ')}{formatPrice(getPlanByName('Premium')?.priceLifetime)}₫
+                    </button>
+                  </>
+                )}
               </div>
             </div>
             <div className="border-t border-gray-200 p-6">
@@ -279,8 +462,15 @@ export default function PremiumPage() {
 
           {/* Ultimate Plan */}
           <div className="bg-gradient-to-br from-purple-50 to-indigo-50 rounded-xl overflow-hidden border-2 border-purple-300 shadow-lg relative transform hover:scale-105 transition-all duration-300">
-            <div className="absolute top-0 right-0 bg-gradient-to-r from-purple-500 via-purple-600 to-indigo-700 text-white text-xs font-bold py-1 px-3 rounded-bl-lg shadow-lg animate-pulse">
-              ✨ {t('premium.ultimate', 'ULTIMATE')}
+            <div className={`absolute top-0 right-0 text-white text-xs font-bold py-1 px-3 rounded-bl-lg shadow-lg ${
+              hasActivePremiumSubscription() && userSubscription?.planName === 'Ultimate'
+                ? 'bg-green-600'
+                : 'bg-gradient-to-r from-purple-500 via-purple-600 to-indigo-700 animate-pulse'
+            }`}>
+              {hasActivePremiumSubscription() && userSubscription?.planName === 'Ultimate'
+                ? '✅ ' + t('premium.active', 'ACTIVE')
+                : '✨ ' + t('premium.ultimate', 'ULTIMATE')
+              }
             </div>
             <div className="p-6">
               <h2 className="text-xl font-semibold bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent mb-2">
@@ -290,30 +480,94 @@ export default function PremiumPage() {
                 {t('premium.ultimateDesc', 'Everything Premium has + AI intelligence & real-time monitoring')}
               </p>
               <div className="mb-6">
-                {selectedPlan === 'monthly' ? (
+                {hasActivePremiumSubscription() && userSubscription?.planName === 'Ultimate' ? (
+                  // Show expiry date for active Ultimate subscribers
                   <>
-                    <span className="text-3xl font-bold bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent">45,000₫</span>
-                    <span className="text-gray-500 ml-1">{t('premium.perMonth', 'per month')}</span>
-                  </>
-                ) : (
-                  <>
-                    <span className="text-3xl font-bold bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent">399,000₫</span>
-                    <span className="text-gray-500 ml-1">{t('premium.perYear', 'per year')}</span>
-                    <div className="text-sm text-purple-600 font-medium mt-1">
-                      {t('premium.ultimateBilled', 'Billed annually (26% off)')}
+                    <div className="text-center">
+                      <span className="text-lg font-medium text-gray-600 block mb-2">
+                        {t('premium.currentPlan', 'Current Plan')}
+                      </span>
+                      <div className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent mb-2">
+                        {userSubscription?.subscriptionType === 'lifetime' 
+                          ? t('premium.lifetime', 'Lifetime Access')
+                          : `${t('premium.expiresOn', 'Expires on')} ${formatDate(userSubscription?.subEnd)}`
+                        }
+                      </div>
+                      {userSubscription?.subscriptionType !== 'lifetime' && (
+                        <div className="text-sm text-gray-500">
+                          {userSubscription?.subscriptionType === 'yearly' 
+                            ? t('premium.yearlySubscription', 'Annual Subscription')
+                            : t('premium.monthlySubscription', 'Monthly Subscription')
+                          }
+                        </div>
+                      )}
                     </div>
                   </>
+                ) : (
+                  // Show pricing for non-Ultimate subscribers
+                  selectedPlan === 'monthly' ? (
+                    <>
+                      <span className="text-3xl font-bold bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent">
+                        {formatPrice(getPlanByName('Ultimate')?.priceMonthly)}₫
+                      </span>
+                      <span className="text-gray-500 ml-1">{t('premium.perMonth', 'per month')}</span>
+                    </>
+                  ) : (
+                    <>
+                      <span className="text-3xl font-bold bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent">
+                        {formatPrice(getPlanByName('Ultimate')?.priceYearly)}₫
+                      </span>
+                      <span className="text-gray-500 ml-1">{t('premium.perYear', 'per year')}</span>
+                      <div className="text-sm text-purple-600 font-medium mt-1">
+                        {t('premium.ultimateBilled', 'Billed annually (26% off)')}
+                      </div>
+                    </>
+                  )
                 )}
               </div>
               <div className="space-y-2">
-                <button
-                  className="w-full bg-gradient-to-r from-purple-500 via-purple-600 to-indigo-700 hover:from-purple-600 hover:via-purple-700 hover:to-indigo-800 text-white py-2 px-4 rounded-lg font-medium transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-purple-500/50"
-                  onClick={() => handleUpgradeClick(selectedPlan === 'monthly' ? 'ultimate-monthly' : 'ultimate-annual')}
-                >
-                  {selectedPlan === 'monthly' ? 
-                    t('premium.ultimateMonthlyUpgrade', 'Get Ultimate Monthly') : 
-                    t('premium.ultimateAnnualUpgrade', 'Get Ultimate Annual')}
-                </button>
+                {hasActivePremiumSubscription() && userSubscription?.planName === 'Ultimate' ? (
+                  // Show extend buttons for active Ultimate subscribers
+                  userSubscription?.subscriptionType === 'lifetime' ? (
+                    <button
+                      className="w-full bg-green-100 text-green-800 py-2 px-4 rounded-lg font-medium cursor-default"
+                      disabled
+                    >
+                      {t('premium.lifetimeActive', 'Lifetime Access Active')}
+                    </button>
+                  ) : (
+                    <>
+                      <button
+                        className="w-full bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white py-2 px-4 rounded-lg font-medium transition-all duration-300 shadow-lg"
+                        onClick={() => handleUpgradeClick(userSubscription?.subscriptionType === 'yearly' ? 'ultimate-annual' : 'ultimate-monthly')}
+                      >
+                        {t('premium.extendSubscription', 'Extend by {duration}', {
+                          duration: userSubscription?.subscriptionType === 'yearly' 
+                            ? t('premium.oneYear', '1 Year')
+                            : t('premium.oneMonth', '1 Month')
+                        })}
+                      </button>
+                      {userSubscription?.subscriptionType === 'monthly' && (
+                        <button
+                          className="w-full bg-white border border-purple-600 hover:bg-purple-50 text-purple-600 py-2 px-4 rounded-lg font-medium transition-colors"
+                          onClick={() => handleUpgradeClick('ultimate-annual')}
+                        >
+                          {t('premium.upgradeToYearly', 'Upgrade to Annual Plan')}
+                        </button>
+                      )}
+                    </>
+                  )
+                ) : (
+                  // Show upgrade buttons for non-Ultimate subscribers
+                  <button
+                    className="w-full bg-gradient-to-r from-purple-500 via-purple-600 to-indigo-700 hover:from-purple-600 hover:via-purple-700 hover:to-indigo-800 text-white py-2 px-4 rounded-lg font-medium transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-purple-500/50"
+                    onClick={() => handleUpgradeClick(selectedPlan === 'monthly' ? 'ultimate-monthly' : 'ultimate-annual')}
+                  >
+                    {selectedPlan === 'monthly' ? 
+                      t('premium.ultimateMonthlyUpgrade', 'Get Ultimate Monthly') : 
+                      t('premium.ultimateAnnualUpgrade', 'Get Ultimate Annual')}
+                  </button>
+                )}
               </div>
             </div>
             <div className="border-t border-purple-200 p-6 bg-white/50">
@@ -332,13 +586,17 @@ export default function PremiumPage() {
           </div>
         </div>
       </div>
+      )}
       
       {/* Premium Features Showcase */}
-      <div className="mb-16">
-        <h2 className="text-2xl font-semibold text-gray-900 text-center mb-8">
-          {t('premium.featuresTitle', 'Premium Features')}
-        </h2>
-        
+      {!isLoading && (
+        <>
+        <div className="mb-16">
+          <h2 className="text-2xl font-semibold text-gray-900 text-center mb-8">
+            {t('premium.featuresTitle', 'Premium Features')}
+          </h2>
+
+        </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
             <div className="rounded-full bg-emerald-100 w-12 h-12 flex items-center justify-center mb-4">
@@ -424,10 +682,12 @@ export default function PremiumPage() {
             </p>
           </div>
         </div>
-      </div>
+        </>
+      )}
+
       
       {/* FAQ Section */}
-      <div className="max-w-3xl mx-auto mb-16">
+      <div className="max-w-3xl mx-auto mb-16 mt-16">
         <h2 className="text-2xl font-semibold text-gray-900 text-center mb-8">
           {t('premium.faqTitle', 'Frequently Asked Questions')}
         </h2>
@@ -457,26 +717,65 @@ export default function PremiumPage() {
       
       {/* CTA Section */}
       <div className="bg-gradient-to-r from-emerald-500 to-teal-600 rounded-xl p-8 text-white text-center max-w-4xl mx-auto">
-        <h2 className="text-2xl font-bold mb-4">
-          {t('premium.readyToUpgrade', 'Ready to upgrade your plant care?')}
-        </h2>
-        <p className="mb-6 max-w-xl mx-auto">
-          {t('premium.ctaDescription', 'Join thousands of plant enthusiasts who have transformed their plant care routine with PlantSmart Premium.')}
-        </p>
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
-          <button 
-            className="bg-white text-emerald-600 hover:bg-gray-100 px-8 py-3 rounded-lg font-medium transition-colors"
-            onClick={() => handleUpgradeClick('monthly')}
-          >
-            {t('premium.getStartedMonthly', 'Get Started - 15,000₫/month')}
-          </button>
-          <button 
-            className="bg-white text-emerald-600 hover:bg-gray-100 px-8 py-3 rounded-lg font-medium transition-colors"
-            onClick={() => handleUpgradeClick('lifetime')}
-          >
-            {t('premium.getLifetime', 'Get Lifetime - 399,000₫')}
-          </button>
-        </div>
+        {hasActivePremiumSubscription() ? (
+          // CTA for active subscribers
+          <>
+            <h2 className="text-2xl font-bold mb-4">
+              {userSubscription?.subscriptionType === 'lifetime' 
+                ? t('premium.enjoyLifetime', 'Enjoying your lifetime access!')
+                : t('premium.manageSubscription', 'Manage your subscription')
+              }
+            </h2>
+            <p className="mb-6 max-w-xl mx-auto">
+              {userSubscription?.subscriptionType === 'lifetime' 
+                ? t('premium.lifetimeDescription', 'You have lifetime access to all premium features. Enjoy unlimited plant monitoring!')
+                : t('premium.activeSubscriptionDescription', 'You can extend your subscription or upgrade to a different plan at any time.')
+              }
+            </p>
+            {userSubscription?.subscriptionType !== 'lifetime' && (
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+                <button 
+                  className="bg-white text-emerald-600 hover:bg-gray-100 px-8 py-3 rounded-lg font-medium transition-colors"
+                  onClick={() => handleUpgradeClick(userSubscription?.subscriptionType)}
+                >
+                  {t('premium.extendCurrent', 'Extend Current Plan')}
+                </button>
+                {userSubscription?.planName === 'Premium' && (
+                  <button 
+                    className="bg-white text-emerald-600 hover:bg-gray-100 px-8 py-3 rounded-lg font-medium transition-colors"
+                    onClick={() => handleUpgradeClick('ultimate-annual')}
+                  >
+                    {t('premium.upgradeToUltimate', 'Upgrade to Ultimate')}
+                  </button>
+                )}
+              </div>
+            )}
+          </>
+        ) : (
+          // CTA for non-subscribers
+          <>
+            <h2 className="text-2xl font-bold mb-4">
+              {t('premium.readyToUpgrade', 'Ready to upgrade your plant care?')}
+            </h2>
+            <p className="mb-6 max-w-xl mx-auto">
+              {t('premium.ctaDescription', 'Join thousands of plant enthusiasts who have transformed their plant care routine with PlantSmart Premium.')}
+            </p>
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+              <button 
+                className="bg-white text-emerald-600 hover:bg-gray-100 px-8 py-3 rounded-lg font-medium transition-colors"
+                onClick={() => handleUpgradeClick('monthly')}
+              >
+                {t('premium.getStartedMonthly', 'Get Started - ')}{formatPrice(getPlanByName('Premium')?.priceMonthly)}₫/{t('premium.month', 'month')}
+              </button>
+              <button 
+                className="bg-white text-emerald-600 hover:bg-gray-100 px-8 py-3 rounded-lg font-medium transition-colors"
+                onClick={() => handleUpgradeClick('lifetime')}
+              >
+                {t('premium.getLifetime', 'Get Lifetime - ')}{formatPrice(getPlanByName('Premium')?.priceLifetime)}₫
+              </button>
+            </div>
+          </>
+        )}
         <p className="mt-3 text-sm opacity-80">
           {t('premium.securePayment', 'Secure payment processing by VNPay')}
         </p>

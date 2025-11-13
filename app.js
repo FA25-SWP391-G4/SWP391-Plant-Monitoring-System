@@ -162,6 +162,9 @@ connectAwsIoT().catch(console.error);
 //initialize MQTT client
 const mqttClient = require('./mqtt/mqttClient');
 
+// Initialize subscription scheduler
+const SubscriptionScheduler = require('./services/subscriptionScheduler');
+
 // Import PostgreSQL database connection module (it initializes on require)
 require('./config/db');
 
@@ -256,6 +259,9 @@ app.use('/api/upload', require('./routes/upload')); // File upload API
 app.use('/api/dashboard', dashboardRouter);      // 🔄 UC4: Dashboard API
 app.use('/api/plants', plantRouter);              // 🔄 UC5-9: Plant management API
 app.use('/api/zones', zoneRouter);              // 🔄 UC14: Zone management API
+app.use('/api/reports', require('./routes/reportsRoutes')); // ✅ Reports API with charts and export
+app.use('/api/plans', require('./routes/plans')); // ✅ Subscription plans API
+app.use('/api/subscriptions', require('./routes/subscriptions')); // ✅ Subscription management API
 app.use('/api/plant-profiles', plantProfileRouter); // Plant profile database API
 app.use('/api/devices', deviceRouter);          // IoT device management API
 app.use('/api/admin', adminRouter);             // ✅ UC24-31: Admin functions
@@ -306,5 +312,7 @@ app.use(function(err, req, res, next) {
   });
 });
 
+// Initialize subscription scheduler with fallback support
+SubscriptionScheduler.start();
 
 module.exports = app;

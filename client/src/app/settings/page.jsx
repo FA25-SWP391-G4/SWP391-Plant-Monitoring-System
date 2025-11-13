@@ -22,7 +22,7 @@ export default function SettingsPage() {
     appearance: {
       theme: 'system',
       fontSize: 'medium',
-      colorScheme: 'emerald'
+      colorScheme: 'default'
     },
     language: {
       preferred: 'en',

@@ -10,9 +10,8 @@ const axios = require('axios');
 const { body, param } = require('express-validator');
 const aiController = require('../controllers/aiController');
 const auth = require('../middlewares/authMiddleware');
-const { isPremium } = require('../middlewares/premiumMiddleware');
+const { isUltimate, isPremium, isAdmin } = require('../middlewares/accessMiddleware');
 const authenticate = auth;
-const isAdmin = auth.isAdmin;
 const multer = require('multer');
 const upload = multer({ dest: 'uploads/' });
 const fs = require('fs');
@@ -38,7 +37,12 @@ console.log("AI Controller keys:", Object.keys(aiController));
  */
 router.post('/watering-prediction', authenticate, async (req, res) => {
   try {
-    const response = await axios.post(`${AI_SERVICE_URL}/watering-prediction`, req.body);
+    const response = await axios.post(`${AI_SERVICE_URL}/api/watering-prediction/predict`, req.body, {
+      headers: {
+        'Authorization': req.headers.authorization,
+        'Content-Type': 'application/json'
+      }
+    });
     res.json(response.data);
   } catch (error) {
     console.error('Error calling AI service for watering prediction:', error);
@@ -158,9 +162,9 @@ router.post('/historical-analysis', authenticate, async (req, res) => {
 /**
  * @route POST /api/ai/image-recognition
  * @desc Analyze plant image using AI
- * @access Private (Premium)
+ * @access Private (Ultimate)
  */
-router.post('/image-recognition', authenticate, isPremium, upload.single('image'), async (req, res) => {
+router.post('/image-recognition', authenticate, isUltimate, upload.single('image'), async (req, res) => {
   try {
     if (!req.file) {
       return res.status(400).json({ error: 'No image file provided' });
@@ -171,7 +175,7 @@ router.post('/image-recognition', authenticate, isPremium, upload.single('image'
     const base64Image = imageBuffer.toString('base64');
 
     // Send to AI service
-    const response = await axios.post(`${AI_SERVICE_URL}/image-recognition`, {
+    const response = await axios.post(`${AI_SERVICE_URL}/api/disease-recognition/analyze`, {
       image: base64Image,
       plant_type: req.body.plant_type || 'unknown'
     });
@@ -225,11 +229,16 @@ router.post('/test/chatbot', async (req, res) => {
 /**
  * @route POST /api/ai/chatbot
  * @desc Interact with AI chatbot
- * @access Private (Premium)
+ * @access Private (Ultimate)
  */
-router.post('/chatbot', authenticate, isPremium, async (req, res) => {
+router.post('/chatbot', authenticate, isUltimate, async (req, res) => {
   try {
-    const response = await axios.post(`${AI_SERVICE_URL}/chatbot`, req.body);
+    const response = await axios.post(`${AI_SERVICE_URL}/api/chatbot/query`, req.body, {
+      headers: {
+        'Authorization': req.headers.authorization,
+        'Content-Type': 'application/json'
+      }
+    });
     res.json(response.data);
   } catch (error) {
     console.error('Error calling AI service for chatbot:', error);
@@ -322,11 +331,11 @@ router.post('/models/:id/test',
 /**
  * @route POST /api/ai/analyze-health
  * @desc Analyze plant health from image
- * @access Private (Premium)
+ * @access Private (Ultimate)
  */
 router.post('/analyze-health', 
   authenticate, 
-  isPremium,
+  isUltimate,
   upload.single('image'), 
   aiController.analyzeHealth
 );
@@ -334,11 +343,11 @@ router.post('/analyze-health',
 /**
  * @route POST /api/ai/identify-plant
  * @desc Identify plant species from image
- * @access Private (Premium)
+ * @access Private (Ultimate)
  */
 router.post('/identify-plant', 
   authenticate, 
-  isPremium,
+  isUltimate,
   upload.single('image'), 
   aiController.identifyPlant
 );
@@ -359,11 +368,11 @@ router.get('/analysis-history/:plantId',
 /**
  * @route POST /api/ai/detect-disease
  * @desc Detect disease from plant image
- * @access Private (Premium)
+ * @access Private (Ultimate)
  */
 router.post('/detect-disease',
   authenticate,
-  isPremium,
+  isUltimate,
   upload.single('image'),
   aiController.detectDisease
 );

@@ -1186,44 +1186,6 @@ async function getCurrentUser(req, res) {
     }
 }
 
-/**
- * Send welcome email to newly registered user
- */
-async function sendWelcomeEmail(user) {
-    try {
-        const transporter = createTransporter();
-
-        const mailOptions = {
-            from: process.env.EMAIL_USER,
-            to: user.email,
-            subject: 'Welcome to Plant Monitoring System',
-            text: `
-                Hello ${user.family_name},
-
-                Thank you for registering with the Plant Monitoring System!
-
-                Your account has been successfully created.
-
-                You can now log in to access all features of our platform.
-
-                Best regards,
-                The Plant Monitoring System Team
-            `,
-        };
-
-        console.log(`[EMAIL DEBUG] Attempting to send welcome email to: ${user.email}`);
-        console.log('[EMAIL DEBUG] Welcome email transporter created successfully');
-        
-        const info = await transporter.sendMail(mailOptions);
-        console.log(`[EMAIL DEBUG] Welcome email sent successfully: ${JSON.stringify(info)}`);
-    } catch (error) {
-        console.error('[EMAIL DEBUG] Error sending welcome email:', error.message);
-        console.error('[EMAIL DEBUG] Full error:', error);
-        // We don't throw the error as this shouldn't stop registration
-    }
-}
-
-
 async function linkGoogleAccount(req, res) {
     try {
         const userId = req.user.user_id; // From auth middleware
@@ -1307,6 +1269,54 @@ async function unlinkGoogleAccount(req, res) {
     }
 }
 
+/**
+ * Refresh JWT token with updated user data
+ * Used after user upgrades (premium/ultimate) to get new token with updated role
+ */
+const refreshToken = async (req, res) => {
+    try {
+        console.log('[AUTH] Token refresh requested for user:', req.user.user_id);
+        
+        // Get fresh user data from database
+        const user = await User.findById(req.user.user_id);
+        
+        if (!user) {
+            console.log('[AUTH] User not found during token refresh:', req.user.user_id);
+            return res.status(404).json({
+                success: false,
+                message: 'User not found'
+            });
+        }
+
+        // Generate new token with updated user data
+        const newToken = generateToken(user);
+        
+        console.log('[AUTH] Generated new token for user:', req.user.user_id);
+        
+        res.json({
+            success: true,
+            token: newToken,
+            user: {
+                user_id: user.user_id,
+                email: user.email,
+                given_name: user.given_name,
+                family_name: user.family_name,
+                role: user.role,
+                subscription_type: user.subscription_type,
+                subscription_status: user.subscription_status,
+                created_at: user.created_at
+            }
+        });
+
+    } catch (error) {
+        console.error('[AUTH] Refresh token error:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Failed to refresh token'
+        });
+    }
+};
+
 module.exports = {
     register,
     login,
@@ -1317,5 +1327,6 @@ module.exports = {
     generateToken,
     getCurrentUser,
     linkGoogleAccount,
-    unlinkGoogleAccount
+    unlinkGoogleAccount,
+    refreshToken
 };

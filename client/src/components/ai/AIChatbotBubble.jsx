@@ -104,7 +104,7 @@ const AIChatbotBubble = () => {
         
         if (response.requiresLogin || response.code === 'TOKEN_EXPIRED' || response.code === 'INVALID_TOKEN') {
           errorMessage = 'Your session has expired. Please refresh the page and log in again.';
-        } else if (response.requiresUltimate) {
+        } else if (response.requiresUltimate || response.code === 'ULTIMATE_REQUIRED') {
           errorMessage = 'Ultimate subscription required to use the AI chatbot.';
         }
         
@@ -162,10 +162,20 @@ const AIChatbotBubble = () => {
   };
 
   const formatTime = (timestamp) => {
-    return new Date(timestamp).toLocaleTimeString([], { 
-      hour: '2-digit', 
-      minute: '2-digit' 
-    });
+    if (!timestamp) return '';
+    
+    try {
+      const date = new Date(timestamp);
+      if (isNaN(date.getTime())) return '';
+      
+      return date.toLocaleTimeString([], { 
+        hour: '2-digit', 
+        minute: '2-digit' 
+      });
+    } catch (error) {
+      console.error('Error formatting time:', error);
+      return '';
+    }
   };
 
   const quickQuestions = [

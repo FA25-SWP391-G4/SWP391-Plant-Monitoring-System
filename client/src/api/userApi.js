@@ -35,7 +35,7 @@ const userApi = {
     axiosClient.delete("/user/account", { data: { password } }),
 
   // Get subscription info
-  getSubscription: () =>
+  getUserSubscription: () =>
     axiosClient.get("/user/subscription"),
 
   // Cancel subscription

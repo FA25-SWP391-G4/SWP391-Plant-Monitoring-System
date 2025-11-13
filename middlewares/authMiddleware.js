@@ -137,18 +137,18 @@ const authMiddleware = async (req, res, next) => {
             });
         }
 
-        // Attach user to request object
-        req.user = {
-            userId: user.user_id || decoded.user_id,
-            username: user.username,
-            email: user.email,
-            role: user.role
-        };
-        console.log('[AUTH MIDDLEWARE] User authenticated:', req.user.username);
+        // Get the most up-to-date user role (subscription status may have changed)
+        // The database trigger should keep the role updated, but we'll get fresh data
+        const currentRole = user.role;
         
-        // Attach user to request and include JWT decoded fields
+        // Attach user to request object with all needed data
         req.user = {
             ...user,
+            userId: user.user_id || decoded.user_id,
+            user_id: user.user_id || decoded.user_id, // Include both formats for compatibility
+            username: user.username,
+            email: user.email,
+            role: currentRole, // Use fresh role from database
             family_name: decoded.family_name || user.family_name,
             given_name: decoded.given_name || user.given_name,
             full_name: decoded.full_name || user.fullName
