@@ -21,7 +21,7 @@ class ChatHistory {
     static async findAll(limit = 100) {
         try {
             const query = `
-                SELECT ch.*, u.full_name as user_name 
+                SELECT ch.*, u.family_name as user_name 
                 FROM chat_history ch
                 LEFT JOIN users u ON ch.user_id = u.user_id
                 ORDER BY ch.timestamp DESC 
@@ -38,7 +38,7 @@ class ChatHistory {
     static async findById(id) {
         try {
             const query = `
-                SELECT ch.*, u.full_name as user_name 
+                SELECT ch.*, u.family_name as user_name 
                 FROM chat_history ch
                 LEFT JOIN users u ON ch.user_id = u.user_id
                 WHERE ch.chat_id = $1
@@ -59,7 +59,7 @@ class ChatHistory {
     static async findByUserId(userId, limit = 50) {
         try {
             const query = `
-                SELECT ch.*, u.full_name as user_name 
+                SELECT ch.*, u.family_name as user_name 
                 FROM chat_history ch
                 LEFT JOIN users u ON ch.user_id = u.user_id
                 WHERE ch.user_id = $1
@@ -77,7 +77,7 @@ class ChatHistory {
     static async findRecentByUserId(userId, days = 7) {
         try {
             const query = `
-                SELECT ch.*, u.full_name as user_name 
+                SELECT ch.*, u.family_name as user_name 
                 FROM chat_history ch
                 LEFT JOIN users u ON ch.user_id = u.user_id
                 WHERE ch.user_id = $1 
@@ -95,7 +95,7 @@ class ChatHistory {
     static async searchByMessage(userId, searchTerm, limit = 20) {
         try {
             const query = `
-                SELECT ch.*, u.full_name as user_name 
+                SELECT ch.*, u.family_name as user_name 
                 FROM chat_history ch
                 LEFT JOIN users u ON ch.user_id = u.user_id
                 WHERE ch.user_id = $1 
@@ -264,7 +264,7 @@ class ChatHistory {
     static async findByConversationId(conversationId, limit = 50) {
         try {
             const query = `
-                SELECT ch.*, u.full_name as user_name 
+                SELECT ch.*, u.family_name as user_name 
                 FROM chat_history ch
                 LEFT JOIN users u ON ch.user_id = u.user_id
                 WHERE ch.conversation_id = $1

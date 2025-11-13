@@ -55,7 +55,8 @@ module.exports = {
     '^@services/(.*)$': '<rootDir>/services/$1',
     '^@middlewares/(.*)$': '<rootDir>/middlewares/$1',
     '^@utils/(.*)$': '<rootDir>/utils/$1',
-    '\\.(css|less|scss|sass)$': 'identity-obj-proxy'
+    '\\.(css|less|scss|sass)$': 'identity-obj-proxy',
+    '^axios$': 'axios/dist/node/axios.cjs'
   },
 
   // Ignore patterns

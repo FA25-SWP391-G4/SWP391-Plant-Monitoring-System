@@ -47,13 +47,22 @@
     "expand": "Expand",
     "collapse": "Collapse",
     "appName": "PlantSmart",
-    "plantLover": "Plant Lover"
+    "plantLover": "Plant Lover",
+    "search": "Search plants, devices, or pages...",
+    "upgrade": "Upgrade",
+    "resetDefaults": "Reset to Defaults",
+    "saveChanges": "Save Changes",
+    "actions": "Actions",
+    "view": "View",
+    "viewDetails": "View Details",
+    "refresh": "Refresh"
   },
   
   "accessibility": {
     "email": "Email",
     "phone": "Phone",
-    "location": "Location"
+    "location": "Location",
+    "userMenu": "User menu"
   },
   "auth": {
     "login": "Login",
@@ -199,13 +208,24 @@
   "notScheduled": "Not scheduled",
   "view": "View details",
   "viewDetails": "View Details",
+  "searchPlants": "Search plants...",
+  "waterNow": "Water Now",
+  "editPlant": "Edit Plant",
+  "neverWatered": "Never watered",
+  "log": "Log Activity",
+  "currentConditions": "Current Conditions",
+  "careInstructions": "Care Instructions",
+  "noCareInstructions": "No care instructions available",
+  "history": "Plant History",
   "tabs": {
     "overview": "Overview",
     "sensorData": "Sensor Data",
     "wateringSchedule": "Watering Schedule",
     "aiPredictions": "AI Predictions",
     "diseaseRecognition": "Disease Recognition",
-    "aiAssistant": "AI Assistant"
+    "aiAssistant": "AI Assistant",
+    "aiChat": "AI Chat",
+    "history": "History"
   }
 },  "notFound": {
     "title": "Page Not Found",
@@ -224,6 +244,7 @@
   },
   "zones": {
     "title": "Manage Multiple Plant Zones",
+    "description": "Organize your plants by location or category",
     "createZone": "Create Zone",
     "zoneName": "Name",
     "zoneDescription": "Description",
@@ -380,12 +401,28 @@
     }
   },
   "ai": {
+    "askAI": "Ask AI",
+    "analyzeImage": "Analyze Image",
+    "predictions": {
+      "title": "AI Watering Predictions"
+    },
+    "chat": {
+      "title": "AI Plant Care Assistant"
+    },
     "chatbot": {
       "title": "Plant Assistant",
       "placeholder": "Ask me anything about your plants...",
       "greeting": "Hello! How can I help with your plants today?",
       "loading": "Thinking...",
-      "error": "Sorry, I couldn't process your request. Please try again."
+      "error": "Sorry, I couldn't process your request. Please try again.",
+      "welcomeMessage": "Hello! I'm your AI plant care assistant. How can I help you today?",
+      "tooltip": "AI Plant Assistant",
+      "quickQuestions": {
+        "watering": "When should I water my plants?",
+        "light": "Is my plant getting enough light?",
+        "yellowing": "Why are my leaves turning yellow?",
+        "fertilizer": "When should I fertilize?"
+      }
     },
     "imageRecognition": {
       "title": "Plant Identification",
@@ -433,7 +470,13 @@
     "lowTemp": "Low",
     "feels": "Feels like",
     "indoor": "Indoor",
-    "outdoor": "Outdoor"
+    "outdoor": "Outdoor",
+    "loading": "Loading weather data...",
+    "tomorrow": "Tomorrow",
+    "updatedAt": "Updated at",
+    "tip": {
+      "default": "Monitor soil moisture daily based on current weather conditions."
+    }
   },
   "reviews": {
     "title": "Customer Reviews",
@@ -537,7 +580,14 @@
     "csv": "CSV",
     "excel": "Excel",
     "summary": "Summary",
-    "details": "Details"
+    "details": "Details",
+    "overview": "Overview",
+    "plantAnalysis": "Plant Analysis",
+    "imageAnalysis": "Image Analysis",
+    "historicalData": "Historical Data",
+    "waterConsumption": "Water Usage",
+    "plantHealth": "Plant Health",
+    "customReports": "Custom Reports"
   },
   "thresholds": {
     "title": "Plant Thresholds",
@@ -607,6 +657,14 @@
   },
   
   "devices": {
+    "myDevices": "My Devices",
+    "manage": "Monitor and manage your connected devices",
+    "addDevice": "Add Device",
+    "deviceName": "Device Name",
+    "deviceType": "Type",
+    "status": "Status",
+    "lastActive": "Last Active",
+    "loading": "Loading devices...",
     "online": "Online",
     "offline": "Offline"
   },
@@ -614,11 +672,65 @@
   "premium": {
     "unlockFeatures": "Unlock Premium Features",
     "scheduleDescription": "Schedule automatic watering, get detailed analytics, and more with Premium.",
-    "upgrade": "Upgrade to Premium"
+    "upgrade": "Upgrade to Premium",
+    "upgradeToday": "Upgrade to Premium Today",
+    "unlockDescription": "Take your plant care to the next level with advanced features, detailed analytics, and premium support.",
+    "monthly": "Monthly",
+    "annual": "Annual",
+    "save": "Save 20%",
+    "faqTitle": "Frequently Asked Questions",
+    "faq1": "How does the Premium subscription work?",
+    "faqAnswer1": "When you upgrade to Premium, you'll immediately gain access to all premium features. You can choose between monthly or annual billing. Annual billing saves you 20% compared to monthly payments.",
+    "faq2": "Can I cancel my subscription anytime?",
+    "faqAnswer2": "Yes, you can cancel your Premium subscription at any time. Your access to premium features will continue until the end of your current billing period. We don't offer refunds for partial subscription periods.",
+    "faq3": "What happens to my data if I downgrade to Basic?",
+    "faqAnswer3": "If you downgrade from Premium to Basic, you'll still have access to your core plant data, but premium features will be disabled. Historical data beyond 30 days will be archived but not deleted, so if you upgrade again later, you can regain access to it.",
+    "faq4": "Is there a limit to how many plants I can add with Premium?",
+    "faqAnswer4": "No, Premium subscribers can add unlimited plants to their account. This is compared to the Basic plan, which allows up to 5 plants.",
+    "readyToUpgrade": "Ready to upgrade your plant care?",
+    "ctaDescription": "Join thousands of plant enthusiasts who have transformed their plant care routine with PlantSmart Premium.",
+    "getStartedMonthly": "Get Started - ",
+    "month": "month",
+    "getLifetime": "Get Lifetime - ",
+    "securePayment": "Secure payment processing by VNPay",
+    "active": "ACTIVE",
+    "ultimate": "Ultimate",
+    "ultimateDesc": "Everything Premium has + AI intelligence & real-time monitoring",
+    "currentPlan": "Current Plan",
+    "expiresOn": "Expires on",
+    "yearlySubscription": "Annual Subscription",
+    "oneYear": "1 Year",
+    "extendSubscription": "Renew",
+    "includes": "Includes everything in Premium, plus:",
+    "features": {
+      "ultimate1": "🤖 AI-powered plant recommendations",
+      "ultimate2": "📹 Real-time camera monitoring",
+      "ultimate3": "🔬 Advanced plant health analysis",
+      "ultimate4": "📱 Smart notifications & alerts",
+      "ultimate5": "🌡️ Environmental pattern recognition",
+      "ultimate6": "⚡ Instant priority support"
+    },
+    "featuresTitle": "Premium Features",
+    "advancedAnalytics": "Advanced Analytics",
+    "advancedAnalyticsDesc": "Get detailed insights into your plant's health over time with comprehensive data visualization and trend analysis.",
+    "automatedSchedules": "Automated Schedules",
+    "automatedSchedulesDesc": "Create smart watering schedules tailored to each plant's needs, with automatic adjustments based on real-time sensor data.",
+    "aiRecommendations": "AI Recommendations",
+    "aiRecommendationsDesc": "Receive personalized care recommendations from our AI system, which learns from your plants' specific conditions and growth patterns.",
+    "customZones": "Custom Zones",
+    "customZonesDesc": "Organize plants into custom zones based on location, type, or care requirements to streamline monitoring and management.",
+    "dataExport": "Data Export",
+    "dataExportDesc": "Export your plant data in various formats, including CSV and PDF, for record-keeping or further analysis.",
+    "prioritySupport": "Priority Support",
+    "prioritySupportDesc": "Get priority access to our support team with faster response times and dedicated assistance for any issues.",
+    "manageSubscription": "Manage your subscription",
+    "activeSubscriptionDescription": "You can extend your subscription or upgrade to a different plan at any time.",
+    "extendCurrent": "Extend Current Plan"
   },
 
   "settings": {
     "title": "Settings",
+    "description": "Customize your dashboard and preferences",
     "account": "Account Settings",
     "notificationsSection": "Notification Preferences",
     "devices": "Device Management",
@@ -666,7 +778,92 @@
       "button": "Delete My Account",
       "feedback": "Please tell us why you're leaving:",
       "success": "Account successfully deleted"
-    }
+    },
+    "moreLanguages": "More Languages",
+    "widgets": "Widgets & Features",
+    "notifications": "Notifications",
+    "privacy": "Privacy & Security",
+    "dashboardWidgets": "Dashboard Widgets",
+    "showPlantOverview": "Plant Overview",
+    "showPlantOverviewDesc": "Show plant statistics cards",
+    "showSensorData": "Sensor Data Widgets",
+    "showSensorDataDesc": "Display real-time sensor readings",
+    "showWeatherWidget": "Weather Widget",
+    "showWeatherWidgetDesc": "Display weather information",
+    "showWateringSchedule": "Watering Schedule",
+    "showWateringScheduleDesc": "Display upcoming watering schedule",
+    "showNotifications": "Notifications Widget",
+    "showNotificationsDesc": "Show recent notifications",
+    "showRecentActivity": "Recent Activity",
+    "showRecentActivityDesc": "Display recent plant care activities",
+    "aiFeatures": "AI Features",
+    "enableAIFeatures": "Enable AI Features",
+    "enableAIFeaturesDesc": "Master toggle for all AI-powered features",
+    "showChatbot": "AI Chatbot",
+    "showChatbotDesc": "Enable plant care AI assistant",
+    "showAIInsights": "AI Insights",
+    "showAIInsightsDesc": "Show AI-powered plant analysis",
+    "showImageAnalysis": "Image Analysis",
+    "showImageAnalysisDesc": "Enable plant image analysis features",
+    "showAIPredictions": "AI Predictions",
+    "showAIPredictionsDesc": "Show watering and care predictions",
+    "widgetAppearance": "Widget Appearance",
+    "compactMode": "Compact Mode",
+    "compactModeDesc": "Use smaller widgets to show more content",
+    "showWidgetTitles": "Widget Titles",
+    "showWidgetTitlesDesc": "Display titles on widgets",
+    "showWidgetIcons": "Widget Icons",
+    "showWidgetIconsDesc": "Show icons on widgets",
+    "animationsEnabled": "Animations",
+    "animationsEnabledDesc": "Enable smooth animations and transitions",
+    "shareData": "Share Anonymous Data",
+    "shareDataDescription": "Share anonymous usage data to help improve the service",
+    "anonymousAnalytics": "Anonymous Analytics",
+    "anonymousAnalyticsDescription": "Allow collection of anonymized analytics data",
+    "locationAccess": "Location Access",
+    "locationNever": "Never",
+    "locationWhileUsing": "While Using the App",
+    "locationAlways": "Always",
+    "locationAccessDescription": "Control when the app can access your location for weather data",
+    "dangerZone": "Danger Zone",
+    "deleteAccountWarning": "Once you delete your account, there is no going back. Please be certain.",
+    "notificationChannels": "Notification Channels",
+    "emailNotifications": "Email Notifications",
+    "emailNotificationsDescription": "Receive notifications via email",
+    "pushNotifications": "Push Notifications",
+    "pushNotificationsDescription": "Receive notifications on your device",
+    "smsNotifications": "SMS Notifications",
+    "smsNotificationsDescription": "Receive text messages for critical alerts (Premium only)",
+    "notificationTypes": "Notification Types",
+    "wateringReminders": "Watering Reminders",
+    "wateringRemindersDescription": "Get notified when plants need water",
+    "criticalAlerts": "Critical Alerts",
+    "criticalAlertsDescription": "Get notified for critical issues (e.g., extreme temperature)",
+    "weeklyReports": "Weekly Reports",
+    "weeklyReportsDescription": "Receive weekly plant health reports",
+    "preferredLanguage": "Preferred Language",
+    "dateFormat": "Date Format",
+    "timeFormat": "Time Format",
+    "timeFormat12h": "12-hour (AM/PM)",
+    "timeFormat24h": "24-hour",
+    "themeSystem": "System Default",
+    "themeLight": "Light",
+    "themeDark": "Dark",
+    "themeDescription": "Choose how the application looks",
+    "fontSize": "Font Size",
+    "fontSizeSmall": "Small",
+    "fontSizeMedium": "Medium",
+    "fontSizeLarge": "Large",
+    "fontSizeXL": "Extra Large",
+    "colorScheme": "Color Scheme",
+    "colorEmerald": "Emerald",
+    "colorBlue": "Blue",
+    "colorPurple": "Purple"
+  },
+
+  "languages": {
+    "english": "English",
+    "vietnamese": "Tiếng Việt"
   },
 
   "payment": {
@@ -785,5 +982,82 @@
         "description": "Please email us at support@plantmonitor.com or call our hotline."
       }
     }
+  },
+
+  "filters": {
+    "allPlants": "All Plants",
+    "healthy": "Healthy",
+    "needsWater": "Needs Watering",
+    "needsAttention": "Needs Attention"
+  },
+
+  "metrics": {
+    "moisture": "Moisture",
+    "temperature": "Temperature",
+    "humidity": "Humidity",
+    "light": "Light",
+    "soil_moisture": "Soil Moisture",
+    "light_intensity": "Light",
+    "air_humidity": "Air Humidity"
+  },
+
+  "watering": {
+    "waterNow": "Water Now",
+    "lastWatered": "Last watered",
+    "ok": "Recently watered",
+    "addPlant": "Add plant to schedule"
+  },
+
+  "wateringPrediction": {
+    "noPlant": "Select a plant to view watering predictions"
+  },
+
+  "device": {
+    "offline": "Offline"
+  },
+
+  "charts": {
+    "loading": "Loading chart data...",
+    "noData": "No historical data available",
+    "over24Hours": "Over Last 24 Hours"
+  },
+  "stats": {
+    "total": "Total Trees",
+    "healthy": "Healthy",
+    "attention": "Needs Attention"
+  },
+  "profile": {
+    "title": "User Profile",
+    "subtitle": "Manage your account information and settings",
+    "information": "Profile Information",
+    "informationDesc": "Update your personal details",
+    "editProfile": "Edit Profile",
+    "save": "Save",
+    "cancel": "Cancel",
+    "role": "Role",
+    "firstName": "First Name",
+    "lastName": "Last Name",
+    "email": "Email",
+    "phoneNumber": "Phone Number",
+    "memberSince": "Member Since",
+    "password": "Password",
+    "passwordDesc": "Update your password",
+    "changePassword": "Change Password",
+    "currentPassword": "Current Password",
+    "newPassword": "New Password",
+    "confirmNewPassword": "Confirm New Password",
+    "updatePassword": "Update Password",
+    "enterFirstName": "Enter first name",
+    "enterLastName": "Enter last name",  
+    "enterEmail": "Enter email",
+    "enterCurrentPassword": "Enter current password",
+    "enterNewPassword": "Enter new password",
+
+    "profileUpdated": "Profile updated successfully",
+    "passwordChanged": "Password changed successfully",
+    "passwordsDoNotMatch": "Passwords do not match",
+    "passwordTooShort": "Password must be at least 8 characters",
+    "updateProfileError": "Failed to update profile",
+    "changePasswordError": "Failed to change password"
   }
 }

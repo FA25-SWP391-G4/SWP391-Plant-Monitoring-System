@@ -12,8 +12,6 @@
  * All functions require authentication and work with user-specific settings
  */
 
-console.log('🔥🔥🔥 SETTINGS CONTROLLER FILE LOADED 🔥🔥🔥');
-
 const User = require('../models/User');
 const { isValidUUID } = require('../utils/uuidGenerator');
 

@@ -18,7 +18,7 @@ class Alert {
     static async findAll(limit = 100) {
         try {
             const query = `
-                SELECT a.*, u.full_name as user_name 
+                SELECT a.*, u.family_name as user_name 
                 FROM alerts a
                 LEFT JOIN users u ON a.user_id = u.user_id
                 ORDER BY a.created_at DESC 
@@ -35,7 +35,7 @@ class Alert {
     static async findById(id) {
         try {
             const query = `
-                SELECT a.*, u.full_name as user_name 
+                SELECT a.*, u.family_name as user_name 
                 FROM alerts a
                 LEFT JOIN users u ON a.user_id = u.user_id
                 WHERE a.alert_id = $1
@@ -62,7 +62,7 @@ class Alert {
 
         try {
             const query = `
-                SELECT a.*, u.full_name as user_name 
+                SELECT a.*, u.family_name as user_name 
                 FROM alerts a
                 LEFT JOIN users u ON a.user_id = u.user_id
                 WHERE a.user_id = $1
@@ -80,7 +80,7 @@ class Alert {
     static async findByStatus(status, limit = 100) {
         try {
             const query = `
-                SELECT a.*, u.full_name as user_name 
+                SELECT a.*, u.family_name as user_name 
                 FROM alerts a
                 LEFT JOIN users u ON a.user_id = u.user_id
                 WHERE a.status = $1
@@ -104,7 +104,7 @@ class Alert {
 
         try {
             const query = `
-                SELECT a.*, u.full_name as user_name 
+                SELECT a.*, u.family_name as user_name 
                 FROM alerts a
                 LEFT JOIN users u ON a.user_id = u.user_id
                 WHERE a.user_id = $1 AND a.status = 'unread'
@@ -491,7 +491,7 @@ class Alert {
     static async findByUserAndType(userId, type, limit = 50) {
         try {
             const query = `
-                SELECT a.*, u.full_name as user_name 
+                SELECT a.*, u.family_name as user_name 
                 FROM alerts a
                 LEFT JOIN users u ON a.user_id = u.user_id
                 WHERE a.user_id = $1 AND a.type = $2
@@ -509,7 +509,7 @@ class Alert {
     static async findByType(type, limit = 50) {
         try {
             const query = `
-                SELECT a.*, u.full_name as user_name 
+                SELECT a.*, u.family_name as user_name 
                 FROM alerts a
                 LEFT JOIN users u ON a.user_id = u.user_id
                 WHERE a.type = $1

@@ -124,26 +124,17 @@ async function getDashboardData(req, res) {
  * 
  * @route GET /api/dashboard/real-time/:plantId
  * @access Private - Requires authentication
- * @param {string} plantId - UUID of the plant to get data for
+ * @param {string} plantId - 12-char key of the plant to get data for
  * @returns {Object} Real-time sensor data
  * 
- * UPDATED FOR UUID MIGRATION:
- * - plantId parameter is now UUID
- * - Validates UUID format before operations
+ * UPDATED FOR 12-char key MIGRATION:
+ * - plantId parameter is now 12-char key
+ * - Validates 12-char key format before operations
  */
 async function getRealTimeSensorData(req, res) {
     try {
-        // Get plant ID from route params (now UUID)
+        // Get plant ID from route params (now 12-char key)
         const { plantId } = req.params;
-
-        // Validate UUID format
-        if (!isValidUUID(plantId)) {
-            console.error('[REAL-TIME DATA] Invalid plant UUID:', plantId);
-            return res.status(400).json({
-                success: false,
-                error: 'Invalid plant ID format'
-            });
-        }
 
         // Verify plant ownership
         const plant = await Plant.findById(plantId);

@@ -4,7 +4,7 @@ const { isValidUUID } = require('../utils/uuidGenerator');
 class SensorData {
     constructor(sensorData) {
         this.data_id = sensorData.data_id;
-        this.device_key = sensorData.device_key;  // UUID foreign key
+        this.device_key = sensorData.device_key;  // 12-char foreign key
         this.timestamp = sensorData.timestamp;
         this.soil_moisture = sensorData.soil_moisture;
         this.temperature = sensorData.temperature;
@@ -50,15 +50,9 @@ class SensorData {
         }
     }
 
-    // Static method to find sensor data by device key (UUID)
+    // Static method to find sensor data by device key (12-char key)
     static async findByDeviceKey(deviceKey, limit = 100) {
         try {
-            // Validate UUID format
-            if (!deviceKey || !isValidUUID(deviceKey)) {
-                console.error('[SENSOR_DATA] Invalid device_key UUID:', deviceKey);
-                return [];
-            }
-
             const query = `
                 SELECT sd.*, d.device_name, d.user_id 
                 FROM sensors_data sd
@@ -145,11 +139,7 @@ class SensorData {
     // Static method to find sensor data within date range
     static async findByDateRange(deviceKey, startDate, endDate) {
         try {
-            // Validate UUID format
-            if (!deviceKey || !isValidUUID(deviceKey)) {
-                console.error('[SENSOR_DATA] Invalid device_key UUID:', deviceKey);
-                return [];
-            }
+
 
             const query = `
                 SELECT sd.*, d.device_name, d.user_id 
@@ -192,12 +182,6 @@ class SensorData {
 
     // Static method to get average values for a device within time period
     static async getAveragesByDeviceKey(deviceKey, hours = 24) {
-        // Validate UUID
-        if (!isValidUUID(deviceKey)) {
-            console.error('[SENSOR_DATA] Invalid device_key UUID in getAveragesByDeviceKey:', deviceKey);
-            return null;
-        }
-
         try {
             const query = `
                 SELECT 
@@ -227,11 +211,7 @@ class SensorData {
 
     // Create sensor data entry
     async save() {
-        // Validate device_key UUID
-        if (!isValidUUID(this.device_key)) {
-            console.error('[SENSOR_DATA] Invalid device_key UUID in save:', this.device_key);
-            throw new Error('Valid device_key UUID is required');
-        }
+        // Validate device_key 12-char key
 
         try {
             if (this.data_id) {
@@ -286,11 +266,6 @@ class SensorData {
 
     // Static method to create sensor data from IoT device
     static async createFromDevice(deviceKey, sensorReadings) {
-        // Validate UUID
-        if (!isValidUUID(deviceKey)) {
-            console.error('[SENSOR_DATA] Invalid device_key UUID in createFromDevice:', deviceKey);
-            throw new Error('Valid device_key UUID is required');
-        }
 
         try {
             const sensorData = new SensorData({

@@ -1,12 +1,14 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
 import { useSettings } from '@/providers/SettingsProvider';
+import plantApi from '@/api/plantApi';
 
 export default function PlantListItem({ plant, isPremium }) {
   const { t } = useTranslation();
   const { settings } = useSettings();
+  const [lastWatered, setLastWatered] = useState(null);
 
   const showTitles = settings?.widgets?.showWidgetTitles ?? true;
   const showIcons = settings?.widgets?.showWidgetIcons ?? true;
@@ -56,8 +58,41 @@ export default function PlantListItem({ plant, isPremium }) {
     };
   };
 
+  const loadLastWatered = async () => {
+    try {
+      const lastWateredData = await plantApi.getLastWatered(plant.plant_id);
+      setLastWatered(lastWateredData);
+    } catch (error) {
+      console.error('Error loading last watered info:', error);
+    }
+  };
+
   const statusInfo = getStatusInfo();
-  const lastWateredDate = new Date(plant.lastWatered).toLocaleDateString();
+
+    const getLastWateredDisplay = () => {
+    if (lastWatered?.data?.last_watered) {
+      const lastWateredDate = new Date(lastWatered.data.last_watered.timestamp);
+      return {
+        date: lastWateredDate.toLocaleDateString(),
+        timeAgo: lastWatered.data.last_watered.time_ago,
+        triggerType: lastWatered.data.last_watered.trigger_type
+      };
+    }
+    if (plant.lastWatered) {
+      return {
+        date: new Date(plant.lastWatered).toLocaleDateString(),
+        timeAgo: null,
+        triggerType: null
+      };
+    }
+    return {
+      date: t('plants.neverWatered', 'Never watered'),
+      timeAgo: null,
+      triggerType: null
+    };
+  };
+
+  const lastWateredInfo = getLastWateredDisplay();
 
   // Animation variants
   const cardVariants = {
@@ -65,6 +100,11 @@ export default function PlantListItem({ plant, isPremium }) {
     visible: { opacity: 1, scale: 1, transition: { duration: 0.3, ease: "easeOut" } },
     hover: { y: -4, transition: { duration: 0.2 } }
   };
+
+  useEffect(() => {
+    // Load last watered info on component mount
+    loadLastWatered();
+  }, [plant.plant_id]);
   
   return (
     <motion.div 
@@ -119,7 +159,7 @@ export default function PlantListItem({ plant, isPremium }) {
             <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-gray-400 dark:text-gray-500 mr-1.5">
               <path d="M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5C6 11.1 5 15 5 15a7 7 0 0 0 7 7z"></path>
             </svg>
-            {lastWateredDate}
+            {lastWateredInfo.date}
           </div>
         </div>
         

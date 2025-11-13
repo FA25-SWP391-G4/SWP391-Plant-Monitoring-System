@@ -1,4 +1,5 @@
 {
+"locale": "vi-VN",
 "errors": {
 "genericError": "Đã xảy ra lỗi. Vui lòng thử lại sau.",
 "loginFailed": "Đăng nhập không thành công. Vui lòng kiểm tra thông tin đăng nhập của bạn.",
@@ -47,20 +48,33 @@
 "expand": "Mở rộng",
 "collapse": "Thu gọn",
 "appName": "PlantSmart",
-"plantLover": "Người yêu cây"
+"plantLover": "Người yêu cây",
+"search": "Tìm kiếm cây, thiết bị, hoặc trang...",
+"resetDefaults": "Đặt lại mặc định",
+"saveChanges": "Lưu thay đổi",
+"actions": "Hành động",
+"view": "Xem",
+"viewDetails": "Xem chi tiết",
+"refresh": "Làm mới"
 },
 
 "accessibility": {
   "email": "Email",
   "phone": "Điện thoại",
-  "location": "Vị trí"
+  "location": "Vị trí",
+  "userMenu": "Menu người dùng"
 },
 
 "auth": {
 "login": "Đăng nhập",
 "loginTitle": "Đăng nhập vào tài khoản của bạn",
+"loginDescription": "Đăng nhập để tiếp tục hành trình chăm sóc cây của bạn",
+"enterPassword": "Nhập mật khẩu của bạn",
 "register": "Đăng ký",
 "registerTitle": "Tạo tài khoản",
+"registerDescription": "Tạo tài khoản của bạn và có quyền truy cập ngay lập tức vào giám sát cây được hỗ trợ bởi AI, lời khuyên chăm sóc cá nhân và cộng đồng thịnh vượng.",
+"joinPlantParents": "Tham gia với hơn 10.000 Phụ huynh Cây",
+"getStartedExperience": "Bắt đầu với trải nghiệm chăm sóc cây được cá nhân hóa",
 "forgotPassword": "Quên mật khẩu",
 "forgotPasswordTitle": "Đặt lại mật khẩu của bạn",
 "forgotPasswordDescription": "Nhập địa chỉ email của bạn và chúng tôi sẽ gửi cho bạn một liên kết để đặt lại mật khẩu của bạn.",
@@ -69,6 +83,10 @@
 "changePassword": "Thay đổi mật khẩu",
 "changePasswordTitle": "Cập nhật mật khẩu của bạn",
 "logout": "Đăng xuất",
+"signOut": "Đăng xuất",
+"confirmLogout": "Xác nhận đăng xuất",
+"logoutMessage": "Bạn có chắc chắn muốn đăng xuất không? Bạn sẽ cần đăng nhập lại để truy cập tài khoản của mình.",
+"signingOut": "Đang đăng xuất...",
 "rememberMe": "Ghi nhớ tôi",
 "passwordRequirements": "Mật khẩu phải có ít nhất 6 ký tự",
 "passwordMatch": "Mật khẩu phải trùng khớp",
@@ -82,13 +100,21 @@
 "alreadyHaveAccount": "Bạn đã có tài khoản?",
 "dontHaveAccount": "Bạn chưa có tài khoản?",
 "goToLogin": "Quay lại đăng nhập",
+"rememberPassword": "Nhớ mật khẩu của bạn?",
 "checkYourEmail": "Kiểm tra email của bạn",
 "checkSpamFolder": "Nếu bạn không thấy nó, vui lòng kiểm tra thư mục spam của bạn.",
 "sendResetLink": "Gửi liên kết đặt lại",
 "newsletter": "Gửi cho tôi email với các mẹo chăm sóc cây và cập nhật",
+"newsletterLabel": "Gửi cho tôi các mẹo chăm sóc cây, hướng dẫn theo mùa và cập nhật sản phẩm",
 "acceptTerms": "Tôi chấp nhận",
+"agreeToTerms": "Tôi đồng ý với",
 "termsOfService": "Điều khoản dịch vụ",
-"privacyPolicy": "Chính sách bảo mật"
+"privacyPolicy": "Chính sách bảo mật",
+"passwordPlaceholder": "Tạo mật khẩu mạnh",
+"confirmPasswordPlaceholder": "Xác nhận mật khẩu của bạn",
+"phoneNumberPlaceholder": "Nhập số điện thoại của bạn",
+"createAccount": "Tạo tài khoản",
+"creatingAccount": "Đang tạo tài khoản..."
 },
 
 "navigation": {
@@ -115,6 +141,14 @@
 "benefits": "Lợi ích",
 "pricing": "Giá cả",
 "contact": "Liên hệ",
+"aiAssistant": "Trợ lý AI",
+"documentation": "Tài liệu",
+"notifications": "Thông báo",
+"tasks": "Nhiệm vụ",
+"reporting": "Báo cáo",
+"checkIns": "Kiểm tra",
+"objectives": "Mục tiêu",
+"careerHub": "Trung tâm sự nghiệp",
 "devices": "Thiết bị"
 },
 
@@ -148,7 +182,14 @@
 "recentActivity": "Hoạt động gần đây",
 "wateringSchedule": "Lịch tưới",
 "errorLoading": "Lỗi tải bảng điều khiển",
-"loadError": "Không thể tải dữ liệu bảng điều khiển. Vui lòng thử lại sau."
+"loadError": "Không thể tải dữ liệu bảng điều khiển. Vui lòng thử lại sau.",
+"redirecting": "Đang chuyển hướng...",
+"weather": "Thời tiết",
+"aiFeatures": "Tính năng AI",
+"configureWidgets": "Cấu hình widget",
+"customizeLayout": "Tùy chỉnh bố cục",
+"customizeDescription": "Sắp xếp lại widget và cấu hình bảng điều khiển của bạn",
+"openSettings": "Mở cài đặt"
 },
 
 "plants": {
@@ -164,10 +205,31 @@
 "loadError": "Không thể tải dữ liệu cây. Vui lòng thử lại sau.",
 "notFound": "Không tìm thấy cây",
 "manualWatering": "Tưới thủ công",
+"deviceStatus": "Trạng thái thiết bị",
+"lastWatered": "Lần tưới cuối",
+"nextScheduled": "Lịch tiếp theo",
+"notWateredYet": "Chưa được tưới",
+"notScheduled": "Không có lịch",
+"view": "Xem",
+"viewDetails": "Xem chi tiết",
+"searchPlants": "Tìm kiếm cây...",
+"waterNow": "Tưới ngay",
+"editPlant": "Chỉnh sửa cây",
+"neverWatered": "Chưa bao giờ được tưới",
+"log": "Nhật ký hoạt động",
+"currentConditions": "Điều kiện hiện tại",
+"careInstructions": "Hướng dẫn chăm sóc",
+"noCareInstructions": "Không có hướng dẫn chăm sóc",
+"history": "Lịch sử cây",
 "tabs": {
   "overview": "Tổng quan",
   "sensorData": "Dữ liệu cảm biến",
-  "wateringSchedule": "Lịch tưới"
+  "wateringSchedule": "Lịch tưới",
+  "aiPredictions": "Dự đoán AI",
+  "diseaseRecognition": "Nhận dạng bệnh",
+  "aiAssistant": "Trợ lý AI",
+  "aiChat": "Trò chuyện AI",
+  "history": "Lịch sử"
 }
 },
 
@@ -189,6 +251,7 @@
 
 "zones": {
 "title": "Quản lý nhiều khu vực cây",
+"description": "Sắp xếp cây của bạn theo vị trí hoặc danh mục",
 "createZone": "Tạo khu vực",
 "zoneName": "Tên",
 "zoneDescription": "Mô tả",
@@ -247,19 +310,11 @@
 },
 
 "features": {
-"smartWatering": {
-  "title": "Tưới thông minh",
-  "description": "Hệ thống tưới tự động cung cấp lượng nước hoàn hảo dựa trên độ ẩm đất, loại cây và điều kiện môi trường."
-},
+"smartWatering": "Tưới thông minh",  
+"lightOptimization": "Tối ưu hóa ánh sáng",
+"healthAlerts": "Cảnh báo sức khỏe",
 "smartWateringDesc": "Cảm biến của chúng tôi theo dõi độ ẩm đất và tự động tưới nước cho cây của bạn vào thời điểm hoàn hảo, đảm bảo chúng không bao giờ bị tưới quá nhiều hoặc quá ít.",
-"lightOptimization": {
-  "title": "Tối ưu hóa ánh sáng",
-  "description": "Cảm biến ánh sáng tiên tiến giám sát và tối ưu hóa điều kiện ánh sáng, đảm bảo cây của bạn nhận được quang phổ và cường độ lý tưởng."
-},
 "lightOptimizationDesc": "Theo dõi mức độ tiếp xúc với ánh sáng trong suốt cả ngày và nhận các khuyến nghị về vị trí tối ưu cho nhu cầu cụ thể của từng cây của bạn.",
-"healthAlerts": {
-  "title": "Cảnh báo sức khỏe"
-},
 "healthAlertsDesc": "Nhận thông báo ngay lập tức về các vấn đề sức khỏe tiềm ẩn, sâu bệnh, hoặc bệnh tật trước khi chúng trở nên nghiêm trọng.",
 "mobileDashboard": {
   "title": "Bảng điều khiển di động",
@@ -276,6 +331,10 @@
   "description": "Mạng lưới cảm biến không dây giám sát nhiệt độ, độ ẩm, độ pH của đất và dinh dưỡng cho việc chăm sóc cây toàn diện.",
   "cta": "Tìm hiểu thêm"
 }
+},
+
+"status": {
+"healthy": "Khỏe mạnh"
 },
 
 "cta": {
@@ -384,12 +443,28 @@
 },
 
 "ai": {
+"askAI": "Hỏi AI",
+"analyzeImage": "Phân tích hình ảnh",
+"predictions": {
+  "title": "Dự đoán tưới AI"
+},
+"chat": {
+  "title": "Trợ lý chăm sóc cây AI"
+},
 "chatbot": {
   "title": "Trợ lý cây trồng",
   "placeholder": "Hỏi tôi bất cứ điều gì về cây của bạn...",
   "greeting": "Xin chào! Tôi có thể giúp gì cho cây của bạn hôm nay?",
   "loading": "Đang suy nghĩ...",
-  "error": "Xin lỗi, tôi không thể xử lý yêu cầu của bạn. Vui lòng thử lại."
+  "error": "Xin lỗi, tôi không thể xử lý yêu cầu của bạn. Vui lòng thử lại.",
+  "welcomeMessage": "Xin chào! Tôi là trợ lý AI chăm sóc cây của bạn. Tôi có thể giúp gì cho bạn hôm nay?",
+  "tooltip": "Trợ lý AI cây trồng",
+  "quickQuestions": {
+    "watering": "Khi nào tôi nên tưới cây?",
+    "light": "Cây của tôi có đủ ánh sáng không?",
+    "yellowing": "Tại sao lá của tôi lại chuyển vàng?",
+    "fertilizer": "Khi nào tôi nên bón phân?"
+  }
 },
 "imageRecognition": {
   "title": "Nhận dạng cây",
@@ -425,6 +500,92 @@
 }
 },
 
+"imageRecognition": {
+"title": "Nhận dạng cây",
+"subtitle": "Tải lên hình ảnh cây của bạn để phân tích",
+"subtitleWithPlant": "Phân tích hình ảnh cho {{plantName}}",
+"uploadTitle": "Tải lên hình ảnh cây",
+"uploadDescription": "Chọn một hình ảnh từ thiết bị của bạn hoặc chụp ảnh mới",
+"selectFile": "Chọn file",
+"fileRequirements": "JPEG, PNG hoặc WebP. Tối đa 10MB.",
+"analyzing": "Đang phân tích...",
+"processingImage": "Đang xử lý hình ảnh...",
+"analyzeButton": "Phân tích hình ảnh",
+"analysisResults": "Kết quả phân tích",
+"diseaseDetection": "Phát hiện bệnh",
+"detectedCondition": "Tình trạng phát hiện",
+"severity": "Mức độ nghiêm trọng",
+"confidence": "Độ tin cậy",
+"treatmentRecommendations": "Khuyến nghị điều trị",
+"preventionTips": "Mẹo phòng ngừa",
+"analysisHistory": "Lịch sử phân tích",
+"healthy": "Khỏe mạnh",
+"clear": "Xóa",
+"viewAllHistory": "Xem tất cả lịch sử",
+"invalidFileType": "Loại file không hợp lệ",
+"fileTooLarge": "File quá lớn",
+"noFileSelected": "Chưa chọn file",
+"analysisError": "Lỗi phân tích",
+"compressing": "Đang nén...",
+"retryAnalysis": "Thử lại phân tích",
+"offlineMode": "Chế độ offline",
+"imageQualityPoor": "Chất lượng hình ảnh kém",
+"noHistoryAvailable": "Không có lịch sử khả dụng",
+"deleteHistory": "Xóa lịch sử",
+"exportHistory": "Xuất lịch sử"
+},
+
+"devices": {
+"myDevices": "Thiết bị của tôi",
+"manage": "Giám sát và quản lý các thiết bị đã kết nối của bạn",
+"addDevice": "Thêm thiết bị",
+"deviceName": "Tên thiết bị",
+"deviceType": "Loại",
+"status": "Trạng thái",
+"lastActive": "Hoạt động cuối",
+"loading": "Đang tải thiết bị...",
+"online": "Trực tuyến",
+"offline": "Ngoại tuyến"
+},
+
+"filters": {
+"allPlants": "Tất cả cây",
+"healthy": "Khỏe mạnh",
+"needsWater": "Cần tưới nước",
+"needsAttention": "Cần chú ý"
+},
+
+"metrics": {
+"moisture": "Độ ẩm",
+"temperature": "Nhiệt độ",
+"humidity": "Độ ẩm",
+"light": "Ánh sáng",
+"soil_moisture": "Độ ẩm đất",
+"light_intensity": "Cường độ ánh sáng",
+"air_humidity": "Độ ẩm không khí"
+},
+
+"watering": {
+"waterNow": "Tưới ngay",
+"lastWatered": "Lần tưới cuối",
+"ok": "Vừa được tưới",
+"addPlant": "Thêm cây vào lịch"
+},
+
+"wateringPrediction": {
+"noPlant": "Chọn một cây để xem dự đoán tưới"
+},
+
+"device": {
+"offline": "Ngoại tuyến"
+},
+
+"charts": {
+"loading": "Đang tải dữ liệu biểu đồ...",
+"noData": "Không có dữ liệu lịch sử",
+"over24Hours": "Trong 24 giờ qua"
+},
+
 "weather": {
 "title": "Thời tiết địa phương",
 "today": "Hôm nay",
@@ -438,7 +599,13 @@
 "lowTemp": "Thấp",
 "feels": "Cảm giác như",
 "indoor": "Trong nhà",
-"outdoor": "Ngoài trời"
+"outdoor": "Ngoài trời",
+"loading": "Đang tải dữ liệu thời tiết...",
+"tomorrow": "Ngày mai",
+"updatedAt": "Cập nhật lúc",
+"tip": {
+  "default": "Theo dõi độ ẩm đất hàng ngày dựa trên điều kiện thời tiết hiện tại."
+}
 },
 
 "reviews": {
@@ -546,7 +713,14 @@
 "csv": "CSV",
 "excel": "Excel",
 "summary": "Tóm tắt",
-"details": "Chi tiết"
+"details": "Chi tiết",
+"overview": "Tổng quan",
+"plantAnalysis": "Phân tích cây",
+"imageAnalysis": "Phân tích hình ảnh",
+"historicalData": "Dữ liệu lịch sử",
+"waterConsumption": "Sử dụng nước",
+"plantHealth": "Sức khỏe cây",
+"customReports": "Báo cáo tùy chỉnh"
 },
 
 "thresholds": {
@@ -581,14 +755,103 @@
 }
 },
 
+"premium": {
+"unlockFeatures": "Mở khóa tính năng Premium",
+"scheduleDescription": "Lên lịch tưới tự động, nhận phân tích chi tiết và nhiều tính năng khác với Premium.",
+"upgrade": "Nâng cấp lên Premium",
+"upgradeToday": "Nâng cấp lên Premium ngay hôm nay",
+"unlockDescription": "Nâng tầm việc chăm sóc cây của bạn với các tính năng nâng cao, phân tích chi tiết và hỗ trợ premium.",
+"monthly": "Hàng tháng",
+"annual": "Hàng năm",
+"save": "Tiết kiệm 20%",
+"faqTitle": "Câu hỏi thường gặp",
+"faq1": "Gói đăng ký Premium hoạt động như thế nào?",
+"faqAnswer1": "Khi bạn nâng cấp lên Premium, bạn sẽ ngay lập tức có quyền truy cập vào tất cả các tính năng premium. Bạn có thể chọn thanh toán hàng tháng hoặc hàng năm. Thanh toán hàng năm tiết kiệm 20% so với thanh toán hàng tháng.",
+"faq2": "Tôi có thể hủy đăng ký bất cứ lúc nào không?",
+"faqAnswer2": "Có, bạn có thể hủy đăng ký Premium bất cứ lúc nào. Quyền truy cập vào các tính năng premium sẽ tiếp tục cho đến cuối chu kỳ thanh toán hiện tại. Chúng tôi không hoàn tiền cho các giai đoạn đăng ký một phần.",
+"faq3": "Điều gì xảy ra với dữ liệu của tôi nếu tôi hạ cấp xuống gói Cơ bản?",
+"faqAnswer3": "Nếu bạn hạ cấp từ Premium xuống Cơ bản, bạn vẫn có quyền truy cập vào dữ liệu cây cốt lõi, nhưng các tính năng premium sẽ bị vô hiệu hóa. Dữ liệu lịch sử ngoài 30 ngày sẽ được lưu trữ nhưng không bị xóa, vì vậy nếu bạn nâng cấp lại sau này, bạn có thể lấy lại quyền truy cập.",
+"faq4": "Có giới hạn số lượng cây tôi có thể thêm với Premium không?",
+"faqAnswer4": "Không, người đăng ký Premium có thể thêm không giới hạn cây vào tài khoản của họ. Điều này so với gói Cơ bản, cho phép tối đa 5 cây.",
+"readyToUpgrade": "Sẵn sàng nâng cấp việc chăm sóc cây của bạn?",
+"ctaDescription": "Tham gia cùng hàng nghìn người yêu cây đã biến đổi thói quen chăm sóc cây với PlantSmart Premium.",
+"getStartedMonthly": "Bắt đầu - ",
+"month": "tháng",
+"getLifetime": "Mua trọn đời - ",
+"securePayment": "Thanh toán bảo mật bằng VNPay",
+"active": "ĐANG HOẠT ĐỘNG",
+"ultimate": "Ultimate",
+"ultimateDesc": "Mọi thứ Premium có + trí tuệ AI & giám sát thời gian thực",
+"currentPlan": "Gói hiện tại",
+"expiresOn": "Hết hạn vào",
+"yearlySubscription": "Đăng ký hàng năm",
+"oneYear": "1 năm",
+"extendSubscription": "Gia hạn",
+"includes": "Bao gồm mọi thứ trong Premium, cộng:",
+"features": {
+  "ultimate1": "🤖 Gợi ý cây AI",
+  "ultimate2": "📹 Giám sát camera thời gian thực",
+  "ultimate3": "🔬 Phân tích sức khỏe cây nâng cao",
+  "ultimate4": "📱 Thông báo & cảnh báo thông minh",
+  "ultimate5": "🌡️ Nhận dạng mẫu môi trường",
+  "ultimate6": "⚡ Hỗ trợ ưu tiên ngay lập tức"
+},
+"featuresTitle": "Tính năng Premium",
+"advancedAnalytics": "Phân tích nâng cao",
+"advancedAnalyticsDesc": "Nhận thông tin chi tiết về sức khỏe cây theo thời gian với trực quan hóa dữ liệu toàn diện và phân tích xu hướng.",
+"automatedSchedules": "Lịch trình tự động",
+"automatedSchedulesDesc": "Tạo lịch tưới thông minh phù hợp với nhu cầu của từng cây, với điều chỉnh tự động dựa trên dữ liệu cảm biến thời gian thực.",
+"aiRecommendations": "Gợi ý AI",
+"aiRecommendationsDesc": "Nhận gợi ý chăm sóc cá nhân từ hệ thống AI của chúng tôi, học hỏi từ điều kiện và mẫu phát triển cụ thể của cây bạn.",
+"customZones": "Vùng tùy chỉnh",
+"customZonesDesc": "Sắp xếp cây thành các vùng tùy chỉnh dựa trên vị trí, loại hoặc yêu cầu chăm sóc để tối ưu hóa giám sát và quản lý.",
+"dataExport": "Xuất dữ liệu",
+"dataExportDesc": "Xuất dữ liệu cây của bạn ở nhiều định dạng khác nhau, bao gồm CSV và PDF, để lưu trữ hồ sơ hoặc phân tích thêm.",
+"prioritySupport": "Hỗ trợ ưu tiên",
+"prioritySupportDesc": "Nhận quyền ưu tiên với đội ngũ hỗ trợ của chúng tôi với thời gian phản hồi nhanh hơn và hỗ trợ chuyên dụng cho mọi vấn đề.",
+"manageSubscription": "Quản lý đăng ký của bạn",
+"activeSubscriptionDescription": "Bạn có thể gia hạn đăng ký hoặc nâng cấp lên gói khác bất cứ lúc nào.",
+"extendCurrent": "Gia hạn gói hiện tại"
+},
+
 "profile": {
-"title": "Hồ sơ của tôi",
+"title": "Hồ sơ người dùng",
+"subtitle": "Quản lý thông tin tài khoản và cài đặt của bạn",
+"information": "Thông tin hồ sơ",
+"informationDesc": "Cập nhật thông tin cá nhân của bạn",
+"editProfile": "Chỉnh sửa hồ sơ",
+"save": "Lưu",
+"cancel": "Hủy",
+"role": "Vai trò",
+"firstName": "Tên",
+"lastName": "Họ",
+"email": "Email",
+"phoneNumber": "Số điện thoại",
+"memberSince": "Thành viên từ",
+"password": "Mật khẩu",
+"passwordDesc": "Cập nhật mật khẩu của bạn",
+"changePassword": "Đổi mật khẩu",
+"currentPassword": "Mật khẩu hiện tại",
+"newPassword": "Mật khẩu mới",
+"confirmNewPassword": "Xác nhận mật khẩu mới",
+"updatePassword": "Cập nhật mật khẩu",
+"enterFirstName": "Nhập tên",
+"enterLastName": "Nhập họ",
+"enterEmail": "Nhập email",
+"enterCurrentPassword": "Nhập mật khẩu hiện tại",
+"enterNewPassword": "Nhập mật khẩu mới",
+
+"profileUpdated": "Cập nhật hồ sơ thành công",
+"passwordChanged": "Đổi mật khẩu thành công",
+"passwordsDoNotMatch": "Mật khẩu không khớp",
+"passwordTooShort": "Mật khẩu phải có ít nhất 8 ký tự",
+"updateProfileError": "Không thể cập nhật hồ sơ",
+"changePasswordError": "Không thể đổi mật khẩu",
 "personalInfo": "Thông tin cá nhân",
 "accountSettings": "Cài đặt tài khoản",
 "subscription": "Đăng ký",
 "planDetails": "Chi tiết gói",
 "billingHistory": "Lịch sử thanh toán",
-"changePassword": "Thay đổi mật khẩu",
 "notifications": "Thông báo",
 "preferences": "Tùy chọn",
 "saveChanges": "Lưu thay đổi",
@@ -651,14 +914,147 @@
 }
 },
   "settings": {
+    "title": "Cài đặt",
+    "description": "Tùy chỉnh bảng điều khiển theo sở thích của bạn",
+    "account": "Tài khoản", 
+    "notificationsSection": "Thông báo",
+    "devices": "Thiết bị",
+    "privacySection": "Quyền riêng tư",
+    "help": "Trợ giúp",
+    "about": "Về chúng tôi",
+    "logout": "Đăng xuất",
+    "deleteAccount": "Xóa tài khoản",
     "appearance": "Giao diện",
     "language": "Ngôn ngữ",
     "moreLanguages": "Nhiều ngôn ngữ hơn",
     "theme": {
+      "title": "Chủ đề",
       "system": "Hệ thống",
       "light": "Sáng",
       "dark": "Tối"
-    }
+    },
+    "notificationPreferences": {
+      "push": "Thông báo đẩy",
+      "email": "Email",
+      "watering": "Tưới nước",
+      "moisture": "Độ ẩm",
+      "battery": "Pin",
+      "tips": "Mẹo",
+      "updates": "Cập nhật"
+    },
+    "privacySettings": {
+      "dataCollection": "Thu thập dữ liệu",
+      "dataSharing": "Chia sẻ dữ liệu",
+      "analytics": "Phân tích",
+      "downloadData": "Tải xuống dữ liệu",
+      "deleteData": "Xóa dữ liệu"
+    },
+    "advanced": {
+      "title": "Nâng cao",
+      "readingFrequency": "Tần suất đọc",
+      "frequencyHint": "Tần suất đọc cảm biến",
+      "debug": "Gỡ lỗi",
+      "logs": "Nhật ký",
+      "resetSystem": "Đặt lại hệ thống"
+    },
+    "accountDeletion": {
+      "title": "Xóa tài khoản",
+      "warning": "Cảnh báo xóa tài khoản",
+      "confirmation": "Xác nhận xóa",
+      "button": "Xóa tài khoản",
+      "feedback": "Phản hồi",
+      "success": "Thành công"
+    },
+    "widgets": "Widgets & Tính năng",
+    "notifications": "Thông báo",
+    "privacy": "Quyền riêng tư & Bảo mật",
+    "dashboardWidgets": "Dashboard Widgets",
+    "showPlantOverview": "Tổng quan cây",
+    "showPlantOverviewDesc": "Hiển thị thẻ thống kê cây",
+    "showSensorData": "Widgets dữ liệu cảm biến",
+    "showSensorDataDesc": "Hiển thị số liệu cảm biến thời gian thực",
+    "showWeatherWidget": "Widget thời tiết",
+    "showWeatherWidgetDesc": "Hiển thị thông tin thời tiết",
+    "showWateringSchedule": "Lịch tưới",
+    "showWateringScheduleDesc": "Hiển thị lịch tưới sắp tới",
+    "showNotifications": "Widget thông báo",
+    "showNotificationsDesc": "Hiển thị thông báo gần đây",
+    "showRecentActivity": "Hoạt động gần đây",
+    "showRecentActivityDesc": "Hiển thị hoạt động chăm sóc cây gần đây",
+    "aiFeatures": "Tính năng AI",
+    "enableAIFeatures": "Bật tính năng AI",
+    "enableAIFeaturesDesc": "Công tắc chính cho tất cả tính năng được hỗ trợ bởi AI",
+    "showChatbot": "Chatbot AI",
+    "showChatbotDesc": "Bật trợ lý AI chăm sóc cây",
+    "showAIInsights": "Thông tin AI",
+    "showAIInsightsDesc": "Hiển thị phân tích cây được hỗ trợ bởi AI",
+    "showImageAnalysis": "Phân tích hình ảnh",
+    "showImageAnalysisDesc": "Bật tính năng phân tích hình ảnh cây",
+    "showAIPredictions": "Dự đoán AI",
+    "showAIPredictionsDesc": "Hiển thị dự đoán tưới và chăm sóc",
+    "widgetAppearance": "Giao diện Widget",
+    "compactMode": "Chế độ compact",
+    "compactModeDesc": "Sử dụng widget nhỏ hơn để hiển thị nhiều nội dung hơn",
+    "showWidgetTitles": "Tiêu đề Widget",
+    "showWidgetTitlesDesc": "Hiển thị tiêu đề trên widget",
+    "showWidgetIcons": "Icon Widget",
+    "showWidgetIconsDesc": "Hiển thị icon trên widget",
+    "animationsEnabled": "Hoạt ảnh",
+    "animationsEnabledDesc": "Bật hoạt ảnh và chuyển tiếp mượt mà",
+    "shareData": "Chia sẻ dữ liệu ẩn danh",
+    "shareDataDescription": "Chia sẻ dữ liệu sử dụng ẩn danh để giúp cải thiện dịch vụ",
+    "anonymousAnalytics": "Phân tích ẩn danh",
+    "anonymousAnalyticsDescription": "Cho phép thu thập dữ liệu phân tích ẩn danh",
+    "locationAccess": "Truy cập vị trí",
+    "locationNever": "Không bao giờ",
+    "locationWhileUsing": "Khi đang sử dụng ứng dụng",
+    "locationAlways": "Luôn luôn",
+    "locationAccessDescription": "Kiểm soát khi nào ứng dụng có thể truy cập vị trí của bạn để lấy dữ liệu thời tiết",
+    "dangerZone": "Vùng nguy hiểm",
+    "deleteAccountWarning": "Khi bạn xóa tài khoản, sẽ không thể khôi phục. Vui lòng cân nhắc kỹ.",
+    "notificationChannels": "Kênh thông báo",
+    "emailNotifications": "Thông báo email",
+    "emailNotificationsDescription": "Nhận thông báo qua email",
+    "pushNotifications": "Thông báo đẩy",
+    "pushNotificationsDescription": "Nhận thông báo trên thiết bị của bạn",
+    "smsNotifications": "Thông báo SMS",
+    "smsNotificationsDescription": "Nhận tin nhắn cho các cảnh báo quan trọng (chỉ Premium)",
+    "notificationTypes": "Loại thông báo",
+    "wateringReminders": "Nhắc nhở tưới nước",
+    "wateringRemindersDescription": "Nhận thông báo khi cây cần nước",
+    "criticalAlerts": "Cảnh báo quan trọng",
+    "criticalAlertsDescription": "Nhận thông báo cho các vấn đề quan trọng (ví dụ: nhiệt độ cực đoan)",
+    "weeklyReports": "Báo cáo hàng tuần",
+    "weeklyReportsDescription": "Nhận báo cáo sức khỏe cây hàng tuần",
+    "preferredLanguage": "Ngôn ngữ ưa thích",
+    "dateFormat": "Định dạng ngày",
+    "timeFormat": "Định dạng thời gian",
+    "timeFormat12h": "12 giờ (AM/PM)",
+    "timeFormat24h": "24 giờ",
+    "themeSystem": "Mặc định hệ thống",
+    "themeLight": "Sáng",
+    "themeDark": "Tối",
+    "themeDescription": "Chọn cách ứng dụng hiển thị",
+    "fontSize": "Kích thước phông chữ",
+    "fontSizeSmall": "Nhỏ",
+    "fontSizeMedium": "Trung bình",
+    "fontSizeLarge": "Lớn",
+    "fontSizeXL": "Rất lớn",
+    "colorScheme": "Bảng màu",
+    "colorEmerald": "Ngọc lục bảo",
+    "colorBlue": "Xanh dương",
+    "colorPurple": "Tím"
+  },
+
+  "languages": {
+    "english": "English",
+    "vietnamese": "Tiếng Việt"
+  },
+
+  "stats": {
+    "total": "Tổng số cây",
+    "healthy": "Khỏe mạnh",
+    "attention": "Cần chú ý"
   },
 
   "payment": {

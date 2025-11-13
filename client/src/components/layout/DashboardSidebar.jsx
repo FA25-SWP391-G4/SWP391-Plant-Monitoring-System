@@ -225,7 +225,7 @@ const DashboardSidebar = ({ isOpen = true, onToggle, demoUser = null }) => {
   return (
     <>
       {/* Sidebar */}
-      <div className={`h-full bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 transition-all duration-300 ease-in-out ${
+      <div className={`overflow-y: scroll h-full bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 transition-all duration-300 ease-in-out ${
         isExpanded ? 'w-72' : 'w-16'
       }`}>   
         {/* Navigation */}

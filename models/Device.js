@@ -43,10 +43,10 @@ class Device {
      * DEVICE CONSTRUCTOR
      * Initializes device object with default values and validation
      * SUPPORTS: UC3 (Add Device), UC26 (Admin device management)
-     * NOTE: device_key is the primary key (UUID), device_id is deprecated
+     * NOTE: device_key is the primary key (12-char key), device_id is deprecated
      */
     constructor(deviceData) {
-        this.device_key = deviceData.device_key;  // Primary key (UUID)
+        this.device_key = deviceData.device_key;  // Primary key (12-char key)
         this.user_id = deviceData.user_id;
         this.device_name = deviceData.device_name;
         this.status = deviceData.status || 'offline'; // Default to offline for security
@@ -90,7 +90,7 @@ class Device {
      * - UC26: Admin device management - Device details view
      * 
      * SECURITY: Includes owner validation for authorization checks
-     * NOTE: device_key is the primary key (UUID)
+     * NOTE: device_key is the primary key (12-char key)
      */
     // Static method to find device by device_key (primary key)
     static async findById(deviceKey) {
@@ -189,11 +189,6 @@ class Device {
         }
     }
 
-    // Generate a unique device key (UUID) - now using our UUID generator
-    static generateDeviceKey() {
-        return generateUUID();
-    }
-
     // Create or update device
     async save() {
         try {
@@ -222,11 +217,7 @@ class Device {
                 const updatedDevice = new Device(result.rows[0]);
                 Object.assign(this, updatedDevice);
                 return this;
-            } else {
-                // Create new device - generate UUID for device_key
-                this.device_key = Device.generateDeviceKey();
-                console.log('[DEVICE CREATE] Generated device_key:', this.device_key);
-                
+            } else {                
                 const query = `
                     INSERT INTO devices (device_key, user_id, device_name, status)
                     VALUES ($1, $2, $3, $4)
@@ -324,7 +315,7 @@ class Device {
     // Convert to JSON
     toJSON() {
         return {
-            device_key: this.device_key,  // Primary key (UUID)
+            device_key: this.device_key,  // Primary key (12-char key)
             user_id: this.user_id,
             device_name: this.device_name,
             status: this.status,

@@ -69,7 +69,7 @@ SELECT
     a.action_label,
     a.source,
     a.is_persistent,
-    u.full_name as user_name,
+    u.family_name as user_name,
     u.email as user_email,
     CASE 
         WHEN a.priority = 1 THEN 'critical'

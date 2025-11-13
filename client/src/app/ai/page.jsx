@@ -25,11 +25,9 @@ const AIPage = () => {
 
   if (loading) {
     return (
-      <DashboardLayout>
         <div className="flex justify-center items-center min-h-[60vh]">
           <ThemedLoader size="lg" showText={true} text="Loading AI features..." />
         </div>
-      </DashboardLayout>
     );
   }
 
