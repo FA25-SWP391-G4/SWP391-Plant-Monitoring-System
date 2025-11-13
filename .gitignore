@@ -54,3 +54,6 @@ Thumbs.db
 !/uploads/images/.gitkeep
 
 /certs
+
+/ai_models
+/ai_service

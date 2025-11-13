@@ -108,7 +108,7 @@ const plantApi = {
   // Toggle auto-watering for a plant
   toggleAutoWatering: async (plantId, enabled) => {
     try {
-      const response = await axiosClient.put(`/api/plants/${plantId}/auto-watering`, { enabled });
+      const response = await axiosClient.post(`/api/plants/${plantId}/auto-watering`, { enabled });
       return response.data;
     } catch (error) {
       console.error(`Error toggling auto-watering for plant ${plantId}:`, error);

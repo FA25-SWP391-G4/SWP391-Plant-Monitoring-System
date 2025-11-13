@@ -161,7 +161,16 @@ connectAwsIoT().catch(console.error);
 
 //initialize MQTT client
 const mqttClient = require('./mqtt/mqttClient');
+const { scheduleAllPumps } = require('./services/schedulerService');
 
+(async () => {
+  try {
+    await scheduleAllPumps();
+    console.log('✅ All existing pump schedules loaded into cron jobs');
+  } catch (err) {
+    console.error('❌ Failed to initialize pump schedules:', err);
+  }
+})();
 // Import PostgreSQL database connection module (it initializes on require)
 require('./config/db');
 
@@ -186,6 +195,7 @@ var plantProfileRouter = require('./routes/plantProfile'); // Plant profile data
 // var premiumRouter = require('./routes/premium');      // 🔄 UC14-23: Premium features
 var googleAuthRouter = require('./routes/googleAuth'); // ✅ UC12: Google OAuth authentication (implemented)
 var settingsRouter = require('./routes/settings');     // ✅ UC13: User settings management (implemented)
+
 
 var app = express();
 

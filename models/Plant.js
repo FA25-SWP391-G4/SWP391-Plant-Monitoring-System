@@ -255,9 +255,9 @@ class Plant {
                 if (this.user_id && !isValidUUID(this.user_id)) {
                     throw new Error('Invalid user_id UUID format');
                 }
-                if (this.device_key && !isValidUUID(this.device_key)) {
-                    throw new Error('Invalid device_key UUID format');
-                }
+                // if (this.device_key && !isValidUUID(this.device_key)) {
+                //     throw new Error('Invalid device_key UUID format');
+                // }
 
                 const query = `
                     UPDATE plants

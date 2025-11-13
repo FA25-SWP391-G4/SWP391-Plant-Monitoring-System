@@ -59,7 +59,7 @@ try {
 
 
 // Connection event handlers
-client.on('connect', () => {
+client.on('connect', async() => {
   isClientConnected = true;
   console.log('Connected to MQTT broker');
   SystemLog.create('INFO', 'MQTT client connected').catch(console.error);
@@ -84,6 +84,13 @@ client.on('connect', () => {
       }
     });
   });
+
+  try {
+    await scheduleAllPumps();
+    console.log('✅ All pump schedules loaded and cron jobs registered');
+  } catch (err) {
+    console.error('❌ Failed to schedule pumps:', err.message);
+  }
 });
 client.on('close', () => { isClientConnected = false; console.log('🔴 MQTT connection closed'); });
 client.on('reconnect', () => console.log('🔄 MQTT reconnecting...'));

@@ -248,13 +248,13 @@ async function getWateringSchedule(req, res) {
         const { plantId } = req.params;
 
         // Validate UUID format
-        if (!isValidUUID(plantId)) {
-            console.error('[GET SCHEDULE] Invalid plant UUID:', plantId);
-            return res.status(400).json({
-                success: false,
-                error: 'Invalid plant ID format'
-            });
-        }
+        // if (!isValidUUID(plantId)) {
+        //     console.error('[GET SCHEDULE] Invalid plant UUID:', plantId);
+        //     return res.status(400).json({
+        //         success: false,
+        //         error: 'Invalid plant ID format'
+        //     });
+        // }
 
         // Find the plant
         const plant = await Plant.findById(plantId);
@@ -313,13 +313,13 @@ async function setWateringSchedule(req, res) {
         const { schedule } = req.body;
 
         // Validate UUID format
-        if (!isValidUUID(plantId)) {
-            console.error('[SET SCHEDULE] Invalid plant UUID:', plantId);
-            return res.status(400).json({
-                success: false,
-                error: 'Invalid plant ID format'
-            });
-        }
+        // if (!isValidUUID(plantId)) {
+        //     console.error('[SET SCHEDULE] Invalid plant UUID:', plantId);
+        //     return res.status(400).json({
+        //         success: false,
+        //         error: 'Invalid plant ID format'
+        //     });
+        // }
 
         // Validate schedule
         if (!schedule || !Array.isArray(schedule)) {
@@ -351,16 +351,15 @@ async function setWateringSchedule(req, res) {
         await PumpSchedule.deleteByPlantId(plantId);
 
         // Create new schedule entries
-        const schedulePromises = schedule.map(entry => {
-            return PumpSchedule.create({
-                plant_id: plantId,
-                day_of_week: entry.dayOfWeek,
-                hour: entry.hour,
-                minute: entry.minute,
-                duration: entry.duration,
-                enabled: entry.enabled !== false // Default to enabled
-            });
+        const schedulePromises = schedule.map(async (entry) => {
+        const newSchedule = new PumpSchedule({
+            plant_id: plantId,
+            cron_expression: `${entry.minute} ${entry.hour} * * ${entry.dayOfWeek}`, // convert dayOfWeek to cron
+            is_active: entry.enabled !== false
         });
+
+        return await newSchedule.save();
+    });
 
         const createdSchedules = await Promise.all(schedulePromises);
 
@@ -408,13 +407,13 @@ async function toggleAutoWatering(req, res) {
         const { enabled } = req.body;
 
         // Validate UUID format
-        if (!isValidUUID(plantId)) {
-            console.error('[TOGGLE AUTO WATERING] Invalid plant UUID:', plantId);
-            return res.status(400).json({
-                success: false,
-                error: 'Invalid plant ID format'
-            });
-        }
+        // if (!isValidUUID(plantId)) {
+        //     console.error('[TOGGLE AUTO WATERING] Invalid plant UUID:', plantId);
+        //     return res.status(400).json({
+        //         success: false,
+        //         error: 'Invalid plant ID format'
+        //     });
+        // }
 
         // Validate input
         if (typeof enabled !== 'boolean') {
@@ -493,13 +492,13 @@ async function setSensorThresholds(req, res) {
         const { thresholds } = req.body;
 
         // Validate UUID format
-        if (!isValidUUID(plantId)) {
-            console.error('[SET THRESHOLDS] Invalid plant UUID:', plantId);
-            return res.status(400).json({
-                success: false,
-                error: 'Invalid plant ID format'
-            });
-        }
+        // if (!isValidUUID(plantId)) {
+        //     console.error('[SET THRESHOLDS] Invalid plant UUID:', plantId);
+        //     return res.status(400).json({
+        //         success: false,
+        //         error: 'Invalid plant ID format'
+        //     });
+        // }
 
         // Check if user is premium
         if (req.user.role !== 'Premium' && req.user.role !== 'Admin') {
