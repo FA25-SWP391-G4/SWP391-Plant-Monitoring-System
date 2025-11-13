@@ -4,7 +4,6 @@ const ChatHistory = require('../models/ChatHistory');
 const { initializeTensorFlow } = require('../services/aiUtils');
 const jwt = require('jsonwebtoken');
 const OpenAI = require('openai');
-const sensorService = require('../services/sensorService');
 const { detectLanguage, getSystemPrompt, createContext, processResponse } = require('../utils/languageUtils');
 
 /**
@@ -25,6 +24,7 @@ const processChatbotQuery = async (req, res) => {
 
         const { message, conversation_id, plant_id, context } = req.body;
         const userId = req.user?.user_id || req.user?.id;
+        const language = req.body.language || detectLanguage(message) || 'en'; // Default to English
         
         if (!message) {
             return res.status(400).json({

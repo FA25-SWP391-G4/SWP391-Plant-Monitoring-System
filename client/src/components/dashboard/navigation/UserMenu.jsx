@@ -25,8 +25,7 @@ const UserMenu = ({ isExpanded = true }) => {
   // Available languages with flags
   const availableLanguages = {
     vi: { name: 'Tiếng Việt', flag: '/flags/vi.svg', nativeName: 'Tiếng Việt' },
-    en: { name: 'English', flag: '/flags/en.svg', nativeName: 'English' },
-
+    en: { name: 'English', flag: '/flags/en.svg', nativeName: 'English' }
   };
 
   // Get current language from settings first, fallback to i18n current language

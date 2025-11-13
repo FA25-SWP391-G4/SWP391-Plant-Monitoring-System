@@ -99,6 +99,83 @@ const reportsApi = {
   },
   
   /**
+   * Get custom reports for the user
+   * @returns {Promise} - Custom reports list
+   */
+  getCustomReports: async () => {
+    try {
+      const response = await axiosClient.get('/api/reports/custom');
+      return response;
+    } catch (error) {
+      console.error('Error fetching custom reports:', error);
+      throw error;
+    }
+  },
+  
+  /**
+   * Create a new custom report
+   * @param {Object} reportData - Report configuration
+   * @returns {Promise} - Created report
+   */
+  createCustomReport: async (reportData) => {
+    try {
+      const response = await axiosClient.post('/api/reports/custom', reportData);
+      return response;
+    } catch (error) {
+      console.error('Error creating custom report:', error);
+      throw error;
+    }
+  },
+  
+  /**
+   * Run a custom report
+   * @param {number} reportId - Report ID
+   * @returns {Promise} - Report data
+   */
+  runCustomReport: async (reportId) => {
+    try {
+      const response = await axiosClient.post(`/api/reports/custom/${reportId}/run`);
+      return response;
+    } catch (error) {
+      console.error('Error running custom report:', error);
+      throw error;
+    }
+  },
+  
+  /**
+   * Delete a custom report
+   * @param {number} reportId - Report ID
+   * @returns {Promise} - Success response
+   */
+  deleteCustomReport: async (reportId) => {
+    try {
+      const response = await axiosClient.delete(`/api/reports/custom/${reportId}`);
+      return response;
+    } catch (error) {
+      console.error('Error deleting custom report:', error);
+      throw error;
+    }
+  },
+  
+  /**
+   * Get water consumption data for time range and plant filter
+   * @param {string} timeRange - Time range (week, month, quarter, year)
+   * @param {string} plantFilter - Plant filter ('all' or plant ID)
+   * @returns {Promise} - Water consumption data
+   */
+  getWaterConsumption: async (timeRange = 'month', plantFilter = 'all') => {
+    try {
+      const response = await axiosClient.get('/api/reports/water-consumption', {
+        params: { timeRange, plant: plantFilter }
+      });
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching water consumption data:', error);
+      throw error;
+    }
+  },
+  
+  /**
    * Get plant distribution data (types, locations, etc.)
    * @param {string} groupBy - How to group plants (type, location, age, etc.)
    * @returns {Promise} - Plant distribution data

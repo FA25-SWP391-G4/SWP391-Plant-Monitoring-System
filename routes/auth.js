@@ -9,7 +9,8 @@ const {
     changePassword,
     getCurrentUser,
     linkGoogleAccount,
-    unlinkGoogleAccount
+    unlinkGoogleAccount,
+    refreshToken
 } = require('../controllers/authController');
 const { authMiddleware } = require('../middlewares/authMiddleware');
 
@@ -193,6 +194,9 @@ router.get('/session-auth', (req, res) => {
         });
     }
 });
+
+// Refresh JWT token with updated user data (for premium upgrades)
+router.post('/refresh-token', authMiddleware, refreshToken);
 
 // UC13: Manage Profile - Moved to userController/userRoutes for better organization
 // router.get('/profile', requireAuth, getProfile);

@@ -169,7 +169,6 @@ const DashboardTopBar = ({
       {/* Right Section - Actions */}
       <div className="flex items-center space-x-3">
         {/* Premium upgrade button for regular users */}
-        {isAuthenticated && !isDemo && (user?.role === "Regular" || user?.role === "Premium") && (
           <button
             onClick={() => router.push('/premium')}
             className="hidden sm:flex items-center px-3 py-2 bg-gradient-to-r from-amber-500 to-amber-600 text-white rounded-lg hover:from-amber-600 hover:to-amber-700 transition text-sm font-medium"
@@ -179,7 +178,6 @@ const DashboardTopBar = ({
             </svg>
             {t('common.upgrade', 'Upgrade')}
           </button>
-        )}
         
         {/* Notifications */}
         <NotificationBell />

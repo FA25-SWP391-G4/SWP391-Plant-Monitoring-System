@@ -9,6 +9,12 @@ class Payment {
         this.amount = paymentData.amount;
         this.status = paymentData.status;
         this.created_at = paymentData.created_at;
+        this.order_id = paymentData.order_id;
+        this.order_info = paymentData.order_info;
+        this.bank_code = paymentData.bank_code;
+        this.transaction_no = paymentData.transaction_no;
+        this.response_code = paymentData.response_code;
+        this.updated_at = paymentData.updated_at;
     }
 
     // Static method to find all payments

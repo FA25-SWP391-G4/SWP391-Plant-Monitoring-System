@@ -16,7 +16,7 @@ const AIFeaturesSection = () => {
 
   const handleFeatureClick = async (featureType, title) => {
     if (!hasAIAccess()) {
-      alert('Premium subscription or admin access required for AI features');
+      alert('Ultimate subscription or admin access required for AI features');
       return;
     }
 
@@ -218,8 +218,8 @@ const AIFeaturesSection = () => {
                 ) : (
                   <div className="text-sm text-red-600">
                     {result.requiresLogin && <p>Please log in to use this feature.</p>}
-                    {result.requiresPremium && <p>Premium subscription or admin access required.</p>}
-                    {result.error && !result.requiresLogin && !result.requiresPremium && <p>{result.error}</p>}
+                    {result.requiresUltimate && <p>Ultimate subscription or admin access required.</p>}
+                    {result.error && !result.requiresLogin && !result.requiresUltimate && <p>{result.error}</p>}
                   </div>
                 )}
               </div>

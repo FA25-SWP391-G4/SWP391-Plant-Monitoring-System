@@ -10,30 +10,29 @@ class ChatHistory {
     constructor(chatData) {
         this.chat_id = chatData.chat_id;
         this.user_id = chatData.user_id;
-        this.plant_id = chatData.plant_id;
-        this.conversation_id = chatData.conversation_id;
-        this.message = chatData.message || chatData.user_message;
-        this.response = chatData.response || chatData.ai_response;
+        this.plant_id = chatData.plant_id || null;
+        this.conversation_id = chatData.conversation_id || null;
+        // Map database columns to consistent property names
+        this.message = chatData.user_message || chatData.message;
+        this.response = chatData.ai_response || chatData.response;
         this.context = chatData.context;
-        this.created_at = chatData.created_at || chatData.timestamp;
+        this.created_at = chatData.timestamp || chatData.created_at;
     }
 
     // Static method to create chat entry
     static async createChat(userId, userMessage, aiResponse = null, plantId = null, conversationId = null, context = {}) {
         try {
+            // Use the actual database schema
             const query = `
-                INSERT INTO chat_history (user_id, plant_id, conversation_id, message, response, context, created_at)
-                VALUES ($1, $2, $3, $4, $5, $6, $7)
+                INSERT INTO chat_history (user_id, user_message, ai_response, timestamp)
+                VALUES ($1, $2, $3, $4)
                 RETURNING *
             `;
             
             const result = await pool.query(query, [
                 userId,
-                plantId,
-                conversationId,
                 userMessage,
                 aiResponse,
-                JSON.stringify(context || {}),
                 new Date()
             ]);
             
@@ -47,28 +46,29 @@ class ChatHistory {
     // Static method to get conversation context for OpenRouter API
     static async getConversationContext(conversationId, limit = 10) {
         try {
+            // Since the current schema doesn't have conversation_id, 
+            // we'll return the most recent messages for the context
             const query = `
-                SELECT message, response, created_at
+                SELECT user_message, ai_response, timestamp
                 FROM chat_history 
-                WHERE conversation_id = $1
-                ORDER BY created_at ASC 
-                LIMIT $2
+                ORDER BY timestamp DESC 
+                LIMIT $1
             `;
-            const result = await pool.query(query, [conversationId, limit]);
+            const result = await pool.query(query, [limit]);
             
             // Format for OpenRouter API (alternating user/assistant messages)
             const messages = [];
-            result.rows.forEach(row => {
-                if (row.message) {
+            result.rows.reverse().forEach(row => {
+                if (row.user_message) {
                     messages.push({
                         role: 'user',
-                        content: row.message
+                        content: row.user_message
                     });
                 }
-                if (row.response) {
+                if (row.ai_response) {
                     messages.push({
                         role: 'assistant',
-                        content: row.response
+                        content: row.ai_response
                     });
                 }
             });
@@ -86,7 +86,7 @@ class ChatHistory {
             const query = `
                 SELECT * FROM chat_history
                 WHERE user_id = $1
-                ORDER BY created_at DESC 
+                ORDER BY timestamp DESC 
                 LIMIT $2
             `;
             const result = await pool.query(query, [userId, limit]);
@@ -100,14 +100,10 @@ class ChatHistory {
     // Static method to find conversation history by conversation_id
     static async findByConversationId(conversationId, limit = 50) {
         try {
-            const query = `
-                SELECT * FROM chat_history
-                WHERE conversation_id = $1
-                ORDER BY created_at ASC 
-                LIMIT $2
-            `;
-            const result = await pool.query(query, [conversationId, limit]);
-            return result.rows.map(row => new ChatHistory(row));
+            // Current schema doesn't have conversation_id column
+            // Return empty array for now
+            console.log('Current schema does not support conversation_id');
+            return [];
         } catch (error) {
             console.error('Error finding chat history by conversation ID:', error);
             throw error;
@@ -139,7 +135,8 @@ class ChatHistory {
             message: this.message,
             response: this.response,
             context: this.context,
-            created_at: this.created_at
+            created_at: this.created_at,
+            timestamp: this.created_at // For backward compatibility
         };
     }
 }

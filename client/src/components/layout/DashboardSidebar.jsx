@@ -23,6 +23,9 @@ const DashboardSidebar = ({ isOpen = true, onToggle, demoUser = null }) => {
   const router = useRouter();
   const pathname = usePathname();
   
+  // State for expandable menu items
+  const [expandedItems, setExpandedItems] = useState({});
+  
   // Use context state instead of local state
   const isExpanded = sidebarOpen;
   
@@ -133,15 +136,19 @@ const DashboardSidebar = ({ isOpen = true, onToggle, demoUser = null }) => {
       const premiumItems = [
         {
           name: t('navigation.reporting'),
-          href: '#',
+          href: '/reports',
           icon: (
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-chart-no-axes-combined-icon lucide-chart-no-axes-combined"><path d="M12 16v5"/><path d="M16 14v7"/><path d="M20 10v11"/><path d="m22 3-8.646 8.646a.5.5 0 0 1-.708 0L9.354 8.354a.5.5 0 0 0-.707 0L2 15"/><path d="M4 18v3"/><path d="M8 14v7"/></svg>
           ),
           isExpandable: true,
           subItems: [
-            { name: t('navigation.checkIns'), href: '/reports/check-ins' },
-            { name: t('navigation.objectives'), href: '/reports/objectives' },
-            { name: t('navigation.careerHub'), href: '/reports/career-hub' }
+            { name: t('reports.overview', 'Overview'), href: '/reports' },
+            { name: t('reports.plantAnalysis', 'Plant Analysis'), href: '/reports/plant-analysis' },
+            { name: t('reports.imageAnalysis', 'Image Analysis'), href: '/reports/image-analysis' },
+            { name: t('reports.historicalData', 'Historical Data'), href: '/reports/historical-data' },
+            { name: t('reports.waterConsumption', 'Water Usage'), href: '/reports/water-consumption' },
+            { name: t('reports.plantHealth', 'Plant Health'), href: '/reports/plant-health' },
+            { name: t('reports.customReports', 'Custom Reports'), href: '/reports/custom' }
           ]
         },
         {
@@ -201,6 +208,20 @@ const DashboardSidebar = ({ isOpen = true, onToggle, demoUser = null }) => {
     return pathname === href || pathname.startsWith(href + '/');
   };
 
+  // Check if any sub-item is active for parent highlighting
+  const isParentActive = (subItems) => {
+    if (!subItems) return false;
+    return subItems.some(subItem => isActiveRoute(subItem.href));
+  };
+
+  // Toggle expandable menu items
+  const toggleExpandedItem = (itemName) => {
+    setExpandedItems(prev => ({
+      ...prev,
+      [itemName]: !prev[itemName]
+    }));
+  };
+
   return (
     <>
       {/* Sidebar */}
@@ -213,34 +234,83 @@ const DashboardSidebar = ({ isOpen = true, onToggle, demoUser = null }) => {
           <div className="space-y-1">
             {mainItems.map((item) => (
               <div key={item.name}>
-                <Link
-                  href={item.href}
-                  className={`flex items-center px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
-                    isActiveRoute(item.href)
-                      ? 'bg-green-50 text-green-700 dark:bg-green-900/20 dark:text-green-300'
-                      : 'text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/50'
-                  } ${!isExpanded ? 'justify-center' : ''} ${item.isPremium ? 'relative' : ''}`}
-                  title={!isExpanded ? item.name : ''}
-                >
-                  <div className="flex-shrink-0">
-                    {item.icon}
+                {item.isExpandable ? (
+                  <div>
+                    <button
+                      onClick={() => toggleExpandedItem(item.name)}
+                      className={`w-full flex items-center px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
+                        isParentActive(item.subItems)
+                          ? 'bg-green-50 text-green-700 dark:bg-green-900/20 dark:text-green-300'
+                          : 'text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/50'
+                      } ${!isExpanded ? 'justify-center' : ''} ${item.isPremium ? 'relative' : ''}`}
+                      title={!isExpanded ? item.name : ''}
+                    >
+                      <div className="flex-shrink-0">
+                        {item.icon}
+                      </div>
+                      {isExpanded && (
+                        <>
+                          <span className="ml-3 flex-1 text-left">{item.name}</span>
+                          {item.isPremium && (
+                            <span className="ml-2 bg-gradient-to-r from-yellow-400 to-orange-500 text-white text-xs px-2 py-0.5 rounded-full font-bold">
+                              AI
+                            </span>
+                          )}
+                          <svg 
+                            className={`ml-auto w-4 h-4 transition-transform ${expandedItems[item.name] ? 'rotate-180' : ''}`} 
+                            fill="none" 
+                            stroke="currentColor" 
+                            viewBox="0 0 24 24"
+                          >
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                          </svg>
+                        </>
+                      )}
+                    </button>
+                    {isExpanded && expandedItems[item.name] && item.subItems && (
+                      <div className="ml-9 mt-1 space-y-1">
+                        {item.subItems.map((subItem) => (
+                          <Link
+                            key={subItem.name}
+                            href={subItem.href}
+                            className={`flex items-center px-3 py-2 rounded-lg text-sm transition-colors ${
+                              isActiveRoute(subItem.href)
+                                ? 'bg-green-100 text-green-800 dark:bg-green-800/30 dark:text-green-200'
+                                : 'text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700/30'
+                            }`}
+                          >
+                            <span className="text-xs">•</span>
+                            <span className="ml-2">{subItem.name}</span>
+                          </Link>
+                        ))}
+                      </div>
+                    )}
                   </div>
-                  {isExpanded && (
-                    <>
-                      <span className="ml-3">{item.name}</span>
-                      {item.isPremium && (
-                        <span className="ml-2 bg-gradient-to-r from-yellow-400 to-orange-500 text-white text-xs px-2 py-0.5 rounded-full font-bold">
-                          AI
-                        </span>
-                      )}
-                      {item.isExpandable && (
-                        <svg className="ml-auto w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                        </svg>
-                      )}
-                    </>
-                  )}
-                </Link>
+                ) : (
+                  <Link
+                    href={item.href}
+                    className={`flex items-center px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
+                      isActiveRoute(item.href)
+                        ? 'bg-green-50 text-green-700 dark:bg-green-900/20 dark:text-green-300'
+                        : 'text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/50'
+                    } ${!isExpanded ? 'justify-center' : ''} ${item.isPremium ? 'relative' : ''}`}
+                    title={!isExpanded ? item.name : ''}
+                  >
+                    <div className="flex-shrink-0">
+                      {item.icon}
+                    </div>
+                    {isExpanded && (
+                      <>
+                        <span className="ml-3">{item.name}</span>
+                        {item.isPremium && (
+                          <span className="ml-2 bg-gradient-to-r from-yellow-400 to-orange-500 text-white text-xs px-2 py-0.5 rounded-full font-bold">
+                            AI
+                          </span>
+                        )}
+                      </>
+                    )}
+                  </Link>
+                )}
               </div>
             ))}
           </div>

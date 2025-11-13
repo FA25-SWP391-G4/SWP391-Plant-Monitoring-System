@@ -53,6 +53,10 @@ const authApi = {
   // Resend Verification Email
   resendVerification: () =>
     axiosClient.post("/auth/resend-verification"),
+
+  // Refresh JWT token with updated user data
+  refreshToken: () =>
+    axiosClient.post("/auth/refresh-token"),
 };
 
 export default authApi;

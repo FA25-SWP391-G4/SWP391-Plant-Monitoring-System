@@ -8,8 +8,8 @@ class VNPayService {
         if (!this.vnpayInstance) {
             // Configure VNPay with proper settings for sandbox mode
             this.vnpayInstance = new VNPay({
-                tmnCode: process.env.VNPAY_TMN_CODE || 'CGW7KJK7',
-                secureSecret: process.env.VNPAY_HASH_SECRET || 'VGTLQQIUPSSO4ERSSAMGVFS5RRSGBEHT',
+                tmnCode: process.env.VNPAY_TMN_CODE,
+                secureSecret: process.env.VNPAY_HASH_SECRET,
                 vnpayHost: 'https://sandbox.vnpayment.vn', // Use the base URL, not the full payment URL
                 testMode: true, // Always use test mode for sandbox
                 hashAlgorithm: HashAlgorithm.SHA512,
@@ -17,10 +17,10 @@ class VNPayService {
             });
 
             console.log('[VNPAY SERVICE] Initialized with:', {
-                tmnCode: process.env.VNPAY_TMN_CODE || 'DEMO',
-                vnpayHost: process.env.VNPAY_URL || 'https://sandbox.vnpayment.vn',
+                tmnCode: process.env.VNPAY_TMN_CODE,
+                vnpayHost: process.env.VNPAY_URL,
                 testMode: true,
-                returnUrl: process.env.VNPAY_RETURN_URL || 'http://localhost:3000/payment/vnpay-return',
+                returnUrl: process.env.VNPAY_RETURN_URL,
                 hashAlgorithm: 'SHA512'
             });
         }
@@ -41,22 +41,11 @@ class VNPayService {
     static getClientIpAddress(req) {
         if (!req) return '127.0.0.1';
         
-        let clientIP = req.ip || 
-                      req.connection?.remoteAddress || 
-                      req.socket?.remoteAddress ||
-                      req.headers?.['x-forwarded-for']?.split(',')[0]?.trim() ||
-                      req.headers?.['x-real-ip'] ||
-                      '127.0.0.1';
-
-        // Convert IPv6 localhost to IPv4 format for VNPay compatibility
-        if (clientIP === '::1' || clientIP === '::ffff:127.0.0.1') {
-            clientIP = '127.0.0.1';
-        }
-
-        // Remove IPv6 prefix if present
-        if (clientIP.startsWith('::ffff:')) {
-            clientIP = clientIP.substring(7);
-        }
+        let clientIP = req.headers.forwarded ||
+            req.ip ||
+            req.socket.remoteAddress ||
+            req.connection.remoteAddress ||
+            '127.0.0.1';
 
         console.log('[VNPAY SERVICE] Original IP:', req.ip || 'unknown', 'Processed IP:', clientIP);
         return clientIP;
@@ -80,17 +69,14 @@ class VNPayService {
 
             // Build payment parameters exactly like the successful demo
             const paymentParams = {
-                vnp_Amount: amount * 100, // VNPay expects amount in smallest currency unit
-                vnp_CreateDate: dateFormat(new Date()), // Use dateFormat from vnpay library
-                vnp_CurrCode: VnpCurrCode.VND,
+                vnp_Amount: amount, // VNPay expects amount in smallest currency unit // Use dateFormat from vnpay library
                 vnp_IpAddr: ipAddr,
                 vnp_Locale: VnpLocale.VN,
                 vnp_OrderInfo: orderInfo,
                 vnp_OrderType: ProductCode.Other,
                 vnp_ReturnUrl: process.env.VNPAY_RETURN_URL || 'http://localhost:3000/payment/vnpay-return',
                 vnp_TxnRef: orderId,
-                // Add bank code conditionally like the demo
-                ...(bankCode && bankCode.trim() !== '' && { vnp_BankCode: bankCode.trim() })
+                vnp_BankCode: undefined
             };
 
             console.log('[VNPAY SERVICE] Using bank code:', bankCode || 'All payment methods');
@@ -191,7 +177,7 @@ class VNPayService {
 
             const transaction = {
                 orderId: verify.vnp_TxnRef || vnpayData.vnp_TxnRef,
-                amount: (verify.vnp_Amount || parseFloat(vnpayData.vnp_Amount)) / 100, // Amount from VNPay is in smallest unit, divide by 100
+                amount: verify.vnp_Amount || vnpayData.vnp_Amount, 
                 orderInfo: verify.vnp_OrderInfo || vnpayData.vnp_OrderInfo,
                 responseCode: verify.vnp_ResponseCode || vnpayData.vnp_ResponseCode,
                 transactionNo: verify.vnp_TransactionNo || vnpayData.vnp_TransactionNo,

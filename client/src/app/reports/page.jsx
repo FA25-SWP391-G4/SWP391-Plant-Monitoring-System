@@ -25,7 +25,7 @@ const DashboardHeader = ({ title, description }) => (
 
 export default function ReportsPage() {
   const { t } = useTranslation();
-  const { user, isLoading: authLoading, isPremium } = useAuth();
+  const { user, isLoading: authLoading } = useAuth();
   const router = useRouter();
   
   const [reports, setReports] = useState(null);
@@ -33,35 +33,143 @@ export default function ReportsPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Define report card items
+  // User tier information
+  const userRole = user?.role || 'Regular';
+  const isPremium = ['Premium', 'Ultimate', 'Admin'].includes(userRole);
+  const isUltimate = ['Ultimate', 'Admin'].includes(userRole);
+  const isBasic = userRole === 'Regular';
+
+  // Function to check if user has access to a report
+  const hasAccess = (reportTier) => {
+    switch (reportTier) {
+      case 'basic':
+        return true; // Everyone has access to basic features
+      case 'premium':
+        return isPremium; // Premium, Ultimate, and Admin have access
+      case 'ultimate':
+        return isUltimate; // Only Ultimate and Admin have access
+      default:
+        return false;
+    }
+  };
+
+  // Function to get upgrade message based on required tier
+  const getUpgradeMessage = (tier) => {
+    switch (tier) {
+      case 'premium':
+        return {
+          title: t('reports.premiumRequired', 'Premium Required'),
+          message: t('reports.premiumRequiredDesc', 'Upgrade to Premium to access advanced analytics and reports'),
+          buttonText: t('reports.upgradeToPremium', 'Upgrade to Premium'),
+          price: '15,000₫/month'
+        };
+      case 'ultimate':
+        return {
+          title: t('reports.ultimateRequired', 'Ultimate Required'),
+          message: t('reports.ultimateRequiredDesc', 'Upgrade to Ultimate to access AI-powered features'),
+          buttonText: t('reports.upgradeToUltimate', 'Upgrade to Ultimate'),
+          price: '45,000₫/month'
+        };
+      default:
+        return {
+          title: t('reports.upgradeRequired', 'Upgrade Required'),
+          message: t('reports.upgradeRequiredDesc', 'Upgrade your plan to access this feature'),
+          buttonText: t('reports.upgradePlan', 'Upgrade Plan'),
+          price: ''
+        };
+    }
+  };
+
+  // Define report card items with proper tier-based access control
   const reportCards = [
     {
       title: t('reports.historicalData', 'Historical Data'),
-      description: t('reports.historicalDataDesc', 'View historical sensor data and trends'),
-      icon: <BarChart className="h-10 w-10 text-amber-500" />,
+      description: t('reports.historicalDataDesc', 'View historical sensor data and trends (Basic: 30 days, Premium+: Unlimited)'),
+      icon: <BarChartIcon className="h-10 w-10 text-amber-500" />,
       link: '/reports/historical-data',
-      isPremium: false
+      tier: 'basic', // Available to all users but with limitations
+      limitations: 'Basic users limited to 30 days history',
+      category: 'data'
+    },
+    {
+      title: t('reports.plantAnalysis', 'Plant Analysis'),
+      description: t('reports.plantAnalysisDesc', 'Basic plant information and status'),
+      icon: <Leaf className="h-10 w-10 text-green-500" />,
+      link: '/reports/plant-analysis',
+      tier: 'basic', // Available to all users
+      category: 'analysis'
+    },
+    {
+      title: t('reports.waterConsumption', 'Water Usage Analytics'),
+      description: t('reports.waterConsumptionDesc', 'Advanced water consumption patterns and analytics'),
+      icon: <Droplets className="h-10 w-10 text-blue-500" />,
+      link: '/reports/water-consumption',
+      tier: 'premium', // Premium feature
+      category: 'monitoring'
+    },
+    {
+      title: t('reports.plantHealth', 'Plant Health Reports'),
+      description: t('reports.plantHealthDesc', 'Comprehensive plant health monitoring and wellness metrics'),
+      icon: <Leaf className="h-10 w-10 text-emerald-500" />,
+      link: '/reports/plant-health',
+      tier: 'premium', // Premium feature
+      category: 'health'
+    },
+    {
+      title: t('reports.customReports', 'Custom Reports'),
+      description: t('reports.customReportsDesc', 'Create personalized reports with custom metrics and data export'),
+      icon: <FileBarChart className="h-10 w-10 text-purple-500" />,
+      link: '/reports/custom',
+      tier: 'premium', // Premium feature
+      category: 'custom'
     },
     {
       title: t('reports.imageAnalysis', 'AI Image Analysis'),
-      description: t('reports.imageAnalysisDesc', 'Analyze plant images for health and issues'),
+      description: t('reports.imageAnalysisDesc', 'AI-powered plant health analysis and disease detection'),
       icon: <Camera className="h-10 w-10 text-indigo-500" />,
       link: '/reports/image-analysis',
-      isPremium: true
+      tier: 'ultimate', // Ultimate feature
+      category: 'ai'
+    }
+  ];
+
+  // Group reports by category
+  const reportCategories = [
+    {
+      key: 'data',
+      name: t('reports.categories.dataAnalysis', 'Data Analysis'),
+      description: t('reports.categories.dataAnalysisDesc', 'Historical data and trends'),
+      icon: <BarChartIcon className="h-6 w-6" />
     },
     {
-      title: t('reports.waterConsumption', 'Water Usage'),
-      description: t('reports.waterConsumptionDesc', 'Track water consumption patterns'),
-      icon: <Droplets className="h-10 w-10 text-blue-500" />,
-      link: '/reports/water-consumption',
-      isPremium: false
+      key: 'monitoring',
+      name: t('reports.categories.monitoring', 'Monitoring'),
+      description: t('reports.categories.monitoringDesc', 'Real-time monitoring reports'),
+      icon: <Droplets className="h-6 w-6" />
     },
     {
-      title: t('reports.plantHealth', 'Plant Health'),
-      description: t('reports.plantHealthDesc', 'Monitor overall plant health metrics'),
-      icon: <Leaf className="h-10 w-10 text-emerald-500" />,
-      link: '/reports/plant-health',
-      isPremium: false
+      key: 'health',
+      name: t('reports.categories.health', 'Health Assessment'),
+      description: t('reports.categories.healthDesc', 'Plant health and wellness'),
+      icon: <Leaf className="h-6 w-6" />
+    },
+    {
+      key: 'analysis',
+      name: t('reports.categories.analysis', 'Analysis'),
+      description: t('reports.categories.analysisDesc', 'Detailed plant analysis'),
+      icon: <FileBarChart className="h-6 w-6" />
+    },
+    {
+      key: 'ai',
+      name: t('reports.categories.ai', 'AI-Powered'),
+      description: t('reports.categories.aiDesc', 'AI and machine learning insights'),
+      icon: <Camera className="h-6 w-6" />
+    },
+    {
+      key: 'custom',
+      name: t('reports.categories.custom', 'Custom'),
+      description: t('reports.categories.customDesc', 'Personalized reports'),
+      icon: <FileSpreadsheet className="h-6 w-6" />
     }
   ];
 
@@ -72,8 +180,8 @@ export default function ReportsPage() {
     }
 
     // Check if user is premium, if not redirect to upgrade page
-    if (user && user.role !== 'Premium' && user.role !== 'Admin') {
-      router.push('/upgrade');
+    if (user && !isUltimate && !isAdmin ) {
+      router.push('/premium');
       return;
     }
 
@@ -123,49 +231,93 @@ export default function ReportsPage() {
           </div>
         </div>
 
-        {/* Report Type Cards */}
-        <div className="mb-8">
-          <h2 className="text-xl font-semibold mb-4 text-gray-900 dark:text-white">{t('reports.availableReports', 'Available Reports')}</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            {reportCards.map((card, index) => (
-              <div 
-                key={index} 
-                className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden hover:shadow-md transition-shadow"
-              >
-                <div className="p-5">
-                  <div className="flex justify-center mb-4">
-                    {card.icon}
+        {/* Report Categories and Cards */}
+        <div className="space-y-8">
+          {reportCategories.map((category) => {
+            const categoryReports = reportCards.filter(card => card.category === category.key);
+            if (categoryReports.length === 0) return null;
+            
+            return (
+              <div key={category.key} className="space-y-4">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 bg-green-100 dark:bg-green-900/30 rounded-lg">
+                    {category.icon}
                   </div>
-                  <h3 className="text-lg font-medium mb-2 text-center text-gray-900 dark:text-white">{card.title}</h3>
-                  <p className="text-sm text-gray-600 dark:text-gray-400 text-center mb-4">
-                    {card.description}
-                  </p>
-                  
-                  {card.isPremium && !isPremium ? (
-                    <div className="mt-auto">
-                      <div className="flex items-center justify-center mb-3 bg-amber-100 dark:bg-amber-900/30 py-2 px-3 rounded-md">
-                        <AlertCircle size={16} className="text-amber-600 dark:text-amber-500 mr-2" />
-                        <span className="text-amber-700 dark:text-amber-500 text-sm">{t('reports.premiumFeature', 'Premium Feature')}</span>
-                      </div>
-                      <Link 
-                        href="/upgrade"
-                        className="block w-full py-2 px-4 bg-amber-500 hover:bg-amber-600 text-white text-center font-medium rounded-lg transition-colors"
-                      >
-                        {t('common.upgrade', 'Upgrade')}
-                      </Link>
-                    </div>
-                  ) : (
-                    <Link 
-                      href={card.link}
-                      className="block w-full py-2 px-4 bg-emerald-600 hover:bg-emerald-700 text-white text-center font-medium rounded-lg transition-colors"
+                  <div>
+                    <h2 className="text-xl font-semibold text-gray-900 dark:text-white">{category.name}</h2>
+                    <p className="text-sm text-gray-600 dark:text-gray-400">{category.description}</p>
+                  </div>
+                </div>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {categoryReports.map((card, index) => (
+                    <div 
+                      key={index} 
+                      className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden hover:shadow-md transition-shadow group"
                     >
-                      {t('common.viewReport', 'View Report')}
-                    </Link>
-                  )}
+                      <div className="p-6">
+                        <div className="flex justify-center mb-4 group-hover:scale-110 transition-transform">
+                          {card.icon}
+                        </div>
+                        <h3 className="text-lg font-medium mb-2 text-center text-gray-900 dark:text-white">{card.title}</h3>
+                        <p className="text-sm text-gray-600 dark:text-gray-400 text-center mb-4">
+                          {card.description}
+                        </p>
+                        
+                        {!hasAccess(card.tier) ? (
+                          <div className="mt-auto">
+                            {(() => {
+                              const upgradeInfo = getUpgradeMessage(card.tier);
+                              return (
+                                <>
+                                  <div className="flex items-center justify-center mb-3 bg-gradient-to-r from-amber-100 to-orange-100 dark:from-amber-900/30 dark:to-orange-900/30 py-2 px-3 rounded-md">
+                                    <AlertCircle size={16} className="text-amber-600 dark:text-amber-500 mr-2" />
+                                    <span className="text-amber-700 dark:text-amber-500 text-sm font-medium">{upgradeInfo.title}</span>
+                                  </div>
+                                  <p className="text-xs text-gray-600 dark:text-gray-400 text-center mb-2">
+                                    {upgradeInfo.message}
+                                  </p>
+                                  <p className="text-xs font-semibold text-green-600 dark:text-green-400 text-center mb-3">
+                                    {upgradeInfo.price}
+                                  </p>
+                                  <Link 
+                                    href="/pricing"
+                                    className={`block w-full py-2 px-4 text-white text-center font-medium rounded-lg transition-colors ${
+                                      card.tier === 'ultimate' 
+                                        ? 'bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700'
+                                        : 'bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600'
+                                    }`}
+                                  >
+                                    {upgradeInfo.buttonText}
+                                  </Link>
+                                </>
+                              );
+                            })()}
+                          </div>
+                        ) : (
+                          <div className="mt-auto">
+                            {card.limitations && isBasic && card.tier === 'basic' && (
+                              <div className="mb-3 p-2 bg-blue-50 dark:bg-blue-900/20 rounded-md">
+                                <p className="text-xs text-blue-700 dark:text-blue-300 text-center">
+                                  ℹ️ {card.limitations}
+                                </p>
+                              </div>
+                            )}
+                            <Link 
+                              href={card.link}
+                              className="block w-full py-2 px-4 bg-emerald-600 hover:bg-emerald-700 text-white text-center font-medium rounded-lg transition-colors"
+                            >
+                              {t('common.viewReport', 'View Report')}
+                            </Link>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </div>
-            ))}
-          </div>
+            );
+          })}
         </div>
 
         <div className="mb-6 flex justify-between items-center">

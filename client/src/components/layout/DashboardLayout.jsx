@@ -44,6 +44,8 @@ const DashboardLayoutInner = ({ children }) => {
       '/profile',
       '/add-plant',
       '/devices',
+      '/payment/success',
+      '/payment/failed',
     ];
     
     return dashboardRoutes.some(route => 
@@ -58,6 +60,12 @@ const DashboardLayoutInner = ({ children }) => {
       '/plants': 'My Plants',
       '/zones': 'Zones', 
       '/reports': 'Reports',
+      '/reports/historical-data': 'Historical Data',
+      '/reports/water-consumption': 'Water Consumption',
+      '/reports/plant-health': 'Plant Health',
+      '/reports/plant-analysis': 'Plant Analysis',
+      '/reports/image-analysis': 'Image Analysis',
+      '/reports/custom': 'Custom Reports',
       '/admin': 'Admin Panel',
       '/settings': 'Settings',
       '/notifications': 'Notifications',
@@ -68,6 +76,8 @@ const DashboardLayoutInner = ({ children }) => {
       '/profile': 'Profile',
       '/add-plant': 'Add New Plant',
       '/devices': 'Devices',
+      'payment/success': 'Payment Success',
+      'payment/failed': 'Payment Failed',
     };
 
     // Check for exact match first

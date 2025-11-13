@@ -17,6 +17,9 @@ const User = require('../models/User');
 const Payment = require('../models/Payment');
 const bcrypt = require('bcryptjs');
 const { isValidUUID } = require('../utils/uuidGenerator');
+const Subscription = require('../models/Subscription');
+const e = require('express');
+const { isUltimate } = require('../middlewares/accessMiddleware');
 
 /**
  * UC13: GET USER PROFILE
@@ -283,9 +286,31 @@ async function getPremiumStatus(req, res) {
     }
 }
 
+async function hasActivePremiumSubscription(user) {
+    try {
+        const subscription = await Subscription.getUserActiveSubscription(user.user_id);
+        if (subscription) {
+            res.status(200).json({
+                success: true,
+                data: {
+                    subscriptionType: subscription.subscriptionType,
+                    subEnd: subscription.subEnd
+                }
+            });
+        }
+    } catch (error) {
+        console.error('Error checking active subscription:', error);
+        res.status(500).json({ 
+            success: false,
+            error: 'Failed to check subscription status' 
+        });
+    }   
+}
+
 module.exports = {
     getUserProfile,
     updateUserProfile,
     upgradeToPremium,
-    getPremiumStatus
+    getPremiumStatus,
+    hasActivePremiumSubscription
 };

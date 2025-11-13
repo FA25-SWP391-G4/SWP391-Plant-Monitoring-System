@@ -5,19 +5,23 @@ const VNPayService = require('../services/vnpayService');
 const Payment = require('../models/Payment');
 const User = require('../models/User');
 const SystemLog = require('../models/SystemLog');
+const { generateToken } = require('../utils/tokenUtils');
+const Subscription = require('../models/Subscription');
+const Plan = require('../models/Plan');
 
 class PaymentController {
     // Create payment URL for premium upgrade
     static async createPayment(req, res) {
         try {
-            const { amount, orderInfo, bankCode, planType } = req.body;
+            const { amount, orderInfo, bankCode, planType, planName } = req.body;
             const userId = req.user.user_id;
 
             console.log('[PAYMENT CONTROLLER] Creating payment for user:', userId, {
                 amount,
                 orderInfo,
                 bankCode,
-                planType
+                planType,
+                planName
             });
 
             // Validate required fields
@@ -26,6 +30,28 @@ class PaymentController {
                     success: false,
                     error: 'Missing required fields: amount and orderInfo'
                 });
+            }
+
+            // Check if trying to pay for admin-only plan
+            if (planName) {
+                const Plan = require('../models/Plan');
+                const plan = await Plan.getPlanByName(planName);
+                if (plan && plan.isAdminOnly && req.user.role !== 'Admin') {
+                    return res.status(403).json({
+                        success: false,
+                        error: 'Access denied. This plan is restricted to administrators.'
+                    });
+                }
+
+                // Check subscription upgrade policy
+                const upgradeCheck = await Subscription.canUserUpgrade(userId, planName);
+                if (!upgradeCheck.canUpgrade) {
+                    return res.status(400).json({
+                        success: false,
+                        error: upgradeCheck.reason,
+                        currentSubscription: upgradeCheck.currentSubscription
+                    });
+                }
             }
 
             // Validate amount
@@ -128,35 +154,103 @@ class PaymentController {
                 response_code: transaction.responseCode,
                 transaction_status: transaction.transactionStatus,
                 status: transaction.isSuccess ? 'SUCCESS' : 'FAILED',
-                updated_at: new Date()
+                updated_at: new Date(),
+                vnpay_txn_ref: transaction.vnp_TxnRef
             });
 
-            // If payment successful, upgrade user to appropriate tier
+            // If payment successful, create subscription and upgrade user
             if (transaction.isSuccess) {
                 const payment = await Payment.findByOrderId(transaction.orderId);
                 if (payment) {
-                    // Check order ID or order info for plan type
-                    const isUltimate = payment.order_id.includes('ULTIMATE') || 
-                                      (payment.order_info && payment.order_info.toLowerCase().includes('ultimate'));
+                    console.log(payment);
                     
+                    // Determine plan type and subscription type from order info
+                    const isUltimate = payment.order_id.search(/ULTIMATE/) !== -1 || 
+                                      (payment.order_info && payment.order_info.toLowerCase().search(/ultimate/) !== -1);
+                    const isLifetime = payment.order_info && payment.order_info.toLowerCase().search(/lifetime/) !== -1;
+                    const isYearly = payment.order_info && payment.order_info.toLowerCase().search(/annual/) !== -1;
+                    
+                    const planName = isUltimate ? 'Ultimate' : 'Premium';
+                    let subscriptionType = 'monthly';
+                    if (isLifetime) subscriptionType = 'lifetime';
+                    else if (isYearly) subscriptionType = 'yearly';
+                    
+                    // Find the plan and create subscription using same logic as IPN
+                    const plan = await Plan.getPlanByName(planName);
+                    if (plan) {
+                        // Check subscription upgrade policy
+                        const upgradeCheck = await Subscription.canUserUpgrade(payment.user_id, planName);
+                        
+                        if (upgradeCheck.canUpgrade || upgradeCheck.isExtension) {
+                            if (upgradeCheck.isExtension) {
+                                // Extend existing subscription
+                                await Subscription.extendSubscription(
+                                    payment.user_id, 
+                                    subscriptionType, 
+                                    payment.payment_id
+                                );
+                                console.log(`[PAYMENT CONTROLLER] Subscription extended via return: ${subscriptionType} for user ${payment.user_id}`);
+                            } else {
+                                // Create new subscription with fallback handling
+                                if (upgradeCheck.currentSubscription && upgradeCheck.currentSubscription.subscriptionType === 'lifetime') {
+                                    // Lifetime Premium upgrading to Ultimate
+                                    await Subscription.createSubscriptionWithFallback({
+                                        userId: payment.user_id,
+                                        planId: plan.id,
+                                        paymentId: payment.payment_id,
+                                        subscriptionType: subscriptionType,
+                                        fallbackSubscriptionId: upgradeCheck.currentSubscription.id
+                                    });
+                                } else {
+                                    // Regular subscription
+                                    await Subscription.deactivateUserSubscriptions(payment.user_id);
+                                    await Subscription.createSubscription({
+                                        userId: payment.user_id,
+                                        planId: plan.id,
+                                        paymentId: payment.payment_id,
+                                        subscriptionType: subscriptionType
+                                    });
+                                }
+                                console.log(`[PAYMENT CONTROLLER] Subscription created via return: ${planName} ${subscriptionType} for user ${payment.user_id}`);
+                            }
+                        }
+                    }
+                    
+                    // Keep backward compatibility with User upgrade methods
                     if (isUltimate) {
                         await User.upgradeToUltimate(payment.user_id);
-                        console.log('[PAYMENT CONTROLLER] User upgraded to ultimate:', payment.user_id);
+                        console.log('[PAYMENT CONTROLLER] User upgraded to ultimate via return:', payment.user_id);
                         
                         // Log successful upgrade
                         await SystemLog.log('payment', 'upgrade_ultimate', 
-                           'User upgraded to ultimate via payment', payment.user_id);
+                           'User upgraded to ultimate via payment return', payment.user_id);
                     } else {
                         await User.upgradeToPremium(payment.user_id);
-                        console.log('[PAYMENT CONTROLLER] User upgraded to premium:', payment.user_id);
+                        console.log('[PAYMENT CONTROLLER] User upgraded to premium via return:', payment.user_id);
                         
                         // Log successful upgrade
                         await SystemLog.log('payment', 'upgrade_premium', 
-                           'User upgraded to premium via payment', payment.user_id);
+                           'User upgraded to premium via payment return', payment.user_id);
+                    }
+
+                    // Generate new token with updated user data
+                    try {
+                        const updatedUser = await User.findById(payment.user_id);
+                        if (updatedUser) {
+                            const newToken = generateToken(updatedUser);
+                            console.log('[PAYMENT CONTROLLER] Generated new token for upgraded user:', payment.user_id);
+                            
+                            // Redirect to success page with new token
+                            const clientUrl = process.env.CLIENT_URL || process.env.FRONTEND_URL || 'http://localhost:3000';
+                            return res.redirect(`${clientUrl}/payment/success?orderId=${transaction.orderId}&amount=${transaction.amount}&token=${newToken}`);
+                        }
+                    } catch (tokenError) {
+                        console.error('[PAYMENT CONTROLLER] Error generating new token:', tokenError);
+                        // Continue with redirect without token if token generation fails
                     }
                 }
 
-                // Redirect to success page
+                // Fallback redirect to success page without token
                 const clientUrl = process.env.CLIENT_URL || process.env.FRONTEND_URL || 'http://localhost:3000';
                 return res.redirect(`${clientUrl}/payment/success?orderId=${transaction.orderId}&amount=${transaction.amount}`);
             } else {
@@ -217,26 +311,81 @@ class PaymentController {
                 updated_at: new Date()
             });
 
-            // If payment successful, upgrade user to appropriate tier
+            // If payment successful, create subscription and upgrade user
             if (transaction.isSuccess) {
-                // Check order ID or order info for plan type
-                const isUltimate = payment.order_id.includes('ULTIMATE') || 
-                                  (payment.order_info && payment.order_info.toLowerCase().includes('ultimate'));
-                
-                if (isUltimate) {
-                    await User.upgradeToUltimate(payment.user_id);
-                    console.log('[PAYMENT CONTROLLER] User upgraded to ultimate via IPN:', payment.user_id);
+                try {                    
+                    // Determine plan type and subscription type from order info
+                    const isUltimate = payment.order_id.search(/ULTIMATE/) !== -1 || 
+                                      (payment.order_info && payment.order_info.toLowerCase().search(/ultimate/) !== -1);
+                    const isLifetime = payment.order_info && payment.order_info.toLowerCase().search(/lifetime/) !== -1;
+                    const isYearly = payment.order_info && payment.order_info.toLowerCase().search(/annual/) !== -1;
                     
-                    // Log successful upgrade
-                    await SystemLog.log('payment', 'upgrade_ultimate_ipn', 
-                        `User upgraded to ultimate via IPN`, payment.user_id);
-                } else {
-                    await User.upgradeToPremium(payment.user_id);
-                    console.log('[PAYMENT CONTROLLER] User upgraded to premium via IPN:', payment.user_id);
+                    const planName = isUltimate ? 'Ultimate' : 'Premium';
+                    let subscriptionType = 'monthly';
+                    if (isLifetime) subscriptionType = 'lifetime';
+                    else if (isYearly) subscriptionType = 'yearly';
                     
-                    // Log successful upgrade
-                    await SystemLog.log('payment', 'upgrade_premium_ipn', 
-                        `User upgraded to premium via IPN`, payment.user_id);
+                    // Find the plan
+                    const plan = await Plan.getPlanByName(planName);
+                    if (plan) {
+                        // Check subscription upgrade policy first
+                        const upgradeCheck = await Subscription.canUserUpgrade(payment.user_id, planName);
+                        
+                        if (upgradeCheck.canUpgrade || upgradeCheck.isExtension) {
+                            let subscription;
+                            
+                            if (upgradeCheck.isExtension) {
+                                // Extend existing subscription
+                                subscription = await Subscription.extendSubscription(
+                                    payment.user_id, 
+                                    subscriptionType, 
+                                    payment.payment_id
+                                );
+                                console.log(`[PAYMENT CONTROLLER] Subscription extended: ${subscriptionType} for user ${payment.user_id}`);
+                            } else {
+                                // Handle based on subscription mechanism
+                                if (upgradeCheck.currentSubscription && upgradeCheck.currentSubscription.subscriptionType === 'lifetime') {
+                                    // Lifetime Premium upgrading to Ultimate - keep lifetime Premium as fallback
+                                    await Subscription.createSubscriptionWithFallback({
+                                        userId: payment.user_id,
+                                        planId: plan.id,
+                                        paymentId: payment.payment_id,
+                                        subscriptionType: subscriptionType,
+                                        fallbackSubscriptionId: upgradeCheck.currentSubscription.id
+                                    });
+                                } else {
+                                    // Regular new subscription - deactivate old ones
+                                    await Subscription.deactivateUserSubscriptions(payment.user_id);
+                                    
+                                    // Create new subscription
+                                    subscription = await Subscription.createSubscription({
+                                        userId: payment.user_id,
+                                        planId: plan.id,
+                                        paymentId: payment.payment_id,
+                                        subscriptionType: subscriptionType
+                                    });
+                                }
+                                console.log(`[PAYMENT CONTROLLER] Subscription created: ${planName} ${subscriptionType} for user ${payment.user_id}`);
+                            }
+                            
+                            // Log successful subscription creation/extension
+                            await SystemLog.info('payment', 'subscription_created_ipn', 
+                                `${planName} ${subscriptionType} subscription ${upgradeCheck.isExtension ? 'extended' : 'created'} via IPN for user ${payment.user_id}`);
+                        } else {
+                            console.log(`[PAYMENT CONTROLLER] Subscription upgrade blocked: ${upgradeCheck.reason}`);
+                            await SystemLog.warning('payment', 'subscription_blocked_ipn', 
+                                `Subscription upgrade blocked for user ${payment.user_id}: ${upgradeCheck.reason}`);
+                        }
+                    }
+                    
+                    // The database trigger will handle user role update automatically
+                    // Note: User.upgrade methods are kept for backward compatibility but the trigger handles the role update
+                    
+                } catch (subscriptionError) {
+                    console.error('[PAYMENT CONTROLLER] Error creating subscription:', subscriptionError);
+                    await SystemLog.error('payment', 'subscription_creation_error', 
+                        `Failed to create subscription: ${subscriptionError.message}`);
+                    // Don't fail the whole IPN process - the payment was successful
                 }
             }
 

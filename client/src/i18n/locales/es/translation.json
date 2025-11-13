@@ -680,5 +680,31 @@
       "title": "Riego inteligente",
       "description": "Sistema de riego automatizado que proporciona la cantidad perfecta de agua basada en la humedad del suelo, tipo de planta y condiciones ambientales."
     }
+  },
+
+  "payment": {
+    "success": {
+      "title": "¡Pago exitoso!",
+      "verifying": {
+        "title": "Verificando pago..."
+      },
+      "details": {
+        "title": "Detalles del pago",
+        "orderId": "ID del pedido",
+        "amount": "Cantidad",
+        "status": "Estado"
+      },
+      "actions": {
+        "dashboard": "Ir al Dashboard"
+      }
+    },
+    "failed": {
+      "title": "Pago fallido",
+      "description": "No pudimos procesar su pago. Por favor, inténtelo de nuevo.",
+      "actions": {
+        "retry": "Intentar de nuevo",
+        "dashboard": "Ir al Dashboard"
+      }
+    }
   }
 }
