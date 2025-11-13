@@ -15,6 +15,9 @@ router.get('/vnpay-return', PaymentController.handleVNPayReturn);
 // VNPay IPN endpoint (no auth required - VNPay webhook)
 router.post('/vnpay-ipn', PaymentController.handleVNPayIPN);
 
+// Get payment status by order ID (requires authentication)
+router.get('/status/:orderId', authMiddleware, PaymentController.getPaymentStatus);
+
 // Get payment history (requires authentication)
 router.get('/history', authMiddleware, PaymentController.getPaymentHistory);
 

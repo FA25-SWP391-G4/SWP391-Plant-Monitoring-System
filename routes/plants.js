@@ -5,7 +5,13 @@ const { getUserPlants,
   getWateringSchedule,
   setWateringSchedule,
   toggleAutoWatering,
-  setSensorThresholds } = require('../controllers/plantController');
+  setSensorThresholds,
+  createPlant,
+  getWateringHistory,
+  getSensorHistory,
+  getCurrentSensorData,
+  getSensorStats,
+  getLastWatered } = require('../controllers/plantController');
 const { authMiddleware } = require('../middlewares/authMiddleware');
 const db = require('../config/db');
 const router = express.Router();
@@ -13,8 +19,21 @@ const router = express.Router();
 //get all plants 
 router.get('/', authMiddleware, getUserPlants);
 
+//create new plant
+router.post('/', authMiddleware, createPlant);
+
 //get plant by id
-router.get('/:id', authMiddleware, getPlantById);
+router.get('/:plantId', authMiddleware, (req, res, next) => {
+  // Validate plantId parameter
+  const { plantId } = req.params;
+  if (!plantId || isNaN(plantId)) {
+    return res.status(400).json({
+      success: false,
+      error: 'Invalid plant ID format'
+    });
+  }
+  next();
+}, getPlantById);
 
 //water plant
 router.post('/:plantId/water', authMiddleware, waterPlant);
@@ -31,5 +50,19 @@ router.post('/:plantId/auto-watering', authMiddleware, toggleAutoWatering);
 //set sensor thresholds
 router.post('/:plantId/thresholds', authMiddleware, setSensorThresholds);
 
+//get watering history
+router.get('/:plantId/history/watering', authMiddleware, getWateringHistory);
+
+//get sensor data history
+router.get('/:plantId/history/sensors', authMiddleware, getSensorHistory);
+
+//get current sensor data
+router.get('/:plantId/sensors/current', authMiddleware, getCurrentSensorData);
+
+//get sensor stats
+router.get('/:plantId/stats/sensors', authMiddleware, getSensorStats);
+
+//get last watered info
+router.get('/:plantId/last-watered', authMiddleware, getLastWatered);
 
 module.exports = router;

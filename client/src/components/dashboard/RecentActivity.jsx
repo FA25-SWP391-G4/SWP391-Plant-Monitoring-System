@@ -1,13 +1,19 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from '@/contexts/ThemeContext';
-
+import { useSettings } from '@/providers/SettingsProvider';
+import { formatDateTime } from '@/utils/dateFormat';
 
 export default function RecentActivity() {
   const { t } = useTranslation();
   const { isDark } = useTheme();
+  const { settings } = useSettings();
   const [activities, setActivities] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  if (!settings.widgets?.showNotifications) {
+    return null;
+  }
   const [error, setError] = useState(null);
 
   useEffect(() => {
@@ -26,7 +32,7 @@ export default function RecentActivity() {
         if (mounted) setLoading(false);
       }
     }
-  ];
+  }, []);
   
   const getActivityIcon = (type) => {
     switch(type) {

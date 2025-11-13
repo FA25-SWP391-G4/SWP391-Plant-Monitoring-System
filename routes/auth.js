@@ -9,7 +9,8 @@ const {
     changePassword,
     getCurrentUser,
     linkGoogleAccount,
-    unlinkGoogleAccount
+    unlinkGoogleAccount,
+    refreshToken
 } = require('../controllers/authController');
 const { authMiddleware } = require('../middlewares/authMiddleware');
 
@@ -141,6 +142,61 @@ router.post('/link-google-account', authMiddleware, linkGoogleAccount);
 // Unlink Google account from existing user account
 // Protected by authMiddleware - requires valid JWT token
 router.post('/unlink-google-account', authMiddleware, unlinkGoogleAccount);
+
+// OAuth session auth data retrieval (for frontend callback)
+router.get('/session-auth', (req, res) => {
+    console.log('\n=== SESSION AUTH DATA REQUEST ===');
+    console.log('[SESSION AUTH] Session ID:', req.sessionID);
+    console.log('[SESSION AUTH] Session data:', JSON.stringify(req.session, null, 2));
+    
+    try {
+        const authSuccess = req.session.authSuccess;
+        
+        if (!authSuccess) {
+            console.log('[SESSION AUTH] No auth success data in session');
+            return res.status(404).json({
+                success: false,
+                error: 'No authentication data found'
+            });
+        }
+        
+        // Check if auth success data is too old (5 minutes)
+        const fiveMinutesAgo = Date.now() - (5 * 60 * 1000);
+        if (authSuccess.timestamp < fiveMinutesAgo) {
+            console.log('[SESSION AUTH] Auth success data expired');
+            delete req.session.authSuccess;
+            return res.status(410).json({
+                success: false,
+                error: 'Authentication data expired'
+            });
+        }
+        
+        console.log('[SESSION AUTH] Returning auth data:', {
+            token: authSuccess.token ? 'present' : 'missing',
+            userData: authSuccess.userData ? 'present' : 'missing'
+        });
+        
+        // Return auth data and clean up session
+        const { token, userData } = authSuccess;
+        delete req.session.authSuccess;
+        
+        res.json({
+            success: true,
+            token: token,
+            user: userData
+        });
+        
+    } catch (error) {
+        console.error('[SESSION AUTH] Error retrieving auth data:', error);
+        res.status(500).json({
+            success: false,
+            error: 'Failed to retrieve authentication data'
+        });
+    }
+});
+
+// Refresh JWT token with updated user data (for premium upgrades)
+router.post('/refresh-token', authMiddleware, refreshToken);
 
 // UC13: Manage Profile - Moved to userController/userRoutes for better organization
 // router.get('/profile', requireAuth, getProfile);

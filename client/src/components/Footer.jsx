@@ -7,8 +7,18 @@ const Footer = () => {
   const { t } = useTranslation();
   const currentYear = new Date().getFullYear();
   
+  const handleTermsClick = (e) => {
+    e.preventDefault();
+    window.location.href = '/terms';
+  };
+
+  const handlePrivacyClick = (e) => {
+    e.preventDefault();
+    window.location.href = '/privacy';
+  };
+
   return (
-    <footer className="bg-light py-4 mt-auto">
+    <footer className="bg-light-mode-bg dark:bg-dark-mode-bg text-light-mode-text dark:text-dark-mode-text py-4 border-t border-gray-200 dark:border-gray-700">
       <div className="container">
         <div className="row">
           <div className="col-md-6">
@@ -17,8 +27,8 @@ const Footer = () => {
             </p>
           </div>
           <div className="col-md-6 text-md-end">
-            <Link to="/terms" className="text-decoration-none me-3">{t('footer.termsOfService')}</Link>
-            <Link to="/privacy" className="text-decoration-none">{t('footer.privacyPolicy')}</Link>
+            <a href="/terms" onClick={handleTermsClick} className="text-decoration-none me-3">{t('footer.termsOfService')}</a>
+            <a href="/privacy" onClick={handlePrivacyClick} className="text-decoration-none">{t('footer.privacyPolicy')}</a>
           </div>
         </div>
       </div>

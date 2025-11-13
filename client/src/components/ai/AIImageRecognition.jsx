@@ -325,20 +325,6 @@ const AIImageRecognition = ({ plant = null, className = '' }) => {
       }
 
       const response = await aiApi.analyzeImage(formData);
-<<<<<<< HEAD
-      
-      // Complete progress
-      setAnalysisProgress(100);
-      
-      const result = response.data.data || response.data;
-      
-      // Validate result quality
-      if (result.confidence && result.confidence < 0.3) {
-        setError(t('imageRecognition.imageQualityPoor', 'Image quality is too poor for reliable analysis. Please try a clearer image.'));
-        return;
-      }
-      
-<<<<<<< HEAD:client/src/components/AIImageRecognition.jsx
       setAnalysisResult(result);
       setRetryCount(0); // Reset retry count on success
 
@@ -374,31 +360,20 @@ const AIImageRecognition = ({ plant = null, className = '' }) => {
         error.response?.data?.message || 
         t('imageRecognition.analysisError', 'Unable to analyze image. Please try again.')
       );
-=======
       const response = await aiApi.analyzeImage(formData);
       
       // Handle authentication errors
       if (!response.success) {
         if (response.requiresLogin) {
           setError('Vui lòng đăng nhập để sử dụng tính năng phân tích hình ảnh.');
-        } else if (response.requiresPremium) {
-          setError('Cần nâng cấp tài khoản Premium để sử dụng tính năng phân tích hình ảnh.');
+        } else if (response.requiresUltimate || response.code === 'ULTIMATE_REQUIRED') {
+          setError('Cần nâng cấp tài khoản Ultimate để sử dụng tính năng phân tích hình ảnh.');
         } else {
           setError(response.error || 'Không thể phân tích hình ảnh. Vui lòng thử lại sau.');
         }
         return;
-      }
-      
-=======
->>>>>>> 238337da54f3c9ad3ad777d8b53c3984f6cdc290
+      } 
       setAnalysis(response.data);
-    } catch (err) {
-      console.error('Error analyzing image:', err);
-      setError('Không thể phân tích hình ảnh. Vui lòng thử lại sau.');
-<<<<<<< HEAD
->>>>>>> 1d1e2513b9e8ac5f36f74d326d2a76f901e82987:client/src/components/ai/AIImageRecognition.jsx
-=======
->>>>>>> 238337da54f3c9ad3ad777d8b53c3984f6cdc290
     } finally {
       clearInterval(progressInterval);
       setIsAnalyzing(false);

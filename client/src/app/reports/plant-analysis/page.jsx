@@ -29,7 +29,7 @@ export default function PlantAnalysisPage() {
   }, [authLoading, user, router]);
 
   useEffect(() => {
-    const fetchPlantData = async () => {
+    const fetchPlants = async () => {
       try {
         setLoading(true);
         const response = await plantApi.getAll();
@@ -47,7 +47,7 @@ export default function PlantAnalysisPage() {
     };
 
     if (user) {
-      fetchPlantData();
+      fetchPlants();
     }
   }, [user, router, t]);
 

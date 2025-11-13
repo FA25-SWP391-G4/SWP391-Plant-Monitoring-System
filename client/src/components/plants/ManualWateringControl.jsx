@@ -1,12 +1,30 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Card, CardContent } from '../ui/Card';
 import { Button } from '../ui/Button';
+import plantApi from '@/api/plantApi';
 
-const ManualWateringControl = ({ plantId, deviceStatus, onWater }) => {
+const ManualWateringControl = ({ plantId, deviceStatus, className, isEmbedded = false }) => {
   const { t } = useTranslation();
   const [isWatering, setIsWatering] = useState(false);
+  const [showControls, setShowControls] = useState(isEmbedded);
   const [duration, setDuration] = useState(30);
+  const [wateringHistory, setWateringHistory] = useState(null);
+
+
+  useEffect(() => {
+    if (showControls) {
+      fetchWateringHistory();
+    }
+  }, [showControls]);
+
+  const fetchWateringHistory = async () => {
+    try {
+      const history = await plantApi.getWateringHistory(plantId);
+      setWateringHistory(history);
+    } catch (error) {
+      console.error('Failed to fetch watering history:', error);
+    }
+  };
 
   const handleWater = async () => {
     if (deviceStatus !== 'online') {
@@ -14,16 +32,41 @@ const ManualWateringControl = ({ plantId, deviceStatus, onWater }) => {
       return;
     }
 
-    setIsWatering(true);
-    try {
-      await onWater(duration);
-      // Show success message
-      alert(t('watering.success', 'Watering started successfully!'));
-    } catch (error) {
-      console.error('Watering failed:', error);
-      alert(t('watering.failed', 'Failed to start watering. Please try again.'));
-    } finally {
-      setIsWatering(false);
+    if (isWatering) {
+      // Stop watering
+      try {
+        setIsWatering(false);
+        await plantApi.waterPlant(plantId, 0); // 0 duration to stop watering
+        alert(t('watering.stopped', 'Watering stopped successfully!'));
+        await fetchWateringHistory(); // Refresh history after stopping
+      } catch (error) {
+        console.error('Failed to stop watering:', error);
+        alert(t('watering.stopFailed', 'Failed to stop watering. Please try again.'));
+        setIsWatering(true);
+      }
+    } else {
+      // Start watering
+      setIsWatering(true);
+      try {
+        await plantApi.waterPlant(plantId, duration);
+        alert(t('watering.success', 'Watering started successfully!'));
+        await fetchWateringHistory(); // Refresh history after starting
+        
+        // Auto stop after duration
+        setTimeout(async () => {
+          try {
+            await plantApi.waterPlant(plantId, 0); // Stop watering after duration
+            setIsWatering(false);
+            await fetchWateringHistory(); // Refresh history after auto-stop
+          } catch (error) {
+            console.error('Failed to stop watering after timeout:', error);
+          }
+        }, duration * 1000);
+      } catch (error) {
+        console.error('Watering failed:', error);
+        alert(t('watering.failed', 'Failed to start watering. Please try again.'));
+        setIsWatering(false);
+      }
     }
   };
 
@@ -35,28 +78,31 @@ const ManualWateringControl = ({ plantId, deviceStatus, onWater }) => {
   ];
 
   return (
-    <div className="space-y-4">
-      {/* Device Status Indicator */}
-      <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-        <span className="text-sm font-medium text-gray-700">
-          {t('watering.deviceStatus', 'Device Status')}
-        </span>
-        <div className="flex items-center">
+    <div className="w-full">
+      {!isEmbedded && (
+        <button
+          onClick={() => deviceStatus === 'online' && setShowControls(!showControls)}
+          disabled={deviceStatus !== 'online' || isWatering}
+          className={`${className} flex items-center justify-center ${isWatering ? 'animate-pulse' : ''}`}
+        >
           <div className={`w-2 h-2 rounded-full mr-2 ${
-            deviceStatus === 'online' ? 'bg-green-500' : 'bg-red-500'
-          }`}></div>
-          <span className={`text-sm font-medium ${
-            deviceStatus === 'online' ? 'text-green-700' : 'text-red-700'
-          }`}>
-            {deviceStatus === 'online' 
-              ? t('devices.online', 'Online') 
-              : t('devices.offline', 'Offline')
-            }
-          </span>
-        </div>
-      </div>
+            deviceStatus === 'online' ? (isWatering ? 'bg-white' : 'bg-white opacity-75') : 'bg-red-500'
+          }`} />
+          {isWatering ? t('watering.inProgress', 'Watering...') : t('watering.water', 'Water')}
+        </button>
+      )}
 
-      {/* Duration Selection */}
+      {showControls && (
+        <div className={`${isEmbedded ? '' : 'mt-2 mb-4'} w-full ${isEmbedded ? '' : 'bg-white rounded-lg shadow-lg border border-gray-200'} p-4`}>
+          {!isEmbedded && (
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-sm font-medium">{t('watering.controls', 'Watering Controls')}</h3>
+              <button onClick={() => setShowControls(false)} className="text-gray-400 hover:text-gray-600">
+                ✕
+              </button>
+            </div>
+          )}
+                {/* Duration Selection */}
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-2">
           {t('watering.duration', 'Watering Duration')}
@@ -141,6 +187,8 @@ const ManualWateringControl = ({ plantId, deviceStatus, onWater }) => {
       <div className="text-xs text-gray-500 text-center">
         {t('watering.tip', 'Tip: Monitor your plant after watering to ensure optimal moisture levels.')}
       </div>
+        </div>
+      )}
     </div>
   );
 };

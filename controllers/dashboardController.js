@@ -21,6 +21,8 @@ const Plant = require('../models/Plant');
 const SensorData = require('../models/SensorData');
 const User = require('../models/User');
 const Device = require('../models/Device');
+const Alert = require('../models/Alert');
+const { pool } = require('../config/db');
 const { isValidUUID } = require('../utils/uuidGenerator');
 
 /**
@@ -53,13 +55,24 @@ async function getDashboardData(req, res) {
         // Get all plants owned by this user
         const plants = await Plant.findByUserId(userId);
 
+        // Get notification statistics for dashboard
+        const notificationStats = await getNotificationStatsForUser(userId);
+        
+        // Get recent alerts (last 5) for dashboard display
+        const recentAlerts = await Alert.findByUserId(userId, 5);
+
         if (!plants || plants.length === 0) {
             return res.status(200).json({
                 success: true,
                 message: 'No plants found',
                 data: {
                     plants: [],
-                    latestReadings: {}
+                    latestReadings: {},
+                    deviceStatus: {},
+                    notifications: {
+                        stats: notificationStats,
+                        recentAlerts: recentAlerts
+                    }
                 }
             });
         }
@@ -77,7 +90,16 @@ async function getDashboardData(req, res) {
         const dashboardData = {
             plants: plants,
             latestReadings: latestReadings,
-            deviceStatus: deviceStatus
+            deviceStatus: deviceStatus,
+            notifications: {
+                stats: notificationStats,
+                recentAlerts: recentAlerts
+            },
+            systemStatus: {
+                totalPlants: plants.length,
+                activeDevices: Object.keys(deviceStatus).filter(id => deviceStatus[id] === 'online').length,
+                lastUpdated: new Date().toISOString()
+            }
         };
 
         res.status(200).json({
@@ -288,6 +310,32 @@ async function updateDashboardPreferences(req, res) {
             success: false,
             error: 'Failed to update dashboard preferences'
         });
+    }
+}
+
+/**
+ * Helper function to get notification statistics for dashboard
+ */
+async function getNotificationStatsForUser(userId) {
+    try {
+        if (!isValidUUID(userId)) {
+            return { total: 0, unread: 0, critical: 0, high_priority: 0, recent: 0 };
+        }
+
+        const query = 'SELECT get_notification_stats($1) as stats';
+        const result = await pool.query(query, [userId]);
+        
+        return result.rows[0]?.stats || { 
+            total: 0, 
+            unread: 0, 
+            critical: 0, 
+            high_priority: 0, 
+            recent: 0,
+            by_type: {}
+        };
+    } catch (error) {
+        console.error('Error getting notification stats for dashboard:', error);
+        return { total: 0, unread: 0, critical: 0, high_priority: 0, recent: 0, by_type: {} };
     }
 }
 

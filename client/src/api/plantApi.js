@@ -14,6 +14,8 @@ const plantApi = {
   },
 
   // Get a specific plant by ID
+  // [2025-11-06] Removed redundant token handling to fix JWT malformed error
+  // Letting axiosClient handle token management to prevent duplication
   getById: async (plantId) => {
     try {
       const response = await axiosClient.get(`/api/plants/${plantId}`);
@@ -46,6 +48,50 @@ const plantApi = {
     }
   },
 
+  // Get sensor history for last 12 hours
+  getSensorHistory: async (plantId) => {
+    try {
+      const response = await axiosClient.get(`/api/plants/${plantId}/history/sensors`);
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching sensor history:', error);
+      throw error;
+    }
+  },
+
+  // Get sensor statistics
+  getSensorStats: async (plantId) => {
+    try {
+      const response = await axiosClient.get(`/api/plants/${plantId}/stats/sensors`);
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching sensor stats:', error);
+      throw error;
+    }
+  },
+
+  // Get recent watering history
+  getWateringHistory: async (plantId) => {
+    try {
+      const response = await axiosClient.get(`/api/plants/${plantId}/history/watering`);
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching watering history:', error);
+      throw error;
+    }
+  },
+
+  // Get last watered information
+  getLastWatered: async (plantId) => {
+    try {
+      const response = await axiosClient.get(`/api/plants/${plantId}/last-watered`);
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching last watered info:', error);
+      throw error;
+    }
+  },
+
   // Set watering schedule for a plant
   setWateringSchedule: async (plantId, schedule) => {
     try {
@@ -64,6 +110,28 @@ const plantApi = {
       return response.data;
     } catch (error) {
       console.error(`Error toggling auto-watering for plant ${plantId}:`, error);
+      throw error;
+    }
+  },
+
+  // Connect device to plant
+  connectDevice: async (plantId, deviceId) => {
+    try {
+      const response = await axiosClient.put(`/api/plants/${plantId}/connect-device`, { deviceId });
+      return response.data;
+    } catch (error) {
+      console.error(`Error connecting device to plant ${plantId}:`, error);
+      throw error;
+    }
+  },
+
+  // Get current sensor data for a plant
+  getCurrentSensorData: async (plantId) => {
+    try {
+      const response = await axiosClient.get(`/api/plants/${plantId}/sensors/current`);
+      return response.data;
+    } catch (error) {
+      console.error(`Error fetching current sensor data for plant ${plantId}:`, error);
       throw error;
     }
   },

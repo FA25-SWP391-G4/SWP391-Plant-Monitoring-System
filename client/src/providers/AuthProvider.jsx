@@ -26,35 +26,69 @@ export default function AuthProvider({ children }) {
 }, [user]);
 
   useEffect(() => {
-    const t = Cookies.get('token');
-    const u = Cookies.get('user');
-    if (t && u) { 
-      setToken(t); 
+    console.log('[AUTH PROVIDER] Initializing auth state...');
+    console.log('[AUTH PROVIDER] All cookies:', document.cookie);
+    
+    // Check for both possible token cookie names
+    const tokenFromStandard = Cookies.get('token');
+    const tokenFromClient = Cookies.get('token_client');
+    const token = tokenFromClient || tokenFromStandard;
+    
+    const userFromCookie = Cookies.get('user');
+    
+    console.log('[AUTH PROVIDER] Cookie check results:', {
+      standardToken: !!tokenFromStandard,
+      clientToken: !!tokenFromClient,
+      selectedToken: !!token,
+      user: !!userFromCookie
+    });
+    
+    if (token && userFromCookie) { 
+      console.log('[AUTH PROVIDER] ✅ Found valid auth cookies, restoring session');
+      setToken(token); 
       try { 
-        setUser(JSON.parse(u)); 
+        const parsedUser = JSON.parse(userFromCookie);
+        console.log('[AUTH PROVIDER] Parsed user:', parsedUser);
+        setUser(parsedUser); 
       } catch (e) {
-        console.error('Failed to parse user data from cookie:', e);
+        console.error('[AUTH PROVIDER] Failed to parse user data from cookie:', e);
       } 
+    } else {
+      console.log('[AUTH PROVIDER] ❌ No valid auth cookies found');
     }
     setLoading(false);
   }, []);
 
-  const login = (t, u) => { 
+  const login = (t, u) => {
+    console.log('[AUTH PROVIDER] Login called with:', {
+      token: t ? `${t.substring(0, 20)}...` : 'missing',
+      user: u
+    });
+    
     // Set cookies with appropriate security settings
-    // Cookies.set('token', t, { secure: true, sameSite: 'strict' }); 
-    // Cookies.set('user', JSON.stringify(u), { secure: true, sameSite: 'strict' }); 
-
-    Cookies.set('token', t, {secure : true, sameSite: 'lax' });
-    Cookies.set('user', JSON.stringify(u), {secure : true, sameSite: 'lax' });
+    const cookieOptions = {
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      expires: 7 // 7 days
+    };
+    
+    console.log('[AUTH PROVIDER] Setting cookies with options:', cookieOptions);
+    
+    // Set both token names for compatibility
+    Cookies.set('token', t, cookieOptions);
+    Cookies.set('token_client', t, cookieOptions);
+    Cookies.set('user', JSON.stringify(u), cookieOptions);
+    
+    console.log('[AUTH PROVIDER] ✅ Cookies set successfully');
+    console.log('[AUTH PROVIDER] Final cookie state:', document.cookie);
+    
     setToken(t); 
     setUser(u); 
     
     console.log('[AUTH PROVIDER] Login completed - state updated');
-    endTiming('login-process');
   };
 
   const logout = async () => { 
-    const logoutStart = startTiming('logout-process');
     console.log('[AUTH PROVIDER] Logout initiated');
     
     try {
@@ -102,7 +136,6 @@ export default function AuthProvider({ children }) {
       // This follows the same pattern as the Google auth callback fix
       setTimeout(() => {
         console.log('[AUTH PROVIDER] Executing delayed redirect to login page...');
-        endTiming('logout-process');
         router.push('/login');
       }, 100); // Small delay to let cleanup finish, similar to Google auth pattern
     }

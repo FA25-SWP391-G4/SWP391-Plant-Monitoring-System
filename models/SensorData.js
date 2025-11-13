@@ -400,6 +400,24 @@ class SensorData {
             is_normal: this.isWithinNormalRanges()
         };
     }
+
+    /**
+     * ADMIN METHODS - Support for admin dashboard
+     */
+    static async countToday() {
+        try {
+            const query = `
+                SELECT COUNT(*) as count 
+                FROM sensors_data 
+                WHERE DATE(timestamp) = CURRENT_DATE
+            `;
+            const result = await pool.query(query);
+            return parseInt(result.rows[0].count);
+        } catch (error) {
+            console.error('[SENSOR DATA COUNT TODAY ERROR] Error counting today sensor readings:', error.message);
+            throw error;
+        }
+    }
 }
 
 module.exports = SensorData;

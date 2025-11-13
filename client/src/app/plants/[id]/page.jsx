@@ -5,8 +5,13 @@ import { useAuth } from '@/providers/AuthProvider';
 import { useRouter, useParams } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
 import Link from 'next/link';
+import { toast } from 'react-toastify';
 import AIWateringPrediction from '@/components/AIWateringPrediction';
-import AIChatbot from '@/components/AIChatbot';
+import AIChatbotBubble from '@/components/ai/AIChatbotBubble';
+import ConnectDeviceModal from '@/components/modals/ConnectDeviceModal';
+import PlantHistoryChart from '@/components/plants/PlantHistoryChart';
+import plantApi from '@/api/plantApi';
+import deviceApi from '@/api/deviceApi';
 
 export default function PlantDetailPage() {
   const { user, loading } = useAuth();
@@ -15,10 +20,88 @@ export default function PlantDetailPage() {
   const { t } = useTranslation();
   const [plant, setPlant] = useState(null);
   const [sensorData, setSensorData] = useState(null);
+  const [sensorHistory, setSensorHistory] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('overview');
+  const [activeChart, setActiveChart] = useState('moisture');
 
   const plantId = params.id;
+
+  const handleConnectDevice = async (deviceId) => {
+    try {
+      await plantApi.connectDevice(plantId, deviceId);
+      const updatedPlant = await plantApi.getById(plantId);
+      setPlant(updatedPlant);
+      toast.success(t('devices.connected', 'Device connected successfully'));
+    } catch (error) {
+      console.error('Error connecting device:', error);
+      toast.error(t('devices.connectionError', 'Failed to connect device'));
+    }
+  };
+
+  const handleWaterNow = async () => {
+    try {
+      await plantApi.waterPlant(plantId, 5); // Default 5 seconds duration
+      toast.success(t('plants.wateringTriggered', 'Watering triggered successfully'));
+    } catch (error) {
+      console.error('Error triggering watering:', error);
+      toast.error(t('plants.wateringError', 'Failed to trigger watering'));
+    }
+  };
+
+  const loadSensorHistory = async () => {
+    try {
+      let response;
+      
+      // Use deviceApi if plant has a device_id, otherwise use plantApi
+      if (plant?.device_id) {
+        response = await deviceApi.getSensorHistory(plant.device_id, { timeRange: '24h' });
+      } else {
+        response = await plantApi.getSensorHistory(plantId);
+      }
+      
+      if (response?.data && Array.isArray(response.data)) {
+        const transformedData = {
+          moisture: response.data.map(item => ({
+            timestamp: item.timestamp,
+            value: item.soil_moisture || item.moisture
+          })).filter(item => item.value !== null),
+          
+          temperature: response.data.map(item => ({
+            timestamp: item.timestamp,
+            value: item.temperature
+          })).filter(item => item.value !== null),
+          
+          humidity: response.data.map(item => ({
+            timestamp: item.timestamp,
+            value: item.air_humidity || item.humidity
+          })).filter(item => item.value !== null),
+          
+          light: response.data.map(item => ({
+            timestamp: item.timestamp,
+            value: item.light_intensity || item.light
+          })).filter(item => item.value !== null)
+        };
+        
+        setSensorHistory(transformedData);
+      } else {
+        setSensorHistory({
+          moisture: [],
+          temperature: [],
+          humidity: [],
+          light: []
+        });
+      }
+    } catch (error) {
+      console.error('Error loading sensor history:', error);
+      setSensorHistory({
+        moisture: [],
+        temperature: [],
+        humidity: [],
+        light: []
+      });
+    }
+  };
 
   // Redirect if not logged in
   useEffect(() => {
@@ -27,52 +110,79 @@ export default function PlantDetailPage() {
     }
   }, [user, loading, router]);
 
-  // Fetch plant data
+  const [showConnectModal, setShowConnectModal] = useState(false);
+
+  // Fetch plant and sensor data
   useEffect(() => {
     const fetchPlantData = async () => {
       try {
-        // Mock plant data - would come from API
-        const mockPlant = {
-          plant_id: parseInt(plantId),
-          name: 'Snake Plant',
-          species: 'Sansevieria trifasciata',
-          image: '/images/plants/snake-plant.jpg',
-          location: 'Living Room',
-          status: 'healthy',
-          lastWatered: '2024-10-15T10:30:00Z',
-          plantedDate: '2024-08-01T00:00:00Z',
-          notes: 'This snake plant has been thriving in low light conditions. Very low maintenance.',
-          care_instructions: {
-            watering: 'Water every 2-3 weeks, allow soil to dry completely between waterings',
-            light: 'Tolerates low light but prefers bright, indirect light',
-            temperature: '65-75°F (18-24°C)',
-            humidity: '40-50%'
-          }
+        setIsLoading(true);
+        console.log('Fetching data for plant ID:', plantId);
+        
+        // [2025-11-06] Fixed JWT malformed error by using plantApi service
+        // Instead of direct fetch to ensure consistent token handling
+        const rawData = await plantApi.getById(plantId);
+        console.log('Plant API response:', rawData);
+        console.log('Parsed plant data:', rawData);
+
+        // Map the plant data structure
+        const plantData = {
+          plant_id: rawData.plant_id,
+          name: rawData.name,
+          species: rawData.species,
+          location: rawData.location || 'Not specified',
+          status: rawData.status,
+          image: rawData.image,
+          device_id: rawData.device_key?.trim(), // Trim any padding from device key
+          device_name: rawData.device_name
         };
 
-        const mockSensorData = {
-          moisture: 72,
-          temperature: 22.5,
-          humidity: 45,
-          light: 85,
-          last_updated: '2024-10-17T10:30:00Z'
-        };
+        // Map sensor data directly from the response
+        let sensorData = null;
+        if (rawData.data) {
+          sensorData = {
+            timestamp: rawData.data.timestamp,
+            moisture: rawData.data.moisture,
+            temperature: rawData.data.temperature,
+            humidity: rawData.data.humidity,
+            light: rawData.data.light
+          };
+        }
 
-        // Simulate API delay
-        await new Promise(resolve => setTimeout(resolve, 800));
-        setPlant(mockPlant);
-        setSensorData(mockSensorData);
+        // Log the state updates
+        console.log('Setting plant state to:', plantData);
+        console.log('Setting sensor state to:', sensorData);
+
+        setPlant(plantData);
+        setSensorData(sensorData);
       } catch (error) {
-        console.error('Error fetching plant data:', error);
+        console.error('Full error details:', {
+          message: error.message,
+          stack: error.stack,
+          response: error.response
+        });
+        toast.error(t('plants.errorFetching', 'Failed to fetch plant data'));
       } finally {
         setIsLoading(false);
       }
     };
 
     if (user && plantId) {
+      console.log('Starting data fetch with:', {
+        userId: user?.id,
+        plantId: plantId,
+        token: user?.token ? 'present' : 'missing'
+      });
       fetchPlantData();
     }
-  }, [user, plantId]);
+  }, [user, plantId, t]);
+
+  // Load sensor history when history tab is active
+  useEffect(() => {
+    if (user && plantId && activeTab === 'history' && !sensorHistory) {
+      loadSensorHistory();
+    }
+  }, [user, plantId, activeTab]);
 
   if (loading || isLoading) {
     return (
@@ -87,7 +197,7 @@ export default function PlantDetailPage() {
 
   if (!user || !plant) {
     return (
-      <div className="flex flex-col items-center justify-center h-screen">
+      <div className="flex flex-col items-center justify-center min-h-screen p-4">
         <div className="text-red-500 mb-4">
           <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -95,7 +205,32 @@ export default function PlantDetailPage() {
         </div>
         <h2 className="text-xl font-semibold mb-2">{t('plants.notFound', 'Plant Not Found')}</h2>
         <p className="text-gray-600 mb-4">{t('plants.notFoundDesc', 'The plant you\'re looking for doesn\'t exist or you don\'t have access to it.')}</p>
-        <Link href="/dashboard" className="px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors">
+        
+        {/* Debug Information */}
+        {process.env.NODE_ENV !== 'production' && (
+          <div className="mt-4 p-4 bg-gray-100 rounded-lg text-left w-full max-w-2xl">
+            <h3 className="font-mono text-sm mb-2">Debug Info:</h3>
+            <pre className="text-xs overflow-auto">
+              {JSON.stringify({
+                plantId,
+                user: user ? { 
+                  id: user.id,
+                  hasToken: !!user.token
+                } : null,
+                plant,
+                sensorData,
+                isLoading,
+                currentState: {
+                  hasUser: !!user,
+                  hasPlant: !!plant,
+                  hasSensorData: !!sensorData
+                }
+              }, null, 2)}
+            </pre>
+          </div>
+        )}
+
+        <Link href="/dashboard" className="mt-4 px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors">
           {t('common.backToDashboard', 'Back to Dashboard')}
         </Link>
       </div>
@@ -112,17 +247,17 @@ export default function PlantDetailPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       <div className="container mx-auto px-4 py-8">
         {/* Header */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 mb-6">
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6 mb-6">
           <div className="flex flex-col md:flex-row md:items-start md:space-x-6">
             {/* Plant Image */}
-            <div className="w-full md:w-48 h-48 rounded-lg bg-gray-100 flex items-center justify-center overflow-hidden mb-4 md:mb-0">
+            <div className="w-full md:w-48 h-48 rounded-lg bg-gray-100 dark:bg-gray-700 flex items-center justify-center overflow-hidden mb-4 md:mb-0">
               {plant.image ? (
                 <img src={plant.image} alt={plant.name} className="w-full h-full object-cover" />
               ) : (
-                <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" className="text-gray-300">
+                <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" className="text-gray-300 dark:text-gray-600">
                   <path d="M12 10a6 6 0 0 0-6-6H4v12h2a6 6 0 0 0 6-6Z"></path>
                   <path d="M12 10a6 6 0 0 1 6-6h2v12h-2a6 6 0 0 1-6-6Z"></path>
                   <path d="M12 22v-8.3"></path>
@@ -134,9 +269,9 @@ export default function PlantDetailPage() {
             <div className="flex-1">
               <div className="flex items-start justify-between mb-4">
                 <div>
-                  <h1 className="text-3xl font-bold text-gray-900 mb-2">{plant.name}</h1>
-                  <p className="text-lg text-gray-600 mb-2">{plant.species}</p>
-                  <div className="flex items-center text-gray-500 mb-2">
+                  <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-2">{plant.name}</h1>
+                  <p className="text-lg text-gray-600 dark:text-gray-400 mb-2">{plant.species}</p>
+                  <div className="flex items-center text-gray-500 dark:text-gray-400 mb-2">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-1">
                       <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"></path>
                       <circle cx="12" cy="10" r="3"></circle>
@@ -151,26 +286,65 @@ export default function PlantDetailPage() {
 
               {/* Quick Actions */}
               <div className="flex flex-wrap gap-3">
-                <button className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
-                  {t('plants.waterNow', 'Water Now')}
-                </button>
-                <Link href={`/ai/chat?plant=${plant.plant_id}`} className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors">
+                {plant.device_id ? (
+                  <button 
+                    className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center"
+                    onClick={handleWaterNow}
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <path d="M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5C6 11.1 5 13 5 15a7 7 0 0 0 7 7z"/>
+                    </svg>
+                    {t('plants.waterNow', 'Water Now')}
+                  </button>
+                ) : (
+                  <button 
+                    className="px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors flex items-center"
+                    onClick={() => setShowConnectModal(true)}
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <path d="M5 12h14"/>
+                      <path d="M12 5v14"/>
+                    </svg>
+                    {t('devices.connectDevice', 'Connect Device')}
+                  </button>
+                )}
+                <Link 
+                  href={`/ai/chat?plant=${plant.plant_id}`} 
+                  className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors flex items-center"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                  </svg>
                   {t('ai.askAI', 'Ask AI')}
                 </Link>
-                <Link href={`/ai/image-analysis?plant=${plant.plant_id}`} className="px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors">
+                <Link 
+                  href={`/ai/image-analysis?plant=${plant.plant_id}`} 
+                  className="px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors flex items-center"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                    <circle cx="8.5" cy="8.5" r="1.5"/>
+                    <polyline points="21 15 16 10 5 21"/>
+                  </svg>
                   {t('ai.analyzeImage', 'Analyze Image')}
                 </Link>
-                <button className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors">
+                <Link 
+                  href={`/plants/${plant.plant_id}/edit`}
+                  className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors flex items-center"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/>
+                  </svg>
                   {t('plants.editPlant', 'Edit Plant')}
-                </button>
+                </Link>
               </div>
             </div>
           </div>
         </div>
 
         {/* Tabs */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-100 mb-6">
-          <div className="border-b border-gray-200">
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 mb-6">
+          <div className="border-b border-gray-200 dark:border-gray-600">
             <nav className="flex space-x-8 px-6">
               {[
                 { key: 'overview', label: t('plants.tabs.overview', 'Overview'), icon: '📊' },
@@ -183,8 +357,8 @@ export default function PlantDetailPage() {
                   onClick={() => setActiveTab(tab.key)}
                   className={`py-4 px-2 border-b-2 font-medium text-sm transition-colors ${
                     activeTab === tab.key
-                      ? 'border-emerald-500 text-emerald-600'
-                      : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                      ? 'border-emerald-500 text-emerald-600 dark:text-emerald-400'
+                      : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-gray-500'
                   }`}
                 >
                   <span className="mr-2">{tab.icon}</span>
@@ -200,7 +374,7 @@ export default function PlantDetailPage() {
               <div className="space-y-6">
                 {/* Current Sensor Data */}
                 <div>
-                  <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                  <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">
                     {t('plants.currentConditions', 'Current Conditions')}
                   </h3>
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -256,7 +430,7 @@ export default function PlantDetailPage() {
                         </svg>
                         <span className="text-sm font-medium text-gray-700">{t('metrics.light', 'Light')}</span>
                       </div>
-                      <p className="text-2xl font-bold text-amber-600">{sensorData?.light}%</p>
+                      <p className="text-2xl font-bold text-amber-600">{sensorData?.light} lux</p>
                     </div>
                   </div>
                 </div>
@@ -267,14 +441,22 @@ export default function PlantDetailPage() {
                     {t('plants.careInstructions', 'Care Instructions')}
                   </h3>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {Object.entries(plant.care_instructions).map(([key, value]) => (
-                      <div key={key} className="bg-gray-50 p-4 rounded-lg">
-                        <h4 className="font-medium text-gray-900 mb-2 capitalize">
-                          {t(`plants.care.${key}`, key)}
-                        </h4>
-                        <p className="text-sm text-gray-600">{value}</p>
+                    {plant.care_instructions && typeof plant.care_instructions === 'object' ? (
+                      Object.entries(plant.care_instructions).map(([key, value]) => (
+                        <div key={key} className="bg-gray-50 p-4 rounded-lg">
+                          <h4 className="font-medium text-gray-900 mb-2 capitalize">
+                            {t(`plants.care.${key}`, key)}
+                          </h4>
+                          <p className="text-sm text-gray-600">{value}</p>
+                        </div>
+                      ))
+                    ) : (
+                      <div className="bg-gray-50 p-4 rounded-lg col-span-2">
+                        <p className="text-gray-500 text-center">
+                          {t('plants.noCareInstructions', 'No care instructions available')}
+                        </p>
                       </div>
-                    ))}
+                    )}
                   </div>
                 </div>
 
@@ -308,7 +490,7 @@ export default function PlantDetailPage() {
                 <h3 className="text-lg font-semibold text-gray-900 mb-4">
                   {t('ai.chat.title', 'AI Plant Care Assistant')}
                 </h3>
-                <AIChatbot initialPlantId={plant.plant_id} />
+                <AIChatbotBubble initialPlantId={plant.plant_id} />
               </div>
             )}
 
@@ -318,17 +500,108 @@ export default function PlantDetailPage() {
                 <h3 className="text-lg font-semibold text-gray-900 mb-4">
                   {t('plants.history', 'Plant History')}
                 </h3>
-                <div className="text-center py-8">
-                  <div className="text-4xl mb-4">📈</div>
-                  <p className="text-gray-500">
-                    {t('plants.historyComingSoon', 'Plant history and analytics coming soon')}
-                  </p>
+                
+                {/* Chart Selection */}
+                <div className="flex flex-wrap gap-2 mb-6">
+                  {[
+                    { key: 'moisture', label: t('metrics.moisture', 'Moisture'), color: 'bg-blue-100 text-blue-700', icon: '💧' },
+                    { key: 'temperature', label: t('metrics.temperature', 'Temperature'), color: 'bg-red-100 text-red-700', icon: '🌡️' },
+                    { key: 'humidity', label: t('metrics.humidity', 'Humidity'), color: 'bg-green-100 text-green-700', icon: '💨' },
+                    { key: 'light', label: t('metrics.light', 'Light'), color: 'bg-amber-100 text-amber-700', icon: '☀️' }
+                  ].map(chart => (
+                    <button
+                      key={chart.key}
+                      onClick={() => setActiveChart(chart.key)}
+                      className={`px-4 py-2 rounded-lg font-medium transition-colors flex items-center space-x-2 ${
+                        activeChart === chart.key
+                          ? chart.color + ' ring-2 ring-offset-1 ring-gray-300'
+                          : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                      }`}
+                    >
+                      <span>{chart.icon}</span>
+                      <span>{chart.label}</span>
+                    </button>
+                  ))}
                 </div>
+
+                {/* Chart Display */}
+                {sensorHistory ? (
+                  <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-6">
+                    <div className="flex justify-between items-center mb-4">
+                      <h4 className="text-lg font-medium text-gray-900 dark:text-gray-100">
+                        {t(`metrics.${activeChart}`, activeChart)} {t('charts.over24Hours', 'Over Last 24 Hours')}
+                      </h4>
+                      <button 
+                        onClick={loadSensorHistory}
+                        className="text-sm text-emerald-600 dark:text-emerald-400 hover:text-emerald-700 dark:hover:text-emerald-300 flex items-center space-x-1"
+                      >
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                          <path d="M23 4v6h-6"/>
+                          <path d="M1 20v-6h6"/>
+                          <path d="m3.51 9a9 9 0 0 1 14.85-3.36L23 10"/>
+                          <path d="M20.49 15a9 9 0 0 1-14.85 3.36L1 14"/>
+                        </svg>
+                        <span>{t('common.refresh', 'Refresh')}</span>
+                      </button>
+                    </div>
+                    
+                    <div className="h-80">
+                      <PlantHistoryChart 
+                        data={sensorHistory[activeChart] || []}
+                        dataType={activeChart === 'moisture' ? 'soil_moisture' : activeChart === 'light' ? 'light_intensity' : activeChart === 'humidity' ? 'air_humidity' : activeChart}
+                        timeRange="day"
+                      />
+                    </div>
+                    
+                    {/* Chart Statistics */}
+                    {sensorHistory[activeChart] && sensorHistory[activeChart].length > 0 && (
+                      <div className="mt-4 grid grid-cols-3 gap-4 pt-4 border-t border-gray-100">
+                        <div className="text-center">
+                          <p className="text-sm text-gray-500">{t('stats.average', 'Average')}</p>
+                          <p className="text-lg font-semibold text-gray-900">
+                            {(sensorHistory[activeChart].reduce((sum, item) => sum + item.value, 0) / sensorHistory[activeChart].length).toFixed(1)}
+                            {activeChart === 'temperature' ? '°C' : activeChart === 'light' ? ' lux' : '%'}
+                          </p>
+                        </div>
+                        <div className="text-center">
+                          <p className="text-sm text-gray-500">{t('stats.minimum', 'Minimum')}</p>
+                          <p className="text-lg font-semibold text-gray-900">
+                            {Math.min(...sensorHistory[activeChart].map(item => item.value))}
+                            {activeChart === 'temperature' ? '°C' : activeChart === 'light' ? ' lux' : '%'}
+                          </p>
+                        </div>
+                        <div className="text-center">
+                          <p className="text-sm text-gray-500">{t('stats.maximum', 'Maximum')}</p>
+                          <p className="text-lg font-semibold text-gray-900">
+                            {Math.max(...sensorHistory[activeChart].map(item => item.value))}
+                            {activeChart === 'temperature' ? '°C' : activeChart === 'light' ? ' lux' : '%'}
+                          </p>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  <div className="flex flex-col items-center justify-center h-64 bg-gray-50 rounded-lg border border-gray-200">
+                    <div className="animate-pulse flex flex-col items-center">
+                      <div className="w-12 h-12 rounded-full bg-gray-200 mb-4"></div>
+                      <div className="h-4 w-32 bg-gray-200 rounded"></div>
+                    </div>
+                    <p className="text-gray-500 mt-2">{t('charts.loading', 'Loading chart data...')}</p>
+                  </div>
+                )}
               </div>
             )}
           </div>
         </div>
       </div>
+
+      {/* Connect Device Modal */}
+      <ConnectDeviceModal
+        isOpen={showConnectModal}
+        onClose={() => setShowConnectModal(false)}
+        onConnect={handleConnectDevice}
+        plantId={plantId}
+      />
     </div>
   );
 }

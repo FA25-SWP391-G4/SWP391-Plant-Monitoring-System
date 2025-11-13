@@ -137,7 +137,8 @@
     "reporting": "Reporting",
     "checkIns": "Check-ins",
     "objectives": "Objectives",
-    "careerHub": "Career Hub"
+    "careerHub": "Career Hub",
+    "devices": "Devices"
   },
   "dashboard": {
     "wateringHistory": "Watering History",
@@ -301,6 +302,9 @@
     "privacyPolicy": "Privacy Policy",
     "termsOfService": "Terms of Service",
     "cookies": "Cookies"
+  },
+  "status": {
+    "healthy": "Healthy"
   },
   "testimonials": {
     "heading": "Don't just take our word for it. See what our community of plant lovers has to say about their PlantSmart experience.",
@@ -662,6 +666,124 @@
       "button": "Delete My Account",
       "feedback": "Please tell us why you're leaving:",
       "success": "Account successfully deleted"
+    }
+  },
+
+  "payment": {
+    "success": {
+      "title": "Payment Successful!",
+      "premium": {
+        "subtitle": "Welcome to Premium! You now have access to advanced features."
+      },
+      "ultimate": {
+        "subtitle": "Welcome to Ultimate! You now have access to all premium features."
+      },
+      "general": {
+        "subtitle": "Your account has been successfully upgraded."
+      },
+      "verifying": {
+        "title": "Verifying Payment...",
+        "description": "Please wait while we confirm your payment and upgrade your account."
+      },
+      "details": {
+        "title": "Payment Details",
+        "orderId": "Order ID",
+        "amount": "Amount",
+        "date": "Date",
+        "status": "Status",
+        "statusValue": "Completed"
+      },
+      "upgrade": {
+        "title": "Account Upgraded!",
+        "premium": "You now have access to Premium features including advanced monitoring, AI predictions, and enhanced analytics.",
+        "ultimate": "You now have access to all Ultimate features including unlimited plants, advanced AI predictions, and priority support.",
+        "general": "Your account has been upgraded with new features and capabilities."
+      },
+      "features": {
+        "monitoring": "Advanced Plant Monitoring",
+        "ai": "AI Health Predictions",
+        "analytics": "Enhanced Analytics",
+        "support": "Priority Support"
+      },
+      "actions": {
+        "dashboard": "Go to Dashboard",
+        "explore": "Explore Premium Features"
+      },
+      "toast": {
+        "title": "Payment Successful!",
+        "description": "Welcome to Premium! Your account has been upgraded."
+      },
+      "error": {
+        "title": "Payment Received",
+        "description": "Your payment was received, but we're still processing your account upgrade. Please check back in a few minutes.",
+        "dashboard": "Go to Dashboard",
+        "refresh": "Refresh Page"
+      }
+    },
+    "failed": {
+      "title": "Payment Failed",
+      "description": "We were unable to process your payment. Please try again.",
+      "loading": {
+        "title": "Loading...",
+        "description": "Please wait while we load your payment information."
+      },
+      "details": {
+        "title": "Payment Information",
+        "orderId": "Order ID",
+        "amount": "Amount",
+        "date": "Date",
+        "status": "Status",
+        "statusValue": "Failed",
+        "reason": "Reason"
+      },
+      "errors": {
+        "invalidSignature": {
+          "title": "Security Error",
+          "description": "The payment verification failed due to a security issue. Please try again."
+        },
+        "systemError": {
+          "title": "System Error",
+          "description": "A technical error occurred while processing your payment. Our team has been notified."
+        },
+        "cancelled": {
+          "title": "Payment Cancelled",
+          "description": "You cancelled the payment process. You can try again anytime."
+        },
+        "insufficientFunds": {
+          "title": "Insufficient Funds",
+          "description": "Your account does not have sufficient funds for this transaction."
+        },
+        "expired": {
+          "title": "Payment Expired",
+          "description": "The payment session has expired. Please start a new payment."
+        },
+        "bankError": {
+          "title": "Bank Error",
+          "description": "There was an issue with your bank or payment method. Please try a different payment method."
+        },
+        "unknown": {
+          "title": "Payment Failed",
+          "description": "Your payment could not be processed. Please try again or contact support."
+        }
+      },
+      "troubleshoot": {
+        "title": "What can you do?",
+        "step1": "Check your internet connection and try again",
+        "step2": "Verify your payment method has sufficient funds",
+        "step3": "Try using a different payment method",
+        "step4": "Contact our support team if the problem persists"
+      },
+      "actions": {
+        "retry": "Try Again",
+        "dashboard": "Go to Dashboard",
+        "support": "Contact Support",
+        "back": "Go Back"
+      },
+      "support": {
+        "needHelp": "Need help? Contact our support team:",
+        "title": "Contact Support",
+        "description": "Please email us at support@plantmonitor.com or call our hotline."
+      }
     }
   }
 }

@@ -291,9 +291,12 @@ class Plant {
                 }
 
                 const query = `
-                    INSERT INTO plants (user_id, device_key, profile_id, custom_name, 
-                                      moisture_threshold, auto_watering_on)
-                    VALUES ($1, $2, $3, $4, $5, $6)
+                    INSERT INTO plants (
+                        user_id, device_key, profile_id, custom_name, 
+                        moisture_threshold, auto_watering_on, zone_id,
+                        status, notes
+                    )
+                    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
                     RETURNING *
                 `;
                 
@@ -303,7 +306,10 @@ class Plant {
                     this.profile_id,
                     this.custom_name,
                     this.moisture_threshold,
-                    this.auto_watering_on !== false // Default to true
+                    this.auto_watering_on !== false, // Default to true
+                    this.zone_id,
+                    this.status || 'healthy',
+                    this.notes
                 ]);
                 
                 const newPlant = new Plant(result.rows[0]);
@@ -439,6 +445,31 @@ class Plant {
             auto_watering_on: this.auto_watering_on,
             created_at: this.created_at
         };
+    }
+
+    /**
+     * ADMIN METHODS - Support for admin dashboard
+     */
+    static async countAll() {
+        try {
+            const query = 'SELECT COUNT(*) as count FROM plants';
+            const result = await pool.query(query);
+            return parseInt(result.rows[0].count);
+        } catch (error) {
+            console.error('[PLANT COUNT ERROR] Error counting plants:', error.message);
+            throw error;
+        }
+    }
+
+    static async findByUserId(userId) {
+        try {
+            const query = 'SELECT * FROM plants WHERE user_id = $1 ORDER BY created_at DESC';
+            const result = await pool.query(query, [userId]);
+            return result.rows.map(row => new Plant(row));
+        } catch (error) {
+            console.error('[PLANT FIND BY USER ID ERROR] Error finding plants by user ID:', error.message);
+            throw error;
+        }
     }
 }
 

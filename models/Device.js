@@ -95,11 +95,6 @@ class Device {
     // Static method to find device by device_key (primary key)
     static async findById(deviceKey) {
         try {
-            // Validate UUID format
-            if (!deviceKey || !isValidUUID(deviceKey)) {
-                console.error('[DEVICE FINDBYID] Invalid UUID format:', deviceKey);
-                return null;
-            }
 
             const query = `
                 SELECT d.*, u.family_name as owner_name 
@@ -337,6 +332,31 @@ class Device {
             created_at: this.created_at,
             is_online: this.isOnline()
         };
+    }
+
+    /**
+     * ADMIN METHODS - Support for admin dashboard
+     */
+    static async countAll() {
+        try {
+            const query = 'SELECT COUNT(*) as count FROM devices';
+            const result = await pool.query(query);
+            return parseInt(result.rows[0].count);
+        } catch (error) {
+            console.error('[DEVICE COUNT ERROR] Error counting devices:', error.message);
+            throw error;
+        }
+    }
+
+    static async countActive() {
+        try {
+            const query = "SELECT COUNT(*) as count FROM devices WHERE last_seen >= NOW() - INTERVAL '1 hour'";
+            const result = await pool.query(query);
+            return parseInt(result.rows[0].count);
+        } catch (error) {
+            console.error('[DEVICE COUNT ACTIVE ERROR] Error counting active devices:', error.message);
+            throw error;
+        }
     }
 }
 

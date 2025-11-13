@@ -1,0 +1,9 @@
+/* Global styles */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Import badge styles */
+@import './badges.css';
+
+/* Rest of global styles */

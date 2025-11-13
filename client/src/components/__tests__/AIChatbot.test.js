@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import AIChatbot from '../AIChatbot';
+import AIChatbot from '../ai/AIChatbot';
 import aiApi from '../../api/aiApi';
 
 // Mock the AI API

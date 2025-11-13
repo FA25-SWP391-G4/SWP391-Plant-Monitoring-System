@@ -1,7 +1,10 @@
 const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
-require('dotenv').config();
+const path = require('path');
+
+// Load environment variables from root directory
+require('dotenv').config({ path: path.join(__dirname, '..', '.env') });
 
 // TensorFlow.js initialization (optional)
 let aiUtils = null;
@@ -12,12 +15,12 @@ try {
 }
 
 const app = express();
-const PORT = process.env.AI_SERVICE_PORT || 8000;
+const PORT = process.env.AI_SERVICE_PORT || 5000;
 
 // Security middleware
 app.use(helmet());
 app.use(cors({
-  origin: process.env.ALLOWED_ORIGINS?.split(',') || ['http://localhost:3000', 'http://localhost:3001'],
+  origin: process.env.ALLOWED_ORIGINS?.split(',') || ['http://localhost:3000', 'http://localhost:3001', 'http://localhost:3010', 'http://localhost:5000'],
   credentials: true
 }));
 

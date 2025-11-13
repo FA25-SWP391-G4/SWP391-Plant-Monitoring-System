@@ -17,6 +17,9 @@ const User = require('../models/User');
 const Payment = require('../models/Payment');
 const bcrypt = require('bcryptjs');
 const { isValidUUID } = require('../utils/uuidGenerator');
+const Subscription = require('../models/Subscription');
+const e = require('express');
+const { isUltimate } = require('../middlewares/accessMiddleware');
 
 /**
  * UC13: GET USER PROFILE
@@ -142,86 +145,6 @@ async function updateUserProfile(req, res) {
         res.status(500).json({ 
             success: false,
             error: 'Failed to update user profile' 
-        });
-    }
-}
-
-/**
- * UC12: CHANGE PASSWORD
- * ===============================
- * Changes the user's password with verification of current password
- * 
- * @route PUT /users/change-password
- * @access Private - Requires authentication
- * @param {string} currentPassword - User's current password
- * @param {string} newPassword - User's new password
- * @returns {Object} Success message
- */
-async function changePassword(req, res) {
-    try {
-        // Get user_id from authenticated request
-        const userId = req.user.user_id;
-        
-        // Find the user by ID
-        const user = await User.findById(userId);
-        
-        if (!user) {
-            return res.status(404).json({ 
-                success: false, 
-                error: 'User not found' 
-            });
-        }
-
-        // Extract password fields from request
-        const { currentPassword, newPassword, confirmPassword } = req.body;
-        
-        // Validate inputs
-        if (!currentPassword || !newPassword || !confirmPassword) {
-            return res.status(400).json({ 
-                success: false,
-                error: 'Current password, new password, and password confirmation are required' 
-            });
-        }
-        
-        // Check if new password and confirmation match
-        if (newPassword !== confirmPassword) {
-            return res.status(400).json({ 
-                success: false,
-                error: 'New password and confirmation password do not match' 
-            });
-        }
-        
-        // Verify current password
-        const isPasswordValid = await bcrypt.compare(currentPassword, user.password);
-        if (!isPasswordValid) {
-            return res.status(401).json({ 
-                success: false,
-                error: 'Current password is incorrect' 
-            });
-        }
-        
-        // Check password strength
-        if (newPassword.length < 8) {
-            return res.status(400).json({ 
-                success: false,
-                error: 'New password must be at least 8 characters long' 
-            });
-        }
-        
-        // Update the password
-        await user.updatePassword(newPassword);
-
-        // Return success message
-        res.status(200).json({
-            success: true,
-            message: 'Password changed successfully'
-        });
-
-    } catch (error) {
-        console.error('Change password error:', error);
-        res.status(500).json({ 
-            success: false,
-            error: 'Failed to change password' 
         });
     }
 }
@@ -363,10 +286,31 @@ async function getPremiumStatus(req, res) {
     }
 }
 
+async function hasActivePremiumSubscription(user) {
+    try {
+        const subscription = await Subscription.getUserActiveSubscription(user.user_id);
+        if (subscription) {
+            res.status(200).json({
+                success: true,
+                data: {
+                    subscriptionType: subscription.subscriptionType,
+                    subEnd: subscription.subEnd
+                }
+            });
+        }
+    } catch (error) {
+        console.error('Error checking active subscription:', error);
+        res.status(500).json({ 
+            success: false,
+            error: 'Failed to check subscription status' 
+        });
+    }   
+}
+
 module.exports = {
     getUserProfile,
     updateUserProfile,
-    changePassword,
     upgradeToPremium,
-    getPremiumStatus
+    getPremiumStatus,
+    hasActivePremiumSubscription
 };

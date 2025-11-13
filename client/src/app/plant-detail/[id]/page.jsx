@@ -5,7 +5,7 @@ import { useAuth } from '@/providers/AuthProvider';
 import { useRouter } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
 import PlantDetails from '@/components/plants/PlantDetails';
-import AIChatbot from '@/components/AIChatbot';
+import AIChatbot from '@/components/ai/AIChatbot';
 import AIWateringPrediction from '@/components/AIWateringPrediction';
 import AIImageRecognition from '@/components/AIImageRecognition';
 import SensorReadings from '@/components/plants/SensorReadings';
@@ -35,32 +35,21 @@ export default function PlantDetailPage({ params }) {
   
   useEffect(() => {
     if (isAuthenticated && plantId) {
-      fetchPlantData();
+      fetchPlants();
     }
   }, [isAuthenticated, plantId]);
   
-  const fetchPlantData = async () => {
+const fetchPlants = async () => {
     try {
-      setIsLoading(true);
-      
-      // In a real app, these would be separate API calls
-      const [plantResponse, sensorResponse, scheduleResponse, deviceResponse] = await Promise.all([
-        api.get(`/api/plants/${plantId}`),
-        api.get(`/api/plants/${plantId}/sensor-data`),
-        api.get(`/api/plants/${plantId}/watering-schedule`),
-        api.get(`/api/plants/${plantId}/device-status`)
-      ]);
-      
-      setPlant(plantResponse.data.data);
-      setSensorData(sensorResponse.data.data);
-      setSchedule(scheduleResponse.data.data);
-      setDeviceStatus(deviceResponse.data.status);
+      setLoading(true);
+      const response = await api.get('/api/plants');
+      setPlants(response.data.data);
       setError(null);
     } catch (err) {
-      console.error('Error fetching plant data:', err);
-      setError(t('errors.fetchFailed', 'Failed to fetch plant data'));
+      console.error('Error fetching plants:', err);
+      setError(t('errors.fetchFailed', 'Failed to fetch plants'));
     } finally {
-      setIsLoading(false);
+      setLoading(false);
     }
   };
   

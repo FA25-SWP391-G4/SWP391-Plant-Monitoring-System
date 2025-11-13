@@ -39,20 +39,20 @@ const AIChatbotBubble = () => {
   const [unreadCount, setUnreadCount] = useState(0);
   const messagesEndRef = useRef(null);
 
-  // Check if user has premium access - check multiple role formats and subscription status
-  const isPremium = user && (
-    user.role === 'Premium' || user.role === 'premium' || 
+  // Check if user has ultimate access - check multiple role formats and subscription status
+  const isUltimate = user && (
+    user.role === 'Ultimate' || user.role === 'Ultimate' || 
     user.role === 'Admin' || user.role === 'admin' ||
     user.subscriptionStatus === 'active' ||
-    user.isPremium === true
+    user.isUltimate === true
   );
 
   // Debug logging to help identify auth issues
   console.log('AIChatbotBubble - User:', user);
-  console.log('AIChatbotBubble - isPremium:', isPremium);
+  console.log('AIChatbotBubble - isUltimate:', isUltimate);
   
   // Don't render if user is not premium
-  if (!isPremium) {
+  if (!isUltimate) {
     return null;
   }
 
@@ -104,8 +104,8 @@ const AIChatbotBubble = () => {
         
         if (response.requiresLogin || response.code === 'TOKEN_EXPIRED' || response.code === 'INVALID_TOKEN') {
           errorMessage = 'Your session has expired. Please refresh the page and log in again.';
-        } else if (response.requiresPremium) {
-          errorMessage = 'Premium subscription required to use the AI chatbot.';
+        } else if (response.requiresUltimate || response.code === 'ULTIMATE_REQUIRED') {
+          errorMessage = 'Ultimate subscription required to use the AI chatbot.';
         }
         
         const errorBotMessage = {
@@ -162,10 +162,20 @@ const AIChatbotBubble = () => {
   };
 
   const formatTime = (timestamp) => {
-    return new Date(timestamp).toLocaleTimeString([], { 
-      hour: '2-digit', 
-      minute: '2-digit' 
-    });
+    if (!timestamp) return '';
+    
+    try {
+      const date = new Date(timestamp);
+      if (isNaN(date.getTime())) return '';
+      
+      return date.toLocaleTimeString([], { 
+        hour: '2-digit', 
+        minute: '2-digit' 
+      });
+    } catch (error) {
+      console.error('Error formatting time:', error);
+      return '';
+    }
   };
 
   const quickQuestions = [
@@ -216,7 +226,7 @@ const AIChatbotBubble = () => {
                       {t('ai.chatbot.title', 'AI Plant Assistant')}
                     </h3>
                     <p className="text-white/80 text-sm">
-                      {t('ai.chatbot.subtitle', 'Premium Feature')}
+                      {t('ai.chatbot.subtitle', 'Ultimate Feature')}
                     </p>
                   </div>
                 </div>

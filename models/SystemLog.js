@@ -1,5 +1,14 @@
 const { pool } = require('../config/db');
 
+// Import event notification service (avoid circular dependency)
+let eventNotificationService = null;
+try {
+    eventNotificationService = require('../services/eventNotificationService');
+} catch (error) {
+    // Service may not be available during testing or initialization
+    console.log('EventNotificationService not available:', error.message);
+}
+
 class SystemLog {
     constructor(logData) {
         this.log_id = logData.log_id;
@@ -10,7 +19,7 @@ class SystemLog {
     }
 
     //create log 
-    static async create(level, source, message) {
+    static async create(level, source, message, metadata = {}) {
         try {
             let log_level, log_source, log_message;
 
@@ -19,6 +28,8 @@ class SystemLog {
                 log_level = level.log_level || 'INFO';
                 log_source = level.source || 'System';
                 log_message = level.message || '';
+                // Extract metadata from object syntax
+                metadata = { ...metadata, ...level.metadata };
             } else if (typeof level === 'string') {
                 log_level = level || 'INFO';
                 log_source = source || 'System';
@@ -38,7 +49,28 @@ class SystemLog {
             message: log_message,
             timestamp: new Date()
         });
-        return await systemLog.save();
+        const savedLog = await systemLog.save();
+        
+        // Trigger event notification processing with metadata
+        if (savedLog && eventNotificationService) {
+            try {
+                await eventNotificationService.processEvent({
+                    level: log_level,
+                    source: log_source,
+                    message: log_message,
+                    metadata: {
+                        ...metadata,
+                        log_id: savedLog.log_id,
+                        timestamp: savedLog.timestamp
+                    }
+                });
+            } catch (error) {
+                // Don't throw error to avoid disrupting the logging process
+                console.error('Failed to trigger event notification from create:', error.message);
+            }
+        }
+        
+        return savedLog;
         } catch (error) {
             // Don't throw error in logging to avoid infinite loops
             console.error('Failed to create system log:', error);
@@ -281,6 +313,10 @@ class SystemLog {
                 
                 const updatedLog = new SystemLog(result.rows[0]);
                 Object.assign(this, updatedLog);
+                
+                // Trigger event notification processing
+                await this.triggerEventNotification();
+                
                 return this;
             } else {
                 // Create new log entry
@@ -299,6 +335,10 @@ class SystemLog {
                 
                 const newLog = new SystemLog(result.rows[0]);
                 Object.assign(this, newLog);
+                
+                // Trigger event notification processing
+                await this.triggerEventNotification();
+                
                 return this;
             }
         } catch (error) {
@@ -322,8 +362,29 @@ class SystemLog {
         }
     }
 
+    // Trigger event notification processing for this log entry
+    async triggerEventNotification() {
+        try {
+            // Only trigger if the event notification service is available
+            if (eventNotificationService) {
+                await eventNotificationService.processEvent({
+                    level: this.log_level,
+                    source: this.source,
+                    message: this.message,
+                    metadata: {
+                        log_id: this.log_id,
+                        timestamp: this.timestamp
+                    }
+                });
+            }
+        } catch (error) {
+            // Don't throw error to avoid disrupting the logging process
+            console.error('Failed to trigger event notification:', error.message);
+        }
+    }
+
     // Static logging methods for different levels
-    static async log(level, source, message) {
+    static async log(level, source, message, metadata = {}) {
         try {
             const systemLog = new SystemLog({
                 log_level: level.toUpperCase(),
@@ -332,7 +393,28 @@ class SystemLog {
                 timestamp: new Date()
             });
             
-            return await systemLog.save();
+            const savedLog = await systemLog.save();
+            
+            // Trigger event notification processing with metadata
+            if (savedLog && eventNotificationService) {
+                try {
+                    await eventNotificationService.processEvent({
+                        level: level.toUpperCase(),
+                        source: source,
+                        message: message,
+                        metadata: {
+                            ...metadata,
+                            log_id: savedLog.log_id,
+                            timestamp: savedLog.timestamp
+                        }
+                    });
+                } catch (error) {
+                    // Don't throw error to avoid disrupting the logging process
+                    console.error('Failed to trigger event notification from log:', error.message);
+                }
+            }
+            
+            return savedLog;
         } catch (error) {
             // Don't throw error in logging to avoid infinite loops
             console.error('Failed to save system log:', error);
@@ -340,20 +422,20 @@ class SystemLog {
         }
     }
 
-    static async info(source, message) {
-        return await SystemLog.log('INFO', source, message);
+    static async info(source, message, metadata = {}) {
+        return await SystemLog.log('INFO', source, message, metadata);
     }
 
-    static async warning(source, message) {
-        return await SystemLog.log('WARNING', source, message);
+    static async warning(source, message, metadata = {}) {
+        return await SystemLog.log('WARNING', source, message, metadata);
     }
 
-    static async error(source, message) {
-        return await SystemLog.log('ERROR', source, message);
+    static async error(source, message, metadata = {}) {
+        return await SystemLog.log('ERROR', source, message, metadata);
     }
 
-    static async debug(source, message) {
-        return await SystemLog.log('DEBUG', source, message);
+    static async debug(source, message, metadata = {}) {
+        return await SystemLog.log('DEBUG', source, message, metadata);
     }
 
     // Static method to cleanup old logs
@@ -461,6 +543,201 @@ class SystemLog {
             age_string: this.getAgeString(),
             level_color: this.getLevelColor()
         };
+    }
+
+    /**
+     * ADMIN METHODS - Additional methods for admin dashboard
+     */
+    static async findByUserId(userId, limit = 50) {
+        try {
+            const query = `
+                SELECT * FROM system_logs 
+                WHERE user_id = $1 
+                ORDER BY timestamp DESC 
+                LIMIT $2
+            `;
+            const result = await pool.query(query, [userId, limit]);
+            return result.rows.map(row => new SystemLog(row));
+        } catch (error) {
+            console.error('[SYSTEM LOG FIND BY USER ID ERROR] Error finding logs by user ID:', error.message);
+            throw error;
+        }
+    }
+
+    static async countAll(filters = {}) {
+        try {
+            let query = 'SELECT COUNT(*) as count FROM system_logs WHERE 1=1';
+            const params = [];
+            let paramIndex = 1;
+
+            if (filters.log_level) {
+                query += ` AND log_level = $${paramIndex}`;
+                params.push(filters.log_level);
+                paramIndex++;
+            }
+
+            if (filters.source) {
+                query += ` AND source = $${paramIndex}`;
+                params.push(filters.source);
+                paramIndex++;
+            }
+
+            if (filters.startDate) {
+                query += ` AND timestamp >= $${paramIndex}`;
+                params.push(filters.startDate);
+                paramIndex++;
+            }
+
+            if (filters.endDate) {
+                query += ` AND timestamp <= $${paramIndex}`;
+                params.push(filters.endDate);
+                paramIndex++;
+            }
+
+            if (filters.search) {
+                query += ` AND message ILIKE $${paramIndex}`;
+                params.push(`%${filters.search}%`);
+                paramIndex++;
+            }
+
+            if (filters.user_id) {
+                query += ` AND user_id = $${paramIndex}`;
+                params.push(filters.user_id);
+                paramIndex++;
+            }
+
+            const result = await pool.query(query, params);
+            return parseInt(result.rows[0].count);
+        } catch (error) {
+            console.error('[SYSTEM LOG COUNT ERROR] Error counting logs:', error.message);
+            throw error;
+        }
+    }
+
+    static async findAll(options = {}) {
+        try {
+            let query = 'SELECT * FROM system_logs WHERE 1=1';
+            const params = [];
+            let paramIndex = 1;
+
+            // Apply filters
+            if (options.log_level) {
+                query += ` AND log_level = $${paramIndex}`;
+                params.push(options.log_level);
+                paramIndex++;
+            }
+
+            if (options.source) {
+                query += ` AND source = $${paramIndex}`;
+                params.push(options.source);
+                paramIndex++;
+            }
+
+            if (options.startDate) {
+                query += ` AND timestamp >= $${paramIndex}`;
+                params.push(options.startDate);
+                paramIndex++;
+            }
+
+            if (options.endDate) {
+                query += ` AND timestamp <= $${paramIndex}`;
+                params.push(options.endDate);
+                paramIndex++;
+            }
+
+            if (options.search) {
+                query += ` AND message ILIKE $${paramIndex}`;
+                params.push(`%${options.search}%`);
+                paramIndex++;
+            }
+
+            if (options.user_id) {
+                query += ` AND user_id = $${paramIndex}`;
+                params.push(options.user_id);
+                paramIndex++;
+            }
+
+            // Add ordering
+            const orderBy = options.orderBy || 'timestamp DESC';
+            query += ` ORDER BY ${orderBy}`;
+
+            // Add pagination
+            if (options.limit) {
+                query += ` LIMIT $${paramIndex}`;
+                params.push(options.limit);
+                paramIndex++;
+            }
+
+            if (options.offset) {
+                query += ` OFFSET $${paramIndex}`;
+                params.push(options.offset);
+                paramIndex++;
+            }
+
+            const result = await pool.query(query, params);
+            return result.rows.map(row => new SystemLog(row));
+        } catch (error) {
+            console.error('[SYSTEM LOG FIND ALL ERROR] Error finding logs:', error.message);
+            throw error;
+        }
+    }
+
+    static async getDistinctValues(column) {
+        try {
+            const query = `SELECT DISTINCT ${column} FROM system_logs ORDER BY ${column}`;
+            const result = await pool.query(query);
+            return result.rows.map(row => row[column]);
+        } catch (error) {
+            console.error('[SYSTEM LOG DISTINCT VALUES ERROR] Error getting distinct values:', error.message);
+            throw error;
+        }
+    }
+
+    static async deleteAll(filters = {}) {
+        try {
+            let query = 'DELETE FROM system_logs WHERE 1=1';
+            const params = [];
+            let paramIndex = 1;
+
+            if (filters.log_level) {
+                query += ` AND log_level = $${paramIndex}`;
+                params.push(filters.log_level);
+                paramIndex++;
+            }
+
+            if (filters.source) {
+                query += ` AND source = $${paramIndex}`;
+                params.push(filters.source);
+                paramIndex++;
+            }
+
+            if (filters.before) {
+                query += ` AND timestamp < $${paramIndex}`;
+                params.push(filters.before);
+                paramIndex++;
+            }
+
+            const result = await pool.query(query, params);
+            return result.rowCount;
+        } catch (error) {
+            console.error('[SYSTEM LOG DELETE ERROR] Error deleting logs:', error.message);
+            throw error;
+        }
+    }
+
+    // Static method to delete logs by pattern (for testing)
+    static async deleteByPattern(pattern) {
+        try {
+            const query = `
+                DELETE FROM system_logs 
+                WHERE message LIKE $1 OR source LIKE $1
+            `;
+            const result = await pool.query(query, [`%${pattern}%`]);
+            return result.rowCount;
+        } catch (error) {
+            console.error('Error deleting logs by pattern:', error);
+            return 0;
+        }
     }
 }
 

@@ -52,7 +52,7 @@ class Zone {
             const query = `
                 INSERT INTO zones (user_id, zone_name, description, created_at)
                 VALUES ($1, $2, $3, $4)
-                RETURNING *
+                RETURNING zone_id, user_id, zone_name, description, created_at
             `;
 
             const values = [
