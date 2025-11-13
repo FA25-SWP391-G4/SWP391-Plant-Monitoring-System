@@ -15,7 +15,7 @@ class WateringHistory {
         try {
             const query = `
                 SELECT wh.*, p.custom_name as plant_name, 
-                       u.full_name as owner_name, d.device_name
+                       u.family_name as owner_name, d.device_name
                 FROM watering_history wh
                 LEFT JOIN plants p ON wh.plant_id = p.plant_id
                 LEFT JOIN users u ON p.user_id = u.user_id
@@ -35,7 +35,7 @@ class WateringHistory {
         try {
             const query = `
                 SELECT wh.*, p.custom_name as plant_name, 
-                       u.full_name as owner_name, d.device_name
+                       u.family_name as owner_name, d.device_name
                 FROM watering_history wh
                 LEFT JOIN plants p ON wh.plant_id = p.plant_id
                 LEFT JOIN users u ON p.user_id = u.user_id
@@ -59,7 +59,7 @@ class WateringHistory {
         try {
             const query = `
                 SELECT wh.*, p.custom_name as plant_name, 
-                       u.full_name as owner_name, d.device_name
+                       u.family_name as owner_name, d.device_name
                 FROM watering_history wh
                 LEFT JOIN plants p ON wh.plant_id = p.plant_id
                 LEFT JOIN users u ON p.user_id = u.user_id
@@ -86,7 +86,7 @@ class WateringHistory {
         try {
             const query = `
                 SELECT wh.*, p.custom_name as plant_name, 
-                       u.full_name as owner_name, d.device_name
+                       u.family_name as owner_name, d.device_name
                 FROM watering_history wh
                 INNER JOIN plants p ON wh.plant_id = p.plant_id
                 INNER JOIN users u ON p.user_id = u.user_id
@@ -107,7 +107,7 @@ class WateringHistory {
         try {
             const query = `
                 SELECT wh.*, p.custom_name as plant_name, 
-                       u.full_name as owner_name, d.device_name
+                       u.family_name as owner_name, d.device_name
                 FROM watering_history wh
                 LEFT JOIN plants p ON wh.plant_id = p.plant_id
                 LEFT JOIN users u ON p.user_id = u.user_id
@@ -128,7 +128,7 @@ class WateringHistory {
         try {
             const query = `
                 SELECT wh.*, p.custom_name as plant_name, 
-                       u.full_name as owner_name, d.device_name
+                       u.family_name as owner_name, d.device_name
                 FROM watering_history wh
                 LEFT JOIN plants p ON wh.plant_id = p.plant_id
                 LEFT JOIN users u ON p.user_id = u.user_id

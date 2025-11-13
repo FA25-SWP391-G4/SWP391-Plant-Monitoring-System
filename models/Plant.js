@@ -82,12 +82,12 @@ class Plant {
      * 
      * UPDATED FOR UUID MIGRATION:
      * - user_id is now UUID (not integer)
-     * - device_key (UUID) replaces device_id
+     * - device_key (12-char key) replaces device_id
      */
     constructor(plantData) {
         this.plant_id = plantData.plant_id;
         this.user_id = plantData.user_id; // Owner UUID for access control
-        this.device_key = plantData.device_key; // IoT device UUID connection
+        this.device_key = plantData.device_key; // IoT device 12-char key connection
         this.profile_id = plantData.profile_id; // Species profile
         this.custom_name = plantData.custom_name; // User-friendly name
         this.moisture_threshold = plantData.moisture_threshold; // UC16: Custom thresholds
@@ -192,14 +192,9 @@ class Plant {
         }
     }
 
-    // Static method to find plants by device key (UUID)
+    // Static method to find plants by device key (12-char key)
     static async findByDeviceKey(deviceKey) {
         try {
-            // Validate UUID format
-            if (!deviceKey || !isValidUUID(deviceKey)) {
-                console.error('[PLANT] Invalid device_key UUID:', deviceKey);
-                return [];
-            }
 
             const query = `
                 SELECT p.*, u.family_name as owner_name, 
@@ -255,9 +250,6 @@ class Plant {
                 if (this.user_id && !isValidUUID(this.user_id)) {
                     throw new Error('Invalid user_id UUID format');
                 }
-                if (this.device_key && !isValidUUID(this.device_key)) {
-                    throw new Error('Invalid device_key UUID format');
-                }
 
                 const query = `
                     UPDATE plants
@@ -285,9 +277,6 @@ class Plant {
                 // Validate UUID foreign keys
                 if (!this.user_id || !isValidUUID(this.user_id)) {
                     throw new Error('Valid user_id UUID is required');
-                }
-                if (this.device_key && !isValidUUID(this.device_key)) {
-                    throw new Error('Invalid device_key UUID format');
                 }
 
                 const query = `

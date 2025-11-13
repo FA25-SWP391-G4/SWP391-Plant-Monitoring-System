@@ -16,7 +16,7 @@ class AIModel {
     static async findAll() {
         try {
             const query = `
-                SELECT am.*, u.full_name as uploader_name 
+                SELECT am.*, u.family_name as uploader_name 
                 FROM ai_models am
                 LEFT JOIN users u ON am.uploaded_by = u.user_id
                 ORDER BY am.created_at DESC
@@ -32,7 +32,7 @@ class AIModel {
     static async findById(id) {
         try {
             const query = `
-                SELECT am.*, u.full_name as uploader_name 
+                SELECT am.*, u.family_name as uploader_name 
                 FROM ai_models am
                 LEFT JOIN users u ON am.uploaded_by = u.user_id
                 WHERE am.model_id = $1
@@ -53,7 +53,7 @@ class AIModel {
     static async findActive() {
         try {
             const query = `
-                SELECT am.*, u.full_name as uploader_name 
+                SELECT am.*, u.family_name as uploader_name 
                 FROM ai_models am
                 LEFT JOIN users u ON am.uploaded_by = u.user_id
                 WHERE am.is_active = true
@@ -81,7 +81,7 @@ class AIModel {
 
         try {
             const query = `
-                SELECT am.*, u.full_name as uploader_name 
+                SELECT am.*, u.family_name as uploader_name 
                 FROM ai_models am
                 LEFT JOIN users u ON am.uploaded_by = u.user_id
                 WHERE am.uploaded_by = $1

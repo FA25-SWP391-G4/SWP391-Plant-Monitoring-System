@@ -13,11 +13,11 @@ class PumpSchedule {
         try {
             const query = `
                 SELECT ps.*, p.custom_name as plant_name, 
-                       u.full_name as owner_name, d.device_name
+                       u.family_name as owner_name, d.device_name
                 FROM pump_schedules ps
                 LEFT JOIN plants p ON ps.plant_id = p.plant_id
                 LEFT JOIN users u ON p.user_id = u.user_id
-                LEFT JOIN devices d ON p.device_id = d.device_id
+                LEFT JOIN devices d ON p.device_key = d.device_key
                 ORDER BY ps.schedule_id
             `;
             const result = await pool.query(query);
@@ -32,11 +32,11 @@ class PumpSchedule {
         try {
             const query = `
                 SELECT ps.*, p.custom_name as plant_name, 
-                       u.full_name as owner_name, d.device_name
+                       u.family_name as owner_name, d.device_name
                 FROM pump_schedules ps
                 LEFT JOIN plants p ON ps.plant_id = p.plant_id
                 LEFT JOIN users u ON p.user_id = u.user_id
-                LEFT JOIN devices d ON p.device_id = d.device_id
+                LEFT JOIN devices d ON p.device_key = d.device_key
                 WHERE ps.schedule_id = $1
             `;
             const result = await pool.query(query, [id]);
@@ -56,11 +56,11 @@ class PumpSchedule {
         try {
             const query = `
                 SELECT ps.*, p.custom_name as plant_name, 
-                       u.full_name as owner_name, d.device_name
+                       u.family_name as owner_name, d.device_name
                 FROM pump_schedules ps
                 LEFT JOIN plants p ON ps.plant_id = p.plant_id
                 LEFT JOIN users u ON p.user_id = u.user_id
-                LEFT JOIN devices d ON p.device_id = d.device_id
+                LEFT JOIN devices d ON p.device_key = d.device_key
                 WHERE ps.plant_id = $1
                 ORDER BY ps.schedule_id
             `;
@@ -76,11 +76,11 @@ class PumpSchedule {
         try {
             const query = `
                 SELECT ps.*, p.custom_name as plant_name, 
-                       u.full_name as owner_name, d.device_name
+                       u.family_name as owner_name, d.device_name
                 FROM pump_schedules ps
                 INNER JOIN plants p ON ps.plant_id = p.plant_id
                 INNER JOIN users u ON p.user_id = u.user_id
-                LEFT JOIN devices d ON p.device_id = d.device_id
+                LEFT JOIN devices d ON p.device_key = d.device_key
                 WHERE u.user_id = $1
                 ORDER BY ps.schedule_id
             `;
@@ -96,12 +96,12 @@ class PumpSchedule {
         try {
             const query = `
                 SELECT ps.*, p.custom_name as plant_name, 
-                       u.full_name as owner_name, d.device_name,
+                       u.family_name as owner_name, d.device_name,
                        d.status as device_status
                 FROM pump_schedules ps
                 INNER JOIN plants p ON ps.plant_id = p.plant_id
                 INNER JOIN users u ON p.user_id = u.user_id
-                INNER JOIN devices d ON p.device_id = d.device_id
+                INNER JOIN devices d ON p.device_key = d.device_key
                 WHERE ps.is_active = true 
                 AND d.status = 'online'
                 AND p.auto_watering_on = true

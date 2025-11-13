@@ -15,12 +15,14 @@ import { getAuthToken } from '@/utils/auth';
 import { useTheme } from '@/contexts/ThemeContext';
 import UserRoleBadge from '@/components/shared/UserRoleBadge';
 import { authApi } from '@/api';
+import { useTranslation } from 'react-i18next';
 
 /**
  * User Profile Page
  * Displays and allows editing of user information
  */
 const ProfilePage = () => {
+  const { t, i18n } = useTranslation();
   const { user, loading: isLoading, updateUser } = useAuth();
   const router = useRouter();
   const { isDark, isLight, getThemeColor } = useTheme();
@@ -39,6 +41,19 @@ const ProfilePage = () => {
     newPassword: '',
     confirmPassword: '',
   });
+
+  const localeMap = {
+      'en': 'en-US',
+      'vi': 'vi-VN', 
+      'es': 'es-ES',
+      'fr': 'fr-FR',
+      'ja': 'ja-JP',
+      'kr': 'ko-KR',
+      'zh': 'zh-CN'
+    };
+    
+  const locale = localeMap[i18n.language] || 'en-US';
+ 
 
   // Redirect if user is not authenticated
   useEffect(() => {
@@ -78,7 +93,7 @@ const ProfilePage = () => {
       );
 
       if (response.data.success) {
-        toast.success('Profile updated successfully');
+        toast.success(t('profile.profileUpdated'));
         setIsEditing(false);
         // Update user in context
         if (updateUser) {
@@ -87,7 +102,7 @@ const ProfilePage = () => {
       }
     } catch (error) {
       console.error('Failed to update profile:', error);
-      toast.error(error.response?.data?.error || 'Failed to update profile');
+      toast.error(error.response?.data?.error || t('profile.updateProfileError'));
     } finally {
       setIsSaving(false);
     }
@@ -95,12 +110,12 @@ const ProfilePage = () => {
 
   const handleChangePassword = async () => {
     if (passwordData.newPassword !== passwordData.confirmPassword) {
-      toast.error('Passwords do not match');
+      toast.error(t('profile.passwordsDoNotMatch'));
       return;
     }
 
     if (passwordData.newPassword.length < 8) {
-      toast.error('Password must be at least 8 characters');
+      toast.error(t('profile.passwordTooShort'));
       return;
     }
 
@@ -113,7 +128,7 @@ const ProfilePage = () => {
       });
 
       if (response.data.success) {
-        toast.success('Password changed successfully');
+        toast.success(t('profile.passwordChanged'));
         setIsChangingPassword(false);
         setPasswordData({
           currentPassword: '',
@@ -123,7 +138,7 @@ const ProfilePage = () => {
       }
     } catch (error) {
       console.error('Failed to change password:', error);
-      toast.error(error.response?.data?.error || 'Failed to change password');
+      toast.error(error.response?.data?.error || t('profile.changePasswordError'));
     } finally {
       setIsSaving(false);
     }
@@ -168,10 +183,10 @@ const ProfilePage = () => {
             
             <div>
               <h1 className="text-2xl font-bold mb-2">
-                User Profile
+                {t('profile.title')}
               </h1>
               <p className="opacity-90">
-                Manage your account information and settings
+                {t('profile.subtitle')}
               </p>
             </div>
           </div>
@@ -184,9 +199,9 @@ const ProfilePage = () => {
             <div>
               <h3 className="text-lg font-medium text-gray-900 dark:text-white flex items-center gap-2">
                 <UserIcon className="h-5 w-5" />
-                Profile Information
+                {t('profile.information')}
               </h3>
-              <p className="text-gray-600 dark:text-gray-400">Update your personal details</p>
+              <p className="text-gray-600 dark:text-gray-400">{t('profile.informationDesc')}</p>
             </div>
             <div>
               {!isEditing ? (
@@ -195,7 +210,7 @@ const ProfilePage = () => {
                   className="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg font-medium transition-colors flex items-center gap-2"
                 >
                   <Edit className="h-4 w-4" />
-                  Edit Profile
+                  {t('profile.editProfile')}
                 </button>
               ) : (
                 <div className="flex gap-2">
@@ -209,7 +224,7 @@ const ProfilePage = () => {
                     ) : (
                       <Save className="h-4 w-4" />
                     )}
-                    Save
+                    {t('profile.save')}
                   </button>
                   <button
                     onClick={handleCancel}
@@ -217,7 +232,7 @@ const ProfilePage = () => {
                     className="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-lg font-medium transition-colors flex items-center gap-2 disabled:opacity-50"
                   >
                     <X className="h-4 w-4" />
-                    Cancel
+                    {t('profile.cancel')}
                   </button>
                 </div>
               )}
@@ -227,20 +242,20 @@ const ProfilePage = () => {
         <div className="p-6 space-y-6">
           {/* Role Badge */}
           <div className="">
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Role</label>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">{t('profile.role')}</label>
               {user && <UserRoleBadge role={user.role || 'free'} className="ml-2" />}
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {/* First Name */}
             <div className="">
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">First Name</label>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">{t('profile.firstName')}</label>
               {isEditing ? (
                 <input
                   type="text"
                   value={formData.given_name}
                   onChange={(e) => setFormData({ ...formData, given_name: e.target.value })}
-                  placeholder="Enter first name"
+                  placeholder={t('profile.enterFirstName')}
                   className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                 />
               ) : (
@@ -250,13 +265,13 @@ const ProfilePage = () => {
 
             {/* Last Name */}
             <div className="">
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Last Name</label>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">{t('profile.lastName')}</label>
               {isEditing ? (
                 <input
                   type="text"
                   value={formData.family_name}
                   onChange={(e) => setFormData({ ...formData, family_name: e.target.value })}
-                  placeholder="Enter last name"
+                  placeholder={t('profile.enterLastName')}
                   className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                 />
               ) : (
@@ -266,13 +281,13 @@ const ProfilePage = () => {
 
             {/* Email */}
             <div className="">
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Email</label>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">{t('profile.email')}</label>
               {isEditing ? (
                 <input
                   type="email"
                   value={formData.email}
                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                  placeholder="Enter email"
+                  placeholder={t('profile.enterEmail')}
                   className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                 />
               ) : (
@@ -282,7 +297,7 @@ const ProfilePage = () => {
 
             {/* Phone Number */}
             <div className="">
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Phone Number</label>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">{t('profile.phoneNumber')}</label>
               {isEditing ? (
                 <PhoneInput
                   value={formData.phone_number}
@@ -303,9 +318,9 @@ const ProfilePage = () => {
 
           {/* Account Created Date */}
           <div className="">
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Member Since</label>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">{t('profile.memberSince')}</label>
             <p className="text-gray-900 dark:text-white">
-              {user.created_at ? new Date(user.created_at).toLocaleDateString('en-US', {
+              {user.created_at ? new Date(user.created_at).toLocaleDateString(locale, {
                 year: 'numeric',
                 month: 'long',
                 day: 'numeric'
@@ -322,9 +337,9 @@ const ProfilePage = () => {
             <div>
               <h3 className="text-lg font-medium text-gray-900 dark:text-white flex items-center gap-2">
                 <Lock className="h-5 w-5" />
-                Password
+                {t('profile.password', 'Password')}
               </h3>
-              <p className="text-gray-600 dark:text-gray-400">Update your password</p>
+              <p className="text-gray-600 dark:text-gray-400">{t('profile.passwordDesc')}</p>
             </div>
             <div>
               {!isChangingPassword && (
@@ -332,7 +347,7 @@ const ProfilePage = () => {
                   onClick={() => setIsChangingPassword(true)}
                   className="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg font-medium transition-colors"
                 >
-                  Change Password
+                  {t('profile.changePassword', 'Change Password')}
                 </button>
               )}
             </div>
@@ -341,34 +356,34 @@ const ProfilePage = () => {
         {isChangingPassword && (
           <div className="p-6 space-y-4">
             <div className="">
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Current Password</label>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">{t('profile.currentPassword')}</label>
               <input
                 type="password"
                 value={passwordData.currentPassword}
                 onChange={(e) => setPasswordData({ ...passwordData, currentPassword: e.target.value })}
-                placeholder="Enter current password"
+                placeholder={t('profile.enterCurrentPassword')}
                 className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
               />
             </div>
 
             <div className="">
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">New Password</label>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">{t('profile.newPassword')}</label>
               <input
                 type="password"
                 value={passwordData.newPassword}
                 onChange={(e) => setPasswordData({ ...passwordData, newPassword: e.target.value })}
-                placeholder="Enter new password"
+                placeholder={t('profile.enterNewPassword')}
                 className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
               />
             </div>
 
             <div className="">
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Confirm New Password</label>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">{t('profile.confirmNewPassword')}</label>
               <input
                 type="password"
                 value={passwordData.confirmPassword}
                 onChange={(e) => setPasswordData({ ...passwordData, confirmPassword: e.target.value })}
-                placeholder="Confirm new password"
+                placeholder={t('profile.confirmNewPassword')}
                 className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
               />
             </div>
@@ -384,7 +399,7 @@ const ProfilePage = () => {
                 ) : (
                   <Lock className="h-4 w-4" />
                 )}
-                Update Password
+                {t('profile.updatePassword')}
               </button>
               <button
                 onClick={() => {
@@ -398,7 +413,7 @@ const ProfilePage = () => {
                 disabled={isSaving}
                 className="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-lg font-medium transition-colors disabled:opacity-50"
               >
-                Cancel
+                {t('profile.cancel', 'Cancel')}
               </button>
             </div>
           </div>

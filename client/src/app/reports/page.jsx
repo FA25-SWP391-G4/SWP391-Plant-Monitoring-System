@@ -232,24 +232,13 @@ export default function ReportsPage() {
         </div>
 
         {/* Report Categories and Cards */}
-        <div className="space-y-8">
+        <div className="space-y-8 grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-12">
           {reportCategories.map((category) => {
             const categoryReports = reportCards.filter(card => card.category === category.key);
             if (categoryReports.length === 0) return null;
             
             return (
-              <div key={category.key} className="space-y-4">
-                <div className="flex items-center gap-3">
-                  <div className="p-2 bg-green-100 dark:bg-green-900/30 rounded-lg">
-                    {category.icon}
-                  </div>
-                  <div>
-                    <h2 className="text-xl font-semibold text-gray-900 dark:text-white">{category.name}</h2>
-                    <p className="text-sm text-gray-600 dark:text-gray-400">{category.description}</p>
-                  </div>
-                </div>
-                
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div key={category.key}>
                   {categoryReports.map((card, index) => (
                     <div 
                       key={index} 
@@ -260,9 +249,6 @@ export default function ReportsPage() {
                           {card.icon}
                         </div>
                         <h3 className="text-lg font-medium mb-2 text-center text-gray-900 dark:text-white">{card.title}</h3>
-                        <p className="text-sm text-gray-600 dark:text-gray-400 text-center mb-4">
-                          {card.description}
-                        </p>
                         
                         {!hasAccess(card.tier) ? (
                           <div className="mt-auto">
@@ -315,7 +301,6 @@ export default function ReportsPage() {
                     </div>
                   ))}
                 </div>
-              </div>
             );
           })}
         </div>

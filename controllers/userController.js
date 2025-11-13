@@ -286,16 +286,51 @@ async function getPremiumStatus(req, res) {
     }
 }
 
-async function hasActivePremiumSubscription(user) {
+async function hasActivePremiumSubscription(req, res) {
     try {
-        const subscription = await Subscription.getUserActiveSubscription(user.user_id);
+        // Get user_id from authenticated request
+        const userId = req.user.user_id;
+        
+        // Validate UUID format
+        if (!isValidUUID(userId)) {
+            console.error('[SUBSCRIPTION CHECK] Invalid user_id UUID:', userId);
+            return res.status(400).json({ 
+                success: false, 
+                error: 'Invalid user ID format' 
+            });
+        }
+        
+        const subscription = await Subscription.getUserActiveSubscription(userId);
+        
         if (subscription) {
-            res.status(200).json({
+            console.log('[SUBSCRIPTION CHECK] Active subscription found:', {
+                id: subscription.id,
+                planId: subscription.planId,
+                type: subscription.subscriptionType,
+                isActive: subscription.isActive
+            });
+            
+            return res.status(200).json({
                 success: true,
                 data: {
+                    id: subscription.id,
+                    userId: subscription.userId,
+                    planId: subscription.planId,
                     subscriptionType: subscription.subscriptionType,
-                    subEnd: subscription.subEnd
+                    subStart: subscription.subStart,
+                    subEnd: subscription.subEnd,
+                    isActive: subscription.isActive,
+                    autoRenew: subscription.autoRenew,
+                    planName: subscription.planName,
+                    planDescription: subscription.planDescription,
+                    planFeatures: subscription.planFeatures
                 }
+            });
+        } else {
+            console.log('[SUBSCRIPTION CHECK] No active subscription found for user:', userId);
+            return res.status(404).json({ 
+                success: false,
+                error: 'No active subscription found'
             });
         }
     } catch (error) {

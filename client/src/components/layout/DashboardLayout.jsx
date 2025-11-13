@@ -10,7 +10,7 @@ import { useAuth } from '../../providers/AuthProvider';
 import { DashboardProvider, useDashboard } from '../../contexts/DashboardContext';
 import { DashboardWidgetProvider } from '../../providers/DashboardWidgetProvider';
 import DashboardSidebar from './DashboardSidebar';
-import DashboardTopBar from '../DashboardTopBar';
+import DashboardTopBar from './DashboardTopBar';
 import Navbar from '../dashboard/navigation/Navbar';
 import AIChatbotBubble from '../ai/AIChatbotBubble';
 import ThemedLoader from '../ThemedLoader';

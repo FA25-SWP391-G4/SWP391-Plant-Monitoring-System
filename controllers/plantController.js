@@ -32,6 +32,8 @@ const { connectAwsIoT } = require('../services/awsIOTClient');
 const { mqtt } = require('aws-iot-device-sdk-v2');
 const { isValidUUID } = require('../utils/uuidGenerator');
 const { data } = require('@tensorflow/tfjs');
+const mqttClient = require('../mqtt/mqttClient');
+const db = require('../config/db');
 
 // AWS IoT connection for device communication
 let awsIoTConnection = null;
@@ -49,6 +51,7 @@ async function getAwsIoTConnection() {
     }
     return awsIoTConnection;
 }
+
 
 /**
  * UC5: MANUAL WATERING
@@ -138,8 +141,6 @@ async function waterPlant(req, res) {
                 parameters: wateringCommand.parameters,
                 timestamp: wateringCommand.timestamp
             });
-
-            const { sendPumpCommand } = require('../services/awsIOTClient');
             
             // Log pre-command device state
             console.log('🔍 [PUMP DEBUG] Current device state:', {
@@ -149,7 +150,7 @@ async function waterPlant(req, res) {
                 plantId: plantId
             });
 
-            await sendPumpCommand(device.device_key.trim(), wateringCommand.command, wateringCommand.parameters.duration);
+            await mqttClient.sendPumpCommand(device.device_key.trim(), wateringCommand.command, wateringCommand.parameters.duration);
             
             console.log('✅ [PUMP DEBUG] Pump command sent successfully');
             
@@ -247,13 +248,13 @@ async function getWateringSchedule(req, res) {
         const { plantId } = req.params;
 
         // Validate UUID format
-        if (!isValidUUID(plantId)) {
-            console.error('[GET SCHEDULE] Invalid plant UUID:', plantId);
-            return res.status(400).json({
-                success: false,
-                error: 'Invalid plant ID format'
-            });
-        }
+        // if (!isValidUUID(plantId)) {
+        //     console.error('[GET SCHEDULE] Invalid plant UUID:', plantId);
+        //     return res.status(400).json({
+        //         success: false,
+        //         error: 'Invalid plant ID format'
+        //     });
+        // }
 
         // Find the plant
         const plant = await Plant.findById(plantId);
@@ -312,13 +313,13 @@ async function setWateringSchedule(req, res) {
         const { schedule } = req.body;
 
         // Validate UUID format
-        if (!isValidUUID(plantId)) {
-            console.error('[SET SCHEDULE] Invalid plant UUID:', plantId);
-            return res.status(400).json({
-                success: false,
-                error: 'Invalid plant ID format'
-            });
-        }
+        // if (!isValidUUID(plantId)) {
+        //     console.error('[SET SCHEDULE] Invalid plant UUID:', plantId);
+        //     return res.status(400).json({
+        //         success: false,
+        //         error: 'Invalid plant ID format'
+        //     });
+        // }
 
         // Validate schedule
         if (!schedule || !Array.isArray(schedule)) {
@@ -350,15 +351,14 @@ async function setWateringSchedule(req, res) {
         await PumpSchedule.deleteByPlantId(plantId);
 
         // Create new schedule entries
-        const schedulePromises = schedule.map(entry => {
-            return PumpSchedule.create({
+        const schedulePromises = schedule.map(async (entry) => {
+        const newSchedule = new PumpSchedule({
                 plant_id: plantId,
-                day_of_week: entry.dayOfWeek,
-                hour: entry.hour,
-                minute: entry.minute,
-                duration: entry.duration,
-                enabled: entry.enabled !== false // Default to enabled
-            });
+            cron_expression: `${entry.minute} ${entry.hour} * * ${entry.dayOfWeek}`, // convert dayOfWeek to cron
+            is_active: entry.enabled !== false
+        });
+
+        return await newSchedule.save();
         });
 
         const createdSchedules = await Promise.all(schedulePromises);
@@ -407,13 +407,13 @@ async function toggleAutoWatering(req, res) {
         const { enabled } = req.body;
 
         // Validate UUID format
-        if (!isValidUUID(plantId)) {
-            console.error('[TOGGLE AUTO WATERING] Invalid plant UUID:', plantId);
-            return res.status(400).json({
-                success: false,
-                error: 'Invalid plant ID format'
-            });
-        }
+        // if (!isValidUUID(plantId)) {
+        //     console.error('[TOGGLE AUTO WATERING] Invalid plant UUID:', plantId);
+        //     return res.status(400).json({
+        //         success: false,
+        //         error: 'Invalid plant ID format'
+        //     });
+        // }
 
         // Validate input
         if (typeof enabled !== 'boolean') {
@@ -492,13 +492,13 @@ async function setSensorThresholds(req, res) {
         const { thresholds } = req.body;
 
         // Validate UUID format
-        if (!isValidUUID(plantId)) {
-            console.error('[SET THRESHOLDS] Invalid plant UUID:', plantId);
-            return res.status(400).json({
-                success: false,
-                error: 'Invalid plant ID format'
-            });
-        }
+        // if (!isValidUUID(plantId)) {
+        //     console.error('[SET THRESHOLDS] Invalid plant UUID:', plantId);
+        //     return res.status(400).json({
+        //         success: false,
+        //         error: 'Invalid plant ID format'
+        //     });
+        // }
 
         // Check if user is premium
         if (req.user.role !== 'Premium' && req.user.role !== 'Admin') {
@@ -1083,12 +1083,11 @@ const getSensorHistory = async (req, res) => {
         }
 
         const query = `
-            SELECT sd.data_id, sd.timestamp, sd.soil_moisture, sd.temperature, 
-                   sd.air_humidity, sd.light_intensity 
-            FROM sensors_data sd
-            INNER JOIN plants p ON TRIM(sd.device_key) = TRIM(p.device_key)
-            WHERE p.plant_id = $1
-            ORDER BY sd.timestamp DESC
+            SELECT data_id, timestamp, soil_moisture, temperature, 
+                   air_humidity, light_intensity 
+            FROM sensors_data
+            WHERE plant_id = $1
+            ORDER BY timestamp DESC
             LIMIT 100
         `;
 
@@ -1104,63 +1103,6 @@ const getSensorHistory = async (req, res) => {
         return res.status(500).json({
             success: false,
             error: 'Server error while fetching sensor history'
-        });
-    }
-};
-
-/**
- * Get current sensor data for a specific plant
- */
-const getCurrentSensorData = async (req, res) => {
-    try {
-        const { plantId } = req.params;
-        const plant = await Plant.findById(plantId);
-        
-        if (!plant) {
-            return res.status(404).json({
-                success: false,
-                error: 'Plant not found'
-            });
-        }
-
-        // Verify ownership
-        if (plant.user_id !== req.user.user_id) {
-            return res.status(403).json({
-                success: false,
-                error: 'Unauthorized access to plant'
-            });
-        }
-
-        const query = `
-            SELECT sd.data_id, sd.timestamp, sd.soil_moisture, sd.temperature, 
-                   sd.air_humidity, sd.light_intensity 
-            FROM sensors_data sd
-            INNER JOIN plants p ON TRIM(sd.device_key) = TRIM(p.device_key)
-            WHERE p.plant_id = $1
-            ORDER BY sd.timestamp DESC
-            LIMIT 1
-        `;
-
-        const result = await pool.query(query, [plantId]);
-        
-        if (result.rows.length === 0) {
-            return res.json({
-                success: true,
-                data: null,
-                message: 'No sensor data available'
-            });
-        }
-
-        return res.json({
-            success: true,
-            data: result.rows[0]
-        });
-
-    } catch (error) {
-        await SystemLog.error('plantController', `Error fetching current sensor data for plant ${req.params.plantId}: ${error.message}`);
-        return res.status(500).json({
-            success: false,
-            error: 'Server error while fetching current sensor data'
         });
     }
 };
@@ -1324,6 +1266,54 @@ const getLastWatered = async (req, res) => {
     }
 };
 
+// Replace or update your existing waterPlant handler with this safe version
+exports.waterPlant = async (req, res) => {
+  try {
+    // Accept both numeric IDs and UUIDs from the route
+    const rawId = req.params.plantId || req.params.id;
+    if (!rawId) return res.status(400).json({ success: false, message: 'Missing plant id' });
+
+    // Determine numeric vs UUID
+    let plantId = rawId;
+    if (/^\d+$/.test(String(rawId))) {
+      plantId = parseInt(rawId, 10);
+    }
+
+    // Read payload
+    const { duration, action } = req.body;
+    let cmd = 'pump_on';
+    let dur = duration;
+    if (action === 'pump_off' || dur === 0) {
+      cmd = 'pump_off';
+      dur = null;
+    }
+
+    // Load plant record (Plant.findById should accept either int or uuid)
+    const plant = await Plant.findById(plantId);
+    if (!plant) return res.status(404).json({ success: false, message: 'Plant not found' });
+
+    const deviceKey = plant.device_key ? String(plant.device_key).trim() : null;
+    if (!deviceKey) {
+      // Optionally continue but warn; keep behavior consistent with your app:
+      console.warn(`[WATER] Plant ${plantId} has no device_key`);
+      // return res.status(400).json({ success:false, message:'No device linked to this plant' });
+    }
+
+    // Send MQTT command (will generate commandId on server side)
+    const result = await mqttClient.sendPumpCommand(deviceKey, cmd, dur);
+
+    // Record watering history and include device_key (may be null)
+    const recordedDuration = cmd === 'pump_on' ? (parseInt(duration, 10) || 0) : 0;
+    await WateringHistory.logWatering(plant.plant_id || plantId, 'manual', recordedDuration, deviceKey);
+
+    return res.json({ success: true, result, message: `Watering initiated for ${recordedDuration} seconds` });
+  } catch (error) {
+    console.error('Error in waterPlant:', error);
+    await SystemLog.create('ERROR', `waterPlant error: ${error.message}`).catch(()=>{});
+    return res.status(500).json({ success: false, message: 'Internal server error' });
+    }
+};
+
 module.exports = {
     waterPlant,
     getWateringSchedule,
@@ -1335,7 +1325,6 @@ module.exports = {
     createPlant,
     getWateringHistory,
     getSensorHistory,
-    getCurrentSensorData,
     getSensorStats,
     getLastWatered
 };

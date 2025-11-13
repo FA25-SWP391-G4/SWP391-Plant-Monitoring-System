@@ -3,44 +3,62 @@ import axiosClient from "./axiosClient";
 
 const userApi = {
   // Get current user profile
-  getProfile: () =>
-    axiosClient.get("/user/profile"),
+  getProfile: async () => {
+    const response = await axiosClient.get("/users/profile");
+    return response.data;
+  },
 
   // Update user profile
-  updateProfile: (userData) =>
-    axiosClient.put("/user/profile", userData),
+  updateProfile: async (userData) => {
+    const response = await axiosClient.put("/users/profile", userData);
+    return response.data;
+  },
 
   // Upload profile picture
-  uploadProfilePicture: (formData) =>
-    axiosClient.post("/user/profile/picture", formData, {
+  uploadProfilePicture: async (formData) => {
+    const response = await axiosClient.post("/users/profile/picture", formData, {
       headers: {
         'Content-Type': 'multipart/form-data'
       }
-    }),
+    });
+    return response.data;
+  },
 
   // Update user settings
-  updateSettings: (settings) =>
-    axiosClient.put("/user/settings", settings),
+  updateSettings: async (settings) => {
+    const response = await axiosClient.put("/users/settings", settings);
+    return response.data;
+  },
 
   // Get user preferences
-  getPreferences: () =>
-    axiosClient.get("/user/preferences"),
+  getPreferences: async () => {
+    const response = await axiosClient.get("/users/preferences");
+    return response.data;
+  },
 
   // Update user preferences
-  updatePreferences: (preferences) =>
-    axiosClient.put("/user/preferences", preferences),
+  updatePreferences: async (preferences) => {
+    const response = await axiosClient.put("/users/preferences", preferences);
+    return response.data;
+  },
 
   // Delete account
-  deleteAccount: (password) =>
-    axiosClient.delete("/user/account", { data: { password } }),
+  deleteAccount: async (password) => {
+    const response = await axiosClient.delete("/users/account", { data: { password } });
+    return response.data;
+  },
 
   // Get subscription info
-  getUserSubscription: () =>
-    axiosClient.get("/user/subscription"),
+  getUserSubscription: async () => {
+    const response = await axiosClient.get("/users/subscription");
+    return response.data;
+  },
 
   // Cancel subscription
-  cancelSubscription: () =>
-    axiosClient.post("/user/subscription/cancel"),
+  cancelSubscription: async () => {
+    const response = await axiosClient.post("/users/subscription/cancel");
+    return response.data;
+  },
 };
 
 export default userApi;

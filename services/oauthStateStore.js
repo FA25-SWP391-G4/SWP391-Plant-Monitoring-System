@@ -1,13 +1,13 @@
 /**
  * OAuth state store for CSRF protection
  */
-const { pool } = require('../config/postgresql.prod');
+const { pool } = require('../config/postgresql');
 
 /**
  * Store OAuth state in database
  * @param {string} state - The state token to store
  * @param {string} sessionId - Associated session ID
- * @returns {Promise<boolean>} Success status
+ * @returns {Promise<boolean>} Success statusscheduleAllPumps
  */
 async function storeOAuthState(state, sessionId) {
   try {

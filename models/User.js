@@ -99,14 +99,14 @@ constructor(userData) {
     this.profile_picture = userData.profile_picture || userData.profilePicture;
     
     // Handle settings assignment with debugging
-    console.log('[USER CONSTRUCTOR] userData.settings before assignment:', userData.settings);
+    //console.log('[USER CONSTRUCTOR] userData.settings before assignment:', userData.settings);
     if (userData.settings) {
             this.settings = userData.settings;
-            console.log('[USER CONSTRUCTOR] Assigned settings object directly:', this.settings);
-        console.log('[USER CONSTRUCTOR] Final this.settings.widgets.showPlantOverview:', this.settings?.widgets?.showPlantOverview);
+            //console.log('[USER CONSTRUCTOR] Assigned settings object directly:', this.settings);
+        //console.log('[USER CONSTRUCTOR] Final this.settings.widgets.showPlantOverview:', this.settings?.widgets?.showPlantOverview);
     } else {
         this.settings = null;
-        console.log('[USER CONSTRUCTOR] No settings in userData, set to null');
+        //console.log('[USER CONSTRUCTOR] No settings in userData, set to null');
     }
 }
 

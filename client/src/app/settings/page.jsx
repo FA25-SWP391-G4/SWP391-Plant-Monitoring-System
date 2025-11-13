@@ -211,7 +211,7 @@ export default function SettingsPage() {
                 {t('navigation.settings', 'Settings')}
               </h1>
               <p className="opacity-90">
-                Customize your dashboard and preferences
+                {t('settings.description', 'Customize your experience and preferences')}.
               </p>
             </div>
           </div>
@@ -313,7 +313,7 @@ export default function SettingsPage() {
                   
                   <div className="mb-6">
                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                      {t('settings.theme', 'Theme')}
+                      {t('settings.appearance', 'Appearance')}
                     </label>
                     <select 
                       value={settings.appearance.theme} 

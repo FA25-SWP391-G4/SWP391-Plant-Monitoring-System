@@ -59,7 +59,7 @@ class Payment {
     static async findByVNPayTxnRef(txnRef) {
         try {
             const query = `
-                SELECT p.*, u.full_name as user_name, u.email 
+                SELECT p.*, u.family_name as user_name, u.email 
                 FROM payments p
                 LEFT JOIN users u ON p.user_id = u.user_id
                 WHERE p.vnpay_txn_ref = $1
@@ -86,7 +86,7 @@ class Payment {
 
         try {
             const query = `
-                SELECT p.*, u.full_name as user_name, u.email 
+                SELECT p.*, u.family_name as user_name, u.email 
                 FROM payments p
                 LEFT JOIN users u ON p.user_id = u.user_id
                 WHERE p.user_id = $1
@@ -104,7 +104,7 @@ class Payment {
     static async findByStatus(status, limit = 100) {
         try {
             const query = `
-                SELECT p.*, u.full_name as user_name, u.email 
+                SELECT p.*, u.family_name as user_name, u.email 
                 FROM payments p
                 LEFT JOIN users u ON p.user_id = u.user_id
                 WHERE p.status = $1
@@ -137,7 +137,7 @@ class Payment {
 
         try {
             const query = `
-                SELECT p.*, u.full_name as user_name, u.email 
+                SELECT p.*, u.family_name as user_name, u.email 
                 FROM payments p
                 LEFT JOIN users u ON p.user_id = u.user_id
                 WHERE p.user_id = $1 AND p.status = 'completed'
@@ -497,7 +497,7 @@ class Payment {
 
         try {
             const query = `
-                SELECT p.*, u.full_name as user_name, u.email 
+                SELECT p.*, u.family_name as user_name, u.email 
                 FROM payments p
                 LEFT JOIN users u ON p.user_id = u.user_id
                 WHERE p.user_id = $1

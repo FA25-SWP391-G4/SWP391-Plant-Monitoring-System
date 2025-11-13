@@ -31,7 +31,7 @@ connection.on("connect", async () => {
     "smartplant/pub",
     mqtt.QoS.AtLeastOnce,
     async (topic, payload) => {
-      const data = JSON.parse(new TextDecoder().decode(payload));
+    const data = JSON.parse(new TextDecoder().decode(payload));
       console.log("📩 Received message from ESP32:", data);
 
       try {
@@ -44,13 +44,13 @@ connection.on("connect", async () => {
           payloadObj.soil_moisture !== undefined
         ) {
           const deviceId = payloadObj.deviceId || payloadObj.device_id;
-          const ts = payloadObj.timestamp
-            ? new Date(payloadObj.timestamp)
-            : new Date();
-          const soil = payloadObj.soil_moisture ?? payloadObj.soilMoisture ?? null;
-          const temp = payloadObj.temperature ?? null;
-          const humidity = payloadObj.air_humidity ?? payloadObj.humidity ?? null;
-          const light = payloadObj.light_intensity ?? payloadObj.light ?? null;
+        const ts = payloadObj.timestamp
+          ? new Date(payloadObj.timestamp)
+          : new Date();
+        const soil = payloadObj.soil_moisture ?? payloadObj.soilMoisture ?? null;
+        const temp = payloadObj.temperature ?? null;
+        const humidity = payloadObj.air_humidity ?? payloadObj.humidity ?? null;
+        const light = payloadObj.light_intensity ?? payloadObj.light ?? null;
 
           // Look up plant_id for this device_key
           let plantId = null;

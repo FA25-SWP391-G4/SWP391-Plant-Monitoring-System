@@ -8,11 +8,18 @@ const fs = require('fs');
 const dotenv = require('dotenv');
 const SystemLog = require('../models/SystemLog');
 const db = require('../config/db');
+const { scheduleAllPumps } = require('../services/schedulerService');
+
 dotenv.config();
+
+const pendingCommands = new Map(); // key: commandId, value: { resolve, reject, timeout }
+
+const DEFAULT_COMMAND_TIMEOUT_MS = 20000;
 
 // Determine which MQTT connection to use
 const USE_AWS_IOT = process.env.USE_AWS_IOT === 'true';
 let client = null;
+let isClientConnected = false;
 
 if (USE_AWS_IOT) {
   // AWS IoT connection
@@ -22,7 +29,7 @@ if (USE_AWS_IOT) {
     keyPath: process.env.AWS_PRIVATE_KEY_PATH,
     certPath: process.env.AWS_CERT_PATH,
     caPath: process.env.AWS_ROOT_CA_PATH,
-    clientId: 'plant-monitoring-system-' + Math.random().toString(16).slice(3),
+    clientId: 'ESP32_SmartPlant_Server' + Math.random().toString(16).slice(3),
     host: process.env.AWS_IOT_ENDPOINT
   });
 } else {
@@ -30,17 +37,34 @@ if (USE_AWS_IOT) {
   const mqttUrl = process.env.MQTT_URL;
   
   client = mqtt.connect(mqttUrl, {
-    clientId: 'plant-monitoring-system-' + Math.random().toString(16).slice(3),
+    clientId: 'ESP32_SmartPlant_Server' + Math.random().toString(16).slice(3),
     clean: true,
     connectTimeout: 4000,
     reconnectPeriod: 1000
   });
 }
 
+// Attach packet-level debug for mqtt.js (harmless if client doesn't emit)
+try {
+  client.on && client.on('packetsend', (packet) => {
+    if (packet && packet.topic) console.log('⬆️ [MQTT-PACKET] packetsend', packet.cmd, packet.topic);
+  });
+  client.on && client.on('packetreceive', (packet) => {
+    console.log('⬇️ [MQTT-PACKET] packetreceive', packet.cmd);
+  });
+} catch (e) {
+  // ignore if client doesn't support these events
+}
+
+
+
+
 // Connection event handlers
-client.on('connect', () => {
+client.on('connect', async() => {
+  isClientConnected = true;
   console.log('Connected to MQTT broker');
   SystemLog.create('INFO', 'MQTT client connected').catch(console.error);
+  // console.log('✅ Connected to AWS IoT as', client.options.clientId);
   
   const topic = [
     'smartplant/pub',
@@ -61,7 +85,20 @@ client.on('connect', () => {
       }
     });
   });
+
+  try {
+    await scheduleAllPumps();
+    console.log('✅ All pump schedules loaded and cron jobs registered');
+  } catch (err) {
+    console.error('❌ Failed to schedule pumps:', err.message);
+  }
 });
+client.on('close', () => { isClientConnected = false; console.log('🔴 MQTT connection closed'); });
+client.on('reconnect', () => console.log('🔄 MQTT reconnecting...'));
+client.on('offline', () => { isClientConnected = false; console.log('⚪ MQTT offline'); });
+
+
+
 
 // Message handler
 client.on('message', async (topic, payload) => {
@@ -159,6 +196,14 @@ async function processDeviceResponse(deviceKey, data) {
       
       console.log(`🚰 [PUMP-RESPONSE] Pump command ${data.command} status: ${status} - ${message}`);
       
+      if (data.commandId && pendingCommands.has(data.commandId)) {
+        const { resolve, timeout } = pendingCommands.get(data.commandId);
+        clearTimeout(timeout);
+        pendingCommands.delete(data.commandId);
+        resolve({ status: data.status, message: data.message });
+      }
+
+      
       // Update device status if pump operation affects it
       if (status === 'success') {
         await db.pool.query(
@@ -174,31 +219,28 @@ async function processDeviceResponse(deviceKey, data) {
 }
 
 // Send command to a specific device
-function sendDeviceCommand(deviceId, command, parameters = {}) {
+async function sendDeviceCommand(deviceId, command, parameters = {}, timeoutMs = DEFAULT_COMMAND_TIMEOUT_MS) {
+  if (!deviceId) return Promise.reject(new Error('Missing deviceId'));
+
   // Trim device ID to remove any padding spaces
-  const trimmedDeviceId = deviceId.trim();
+  const trimmedDeviceId = String(deviceId).trim();
   
   console.log('🔄 [MQTT-DEVICE] Preparing device command:', {
     originalDeviceId: deviceId,
-    trimmedDeviceId: trimmedDeviceId,
+    trimmedDeviceId,
     command,
     parameters
   });
+  
 
   const topic = `smartplant/device/${trimmedDeviceId}/command`;
   
-  const payload = JSON.stringify({
-    command,
-    parameters,
-    timestamp: new Date().toISOString()
-  });
+  // ✅ Ensure connection before publishing
+  await ensureConnected();
   
   return new Promise((resolve, reject) => {
-    // Set up timeout for command response
-    const timeoutMs = 10000; // 10 seconds timeout
     const commandId = `cmd_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
     
-    // Add command ID to payload for tracking
     const payloadWithId = {
       command,
       parameters,
@@ -207,59 +249,61 @@ function sendDeviceCommand(deviceId, command, parameters = {}) {
     };
     const finalPayload = JSON.stringify(payloadWithId);
     
-    console.log('📦 [MQTT-DEVICE] Command payload:', {
-      topic,
-      payload: payloadWithId,
-      qos: 1
-    });
+    console.log('📦 [MQTT-DEVICE] Command payload (final):', { topic, finalPayload, typeOfPayload: typeof finalPayload, qos: 0 });
     
+    // Timeout setup
     const timeout = setTimeout(() => {
-      console.log(`⏰ [MQTT-DEVICE] Command timeout for device ${trimmedDeviceId}:`, {
-        command,
-        commandId,
-        timeoutMs
-      });
+      pendingCommands.delete(commandId);
+      console.warn(`⏱️ [MQTT-CMD] Command ${commandId} timed out after ${timeoutMs}ms`);
       resolve({ status: 'timeout', message: 'Device did not respond within timeout period' });
     }, timeoutMs);
     
-    client.publish(topic, finalPayload, { qos: 1 }, (error) => {
-      if (error) {
-        clearTimeout(timeout);
-        console.error('❌ [MQTT-DEVICE] Command failed:', {
-          deviceId: trimmedDeviceId,
-          command,
-          error: error.message,
-          stack: error.stack
-        });
-        
-        SystemLog.create('ERROR', JSON.stringify({
-          event: 'device_command_failed',
-          deviceId: trimmedDeviceId,
-          command,
-          error: error.message
-        })).catch(console.error);
-        
-        reject(error);
-      } else {
-        clearTimeout(timeout);
-        console.log('✅ [MQTT-DEVICE] Command sent successfully:', {
-          deviceId: trimmedDeviceId,
-          command,
-          commandId,
-          topic
-        });
-        
-        SystemLog.create('INFO', JSON.stringify({
-          event: 'device_command_sent',
-          deviceId: trimmedDeviceId,
-          command,
-          parameters,
-          commandId
-        })).catch(console.error);
-        
-        resolve({ status: 'sent', message: 'Command sent successfully' });
+    pendingCommands.set(commandId, { resolve, reject, timeout });
+    console.log(`🟢 [MQTT-CMD] Pending commands size: ${pendingCommands.size} (added ${commandId})`);
+
+    // Ensure client connection state is visible
+    try {
+      const connected = typeof client.connected === 'function' ? client.connected() : client && client.connected;
+      console.log('🔌 [MQTT] client.connected =', connected);
+    } catch (e) {
+      console.log('🔌 [MQTT] client.connected check failed:', e.message);
+    }
+
+    // Publish and support either callback-style or promise-style client.publish
+    try {
+      // ensure payload is a string
+      if (typeof finalPayload !== 'string') {
+        console.warn('⚠️ finalPayload is not string, converting via JSON.stringify');
       }
-    });
+      const publishResult = client.publish(topic, String(finalPayload), { qos: 0 }, (err) => {
+        if (err) {
+        clearTimeout(timeout);
+          pendingCommands.delete(commandId);
+          console.error(`❌ [MQTT-DEVICE] Publish callback error for ${commandId}:`, err);
+          return reject(err);
+        }
+        console.log(`📤 [MQTT-DEVICE] Published (cb) commandId=${commandId} to ${topic}`);
+      });
+
+      // If publish returns a promise (some AWS helpers do), await and log
+      if (publishResult && typeof publishResult.then === 'function') {
+        publishResult
+          .then(() => {
+            console.log(`📤 [MQTT-DEVICE] Published (promise) commandId=${commandId} to ${topic}`);
+          })
+          .catch((err) => {
+            clearTimeout(timeout);
+            pendingCommands.delete(commandId);
+            console.error(`❌ [MQTT-DEVICE] Publish promise error for ${commandId}:`, err);
+            reject(err);
+          });
+      }
+    } catch (err) {
+      clearTimeout(timeout);
+      pendingCommands.delete(commandId);
+      console.error('❌ [MQTT-DEVICE] Publish threw error:', err);
+      return reject(err);
+    }
   });
 }
 
@@ -321,6 +365,50 @@ function sendPumpCommand(device_key, command, duration = null) {
     return Promise.reject(error);
   }
 }
+
+function ensureConnected() {
+  return new Promise((resolve, reject) => {
+    if (!client) return reject(new Error('MQTT client not initialized'));
+
+    // Use internal flag set from event handlers for reliable detection
+    console.log('🔌 ensureConnected: clientType=', client && client.constructor && client.constructor.name, 'flagIsConnected=', isClientConnected);
+    if (isClientConnected) return resolve();
+
+    console.log('⏳ Waiting for MQTT connection...');
+    const timeout = setTimeout(() => {
+      cleanup();
+      reject(new Error('MQTT not connected'));
+    }, 10000);
+
+    const onConnect = () => {
+      clearTimeout(timeout);
+      cleanup();
+      isClientConnected = true;
+      console.log('✅ MQTT connected, proceeding');
+      resolve();
+    };
+
+    const onError = (err) => {
+      clearTimeout(timeout);
+      cleanup();
+      reject(err || new Error('MQTT connection error'));
+    };
+
+    function cleanup() {
+      try {
+        client.removeListener && client.removeListener('connect', onConnect);
+        client.removeListener && client.removeListener('ready', onConnect);
+        client.removeListener && client.removeListener('error', onError);
+      } catch (e) { /* ignore */ }
+    }
+
+    client.on && client.on('connect', onConnect);
+    client.on && client.on('ready', onConnect);
+    client.on && client.on('error', onError);
+  });
+}
+
+
 
 async function handleSmartplantMessage(message) {
   try {

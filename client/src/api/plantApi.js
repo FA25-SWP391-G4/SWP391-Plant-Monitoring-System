@@ -27,9 +27,11 @@ const plantApi = {
   },
 
   // Water a plant manually
-  waterPlant: async (plantId, duration) => {
+  waterPlant: async (plantId, duration, action) => {
     try {
-      const response = await axiosClient.post(`/api/plants/${plantId}/water`, { duration });
+      // If frontend wants to stop watering, call with action = 'pump_off'
+      const payload = action ? { action } : { duration };
+      const response = await axiosClient.post(`/api/plants/${plantId}/water`, payload);
       return response.data;
     } catch (error) {
       console.error(`Error watering plant ${plantId}:`, error);
@@ -106,32 +108,10 @@ const plantApi = {
   // Toggle auto-watering for a plant
   toggleAutoWatering: async (plantId, enabled) => {
     try {
-      const response = await axiosClient.put(`/api/plants/${plantId}/auto-watering`, { enabled });
+      const response = await axiosClient.post(`/api/plants/${plantId}/auto-watering`, { enabled });
       return response.data;
     } catch (error) {
       console.error(`Error toggling auto-watering for plant ${plantId}:`, error);
-      throw error;
-    }
-  },
-
-  // Connect device to plant
-  connectDevice: async (plantId, deviceId) => {
-    try {
-      const response = await axiosClient.put(`/api/plants/${plantId}/connect-device`, { deviceId });
-      return response.data;
-    } catch (error) {
-      console.error(`Error connecting device to plant ${plantId}:`, error);
-      throw error;
-    }
-  },
-
-  // Get current sensor data for a plant
-  getCurrentSensorData: async (plantId) => {
-    try {
-      const response = await axiosClient.get(`/api/plants/${plantId}/sensors/current`);
-      return response.data;
-    } catch (error) {
-      console.error(`Error fetching current sensor data for plant ${plantId}:`, error);
       throw error;
     }
   },
