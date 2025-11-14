@@ -143,7 +143,7 @@ const AIChatbot = ({ plant = null, className = '' }) => {
       const response = await aiApi.chatWithAI({
         message: input.trim(),
         plant_id: plant?.id,
-        conversation_id: conversationId,
+        chat_id: conversationId,
         context: context,
         conversation_history: messages.slice(-10).map(m => ({
           role: m.sender === 'user' ? 'user' : 'assistant',

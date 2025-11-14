@@ -6,7 +6,7 @@ export function middleware(request) {
   const { pathname } = request.nextUrl;
 
   // Public paths - accessible without authentication
-  const publicPaths = ['/', '/login', '/register', '/forgot-password', '/reset-password'];
+  const publicPaths = ['/', '/login', '/register', '/forgot-password'];
 
   // If on a public path and logged in, redirect to dashboard
   if (publicPaths.includes(pathname) && pathname !== '/' && token) {
@@ -15,6 +15,10 @@ export function middleware(request) {
 
   // If not on a public path and not logged in, redirect to login
   if (!publicPaths.includes(pathname) && !token) {
+    // For AI pages, redirect to login instead of home
+    if (pathname.startsWith('/ai/')) {
+      return NextResponse.redirect(new URL('/login', request.url));
+    }
     return NextResponse.redirect(new URL('/', request.url));
   }
 

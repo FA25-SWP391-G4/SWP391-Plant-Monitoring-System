@@ -269,6 +269,17 @@ class PumpSchedule {
         }
     }
 
+    // Static method to delete all schedules for a plant
+    static async deleteByPlantId(plantId) {
+        try {
+            const query = 'DELETE FROM pump_schedules WHERE plant_id = $1';
+            const result = await pool.query(query, [plantId]);
+            return result.rowCount; // Returns number of deleted rows
+        } catch (error) {
+            throw error;
+        }
+    }
+
     // Static method to create common schedules
     static async createDailySchedule(plantId, hour, minute = 0) {
         try {

@@ -22,7 +22,7 @@ describe('ChatHistory Model - Unit Tests', () => {
         chat_id: 1,
         user_id: 100,
         plant_id: 50,
-        conversation_id: 'conv-123',
+        chat_id: 'conv-123',
         message: 'How to water plants?',
         response: 'Water regularly',
         context: { source: 'web' },
@@ -34,7 +34,7 @@ describe('ChatHistory Model - Unit Tests', () => {
       expect(chat.chat_id).toBe(1);
       expect(chat.user_id).toBe(100);
       expect(chat.plant_id).toBe(50);
-      expect(chat.conversation_id).toBe('conv-123');
+      expect(chat.chat_id).toBe('conv-123');
       expect(chat.message).toBe('How to water plants?');
       expect(chat.response).toBe('Water regularly');
     });
@@ -317,15 +317,15 @@ describe('ChatHistory Model - Unit Tests', () => {
   describe('findByConversationId', () => {
     test('should find chat history by conversation ID', async () => {
       const mockRows = [
-        { chat_id: 1, conversation_id: 'conv-1' },
-        { chat_id: 2, conversation_id: 'conv-1' }
+        { chat_id: 1, chat_id: 'conv-1' },
+        { chat_id: 2, chat_id: 'conv-1' }
       ];
       mockQuery.mockResolvedValue({ rows: mockRows });
 
       const result = await ChatHistory.findByConversationId('conv-1');
 
       expect(mockQuery).toHaveBeenCalledWith(
-        expect.stringContaining('WHERE ch.conversation_id = $1'),
+        expect.stringContaining('WHERE ch.chat_id = $1'),
         ['conv-1', 50]
       );
       expect(result).toHaveLength(2);

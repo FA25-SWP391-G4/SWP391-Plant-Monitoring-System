@@ -58,7 +58,7 @@ This document provides a comprehensive list of all environment variables used in
 
 | Variable | Description | Example |
 |----------|-------------|---------|
-| `AI_SERVICE_URL` | AI microservice URL | `http://localhost:8000` |
+| `AI_SERVICE_URL` | AI microservice URL | `http://localhost:5000` |
 | `AI_MODEL_VERSION` | Version of AI model to use | `v1.0.0` |
 
 ## IoT Configuration
@@ -115,7 +115,7 @@ VNPAY_RETURN_URL=http://localhost:3010/payment/vnpay-return
 VNPAY_IPN_URL=http://localhost:3010/payment/vnpay-ipn
 
 # AI Service
-AI_SERVICE_URL=http://localhost:8000
+AI_SERVICE_URL=http://localhost:5000
 AI_MODEL_VERSION=v1.0.0
 
 # IoT Configuration

@@ -118,7 +118,7 @@ router.post('/chatbot', authenticate, async (req, res) => {
 
 ### Chatbot Query
 ```bash
-curl -X POST http://localhost:8000/api/chatbot/query \
+curl -X POST http://localhost:5000/api/chatbot/query \
   -H "Authorization: Bearer YOUR_JWT_TOKEN" \
   -H "Content-Type: application/json" \
   -d '{
@@ -133,7 +133,7 @@ curl -X POST http://localhost:8000/api/chatbot/query \
 
 ### Service Status
 ```bash
-curl -X GET http://localhost:8000/api/chatbot/status \
+curl -X GET http://localhost:5000/api/chatbot/status \
   -H "Authorization: Bearer YOUR_JWT_TOKEN"
 ```
 

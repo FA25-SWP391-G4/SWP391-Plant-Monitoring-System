@@ -1,6 +1,9 @@
 const path = require('path');
 const fs = require('fs');
 
+// Load environment variables from root directory
+require('dotenv').config({ path: path.join(__dirname, '../../.env') });
+
 // Load AI configuration
 const loadAIConfig = () => {
   try {

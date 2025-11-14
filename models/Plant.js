@@ -254,8 +254,9 @@ class Plant {
                 const query = `
                     UPDATE plants
                     SET user_id = $1, device_key = $2, profile_id = $3, 
-                        custom_name = $4, moisture_threshold = $5, auto_watering_on = $6
-                    WHERE plant_id = $7
+                        custom_name = $4, moisture_threshold = $5, auto_watering_on = $6,
+                        zone_id = $7, status = $8, notes = $9
+                    WHERE plant_id = $10
                     RETURNING *
                 `;
                 
@@ -266,6 +267,9 @@ class Plant {
                     this.custom_name,
                     this.moisture_threshold,
                     this.auto_watering_on,
+                    this.zone_id,
+                    this.status,
+                    this.notes,
                     this.plant_id
                 ]);
                 

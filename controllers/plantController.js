@@ -34,6 +34,7 @@ const { isValidUUID } = require('../utils/uuidGenerator');
 const { data } = require('@tensorflow/tfjs');
 const mqttClient = require('../mqtt/mqttClient');
 const db = require('../config/db');
+const schedulerService = require('../services/schedulerService');
 
 // AWS IoT connection for device communication
 let awsIoTConnection = null;
@@ -347,37 +348,102 @@ async function setWateringSchedule(req, res) {
             });
         }
 
-        // Delete existing schedule
+        // Check if plant has a device associated and if device is online
+        let device = null;
+        if (plant.device_key) {
+            device = await Device.findById(plant.device_key);
+            
+            if (!device) {
+                return res.status(400).json({
+                    success: false,
+                    error: 'No device found for this plant. Please assign a device before setting up watering schedule.'
+                });
+            }
+            
+            // Check if device is online
+            if (!device.isOnline()) {
+                console.warn(`[SET SCHEDULE] Device ${device.device_key} is offline, but allowing schedule creation`);
+                // Log warning but allow schedule creation - device might come online later
+                await SystemLog.create({
+                    log_level: 'WARN',
+                    source: 'PlantController',
+                    message: `Schedule created for offline device ${device.device_key}. Plant: ${plantId}`
+                });
+            }
+        } else {
+            return res.status(400).json({
+                success: false,
+                error: 'Plant must have an associated device to set up watering schedule.'
+            });
+        }
+
+        // Delete existing schedules for this plant
+        const existingSchedules = await PumpSchedule.findByPlantId(plantId);
+        
+        // Remove old cron jobs
+        if (existingSchedules && existingSchedules.length > 0) {
+            for (const oldSchedule of existingSchedules) {
+                try {
+                    await schedulerService.removeSchedule(oldSchedule.schedule_id);
+                } catch (error) {
+                    console.error(`[SET SCHEDULE] Error removing old schedule ${oldSchedule.schedule_id}:`, error);
+                }
+            }
+        }
+        
+        // Delete existing schedule records
         await PumpSchedule.deleteByPlantId(plantId);
 
         // Create new schedule entries
         const schedulePromises = schedule.map(async (entry) => {
-        const newSchedule = new PumpSchedule({
+            const newSchedule = new PumpSchedule({
                 plant_id: plantId,
-            cron_expression: `${entry.minute} ${entry.hour} * * ${entry.dayOfWeek}`, // convert dayOfWeek to cron
-            is_active: entry.enabled !== false
-        });
+                device_key: plant.device_key, // Include device_key for scheduler
+                cron_expression: `${entry.minute} ${entry.hour} * * ${entry.dayOfWeek}`, // convert dayOfWeek to cron
+                duration_seconds: entry.duration || 30, // Default 30 seconds
+                is_active: entry.enabled !== false
+            });
 
-        return await newSchedule.save();
+            return await newSchedule.save();
         });
 
         const createdSchedules = await Promise.all(schedulePromises);
+
+        // Update cron jobs for new schedules
+        for (const newSchedule of createdSchedules) {
+            try {
+                if (newSchedule.is_active) {
+                    await schedulerService.updateSchedule(newSchedule.schedule_id);
+                    console.log(`[SET SCHEDULE] Activated cron job for schedule ${newSchedule.schedule_id}`);
+                }
+            } catch (error) {
+                console.error(`[SET SCHEDULE] Error setting up cron job for schedule ${newSchedule.schedule_id}:`, error);
+                // Log error but don't fail the entire operation
+                await SystemLog.error('PlantController', 
+                    `Failed to setup cron job for schedule ${newSchedule.schedule_id}: ${error.message}`);
+            }
+        }
 
         // Log the action
         await SystemLog.create({
             log_level: 'INFO',
             source: 'PlantController',
-            message: `Watering schedule updated for plant ${plantId} by user ${req.user.user_id}`
+            message: `Watering schedule updated for plant ${plantId} by user ${req.user.user_id}. Created ${createdSchedules.length} schedule(s)`
         });
 
         res.status(200).json({
             success: true,
             message: 'Watering schedule updated successfully',
-            data: createdSchedules
+            data: createdSchedules.map(schedule => ({
+                ...schedule.toJSON(),
+                device_status: device ? device.status : 'no_device',
+                device_online: device ? device.isOnline() : false
+            }))
         });
 
     } catch (error) {
         console.error('Set watering schedule error:', error);
+        await SystemLog.error('PlantController', 'setWateringSchedule', error.message);
         res.status(500).json({
             success: false,
             error: 'Failed to update watering schedule'
@@ -1314,6 +1380,141 @@ exports.waterPlant = async (req, res) => {
     }
 };
 
+/**
+ * UPDATE PLANT
+ * ===============================
+ * Updates plant information
+ * 
+ * @route PUT /api/plants/:plantId
+ * @access Private - Requires authentication
+ * @param {string} plantId - UUID of the plant to update
+ * @param {Object} updateData - Plant data to update
+ * @returns {Object} Updated plant data
+ */
+const updatePlant = async (req, res) => {
+    try {
+        const { plantId } = req.params;
+        const { custom_name, notes, zone_id, moisture_threshold, species_name, location } = req.body;
+
+        // Find the plant first
+        const plant = await Plant.findById(plantId);
+        
+        if (!plant) {
+            return res.status(404).json({
+                success: false,
+                error: 'Plant not found'
+            });
+        }
+
+        // Check if user owns this plant
+        if (plant.user_id !== req.user.user_id) {
+            return res.status(403).json({
+                success: false,
+                error: 'You do not have permission to update this plant'
+            });
+        }
+
+        // Update plant fields if provided
+        if (custom_name !== undefined) plant.custom_name = custom_name.trim();
+        if (notes !== undefined) plant.notes = notes ? notes.trim() : null;
+        if (zone_id !== undefined) plant.zone_id = zone_id;
+        if (moisture_threshold !== undefined) {
+            const threshold = parseInt(moisture_threshold);
+            if (threshold >= 0 && threshold <= 100) {
+                plant.moisture_threshold = threshold;
+            } else {
+                return res.status(400).json({
+                    success: false,
+                    error: 'Moisture threshold must be between 0 and 100'
+                });
+            }
+        }
+        if (species_name !== undefined) plant.species_name = species_name ? species_name.trim() : null;
+        if (location !== undefined) plant.location = location ? location.trim() : null;
+
+        // Save the updated plant
+        const updatedPlant = await plant.save();
+
+        // Log the action
+        await SystemLog.create({
+            log_level: 'INFO',
+            source: 'PlantController',
+            message: `Plant ${plantId} updated by user ${req.user.user_id}`
+        });
+
+        res.json({
+            success: true,
+            message: 'Plant updated successfully',
+            data: updatedPlant.toJSON()
+        });
+
+    } catch (error) {
+        console.error('Update plant error:', error);
+        await SystemLog.error('PlantController', 'updatePlant', error.message);
+        res.status(500).json({
+            success: false,
+            error: 'Failed to update plant. Please try again later.'
+        });
+    }
+};
+
+/**
+ * DELETE PLANT
+ * ===============================
+ * Deletes a plant and all associated data
+ * 
+ * @route DELETE /api/plants/:plantId
+ * @access Private - Requires authentication
+ * @param {string} plantId - UUID of the plant to delete
+ * @returns {Object} Deletion confirmation
+ */
+const deletePlant = async (req, res) => {
+    try {
+        const { plantId } = req.params;
+
+        // Find the plant first
+        const plant = await Plant.findById(plantId);
+        
+        if (!plant) {
+            return res.status(404).json({
+                success: false,
+                error: 'Plant not found'
+            });
+        }
+
+        // Check if user owns this plant
+        if (plant.user_id !== req.user.user_id) {
+            return res.status(403).json({
+                success: false,
+                error: 'You do not have permission to delete this plant'
+            });
+        }
+
+        // Delete the plant (this should cascade to related records)
+        await plant.delete();
+
+        // Log the action
+        await SystemLog.create({
+            log_level: 'INFO',
+            source: 'PlantController',
+            message: `Plant ${plantId} (${plant.custom_name}) deleted by user ${req.user.user_id}`
+        });
+
+        res.json({
+            success: true,
+            message: 'Plant deleted successfully'
+        });
+
+    } catch (error) {
+        console.error('Delete plant error:', error);
+        await SystemLog.error('PlantController', 'deletePlant', error.message);
+        res.status(500).json({
+            success: false,
+            error: 'Failed to delete plant. Please try again later.'
+        });
+    }
+};
+
 module.exports = {
     waterPlant,
     getWateringSchedule,
@@ -1323,6 +1524,8 @@ module.exports = {
     getUserPlants,
     getPlantById,
     createPlant,
+    updatePlant,
+    deletePlant,
     getWateringHistory,
     getSensorHistory,
     getSensorStats,

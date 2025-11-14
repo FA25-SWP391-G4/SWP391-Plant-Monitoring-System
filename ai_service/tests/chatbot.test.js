@@ -63,7 +63,7 @@ describe('AI Service - Chatbot Integration Tests', () => {
       // Mock database operations
       mockQuery
         .mockResolvedValueOnce({ rows: [] }) // getConversationContext
-        .mockResolvedValueOnce({ rows: [{ chat_id: 1, user_id: 1, conversation_id: 'test-conv' }] }); // createChat
+        .mockResolvedValueOnce({ rows: [{ chat_id: 1, user_id: 1, chat_id: 'test-conv' }] }); // createChat
 
       const response = await request(app)
         .post('/api/chatbot/query')
@@ -81,7 +81,7 @@ describe('AI Service - Chatbot Integration Tests', () => {
       expect(response.status).toBe(200);
       expect(response.body.success).toBe(true);
       expect(response.body.data).toHaveProperty('response');
-      expect(response.body.data).toHaveProperty('conversation_id');
+      expect(response.body.data).toHaveProperty('chat_id');
       expect(response.body.data).toHaveProperty('isPlantRelated');
       expect(response.body.data).toHaveProperty('confidence');
       expect(response.body.data).toHaveProperty('source');
@@ -94,7 +94,7 @@ describe('AI Service - Chatbot Integration Tests', () => {
       // Mock database operations
       mockQuery
         .mockResolvedValueOnce({ rows: [] }) // getConversationContext
-        .mockResolvedValueOnce({ rows: [{ chat_id: 1, user_id: 1, conversation_id: 'test-conv' }] }); // createChat
+        .mockResolvedValueOnce({ rows: [{ chat_id: 1, user_id: 1, chat_id: 'test-conv' }] }); // createChat
 
       const response = await request(app)
         .post('/api/chatbot/query')
@@ -115,7 +115,7 @@ describe('AI Service - Chatbot Integration Tests', () => {
       // Mock database operations
       mockQuery
         .mockResolvedValueOnce({ rows: [] }) // getConversationContext
-        .mockResolvedValueOnce({ rows: [{ chat_id: 1, user_id: 1, conversation_id: 'test-conv' }] }); // createChat
+        .mockResolvedValueOnce({ rows: [{ chat_id: 1, user_id: 1, chat_id: 'test-conv' }] }); // createChat
 
       // Temporarily disable API key to trigger error handling
       const originalApiKey = openRouterService.apiKey;
@@ -143,7 +143,7 @@ describe('AI Service - Chatbot Integration Tests', () => {
       // Mock database operations
       mockQuery
         .mockResolvedValueOnce({ rows: [] }) // getConversationContext
-        .mockResolvedValueOnce({ rows: [{ chat_id: 1, user_id: 1, conversation_id: 'test-conv' }] }); // createChat
+        .mockResolvedValueOnce({ rows: [{ chat_id: 1, user_id: 1, chat_id: 'test-conv' }] }); // createChat
 
       const plantContext = {
         plantType: 'tomato',
@@ -171,7 +171,7 @@ describe('AI Service - Chatbot Integration Tests', () => {
         expect.arrayContaining([
           1, // user_id
           null, // plant_id
-          expect.any(String), // conversation_id
+          expect.any(String), // chat_id
           'Should I water my plant now?', // message
           expect.any(String), // response
           expect.stringContaining('tomato'), // context should include plant type
@@ -201,24 +201,24 @@ describe('AI Service - Chatbot Integration Tests', () => {
 
       mockQuery
         .mockResolvedValueOnce({ rows: mockHistory }) // getConversationContext
-        .mockResolvedValueOnce({ rows: [{ chat_id: 3, user_id: 1, conversation_id: conversationId }] }); // createChat
+        .mockResolvedValueOnce({ rows: [{ chat_id: 3, user_id: 1, chat_id: conversationId }] }); // createChat
 
       const response = await request(app)
         .post('/api/chatbot/query')
         .set('Authorization', `Bearer ${testToken}`)
         .send({
           message: 'What should I do about it?',
-          conversation_id: conversationId,
+          chat_id: conversationId,
           context: { plantType: 'tomato' }
         });
       
       expect(response.status).toBe(200);
       expect(response.body.success).toBe(true);
-      expect(response.body.data.conversation_id).toBe(conversationId);
+      expect(response.body.data.chat_id).toBe(conversationId);
       
       // Verify conversation context was retrieved
       expect(mockQuery).toHaveBeenCalledWith(
-        expect.stringContaining('SELECT message, response, created_at'),
+        expect.stringContaining('SELECT user_message, ai_response, created_at'),
         [conversationId, 10]
       );
     });
@@ -227,7 +227,7 @@ describe('AI Service - Chatbot Integration Tests', () => {
       // Mock database operations
       mockQuery
         .mockResolvedValueOnce({ rows: [] }) // getConversationContext
-        .mockResolvedValueOnce({ rows: [{ chat_id: 1, user_id: 1, conversation_id: 'generated-conv' }] }); // createChat
+        .mockResolvedValueOnce({ rows: [{ chat_id: 1, user_id: 1, chat_id: 'generated-conv' }] }); // createChat
 
       const response = await request(app)
         .post('/api/chatbot/query')
@@ -238,8 +238,8 @@ describe('AI Service - Chatbot Integration Tests', () => {
       
       expect(response.status).toBe(200);
       expect(response.body.success).toBe(true);
-      expect(response.body.data).toHaveProperty('conversation_id');
-      expect(response.body.data.conversation_id).toMatch(/^conv_\d+_[a-z0-9]+$/);
+      expect(response.body.data).toHaveProperty('chat_id');
+      expect(response.body.data.chat_id).toMatch(/^conv_\d+_[a-z0-9]+$/);
     });
 
     test('Should store conversation history in database', async () => {
@@ -249,14 +249,14 @@ describe('AI Service - Chatbot Integration Tests', () => {
       // Mock database operations
       mockQuery
         .mockResolvedValueOnce({ rows: [] }) // getConversationContext
-        .mockResolvedValueOnce({ rows: [{ chat_id: 1, user_id: 1, conversation_id: conversationId }] }); // createChat
+        .mockResolvedValueOnce({ rows: [{ chat_id: 1, user_id: 1, chat_id: conversationId }] }); // createChat
 
       const response = await request(app)
         .post('/api/chatbot/query')
         .set('Authorization', `Bearer ${testToken}`)
         .send({
           message: 'How much water does a succulent need?',
-          conversation_id: conversationId,
+          chat_id: conversationId,
           plant_id: plantId,
           context: { plantType: 'succulent', currentMoisture: 20 }
         });
@@ -270,7 +270,7 @@ describe('AI Service - Chatbot Integration Tests', () => {
         expect.arrayContaining([
           1, // user_id
           plantId, // plant_id
-          conversationId, // conversation_id
+          conversationId, // chat_id
           'How much water does a succulent need?', // message
           expect.any(String), // response
           expect.stringContaining('succulent'), // context
@@ -287,7 +287,7 @@ describe('AI Service - Chatbot Integration Tests', () => {
           chat_id: 1,
           user_id: 1,
           plant_id: null,
-          conversation_id: 'conv-1',
+          chat_id: 'conv-1',
           message: 'How to water plants?',
           response: 'Water when soil is dry...',
           context: '{}',
@@ -297,7 +297,7 @@ describe('AI Service - Chatbot Integration Tests', () => {
           chat_id: 2,
           user_id: 1,
           plant_id: 42,
-          conversation_id: 'conv-2',
+          chat_id: 'conv-2',
           message: 'My plant is wilting',
           response: 'Wilting can be caused by...',
           context: '{"plantType": "tomato"}',
@@ -330,7 +330,7 @@ describe('AI Service - Chatbot Integration Tests', () => {
         {
           chat_id: 1,
           user_id: 1,
-          conversation_id: conversationId,
+          chat_id: conversationId,
           message: 'Hello',
           response: 'Hi there!',
           context: '{}',
@@ -346,7 +346,7 @@ describe('AI Service - Chatbot Integration Tests', () => {
       
       expect(response.status).toBe(200);
       expect(response.body.success).toBe(true);
-      expect(response.body.data.conversation_id).toBe(conversationId);
+      expect(response.body.data.chat_id).toBe(conversationId);
       expect(response.body.data.messages).toHaveLength(1);
       
       // Verify database query
@@ -396,7 +396,7 @@ describe('AI Service - Chatbot Integration Tests', () => {
       // Mock database operations for multiple requests
       mockQuery
         .mockResolvedValue({ rows: [] }) // getConversationContext
-        .mockResolvedValue({ rows: [{ chat_id: 1, user_id: 1, conversation_id: 'test-conv' }] }); // createChat
+        .mockResolvedValue({ rows: [{ chat_id: 1, user_id: 1, chat_id: 'test-conv' }] }); // createChat
 
       // Make multiple rapid requests to test rate limiting
       const requests = Array.from({ length: 3 }, (_, i) => 

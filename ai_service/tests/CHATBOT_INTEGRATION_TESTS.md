@@ -64,7 +64,7 @@ This document describes the comprehensive integration tests implemented for the 
 - **ChatHistory Instance Methods**: Object serialization and field mapping
 
 **Key Test Cases**:
-- ✅ Chat creation with all parameters (user_id, plant_id, conversation_id, context)
+- ✅ Chat creation with all parameters (user_id, plant_id, chat_id, context)
 - ✅ Chat creation with minimal parameters
 - ✅ Conversation context retrieval in OpenRouter API format
 - ✅ User chat history with proper filtering and pagination
@@ -157,7 +157,7 @@ CREATE TABLE chat_history (
     chat_id SERIAL PRIMARY KEY,
     user_id INTEGER NOT NULL,
     plant_id INTEGER,
-    conversation_id UUID,
+    chat_id UUID,
     message TEXT NOT NULL,
     response TEXT,
     context JSONB DEFAULT '{}',

@@ -1,4 +1,8 @@
 const { Pool } = require('pg');
+const path = require('path');
+
+// Load environment from root directory
+require('dotenv').config({ path: path.join(__dirname, '../../.env') });
 
 // Database connection
 const pool = new Pool({
@@ -10,27 +14,27 @@ class ChatHistory {
     constructor(chatData) {
         this.chat_id = chatData.chat_id;
         this.user_id = chatData.user_id;
-        this.plant_id = chatData.plant_id || null;
-        this.conversation_id = chatData.conversation_id || null;
-        // Map database columns to consistent property names
-        this.message = chatData.user_message || chatData.message;
-        this.response = chatData.ai_response || chatData.response;
+        this.plant_id = chatData.plant_id;
+        this.chat_id = chatData.chat_id;
+        this.message = chatData.message || chatData.user_message;
+        this.response = chatData.response || chatData.ai_response;
         this.context = chatData.context;
-        this.created_at = chatData.timestamp || chatData.created_at;
+        this.created_at = chatData.created_at || chatData.timestamp;
     }
 
     // Static method to create chat entry
     static async createChat(userId, userMessage, aiResponse = null, plantId = null, conversationId = null, context = {}) {
         try {
-            // Use the actual database schema
             const query = `
-                INSERT INTO chat_history (user_id, user_message, ai_response, timestamp)
-                VALUES ($1, $2, $3, $4)
+                INSERT INTO chat_history (user_id, plant_id, chat_id, message, response, context, created_at)
+                VALUES ($1, $2, $3, $4, $5, $6, $7)
                 RETURNING *
             `;
             
             const result = await pool.query(query, [
                 userId,
+                plantId,
+                conversationId,
                 userMessage,
                 aiResponse,
                 new Date()
@@ -46,29 +50,28 @@ class ChatHistory {
     // Static method to get conversation context for OpenRouter API
     static async getConversationContext(conversationId, limit = 10) {
         try {
-            // Since the current schema doesn't have conversation_id, 
-            // we'll return the most recent messages for the context
             const query = `
                 SELECT user_message, ai_response, timestamp
                 FROM chat_history 
-                ORDER BY timestamp DESC 
-                LIMIT $1
+                WHERE chat_id = $1
+                ORDER BY timestamp ASC 
+                LIMIT $2
             `;
-            const result = await pool.query(query, [limit]);
+            const result = await pool.query(query, [conversationId, limit]);
             
             // Format for OpenRouter API (alternating user/assistant messages)
             const messages = [];
-            result.rows.reverse().forEach(row => {
-                if (row.user_message) {
+            result.rows.forEach(row => {
+                if (row.message) {
                     messages.push({
                         role: 'user',
-                        content: row.user_message
+                        content: row.message
                     });
                 }
-                if (row.ai_response) {
+                if (row.response) {
                     messages.push({
                         role: 'assistant',
-                        content: row.ai_response
+                        content: row.response
                     });
                 }
             });
@@ -86,7 +89,7 @@ class ChatHistory {
             const query = `
                 SELECT * FROM chat_history
                 WHERE user_id = $1
-                ORDER BY timestamp DESC 
+                ORDER BY created_at DESC 
                 LIMIT $2
             `;
             const result = await pool.query(query, [userId, limit]);
@@ -97,13 +100,17 @@ class ChatHistory {
         }
     }
 
-    // Static method to find conversation history by conversation_id
+    // Static method to find conversation history by chat_id
     static async findByConversationId(conversationId, limit = 50) {
         try {
-            // Current schema doesn't have conversation_id column
-            // Return empty array for now
-            console.log('Current schema does not support conversation_id');
-            return [];
+            const query = `
+                SELECT * FROM chat_history
+                WHERE chat_id = $1
+                ORDER BY created_at ASC 
+                LIMIT $2
+            `;
+            const result = await pool.query(query, [conversationId, limit]);
+            return result.rows.map(row => new ChatHistory(row));
         } catch (error) {
             console.error('Error finding chat history by conversation ID:', error);
             throw error;
@@ -131,12 +138,11 @@ class ChatHistory {
             chat_id: this.chat_id,
             user_id: this.user_id,
             plant_id: this.plant_id,
-            conversation_id: this.conversation_id,
+            chat_id: this.chat_id,
             message: this.message,
             response: this.response,
             context: this.context,
-            created_at: this.created_at,
-            timestamp: this.created_at // For backward compatibility
+            created_at: this.created_at
         };
     }
 }

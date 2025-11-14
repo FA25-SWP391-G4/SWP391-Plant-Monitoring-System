@@ -36,7 +36,7 @@ const ManualWateringControl = ({ plantId, deviceStatus, className, isEmbedded = 
       // Stop watering
       try {
         setIsWatering(false);
-        await plantApi.waterPlant(plantId, 0); // 0 duration to stop watering
+        await plantApi.waterPlant(plantId, null, 'pump_off'); // explicit stop
         alert(t('watering.stopped', 'Watering stopped successfully!'));
         await fetchWateringHistory(); // Refresh history after stopping
       } catch (error) {
@@ -55,7 +55,7 @@ const ManualWateringControl = ({ plantId, deviceStatus, className, isEmbedded = 
         // Auto stop after duration
         setTimeout(async () => {
           try {
-            await plantApi.waterPlant(plantId, 0); // Stop watering after duration
+            await plantApi.waterPlant(plantId, null, 'pump_off'); // Stop watering after duration
             setIsWatering(false);
             await fetchWateringHistory(); // Refresh history after auto-stop
           } catch (error) {
@@ -71,10 +71,10 @@ const ManualWateringControl = ({ plantId, deviceStatus, className, isEmbedded = 
   };
 
   const presetDurations = [
-    { value: 15, label: '15s' },
-    { value: 30, label: '30s' },
-    { value: 60, label: '1min' },
-    { value: 120, label: '2min' }
+    { value: 5, label: '5s' },
+    { value: 10, label: '10s' },
+    { value: 20, label: '20s' },
+    { value: 30, label: '30s' }
   ];
 
   return (
@@ -124,11 +124,11 @@ const ManualWateringControl = ({ plantId, deviceStatus, className, isEmbedded = 
         </div>
         
         {/* Custom Duration Input */}
-        <div className="flex items-center space-x-2">
+        <div className="flex items-center gap-2 mb-3 space-x-2">
           <input
             type="range"
-            min="10"
-            max="300"
+            min="5"
+            max="600"
             value={duration}
             onChange={(e) => setDuration(parseInt(e.target.value))}
             className="flex-1"
@@ -166,7 +166,7 @@ const ManualWateringControl = ({ plantId, deviceStatus, className, isEmbedded = 
 
       {/* Warning Message */}
       {deviceStatus !== 'online' && (
-        <div className="p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+        <div className="p-3 bg-yellow-50 border border-yellow-200 rounded-lg mt-4 mb-4">
           <div className="flex">
             <svg className="w-5 h-5 text-yellow-400 mr-2" fill="currentColor" viewBox="0 0 20 20">
               <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />

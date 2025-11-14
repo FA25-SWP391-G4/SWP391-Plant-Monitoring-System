@@ -23,7 +23,7 @@ describe('ChatHistory Model Integration Tests', () => {
           chat_id: 1,
           user_id: 123,
           plant_id: 456,
-          conversation_id: 'conv-test-123',
+          chat_id: 'conv-test-123',
           message: 'How often should I water my plants?',
           response: 'Water when the top inch of soil is dry.',
           context: '{"plantType": "tomato", "currentMoisture": 45}',
@@ -46,7 +46,7 @@ describe('ChatHistory Model Integration Tests', () => {
       expect(result.chat_id).toBe(1);
       expect(result.user_id).toBe(123);
       expect(result.plant_id).toBe(456);
-      expect(result.conversation_id).toBe('conv-test-123');
+      expect(result.chat_id).toBe('conv-test-123');
       expect(result.message).toBe('How often should I water my plants?');
       expect(result.response).toBe('Water when the top inch of soil is dry.');
       
@@ -56,7 +56,7 @@ describe('ChatHistory Model Integration Tests', () => {
         [
           123, // user_id
           456, // plant_id
-          'conv-test-123', // conversation_id
+          'conv-test-123', // chat_id
           'How often should I water my plants?', // message
           'Water when the top inch of soil is dry.', // response
           '{"plantType":"tomato","currentMoisture":45}', // context as JSON string
@@ -71,7 +71,7 @@ describe('ChatHistory Model Integration Tests', () => {
           chat_id: 2,
           user_id: 123,
           plant_id: null,
-          conversation_id: null,
+          chat_id: null,
           message: 'Hello',
           response: null,
           context: '{}',
@@ -98,7 +98,7 @@ describe('ChatHistory Model Integration Tests', () => {
         [
           123, // user_id
           null, // plant_id
-          null, // conversation_id
+          null, // chat_id
           'Hello', // message
           null, // response
           '{}', // empty context
@@ -162,7 +162,7 @@ describe('ChatHistory Model Integration Tests', () => {
       
       // Verify database query
       expect(mockQuery).toHaveBeenCalledWith(
-        expect.stringContaining('SELECT message, response, created_at'),
+        expect.stringContaining('SELECT user_message, ai_response, created_at'),
         ['conv-test-123', 10]
       );
     });
@@ -233,7 +233,7 @@ describe('ChatHistory Model Integration Tests', () => {
             chat_id: 1,
             user_id: 123,
             plant_id: 456,
-            conversation_id: 'conv-1',
+            chat_id: 'conv-1',
             message: 'How to water plants?',
             response: 'Water when soil is dry',
             context: '{"plantType": "tomato"}',
@@ -243,7 +243,7 @@ describe('ChatHistory Model Integration Tests', () => {
             chat_id: 2,
             user_id: 123,
             plant_id: null,
-            conversation_id: 'conv-2',
+            chat_id: 'conv-2',
             message: 'Plant care tips?',
             response: 'Provide adequate light and water',
             context: '{}',
@@ -298,7 +298,7 @@ describe('ChatHistory Model Integration Tests', () => {
           {
             chat_id: 1,
             user_id: 123,
-            conversation_id: 'conv-test',
+            chat_id: 'conv-test',
             message: 'First message',
             response: 'First response',
             context: '{}',
@@ -307,7 +307,7 @@ describe('ChatHistory Model Integration Tests', () => {
           {
             chat_id: 2,
             user_id: 123,
-            conversation_id: 'conv-test',
+            chat_id: 'conv-test',
             message: 'Second message',
             response: 'Second response',
             context: '{}',
@@ -322,14 +322,14 @@ describe('ChatHistory Model Integration Tests', () => {
       
       expect(conversation).toHaveLength(2);
       expect(conversation[0]).toBeInstanceOf(ChatHistory);
-      expect(conversation[0].conversation_id).toBe('conv-test');
+      expect(conversation[0].chat_id).toBe('conv-test');
       expect(conversation[0].message).toBe('First message');
-      expect(conversation[1].conversation_id).toBe('conv-test');
+      expect(conversation[1].chat_id).toBe('conv-test');
       expect(conversation[1].message).toBe('Second message');
       
       // Verify database query (should order by created_at ASC for conversation flow)
       expect(mockQuery).toHaveBeenCalledWith(
-        expect.stringContaining('WHERE conversation_id = $1'),
+        expect.stringContaining('WHERE chat_id = $1'),
         ['conv-test', 50]
       );
       expect(mockQuery).toHaveBeenCalledWith(
@@ -389,7 +389,7 @@ describe('ChatHistory Model Integration Tests', () => {
         chat_id: 1,
         user_id: 123,
         plant_id: 456,
-        conversation_id: 'conv-test',
+        chat_id: 'conv-test',
         message: 'Test message',
         response: 'Test response',
         context: { plantType: 'tomato' },
@@ -403,7 +403,7 @@ describe('ChatHistory Model Integration Tests', () => {
         chat_id: 1,
         user_id: 123,
         plant_id: 456,
-        conversation_id: 'conv-test',
+        chat_id: 'conv-test',
         message: 'Test message',
         response: 'Test response',
         context: { plantType: 'tomato' },

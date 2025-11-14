@@ -1,16 +1,69 @@
 const { validationResult } = require('express-validator');
 const openRouterService = require('../services/openRouterService');
 const ChatHistory = require('../models/ChatHistory');
-const { initializeTensorFlow } = require('../services/aiUtils');
+const { initializeTensorFlow, calculatePlantStats, generateHealthReport } = require('../services/aiUtils');
 const jwt = require('jsonwebtoken');
-const OpenAI = require('openai');
-const { detectLanguage, getSystemPrompt, createContext, processResponse } = require('../utils/languageUtils');
+
+// Rate limiting storage (in production, use Redis)
+const userRateLimit = new Map();
+
+/**
+ * Sanitize user input to prevent XSS and other attacks
+ */
+function sanitizeInput(message) {
+    if (!message || typeof message !== 'string') {
+        return null;
+    }
+    
+    // Remove script tags and other dangerous HTML
+    let sanitized = message
+        .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
+        .replace(/<[^>]*>/g, '') // Remove all HTML tags
+        .replace(/javascript:/gi, '')
+        .replace(/on\w+\s*=/gi, '') // Remove event handlers
+        .trim();
+    
+    // Limit length
+    if (sanitized.length > 1000) {
+        sanitized = sanitized.substring(0, 1000);
+    }
+    
+    // Must have some content
+    if (sanitized.length < 1) {
+        return null;
+    }
+    
+    return sanitized;
+}
+
+/**
+ * Check rate limiting for user
+ */
+function checkRateLimit(userId) {
+    if (!userId) return false;
+    
+    const now = Date.now();
+    const userRequests = userRateLimit.get(userId) || [];
+    
+    // Remove requests older than 1 minute
+    const recentRequests = userRequests.filter(time => now - time < 60000);
+    
+    // Allow max 15 requests per minute
+    if (recentRequests.length >= 15) {
+        return false;
+    }
+    
+    // Add current request
+    recentRequests.push(now);
+    userRateLimit.set(userId, recentRequests);
+    
+    return true;
+}
 
 /**
  * Process chatbot queries
  */
 const processChatbotQuery = async (req, res) => {
-  try {
     try {
         // Validate request
         const errors = validationResult(req);
@@ -22,14 +75,30 @@ const processChatbotQuery = async (req, res) => {
             });
         }
 
-        const { message, conversation_id, plant_id, context } = req.body;
+        const { message, chat_id, plant_id, context } = req.body;
         const userId = req.user?.user_id || req.user?.id;
-        const language = req.body.language || detectLanguage(message) || 'en'; // Default to English
         
         if (!message) {
             return res.status(400).json({
                 success: false,
                 message: 'Message is required'
+            });
+        }
+
+        // Input validation and sanitization
+        const sanitizedMessage = sanitizeInput(message);
+        if (!sanitizedMessage) {
+            return res.status(400).json({
+                success: false,
+                message: 'Invalid message content'
+            });
+        }
+
+        // Rate limiting check
+        if (!checkRateLimit(userId)) {
+            return res.status(429).json({
+                success: false,
+                message: 'Too many requests. Please wait a moment before asking another question.'
             });
         }
 
@@ -41,7 +110,7 @@ const processChatbotQuery = async (req, res) => {
         }
 
         // Generate conversation ID if not provided
-        const conversationId = conversation_id || `conv_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
+        const conversationId = chat_id || `conv_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
 
         console.log(`Chatbot query received from user ${userId}: "${message.substring(0, 50)}..."`);
 
@@ -49,16 +118,23 @@ const processChatbotQuery = async (req, res) => {
         const conversationHistory = await ChatHistory.getConversationContext(conversationId, 10);
 
         // Use OpenRouter service for chat completion
+        const startTime = Date.now();
         const chatResult = await openRouterService.generateChatCompletion(
-            message,
+            sanitizedMessage,
             conversationHistory,
             context || {}
         );
+        const responseTime = Date.now() - startTime;
+
+        // Log slow responses
+        if (responseTime > 5000) {
+            console.warn(`Slow chatbot response: ${responseTime}ms for user ${userId}`);
+        }
         
         // Store the conversation in database
         await ChatHistory.createChat(
             userId,
-            message,
+            sanitizedMessage,
             chatResult.response,
             plant_id,
             conversationId,
@@ -67,7 +143,9 @@ const processChatbotQuery = async (req, res) => {
                 source: chatResult.source,
                 model: chatResult.model,
                 confidence: chatResult.confidence,
-                isPlantRelated: chatResult.isPlantRelated
+                isPlantRelated: chatResult.isPlantRelated,
+                responseTime: responseTime,
+                language: chatResult.language
             }
         );
         
@@ -75,40 +153,35 @@ const processChatbotQuery = async (req, res) => {
 
         return res.json({
           success: true,
-          response: aiResponse,
-          sensorData,
-          plantInfo,
-          responseTime,
-          hasError
+            data: {
+                response: chatResult.response,
+                chat_id: conversationId,
+                timestamp: new Date(),
+                isPlantRelated: chatResult.isPlantRelated,
+                confidence: chatResult.confidence,
+                source: chatResult.source,
+                model: chatResult.model,
+                usage: chatResult.usage
+            }
         });
-      } catch (aiError) {
-        console.error('Lỗi khi gọi API AI:', aiError);
+    } catch (error) {
+        console.error('Error processing chatbot query:', error);
         
-        // Trả về thông báo lỗi thân thiện
-        const errorMessage = language === 'vi' 
-          ? 'Xin lỗi, tôi đang gặp vấn đề kỹ thuật. Vui lòng thử lại sau ít phút.'
-          : 'Sorry, I am experiencing technical issues. Please try again in a few minutes.';
+        // User-friendly error messages
+        let userMessage = 'I\'m having trouble right now. Please try again in a moment.';
+        
+        if (error.code === 'ECONNREFUSED') {
+            userMessage = 'I\'m temporarily unavailable. Please try again later.';
+        } else if (error.response?.status === 429) {
+            userMessage = 'I\'m getting too many requests right now. Please wait a moment and try again.';
+        } else if (error.message.includes('timeout')) {
+            userMessage = 'I\'m thinking too slowly right now. Please try a shorter question.';
+        }
           
         return res.status(500).json({
           success: false,
-          error: true,
-          response: errorMessage,
-          details: aiError.message
-        });
-      }
-    } catch (error) {
-      console.error('Lỗi khi xử lý tin nhắn:', error);
-      
-      const errorMessage = req.body.language === 'vi'
-        ? 'Đã xảy ra lỗi khi xử lý tin nhắn. Vui lòng thử lại.'
-        : 'An error occurred while processing your message. Please try again.';
-        
-      return res.status(500).json({
-        error: true,
-        message: errorMessage,
-        response: errorMessage,
-        language: language,
-        details: process.env.NODE_ENV === 'development' ? error.message : undefined
+            message: userMessage,
+            error: process.env.NODE_ENV === 'development' ? error.message : undefined
       });
     }
 };
@@ -118,10 +191,10 @@ const processChatbotQuery = async (req, res) => {
  */
 const getConversationHistory = async (req, res) => {
     try {
-        const { conversation_id } = req.params;
+        const { chat_id } = req.params;
         const userId = req.user?.user_id || req.user?.id;
 
-        if (!conversation_id) {
+        if (!chat_id) {
             return res.status(400).json({
                 success: false,
                 message: 'Conversation ID is required'
@@ -129,7 +202,7 @@ const getConversationHistory = async (req, res) => {
         }
 
         // Get conversation history
-        const history = await ChatHistory.findByConversationId(conversation_id, 50);
+        const history = await ChatHistory.findByConversationId(chat_id, 50);
         
         // Filter by user ID for security
         const userHistory = history.filter(chat => chat.user_id === userId);
@@ -137,7 +210,7 @@ const getConversationHistory = async (req, res) => {
         return res.json({
             success: true,
             data: {
-                conversation_id,
+                chat_id,
                 messages: userHistory.map(chat => chat.toJSON()),
                 total: userHistory.length
             }

@@ -1,16 +1,20 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { motion } from 'framer-motion';
 import { Card, CardHeader, CardTitle, CardContent } from '../ui/Card';
 import { Button } from '../ui/Button';
+import WateringScheduleModal from '../modals/WateringScheduleModal';
 
 const WateringScheduleControl = ({ 
   plantId, 
   schedule, 
   isPremium, 
-  onUpdateSchedule 
+  onUpdateSchedule,
+  deviceStatus = 'offline',
+  deviceOnline = false
 }) => {
   const { t } = useTranslation();
-  const [isEditing, setIsEditing] = useState(false);
+  const [showModal, setShowModal] = useState(false);
   const [scheduleData, setScheduleData] = useState(schedule || {
     frequency: 'daily',
     time: '08:00',
@@ -18,19 +22,11 @@ const WateringScheduleControl = ({
     enabled: false
   });
 
-  const handleSave = () => {
-    onUpdateSchedule(scheduleData);
-    setIsEditing(false);
-  };
-
-  const handleCancel = () => {
-    setScheduleData(schedule || {
-      frequency: 'daily',
-      time: '08:00',
-      duration: 30,
-      enabled: false
-    });
-    setIsEditing(false);
+  const handleSave = async (newScheduleData) => {
+    setScheduleData(newScheduleData);
+    if (onUpdateSchedule) {
+      await onUpdateSchedule(newScheduleData);
+    }
   };
 
   if (!isPremium) {
@@ -57,7 +53,7 @@ const WateringScheduleControl = ({
   }
 
   return (
-    <div className="space-y-6">
+    <>
       <Card>
         <CardHeader>
           <div className="flex items-center justify-between">
@@ -73,109 +69,72 @@ const WateringScheduleControl = ({
                   : t('schedule.inactive', 'Inactive')
                 }
               </span>
-              {!isEditing && (
-                <Button 
-                  variant="outline" 
-                  size="sm"
-                  onClick={() => setIsEditing(true)}
-                >
-                  {t('schedule.edit', 'Edit')}
-                </Button>
-              )}
+              <Button 
+                variant="outline" 
+                size="sm"
+                onClick={() => setShowModal(true)}
+              >
+                {t('schedule.edit', 'Edit')}
+              </Button>
             </div>
           </div>
         </CardHeader>
         <CardContent>
-          {isEditing ? (
-            <div className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  {t('schedule.frequency', 'Frequency')}
-                </label>
-                <select 
-                  className="w-full p-2 border border-gray-300 rounded-md"
-                  value={scheduleData.frequency}
-                  onChange={(e) => setScheduleData({...scheduleData, frequency: e.target.value})}
-                >
-                  <option value="daily">{t('schedule.daily', 'Daily')}</option>
-                  <option value="every2days">{t('schedule.every2days', 'Every 2 days')}</option>
-                  <option value="every3days">{t('schedule.every3days', 'Every 3 days')}</option>
-                  <option value="weekly">{t('schedule.weekly', 'Weekly')}</option>
-                </select>
+          {/* Device Status Warning */}
+          {!deviceOnline && (
+            <motion.div 
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="mb-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg"
+            >
+              <div className="flex">
+                <svg className="w-5 h-5 text-yellow-400 mr-2 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                </svg>
+                <div>
+                  <p className="text-sm font-medium text-yellow-800">
+                    {t('schedule.deviceOfflineWarning', 'Device Offline')}
+                  </p>
+                  <p className="text-sm text-yellow-700">
+                    {t('schedule.deviceOfflineMessage', 'Your device is currently offline. Scheduled watering will not work until the device is back online.')}
+                  </p>
+                </div>
               </div>
-              
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  {t('schedule.time', 'Time')}
-                </label>
-                <input 
-                  type="time"
-                  className="w-full p-2 border border-gray-300 rounded-md"
-                  value={scheduleData.time}
-                  onChange={(e) => setScheduleData({...scheduleData, time: e.target.value})}
-                />
-              </div>
-              
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  {t('schedule.duration', 'Duration (seconds)')}
-                </label>
-                <input 
-                  type="number"
-                  min="10"
-                  max="300"
-                  className="w-full p-2 border border-gray-300 rounded-md"
-                  value={scheduleData.duration}
-                  onChange={(e) => setScheduleData({...scheduleData, duration: parseInt(e.target.value)})}
-                />
-              </div>
-              
-              <div className="flex items-center">
-                <input 
-                  type="checkbox"
-                  id="enabled"
-                  className="mr-2"
-                  checked={scheduleData.enabled}
-                  onChange={(e) => setScheduleData({...scheduleData, enabled: e.target.checked})}
-                />
-                <label htmlFor="enabled" className="text-sm font-medium text-gray-700">
-                  {t('schedule.enable', 'Enable automatic watering')}
-                </label>
-              </div>
-              
-              <div className="flex space-x-2">
-                <Button onClick={handleSave}>
-                  {t('schedule.save', 'Save')}
-                </Button>
-                <Button variant="outline" onClick={handleCancel}>
-                  {t('schedule.cancel', 'Cancel')}
-                </Button>
-              </div>
-            </div>
-          ) : (
-            <div className="space-y-3">
-              <div className="flex justify-between">
-                <span className="text-gray-600">{t('schedule.frequency', 'Frequency')}:</span>
-                <span className="font-medium">
-                  {scheduleData.frequency === 'daily' && t('schedule.daily', 'Daily')}
-                  {scheduleData.frequency === 'every2days' && t('schedule.every2days', 'Every 2 days')}
-                  {scheduleData.frequency === 'every3days' && t('schedule.every3days', 'Every 3 days')}
-                  {scheduleData.frequency === 'weekly' && t('schedule.weekly', 'Weekly')}
-                </span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-gray-600">{t('schedule.time', 'Time')}:</span>
-                <span className="font-medium">{scheduleData.time}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-gray-600">{t('schedule.duration', 'Duration')}:</span>
-                <span className="font-medium">{scheduleData.duration}s</span>
-              </div>
-            </div>
+            </motion.div>
           )}
+
+          <div className="space-y-3">
+            <div className="flex justify-between">
+              <span className="text-gray-600">{t('schedule.frequency', 'Frequency')}:</span>
+              <span className="font-medium">
+                {scheduleData.frequency === 'daily' && t('schedule.daily', 'Daily')}
+                {scheduleData.frequency === 'every2days' && t('schedule.every2days', 'Every 2 days')}
+                {scheduleData.frequency === 'every3days' && t('schedule.every3days', 'Every 3 days')}
+                {scheduleData.frequency === 'weekly' && t('schedule.weekly', 'Weekly')}
+              </span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-gray-600">{t('schedule.time', 'Time')}:</span>
+              <span className="font-medium">{scheduleData.time}</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-gray-600">{t('schedule.duration', 'Duration')}:</span>
+              <span className="font-medium">{scheduleData.duration}s</span>
+            </div>
+          </div>
         </CardContent>
       </Card>
-    </div>
+
+      {/* Watering Schedule Modal */}
+      <WateringScheduleModal
+        isOpen={showModal}
+        onClose={() => setShowModal(false)}
+        onSave={handleSave}
+        schedule={scheduleData}
+        isPremium={isPremium}
+        deviceOnline={deviceOnline}
+      />
+    </>
   );
 };
 

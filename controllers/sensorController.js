@@ -87,13 +87,6 @@ const getLatestSensorData = async (req, res) => {
                 temperature: row.temperature,
                 humidity: row.humidity,
                 light: row.light,
-                // Add historical data for charts
-                history: {
-                    moisture: generateMockHistoryData(30, 40, 80),
-                    temperature: generateMockHistoryData(30, 18, 30),
-                    humidity: generateMockHistoryData(30, 40, 80),
-                    light: generateMockHistoryData(30, 1000, 10000)
-                }
             };
         });
         
@@ -102,41 +95,6 @@ const getLatestSensorData = async (req, res) => {
         console.error('Error fetching sensor data:', error);
         res.status(500).json({ success: false, message: error.message });
     }
-};
-
-/**
- * Generate mock history data for charts
- */
-const generateMockHistoryData = (count, min, max) => {
-    const now = new Date();
-    const data = [];
-    
-    for (let i = 0; i < count; i++) {
-        // Generate timestamps going back in time
-        const timestamp = new Date(now);
-        timestamp.setHours(now.getHours() - i);
-        
-        // Generate a random value with some smoothing for realistic data
-        let value;
-        if (i === 0) {
-            // First value is completely random
-            value = Math.floor(min + Math.random() * (max - min));
-        } else {
-            // Subsequent values are based on previous value with some variance
-            const prevValue = data[i-1].value;
-            const variance = (max - min) * 0.05; // 5% variance
-            const change = (Math.random() * variance * 2) - variance;
-            value = Math.max(min, Math.min(max, prevValue + change));
-        }
-        
-        data.push({
-            timestamp: timestamp.toISOString(),
-            value: Math.round(value)
-        });
-    }
-    
-    // Reverse so newest data comes last
-    return data.reverse();
 };
 
 module.exports = {
