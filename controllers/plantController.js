@@ -34,6 +34,10 @@ const { isValidUUID } = require('../utils/uuidGenerator');
 const { data } = require('@tensorflow/tfjs');
 const mqttClient = require('../mqtt/mqttClient');
 const db = require('../config/db');
+const { sendScheduleToDevice } = require('../services/schedulerService');
+const { dayNameToNumber } = require('../utils/dayHelpers');
+
+
 
 // AWS IoT connection for device communication
 let awsIoTConnection = null;
@@ -308,20 +312,9 @@ async function getWateringSchedule(req, res) {
  */
 async function setWateringSchedule(req, res) {
     try {
-        // Get plant ID from route params (now UUID)
         const { plantId } = req.params;
         const { schedule } = req.body;
 
-        // Validate UUID format
-        // if (!isValidUUID(plantId)) {
-        //     console.error('[SET SCHEDULE] Invalid plant UUID:', plantId);
-        //     return res.status(400).json({
-        //         success: false,
-        //         error: 'Invalid plant ID format'
-        //     });
-        // }
-
-        // Validate schedule
         if (!schedule || !Array.isArray(schedule)) {
             return res.status(400).json({
                 success: false,
@@ -329,9 +322,8 @@ async function setWateringSchedule(req, res) {
             });
         }
 
-        // Find the plant
+        // Fetch plant
         const plant = await Plant.findById(plantId);
-        
         if (!plant) {
             return res.status(404).json({
                 success: false,
@@ -339,7 +331,7 @@ async function setWateringSchedule(req, res) {
             });
         }
 
-        // Check if user owns this plant (UUID comparison)
+        // Verify owner
         if (plant.user_id !== req.user.user_id) {
             return res.status(403).json({
                 success: false,
@@ -347,23 +339,45 @@ async function setWateringSchedule(req, res) {
             });
         }
 
-        // Delete existing schedule
+        const deviceKey = plant.device_key;
+        if (!deviceKey) {
+            return res.status(500).json({
+                success: false,
+                error: 'No device is linked to this plant'
+            });
+        }
+        
+        // 1. Delete existing schedules in DB
         await PumpSchedule.deleteByPlantId(plantId);
 
-        // Create new schedule entries
-        const schedulePromises = schedule.map(async (entry) => {
-        const newSchedule = new PumpSchedule({
-            plant_id: plantId,
-            cron_expression: `${entry.minute} ${entry.hour} * * ${entry.dayOfWeek}`, // convert dayOfWeek to cron
-            is_active: entry.enabled !== false
-        });
+        // 2. Save new schedules
+        const createdSchedules = await Promise.all(
+            schedule.map(async (entry) => {
+                const newSchedule = new PumpSchedule({
+                    plant_id: plantId,
+                    cron_expression: `${entry.minute} ${entry.hour} * * ${entry.dayOfWeek}`,
+                    duration_seconds: entry.duration,
+                    is_active: entry.enabled !== false
+                });
 
-        return await newSchedule.save();
-    });
+                return await newSchedule.save();
+            })
+        );
 
-        const createdSchedules = await Promise.all(schedulePromises);
+        // 3. Send NEW schedule(s) to the device via MQTT
+        for (const entry of schedule) {
+            const dayNumber = dayNameToNumber(entry.dayOfWeek);
 
-        // Log the action
+            await sendScheduleToDevice(
+                deviceKey,
+                dayNumber,
+                entry.hour,
+                entry.minute,
+                entry.duration
+            );
+        }
+
+        // Log action
         await SystemLog.create({
             log_level: 'INFO',
             source: 'PlantController',

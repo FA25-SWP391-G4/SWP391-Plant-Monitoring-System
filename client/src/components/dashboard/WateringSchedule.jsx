@@ -144,8 +144,18 @@ export default function WateringSchedule({ plants = [] }) {
       ];
       await plantApi.setWateringSchedule(selectedPlant, { schedule });
       await plantApi.toggleAutoWatering(selectedPlant, true);
+
+      
+
       alert('Watering schedule added!');
       setShowAddModal(false);
+
+      const res = await plantApi.getWateringSchedule(selectedPlant);
+
+      setSchedules(prev => ({
+        ...prev,
+        [selectedPlant]: res.data || []
+      }));
     } catch (err) {
       console.error(err);
       alert('Failed to add schedule');

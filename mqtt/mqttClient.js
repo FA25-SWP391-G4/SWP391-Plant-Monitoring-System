@@ -262,7 +262,16 @@ async function sendDeviceCommand(deviceId, command, parameters = {}, timeoutMs =
 
     // Ensure client connection state is visible
     try {
-      const connected = typeof client.connected === 'function' ? client.connected() : client && client.connected;
+      let connected;
+      if (client) {
+        if (typeof client.connected === 'function') {
+          connected = client.connected();
+        } else if (typeof client.connected === 'boolean') {
+          connected = client.connected;
+        } else {
+          connected = '(unknown)';
+        }
+      }
       console.log('🔌 [MQTT] client.connected =', connected);
     } catch (e) {
       console.log('🔌 [MQTT] client.connected check failed:', e.message);

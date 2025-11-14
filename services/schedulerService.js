@@ -1,6 +1,6 @@
 const cron = require('node-cron');
 const PumpSchedule = require('../models/PumpSchedule');
-const { sendPumpCommand } = require('../mqtt/mqttClient');
+const { sendDeviceCommand } = require('../mqtt/mqttClient');
 
 const activeCronJobs = new Map(); // key: schedule_id, value: cron job
 
@@ -56,28 +56,31 @@ async function updateSchedule(scheduleId) {
 
   // Remove old job if exists
   removeSchedule(scheduleId);
+  await schedulePump(schedule);
+}
 
-  const job = cron.schedule(schedule.cron_expression, async () => {
-    console.log(`⏰ Running scheduled pump for schedule ${schedule.schedule_id}`);
-    try {
-      await sendPumpCommand(schedule.device_key, 'pump_on', schedule.duration_seconds);
-    } catch (err) {
-      console.error('❌ Failed to run scheduled pump:', err);
-    }
-  });
+async function sendScheduleToDevice(deviceId, day, hour, minute, duration) {
+  try {
+    const parameters = { day, hour, minute, duration };
 
-  scheduledJobs.set(scheduleId, job);
-  console.log(`✅ Schedule ${schedule.schedule_id} is now active`);
+    console.log('MQTT → Sending schedule to device:', deviceId, parameters);
+
+    const result = await sendDeviceCommand(deviceId, 'set_schedule', parameters);
+
+    console.log('MQTT → ACK:', result);
+  } catch (err) {
+    console.error('Failed to send schedule command:', err);
+  }
 }
 
 /**
  * Remove a schedule dynamically
  */
 function removeSchedule(scheduleId) {
-  const job = scheduledJobs.get(scheduleId);
+  const job = activeCronJobs.get(scheduleId);
   if (job) {
     job.stop();
-    scheduledJobs.delete(scheduleId);
+    activeCronJobs.delete(scheduleId);
     console.log(`🗑️ Schedule ${scheduleId} removed`);
   }
 }
@@ -85,6 +88,7 @@ function removeSchedule(scheduleId) {
 module.exports = {
   scheduleAllPumps,
   schedulePump,
+  sendScheduleToDevice,
   updateSchedule,
   removeSchedule
 };

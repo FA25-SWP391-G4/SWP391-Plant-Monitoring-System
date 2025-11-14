@@ -105,6 +105,16 @@ const plantApi = {
     }
   },
 
+  waterNow: async (plantId, duration = 10) => {
+    try {
+      const response = await axiosClient.post(`/api/plants/${plantId}/water-now`, { duration });
+      return response.data;
+    } catch (error) {
+      console.error(`Error triggering waterNow for plant ${plantId}:`, error);
+      throw error;
+    }
+  },
+
   // Toggle auto-watering for a plant
   toggleAutoWatering: async (plantId, enabled) => {
     try {
