@@ -192,7 +192,7 @@ class Device {
     // Create or update device
     async save() {
         try {
-            if (this.device_key && isValidUUID(this.device_key)) {
+            if (this.device_key) {
                 // Update existing device (device_key is primary key)
                 const query = `
                     UPDATE devices 

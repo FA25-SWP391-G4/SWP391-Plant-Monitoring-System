@@ -783,80 +783,35 @@ async function forgotPassword(req, res) {
 
             // Use the emailService to send the email
             const emailResult = await emailService.sendEmail(mailOptions);
-            
-            // Check if email was actually sent or skipped
-            if (emailResult && emailResult.skipped) {
-                console.warn(`[PASSWORD RESET] Email skipped: ${emailResult.reason}`);
-                await SystemLog.warning('authController', 'forgotPassword', 
-                    `Password reset email skipped for ${user.email}: ${emailResult.reason}`);
-                
-                return res.status(503).json({
-                    success: false,
-                    message: 'Email service is currently unavailable. Please try again later or contact support.',
-                    error: 'EMAIL_SERVICE_UNAVAILABLE',
-                    details: emailResult.reason
-                });
-            }
-
             console.log(`[PASSWORD RESET] Email sent with ID: ${emailResult.messageId}`);
 
             // Log success
             await SystemLog.info('authController', 'forgotPassword', `Password reset email sent to ${user.email}`);
 
-            // Different response based on whether email was actually sent or skipped
-            const responseData = {
-                email: user.email,
-                expiresIn: '1 hour',
-                messageId: emailResult.messageId,
-                resetUrl: resetUrl // Include the URL in the response for debugging
-            };
-
-            if (emailResult.skipped) {
-                responseData.emailSkipped = true;
-                responseData.skipReason = emailResult.reason;
-            }
-
             res.status(200).json({
                 success: true,
-                message: emailResult.skipped 
-                    ? `Password reset email was skipped (${emailResult.reason}). Reset URL: ${resetUrl}`
-                    : 'Password reset email sent successfully. Please check your inbox and spam folder.',
-                data: responseData
+                message: 'Password reset email sent successfully',
+                data: {
+                email: user.email,
+                    expiresIn: '1 hour'
+                }
             });
         } catch (emailError) {
             // Log the email sending error with detailed diagnostics
             console.error(`[PASSWORD RESET] Email sending failed: ${emailError.message}`);
-            console.error(`[PASSWORD RESET] Error details:`, emailError);
 
-            let userMessage = 'Failed to send password reset email. Please try again later.';
-            let errorCode = 'EMAIL_SEND_FAILED';
-
-            // Add specific error diagnostics and user-friendly messages
+            // Add specific error diagnostics
             if (emailError.code === 'ECONNECTION' || emailError.code === 'ETIMEDOUT') {
                 console.error('[PASSWORD RESET] Connection issue - Check network/firewall settings');
-                userMessage = 'Email service connection failed. Please try again in a few minutes.';
-                errorCode = 'EMAIL_CONNECTION_FAILED';
             } else if (emailError.code === 'EAUTH') {
                 console.error('[PASSWORD RESET] Authentication failed - Check email credentials');
-                userMessage = 'Email service authentication failed. Please contact support.';
-                errorCode = 'EMAIL_AUTH_FAILED';
-            } else if (emailError.code === 'EENVELOPE') {
-                console.error('[PASSWORD RESET] Invalid email address or envelope');
-                userMessage = 'Invalid email address format. Please check and try again.';
-                errorCode = 'INVALID_EMAIL_FORMAT';
-            } else if (emailError.message.includes('SMTP connection failed')) {
-                userMessage = 'Email service is temporarily unavailable. Please try again later.';
-                errorCode = 'EMAIL_SERVICE_UNAVAILABLE';
             }
 
-            await SystemLog.error('authController', 'forgotPassword', 
-                `Failed to send password reset email to ${email}: ${emailError.message} (Code: ${emailError.code || 'UNKNOWN'})`);
+            await SystemLog.error('authController', 'forgotPassword', `Failed to send password reset email: ${emailError.message}`);
 
             res.status(500).json({
                 success: false,
-                message: userMessage,
-                error: errorCode,
-                details: process.env.NODE_ENV === 'development' ? emailError.message : undefined
+                message: 'Failed to send password reset email. Please try again later or contact support.'
             });
         }
     } catch (error) {
@@ -901,19 +856,24 @@ async function resetPassword(req, res) {
             });
         }
 
-        // Find the user with the given reset token
-        const user = await User.findByResetToken(token);
-
-        if (!user) {
-            console.log(`[PASSWORD RESET] Invalid or expired token: ${token}`);
+        // Verify the token
+        let decodedToken;
+        try {
+            decodedToken = jwt.verify(token, process.env.JWT_SECRET);
+        } catch (error) {
             return res.status(401).json({ 
-                success: false,
-                message: 'Invalid or expired password reset token. Please request a new password reset.',
-                error: 'TOKEN_INVALID'
+                error: 'Invalid or expired password reset token' 
             });
         }
 
-        console.log(`[PASSWORD RESET] Valid token found for user: ${user.email}`);
+        // Find the user with the given token
+        const user = await User.findByResetToken(token);
+
+        if (!user || user.user_id !== decodedToken.id) {
+            return res.status(401).json({ 
+                error: 'Invalid or expired password reset token' 
+            });
+        }
 
         // Update the user's password and remove the reset token
         await user.updatePassword(password);
@@ -959,71 +919,25 @@ async function resetPassword(req, res) {
         };
 
         try {
-            console.log(`[PASSWORD RESET] Attempting to send confirmation email to: ${user.email}`);
+            console.log(`[EMAIL DEBUG] Attempting to send password reset confirmation email to: ${user.email}`);
+            const transporter = createTransporter();
+            console.log('[EMAIL DEBUG] Reset confirmation transporter created successfully');
             
-            // Use emailService instead of createTransporter for consistency
-            const emailResult = await emailService.sendEmail(mailOptions);
-            
-            if (emailResult && emailResult.skipped) {
-                console.warn(`[PASSWORD RESET] Confirmation email skipped: ${emailResult.reason}`);
-                await SystemLog.warning('authController', 'resetPassword', 
-                    `Password reset confirmation email skipped for ${user.email}: ${emailResult.reason}`);
-            } else {
-                console.log(`[PASSWORD RESET] Confirmation email sent with ID: ${emailResult.messageId}`);
-                await SystemLog.info('authController', 'resetPassword', 
-                    `Password reset confirmation email sent to ${user.email}`);
-            }
+            const info = await transporter.sendMail(mailOptions);
+            console.log(`[EMAIL DEBUG] Reset confirmation email sent successfully: ${JSON.stringify(info)}`);
         } catch (emailError) {
-            console.error('[PASSWORD RESET] Failed to send confirmation email:', emailError);
-            await SystemLog.warning('authController', 'resetPassword', 
-                `Failed to send password reset confirmation email to ${user.email}: ${emailError.message}`);
+            console.error('[EMAIL DEBUG] Failed to send confirmation email:', emailError);
             // Don't fail the request if confirmation email fails
         }
 
-        // Log successful password reset
-        await SystemLog.info('authController', 'resetPassword', 
-            `Password successfully reset for user: ${user.email}`);
-
         res.status(200).json({ 
-            success: true,
-            message: 'Password reset successful. You can now login with your new password.',
-            data: {
-                email: user.email,
-                timestamp: new Date().toISOString()
-            }
+            message: 'Password reset successful. You can now login with your new password.' 
         });
 
     } catch (error) {
         console.error('Reset password error:', error);
-        
-        // Log the error for debugging
-        await SystemLog.error('authController', 'resetPassword', 
-            `Password reset failed: ${error.message}`).catch(err => 
-            console.error('Failed to log error:', err));
-        
-        let userMessage = 'An error occurred during password reset. Please try again.';
-        let errorCode = 'PASSWORD_RESET_FAILED';
-        let statusCode = 500;
-        
-        // Handle specific error types
-        if (error.name === 'JsonWebTokenError') {
-            userMessage = 'Invalid or malformed reset token. Please request a new password reset.';
-            errorCode = 'INVALID_TOKEN_FORMAT';
-            statusCode = 400;
-        } else if (error.name === 'TokenExpiredError') {
-            userMessage = 'Password reset token has expired. Please request a new password reset.';
-            errorCode = 'TOKEN_EXPIRED';
-            statusCode = 401;
-        } else if (error.message.includes('database') || error.message.includes('connection')) {
-            userMessage = 'Database connection error. Please try again later.';
-            errorCode = 'DATABASE_ERROR';
-        }
-        
-        res.status(statusCode).json({ 
-            success: false,
-            message: userMessage,
-            error: errorCode,
-            details: process.env.NODE_ENV === 'development' ? error.message : undefined
+        res.status(500).json({ 
+            error: 'Failed to reset password. Please try again later.' 
         });
     }
 }

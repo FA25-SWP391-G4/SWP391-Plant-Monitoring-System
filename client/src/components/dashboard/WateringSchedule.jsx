@@ -9,10 +9,37 @@ export default function WateringSchedule({ plants = [] }) {
   const { isDark, themeColors } = useTheme();
   const { settings } = useSettings();
   const [lastWateredData, setLastWateredData] = useState({});
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [selectedPlant, setSelectedPlant] = useState('');
+  const [dayOfWeek, setDayOfWeek] = useState('');
+  const [hour, setHour] = useState('');
+  const [minute, setMinute] = useState('');
+  const [duration, setDuration] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [schedules, setSchedules] = useState({});
+
+
 
   if (!settings.widgets?.showWateringSchedule) {
     return null;
   }
+
+  function formatCronExpression(cronExpression, duration = null) {
+  if (!cronExpression) return 'No schedule set';
+
+  const parts = cronExpression.split(' ');
+  if (parts.length < 5) return cronExpression; // fallback
+
+  const [minute, hour, , , dayOfWeek] = parts;
+  const day =
+    dayOfWeek.charAt(0).toUpperCase() + dayOfWeek.slice(1).toLowerCase();
+  const time = `${hour.padStart(2, '0')}:${minute.padStart(2, '0')}`;
+
+  return duration
+    ? `${day} at ${time} — ${duration}s`
+    : `${day} at ${time}`;
+}
+
 
   // Load last watered data for all plants
   const loadLastWateredForPlants = async () => {
@@ -53,6 +80,27 @@ export default function WateringSchedule({ plants = [] }) {
     return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
   };
 
+  useEffect(() => {
+  async function loadSchedules() {
+    const scheduleMap = {};
+    for (const plant of plants) {
+      try {
+        const res = await plantApi.getWateringSchedule(plant.plant_id);
+        scheduleMap[plant.plant_id] = res.data || [];
+      } catch (err) {
+        console.error(`Error fetching schedule for plant ${plant.plant_id}:`, err);
+        scheduleMap[plant.plant_id] = [];
+      }
+    }
+    setSchedules(scheduleMap);
+  }
+
+  if (plants.length > 0) {
+    loadSchedules();
+  }
+}, [plants.map(p => p.plant_id).join(',')]);
+
+
   // Get last watered display info
   const getLastWateredDisplay = (plantId, fallbackDate) => {
     const lastWateredInfo = lastWateredData[plantId];
@@ -80,6 +128,32 @@ export default function WateringSchedule({ plants = [] }) {
       triggerType: null
     };
   };
+
+  const handleAddSchedule = async () => {
+    if (!selectedPlant) return alert('Please select a plant');
+    setLoading(true);
+    try {
+      const schedule = [
+        {
+          dayOfWeek,
+          hour: parseInt(hour),
+          minute: parseInt(minute),
+          duration: parseInt(duration),
+          enabled: true,
+        },
+      ];
+      await plantApi.setWateringSchedule(selectedPlant, { schedule });
+      await plantApi.toggleAutoWatering(selectedPlant, true);
+      alert('Watering schedule added!');
+      setShowAddModal(false);
+    } catch (err) {
+      console.error(err);
+      alert('Failed to add schedule');
+    } finally {
+      setLoading(false);
+    }
+  };
+
 
   // Get watering urgency indicator
   const getWateringIndicator = (plant) => {
@@ -152,7 +226,26 @@ export default function WateringSchedule({ plants = [] }) {
                 {lastWateredInfo.timeAgo && (
                   <span className="text-xs text-gray-400 ml-2">
                     ({lastWateredInfo.timeAgo})
+                    {Array.isArray(schedules[plant.plant_id]) && schedules[plant.plant_id].length > 0 && (
+                      <div className="mt-1">
+                        <p className={`text-xs ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
+                          Schedule:
+                        </p>
+                        {schedules[plant.plant_id].map((sch) => (
+                          <div key={sch.schedule_id} className="text-xs ml-2">
+                            {formatCronExpression(sch.cron_expression, sch.duration_seconds)}
+                            {sch.is_active ? (
+                              <span className="text-green-500 ml-1">(Active)</span>
+                            ) : (
+                              <span className="text-gray-400 ml-1">(Inactive)</span>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                    )}
+
                   </span>
+                  
                 )}
               </p>
             </div>
@@ -167,17 +260,115 @@ export default function WateringSchedule({ plants = [] }) {
         );
       })}
       
-      <button className={`w-full mt-2 py-1.5 text-xs flex items-center justify-center transition-colors ${
+      <button
+        onClick={() => setShowAddModal(true)}
+        className={`w-full mt-2 py-1.5 text-xs flex items-center justify-center transition-colors ${
         isDark
           ? 'text-emerald-400 hover:text-emerald-300'
           : 'text-emerald-600 hover:text-emerald-700'
-      }`}>
-        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-1">
+        }`}
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="14"
+          height="14"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          className="mr-1"
+        >
           <path d="M12 5v14"></path>
           <path d="M5 12h14"></path>
         </svg>
         {t('watering.addPlant', 'Add plant to schedule')}
       </button>
+
+      {showAddModal && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-50">
+          <div
+            className={`p-4 rounded-xl shadow-lg w-80 ${
+              isDark ? 'bg-gray-800 text-white' : 'bg-white text-gray-900'
+            }`}
+          >
+            <h3 className="text-sm font-semibold mb-2">Add Plant to Schedule</h3>
+
+            <select
+              className="w-full mb-2 border rounded p-1 text-sm"
+              value={selectedPlant}
+              onChange={(e) => setSelectedPlant(e.target.value)}
+            >
+              <option value="">Select a plant...</option>
+              {plants.map((p) => (
+                <option key={p.plant_id} value={p.plant_id}>
+                  {p.name}
+                </option>
+              ))}
+            </select>
+
+            <div className="grid grid-cols-2 gap-2 mb-2">
+              <label className="block text-xs font-medium text-gray-500 mb-1">
+                Day of Week
+              </label>
+              <select
+                value={dayOfWeek}
+                onChange={(e) => setDayOfWeek(e.target.value)}
+                className="w-full text-sm border border-gray-300 rounded-md px-2 py-1 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+              >
+                <option value="Monday">Monday</option>
+                <option value="Tuesday">Tuesday</option>
+                <option value="Wednesday">Wednesday</option>
+                <option value="Thursday">Thursday</option>
+                <option value="Friday">Friday</option>
+                <option value="Saturday">Saturday</option>
+                <option value="Sunday">Sunday</option>
+              </select>
+              <input
+                type="number"
+                className="border rounded p-1 text-sm"
+                value={duration}
+                onChange={(e) => setDuration(e.target.value)}
+                placeholder="Duration (s)"
+              />
+            </div>
+
+            <div className="grid grid-cols-2 gap-2 mb-3">
+              <input
+                type="number"
+                className="border rounded p-1 text-sm"
+                value={hour}
+                onChange={(e) => setHour(e.target.value)}
+                placeholder="Hour (0-23)"
+              />
+              <input
+                type="number"
+                className="border rounded p-1 text-sm"
+                value={minute}
+                onChange={(e) => setMinute(e.target.value)}
+                placeholder="Minute (0-59)"
+              />
+            </div>
+
+            <div className="flex justify-end space-x-2">
+              <button
+                onClick={() => setShowAddModal(false)}
+                className="text-xs px-3 py-1 border rounded hover:bg-gray-100 dark:hover:bg-gray-700"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleAddSchedule}
+                disabled={loading}
+                className="text-xs px-3 py-1 bg-emerald-600 text-white rounded hover:bg-emerald-700 disabled:opacity-50"
+              >
+                {loading ? 'Saving...' : 'Add'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

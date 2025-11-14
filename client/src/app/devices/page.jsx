@@ -10,7 +10,7 @@ import AppLayout from '@/components/layout/AppLayout';
 import deviceApi from '@/api/deviceApi';
 import { useSettings } from '@/providers/SettingsProvider';
 import { toast } from 'react-toastify';
-import { PlantCard } from '@/components/plants/PlantCard';
+import DeviceListItem from '@/components/devices/DeviceListItem';
 
 export default function DevicesPage() {
   const { t } = useTranslation();
@@ -24,6 +24,22 @@ export default function DevicesPage() {
   const [devices, setDevices] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  // Handle device update
+  const handleDeviceUpdate = (updatedDevice) => {
+    setDevices(prevDevices => 
+      prevDevices.map(device => 
+        device.device_key === updatedDevice.device_key ? updatedDevice : device
+      )
+    );
+  };
+
+  // Handle device deletion
+  const handleDeviceDelete = (deviceKey) => {
+    setDevices(prevDevices => 
+      prevDevices.filter(device => device.device_key !== deviceKey)
+    );
+  };
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -181,74 +197,17 @@ export default function DevicesPage() {
               </button>
             </div>
           ) : (
-            <div className="overflow-hidden">
-              <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                <thead className="bg-gray-50 dark:bg-gray-800">
-                  <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                      {t('devices.deviceName', 'Device Name')}
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                      {t('devices.deviceType', 'Type')}
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                      {t('devices.status', 'Status')}
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                      {t('devices.lastActive', 'Last Active')}
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                      {t('common.actions', 'Actions')}
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
-                  {devices.map((device) => (
-                    <tr key={device.device_key} className="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
-                              <td className={`${compactMode ? 'px-3 py-2' : 'px-6 py-4'} whitespace-nowrap`}>
-                        <div className="flex items-center">
-                          <div className="ml-4">
-                            <div className="text-sm font-medium text-gray-900 dark:text-gray-100">
-                              {device.device_name}
-                            </div>
-                            <div className="text-sm text-gray-500 dark:text-gray-400">
-                              ID: {device.device_key}
-                            </div>
-                          </div>
-                        </div>
-                      </td>
-                      <td className={`${compactMode ? 'px-3 py-2' : 'px-6 py-4'} whitespace-nowrap`}>
-                        <div className="text-sm text-gray-900 dark:text-gray-100">{device.device_type}</div>
-                      </td>
-                      <td className={`${compactMode ? 'px-3 py-2' : 'px-6 py-4'} whitespace-nowrap`}>
-                        <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
-                          ${device.status === 'online' ? 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300' : 
-                          device.status === 'offline' ? 'bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300' : 
-                          'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-300'}`}>
-                          {device.status}
-                        </span>
-                      </td>
-                      <td className={`${compactMode ? 'px-3 py-2' : 'px-6 py-4'} whitespace-nowrap text-sm text-gray-500 dark:text-gray-400`}>
-                        {new Date(device.last_active).toLocaleString()}
-                      </td>
-                      <td className={`${compactMode ? 'px-3 py-2' : 'px-6 py-4'} whitespace-nowrap text-sm font-medium`}>
-                        <button 
-                          onClick={() => router.push(`/devices/${device.device_key}`)} 
-                          className="text-emerald-600 hover:text-emerald-700 dark:text-emerald-400 dark:hover:text-emerald-300 mr-4 transition-colors btn-transition"
-                        >
-                          {t('common.view', 'View')}
-                        </button>
-                        <button 
-                          onClick={() => router.push(`/devices/${device.device_key}/edit`)} 
-                          className="text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 transition-colors btn-transition"
-                        >
-                          {t('common.edit', 'Edit')}
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+            <div className="p-6">
+              <div className={`grid gap-6 ${compactMode ? 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4' : 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3'}`}>
+                {devices.map((device) => (
+                  <DeviceListItem
+                    key={device.device_key}
+                    device={device}
+                    onUpdate={handleDeviceUpdate}
+                    onDelete={handleDeviceDelete}
+                  />
+                ))}
+              </div>
             </div>
           )}
         </div>

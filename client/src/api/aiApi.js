@@ -107,7 +107,7 @@ const aiApi = {
    * @returns {Promise} - AI service health response
    */
   getHealth: () => {
-    return axiosClient.get('/ai/test/status');
+    return axiosClient.get('/api/ai/test/status');
   },
 
   /**
@@ -162,7 +162,7 @@ const aiApi = {
    * @returns {Promise} - AI chatbot response
    */
   testChatbot: (data) => {
-    return axiosClient.post('/ai/test/chatbot', data);
+    return axiosClient.post('/api/ai/test/chatbot', data);
   },
 
   /**
@@ -194,7 +194,7 @@ const aiApi = {
       
       const authToken = getAuthToken();
       
-      const response = await axiosClient.post('/ai/plant-analysis', formData, {
+      const response = await axiosClient.post('/api/ai/plant-analysis', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
           'Authorization': authToken
@@ -214,7 +214,7 @@ const aiApi = {
    * @returns {Promise} - AI analysis response
    */
   testPlantAnalysis: (data) => {
-    return axiosClient.post('/ai/test/plant-analysis', data);
+    return axiosClient.post('/api/ai/test/plant-analysis', data);
   },
 
   // ===================== IRRIGATION & WATERING =====================
@@ -237,7 +237,7 @@ const aiApi = {
         };
       }
       
-      const response = await axiosClient.post('/ai/watering-prediction', data, {
+      const response = await axiosClient.post('/api/ai/watering-prediction', data, {
         headers: {
           'Authorization': authToken
         }
@@ -267,7 +267,7 @@ const aiApi = {
         };
       }
       
-      const response = await axiosClient.post('/ai/watering-schedule', data, {
+      const response = await axiosClient.post('/api/ai/watering-schedule', data, {
         headers: {
           'Authorization': authToken
         }
@@ -299,7 +299,7 @@ const aiApi = {
         };
       }
       
-      const response = await axiosClient.post('/ai/historical-analysis', data, {
+      const response = await axiosClient.post('/api/ai/historical-analysis', data, {
         headers: {
           'Authorization': authToken
         },
@@ -359,7 +359,7 @@ const aiApi = {
     const formData = new FormData();
     formData.append('image', imageFile);
     
-    return axiosClient.post('/ai/plant-analysis', formData, {
+    return axiosClient.post('/api/ai/plant-analysis', formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
       },
@@ -387,7 +387,7 @@ const aiApi = {
    * @returns {Promise} - Growth predictions data
    */
   getGrowthPrediction: (plantId) => {
-    return axiosClient.get(`/ai/historical-analysis/${plantId}`);
+    return axiosClient.get(`/api/ai/historical-analysis/${plantId}`);
   },
   
   /**
@@ -397,7 +397,7 @@ const aiApi = {
    * @returns {Promise} - Analysis history data
    */
   getAnalysisHistory: (plantId, options = {}) => {
-    return axiosClient.get(`/ai/historical-analysis/${plantId}`, { params: options });
+    return axiosClient.get(`/api/ai/historical-analysis/${plantId}`, { params: options });
   },
 
   // ===================== DEVELOPMENT & TESTING =====================
@@ -410,9 +410,9 @@ const aiApi = {
    */
   testEndpoint: (endpoint, data = {}) => {
     const testEndpoints = {
-      'health': () => axiosClient.get('/ai/test/status'),
-      'chatbot': (data) => axiosClient.post('/ai/test/chatbot', data),
-      'plant-analysis': (data) => axiosClient.post('/ai/test/plant-analysis', data),
+      'health': () => axiosClient.get('/api/ai/test/status'),
+      'chatbot': (data) => axiosClient.post('/api/ai/test/chatbot', data),
+      'plant-analysis': (data) => axiosClient.post('/api/ai/test/plant-analysis', data),
     };
 
     const testFunction = testEndpoints[endpoint];

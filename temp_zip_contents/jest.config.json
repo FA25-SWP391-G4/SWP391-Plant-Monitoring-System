@@ -1,0 +1,97 @@
+{
+  "projects": [
+    {
+      "displayName": "Backend Tests",
+      "testEnvironment": "node",
+      "testTimeout": 30000,
+      "setupFilesAfterEnv": ["<rootDir>/tests/setup.js"],
+      "testMatch": [
+        "<rootDir>/tests/unit/**/*.test.js",
+        "<rootDir>/tests/integration/**/*.test.js",
+        "<rootDir>/tests/*.test.js"
+      ],
+      "transform": {
+        "^.+\\.(js|jsx)$": ["babel-jest", {
+          "presets": [
+            ["@babel/preset-env", { "targets": { "node": "current" } }]
+          ]
+        }]
+      },
+      "transformIgnorePatterns": [
+        "node_modules/(?!(axios)/)"
+      ],
+      "collectCoverageFrom": [
+        "controllers/**/*.js",
+        "models/**/*.js",
+        "routes/**/*.js",
+        "!**/node_modules/**"
+      ]
+    },
+    {
+      "displayName": "Frontend Tests",
+      "testEnvironment": "jsdom",
+      "testTimeout": 30000,
+      "setupFilesAfterEnv": ["<rootDir>/client/src/__tests__/setup.js"],
+      "testMatch": [
+        "<rootDir>/client/src/**/*.test.js",
+        "<rootDir>/client/src/**/*.test.jsx"
+      ],
+      "transform": {
+        "^.+\\.(js|jsx)$": ["babel-jest", {
+          "presets": [
+            ["@babel/preset-env", { "targets": { "node": "current" } }],
+            "@babel/preset-react"
+          ]
+        }],
+        "^.+\\.css$": "jest-transform-stub"
+      },
+      "transformIgnorePatterns": [
+        "node_modules/(?!(axios)/)"
+      ],
+      "moduleNameMapper": {
+        "\\.(css|less|scss|sass)$": "identity-obj-proxy",
+        "^@/(.*)$": "<rootDir>/client/src/$1"
+      },
+      "collectCoverageFrom": [
+        "client/src/**/*.{js,jsx}",
+        "!client/src/index.js",
+        "!client/src/serviceWorker.js",
+        "!**/node_modules/**"
+      ]
+    },
+    {
+      "displayName": "UI Tests (Selenium)",
+      "testEnvironment": "node",
+      "testTimeout": 60000,
+      "setupFilesAfterEnv": ["<rootDir>/tests/ui/setup/selenium.setup.js"],
+      "testMatch": [
+        "<rootDir>/tests/ui/**/*.test.js"
+      ],
+      "transform": {
+        "^.+\\.(js|jsx)$": ["babel-jest", {
+          "presets": [
+            ["@babel/preset-env", { "targets": { "node": "current" } }]
+          ]
+        }]
+      },
+      "transformIgnorePatterns": [
+        "node_modules/(?!(axios)/)"
+      ],
+      "maxWorkers": 1,
+      "globals": {
+        "SELENIUM_TIMEOUT": 10000,
+        "APP_URL": "http://localhost:3000"
+      }
+    }
+  ],
+  "coverageDirectory": "coverage",
+  "coverageReporters": [
+    "text",
+    "lcov",
+    "html"
+  ],
+  "detectOpenHandles": true,
+  "forceExit": true,
+  "maxWorkers": 1,
+  "runInBand": true
+}

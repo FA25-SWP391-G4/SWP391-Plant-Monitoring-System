@@ -569,7 +569,13 @@
 "waterNow": "Tưới ngay",
 "lastWatered": "Lần tưới cuối",
 "ok": "Vừa được tưới",
-"addPlant": "Thêm cây vào lịch"
+"addPlant": "Thêm cây vào lịch",
+"duration": "Thời gian tưới",
+"startWatering": "Bắt đầu tưới",
+"inProgress": "Đang tưới...",
+"deviceOfflineWarning": "Thiết bị ngoại tuyến",
+"checkConnection": "Vui lòng kiểm tra kết nối thiết bị và thử lại.",
+"tip": "Mẹo: Theo dõi cây của bạn sau khi tưới để đảm bảo độ ẩm tối ưu."
 },
 
 "wateringPrediction": {
@@ -814,6 +820,45 @@
 "extendCurrent": "Gia hạn gói hiện tại"
 },
 
+"schedule": {
+"title": "Lịch tưới",
+"active": "Hoạt động",
+"inactive": "Không hoạt động",
+"edit": "Chỉnh sửa",
+"frequency": "Tần suất",
+"time": "Thời gian",
+"duration": "Thời lượng (giây)",
+"enable": "Bật tưới tự động",
+"save": "Lưu",
+"cancel": "Hủy",
+"daily": "Hàng ngày",
+"every2days": "2 ngày một lần",
+"every3days": "3 ngày một lần",
+"weekly": "Hàng tuần",
+"premiumFeature": "Tính năng Premium",
+"upgradeMessage": "Nâng cấp lên Premium để sử dụng lịch tưới tự động",
+"deviceOfflineWarning": "Thiết bị ngoại tuyến",
+"deviceOfflineMessage": "Thiết bị hiện đang ngoại tuyến. Tưới theo lịch sẽ không hoạt động cho đến khi thiết bị trực tuyến trở lại."
+},
+
+"premium": {
+"upgrade": "Nâng cấp lên Premium"
+},
+
+"days": {
+"monday": "Thứ hai",
+"tuesday": "Thứ ba",
+"wednesday": "Thứ tư",
+"thursday": "Thứ năm",
+"friday": "Thứ sáu",
+"saturday": "Thứ bảy",
+"sunday": "Chủ nhật"
+},
+
+"time": {
+"today": "Hôm nay"
+},
+
 "profile": {
 "title": "Hồ sơ người dùng",
 "subtitle": "Quản lý thông tin tài khoản và cài đặt của bạn",
@@ -852,7 +897,6 @@
 "subscription": "Đăng ký",
 "planDetails": "Chi tiết gói",
 "billingHistory": "Lịch sử thanh toán",
-"notifications": "Thông báo",
 "preferences": "Tùy chọn",
 "saveChanges": "Lưu thay đổi",
 "cancelChanges": "Hủy",

@@ -83,7 +83,7 @@ describe('AIChatbot Component', () => {
     expect(aiApi.chatWithAI).toHaveBeenCalledWith(
       expect.objectContaining({
         message: 'How often should I water my plant?',
-        conversation_id: expect.any(String),
+        chat_id: expect.any(String),
         context: expect.any(Object),
         conversation_history: expect.any(Array)
       })

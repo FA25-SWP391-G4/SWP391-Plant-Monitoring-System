@@ -5,7 +5,7 @@ class ChatHistory {
         this.chat_id = chatData.chat_id;
         this.user_id = chatData.user_id;
         this.plant_id = chatData.plant_id;
-        this.conversation_id = chatData.conversation_id;
+        this.chat_id = chatData.chat_id;
         this.message = chatData.message || chatData.user_message; // Support both field names
         this.response = chatData.response || chatData.ai_response; // Support both field names
         this.context = chatData.context;
@@ -157,7 +157,7 @@ class ChatHistory {
                 // Update existing chat history
                 const query = `
                     UPDATE chat_history 
-                    SET user_id = $1, plant_id = $2, conversation_id = $3, message = $4, response = $5, context = $6, created_at = $7
+                    SET user_id = $1, plant_id = $2, chat_id = $3, message = $4, response = $5, context = $6, created_at = $7
                     WHERE chat_id = $8
                     RETURNING *
                 `;
@@ -165,7 +165,7 @@ class ChatHistory {
                 const result = await pool.query(query, [
                     this.user_id,
                     this.plant_id,
-                    this.conversation_id,
+                    this.chat_id,
                     this.message,
                     this.response,
                     JSON.stringify(this.context || {}),
@@ -179,7 +179,7 @@ class ChatHistory {
             } else {
                 // Create new chat history
                 const query = `
-                    INSERT INTO chat_history (user_id, plant_id, conversation_id, message, response, context, created_at)
+                    INSERT INTO chat_history (user_id, plant_id, chat_id, message, response, context, created_at)
                     VALUES ($1, $2, $3, $4, $5, $6, $7)
                     RETURNING *
                 `;
@@ -187,7 +187,7 @@ class ChatHistory {
                 const result = await pool.query(query, [
                     this.user_id,
                     this.plant_id,
-                    this.conversation_id,
+                    this.chat_id,
                     this.message,
                     this.response,
                     JSON.stringify(this.context || {}),
@@ -247,7 +247,7 @@ class ChatHistory {
             const chatHistory = new ChatHistory({
                 user_id: userId,
                 plant_id: plantId,
-                conversation_id: conversationId,
+                chat_id: conversationId,
                 message: userMessage,
                 response: aiResponse,
                 context: context,
@@ -260,14 +260,14 @@ class ChatHistory {
         }
     }
 
-    // Static method to find conversation history by conversation_id
+    // Static method to find conversation history by chat_id
     static async findByConversationId(conversationId, limit = 50) {
         try {
             const query = `
                 SELECT ch.*, u.family_name as user_name 
                 FROM chat_history ch
                 LEFT JOIN users u ON ch.user_id = u.user_id
-                WHERE ch.conversation_id = $1
+                WHERE ch.chat_id = $1
                 ORDER BY ch.created_at ASC 
                 LIMIT $2
             `;
@@ -282,9 +282,9 @@ class ChatHistory {
     static async getConversationContext(conversationId, limit = 10) {
         try {
             const query = `
-                SELECT message, response, created_at
+                SELECT user_message, ai_response, created_at
                 FROM chat_history 
-                WHERE conversation_id = $1
+                WHERE chat_id = $1
                 ORDER BY created_at ASC 
                 LIMIT $2
             `;

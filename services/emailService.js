@@ -27,7 +27,7 @@ const createTransporter = () => {
   console.log('[EMAIL DEBUG] Creating email transporter');
 
   // Check for required environment variables
-  if (!process.env.EMAIL_USER || !process.env.EMAIL_PASSWORD) {
+  if (process.env.EMAIL_USER && process.env.EMAIL_PASSWORD) {
     const config = {
       service: process.env.EMAIL_SERVICE || 'gmail',
       host: process.env.EMAIL_HOST || 'smtp.gmail.com',
@@ -47,6 +47,8 @@ const createTransporter = () => {
     });
     
     console.log('[EMAIL DEBUG] Creating email transporter with config:', config);
+
+  } else {
     console.log('[EMAIL DEBUG] WARNING: Missing email configuration. EMAIL_USER or EMAIL_PASSWORD is not set.');
     
     // Instead of throwing error, create a dummy transporter that logs emails but doesn't send them

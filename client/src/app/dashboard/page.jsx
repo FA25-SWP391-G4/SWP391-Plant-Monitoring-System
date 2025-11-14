@@ -6,7 +6,6 @@ import { useSettings } from '@/providers/SettingsProvider';
 import { useRouter } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from '@/contexts/ThemeContext';
-import settingsApi from '@/api/settingsApi';
 
 import WeatherWidget from '@/components/dashboard/WeatherWidget';
 import RecentActivity from '@/components/dashboard/RecentActivity';

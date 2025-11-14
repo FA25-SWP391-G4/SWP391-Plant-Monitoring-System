@@ -120,10 +120,36 @@ function handleConnection(socket) {
     
     // Handle events
     socket.on('mark-read', (data) => handleMarkRead(socket, data));
+    socket.on('subscribe-device', (deviceId) => handleDeviceSubscription(socket, deviceId));
+    socket.on('unsubscribe-device', (deviceId) => handleDeviceUnsubscription(socket, deviceId));
     socket.on('disconnect', () => handleDisconnect(socket));
     
     // Get unread notifications for the user
     sendUnreadNotifications(socket);
+}
+
+/**
+ * Handle device subscription for real-time sensor data
+ * @param {object} socket - Socket.IO socket
+ * @param {string} deviceId - Device ID to subscribe to
+ */
+function handleDeviceSubscription(socket, deviceId) {
+    if (!deviceId) return;
+    
+    console.log(`User ${socket.user.user_id} subscribed to device: ${deviceId}`);
+    socket.join(`device:${deviceId}`);
+}
+
+/**
+ * Handle device unsubscription
+ * @param {object} socket - Socket.IO socket  
+ * @param {string} deviceId - Device ID to unsubscribe from
+ */
+function handleDeviceUnsubscription(socket, deviceId) {
+    if (!deviceId) return;
+    
+    console.log(`User ${socket.user.user_id} unsubscribed from device: ${deviceId}`);
+    socket.leave(`device:${deviceId}`);
 }
 
 /**
@@ -332,10 +358,38 @@ async function broadcast(type, message, title, details = {}) {
     }
 }
 
+/**
+ * Send sensor update to all subscribers of a device
+ * @param {string} deviceId - Device ID
+ * @param {object} sensorData - Sensor data to broadcast
+ */
+function broadcastSensorUpdate(deviceId, sensorData) {
+    if (!io) {
+        console.warn('Socket.IO not initialized, cannot broadcast sensor update');
+        return;
+    }
+    
+    try {
+        console.log(`📡 Broadcasting sensor update for device: ${deviceId}`);
+        io.to(`device:${deviceId}`).emit('sensor-update', {
+            deviceId,
+            timestamp: sensorData.timestamp,
+            soil_moisture: sensorData.soil_moisture,
+            temperature: sensorData.temperature,
+            air_humidity: sensorData.air_humidity,
+            light_intensity: sensorData.light_intensity,
+            raw: sensorData.raw
+        });
+    } catch (error) {
+        console.error('Error broadcasting sensor update:', error);
+    }
+}
+
 module.exports = {
     init,
     sendToUser,
     sendToRole,
     broadcast,
+    broadcastSensorUpdate,
     getUnreadCount
 };

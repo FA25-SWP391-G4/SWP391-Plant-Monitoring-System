@@ -45,7 +45,7 @@ Project Root/
 ### **Main App (.env):**
 ```env
 # AI Service Configuration
-AI_SERVICE_URL=http://localhost:8000
+AI_SERVICE_URL=http://localhost:5000
 
 # Shared Resources
 SHARED_AI_MODELS_PATH=./ai_models

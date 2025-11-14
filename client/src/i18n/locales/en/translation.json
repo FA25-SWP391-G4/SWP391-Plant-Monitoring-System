@@ -1005,7 +1005,13 @@
     "waterNow": "Water Now",
     "lastWatered": "Last watered",
     "ok": "Recently watered",
-    "addPlant": "Add plant to schedule"
+    "addPlant": "Add plant to schedule",
+    "duration": "Watering Duration",
+    "startWatering": "Start Watering",
+    "inProgress": "Watering...",
+    "deviceOfflineWarning": "Device Offline",
+    "checkConnection": "Please check your device connection and try again.",
+    "tip": "Tip: Monitor your plant after watering to ensure optimal moisture levels."
   },
 
   "wateringPrediction": {
@@ -1026,6 +1032,41 @@
     "healthy": "Healthy",
     "attention": "Needs Attention"
   },
+  "schedule": {
+    "title": "Watering Schedule",
+    "active": "Active",
+    "inactive": "Inactive",
+    "edit": "Edit",
+    "frequency": "Frequency",
+    "time": "Time",
+    "duration": "Duration (seconds)",
+    "enable": "Enable automatic watering",
+    "save": "Save",
+    "cancel": "Cancel",
+    "daily": "Daily",
+    "every2days": "Every 2 days",
+    "every3days": "Every 3 days",
+    "weekly": "Weekly",
+    "premiumFeature": "Premium Feature",
+    "upgradeMessage": "Upgrade to Premium to access automatic watering schedules",
+    "deviceOfflineWarning": "Device Offline",
+    "deviceOfflineMessage": "Your device is currently offline. Scheduled watering will not work until the device is back online."
+  },
+
+  "days": {
+    "monday": "Monday",
+    "tuesday": "Tuesday",
+    "wednesday": "Wednesday",
+    "thursday": "Thursday",
+    "friday": "Friday",
+    "saturday": "Saturday",
+    "sunday": "Sunday"
+  },
+
+  "time": {
+    "today": "Today"
+  },
+
   "profile": {
     "title": "User Profile",
     "subtitle": "Manage your account information and settings",

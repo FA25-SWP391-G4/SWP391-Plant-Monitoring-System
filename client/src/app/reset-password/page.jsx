@@ -9,7 +9,7 @@ import { useTranslation } from 'react-i18next';
 import { useTheme } from '@/contexts/ThemeContext';
 
 export default function ResetPasswordPage() {
-  const { user, loading } = useAuth();
+  const { loading } = useAuth();
   const router = useRouter();
   const searchParams = useSearchParams();
   const { t } = useTranslation();
@@ -89,27 +89,6 @@ export default function ResetPasswordPage() {
              ? 'linear-gradient(to bottom right, hsl(var(--background)), hsl(var(--muted)/0.1), hsl(var(--muted)/0.2))'
              : 'linear-gradient(to bottom right, hsl(var(--background)), hsl(var(--muted)/0.1), hsl(var(--muted)/0.2))'
          }}>
-      {/* Header */}
-      <header className="w-full border-b border-border bg-card/80 backdrop-blur-md">
-        <nav className="container mx-auto px-6 py-4 flex items-center justify-between">
-          <div className="flex items-center">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-leaf h-7 w-7 mr-2" aria-hidden="true"
-                 style={{ color: getThemeColor('#16a34a', '#22c55e') }}>
-              <path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"></path>
-              <path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"></path>
-            </svg>
-            <span className="text-xl font-bold text-foreground">{t('common.appName', 'PlantSmart')}</span>
-          </div>
-          <div className="hidden sm:flex items-center space-x-6">
-            <Link href="/" className="text-muted-foreground hover:opacity-80 transition-colors">
-              <span>{t('navigation.home')}</span>
-            </Link>
-            <Link href="/login" className="text-muted-foreground hover:opacity-80 transition-colors">
-              <span>{t('auth.login')}</span>
-            </Link>
-          </div>
-        </nav>
-      </header>
 
       {/* Main Content */}
       <main className="flex-1">

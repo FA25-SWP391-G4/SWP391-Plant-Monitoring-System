@@ -19,17 +19,17 @@ const getAllDevices = async (req, res) => {
         let params = [];
         
         if (userId) {
-            // For authenticated users, show only their devices
-            query = `
-                SELECT d.*,
-                       p.plant_id,
-                       p.custom_name as plant_name
-                FROM devices d
-                LEFT JOIN plants p ON TRIM(d.device_key) = TRIM(p.device_key)
-                WHERE d.user_id = $1
-                ORDER BY d.created_at DESC
-            `;
-            params = [userId];
+        // For authenticated users, show only their devices
+        query = `
+            SELECT d.*,
+                    p.plant_id,
+                    p.custom_name as plant_name
+            FROM devices d
+            LEFT JOIN plants p ON TRIM(d.device_key) = TRIM(p.device_key)
+            WHERE d.user_id = $1
+            ORDER BY d.created_at DESC
+        `;
+        params = [userId];
         } else {
             // For public/admin view, show all devices
             query = `
@@ -75,6 +75,33 @@ const getAllDevices = async (req, res) => {
     }
 };
 
+const updateDevice = async (req, res) => {
+    let query;
+        let params = [];
+    let { deviceKey, name } = req.body;
+    try {
+        const query = `
+            UPDATE devices
+            SET device_name = $1, last_seen = NOW()
+            WHERE device_key = $2
+        `;
+        params = [name, deviceKey];
+        await pool.query(query, params);
+            return res.json({
+            success: true,
+            data: formattedDevices
+        });
+
+    } catch (error) {
+        await SystemLog.error('DeviceController', 'getAllDevices', error.message);
+        res.status(500).json({
+            success: false,
+            error: 'Failed to retrieve devices'
+        });
+    }
+};
+
 module.exports = {
-    getAllDevices
+    getAllDevices,
+    updateDevice
 };

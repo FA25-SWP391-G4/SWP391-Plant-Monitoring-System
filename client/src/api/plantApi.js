@@ -125,6 +125,28 @@ const plantApi = {
       console.error(`Error setting thresholds for plant ${plantId}:`, error);
       throw error;
     }
+  },
+
+  // Update plant information
+  update: async (plantId, plantData) => {
+    try {
+      const response = await axiosClient.put(`/api/plants/${plantId}`, plantData);
+      return response.data;
+    } catch (error) {
+      console.error(`Error updating plant ${plantId}:`, error);
+      throw error;
+    }
+  },
+
+  // Delete a plant
+  delete: async (plantId) => {
+    try {
+      const response = await axiosClient.delete(`/api/plants/${plantId}`);
+      return response.data;
+    } catch (error) {
+      console.error(`Error deleting plant ${plantId}:`, error);
+      throw error;
+    }
   }
 };
 

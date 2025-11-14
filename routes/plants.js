@@ -7,6 +7,8 @@ const { getUserPlants,
   toggleAutoWatering,
   setSensorThresholds,
   createPlant,
+  updatePlant,
+  deletePlant,
   getWateringHistory,
   getSensorHistory,
   getCurrentSensorData,
@@ -61,5 +63,11 @@ router.get('/:plantId/stats/sensors', authMiddleware, getSensorStats);
 
 //get last watered info
 router.get('/:plantId/last-watered', authMiddleware, getLastWatered);
+
+// Update plant
+router.put('/:plantId', authMiddleware, updatePlant);
+
+// Delete plant
+router.delete('/:plantId', authMiddleware, deletePlant);
 
 module.exports = router;

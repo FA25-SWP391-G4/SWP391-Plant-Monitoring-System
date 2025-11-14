@@ -15,7 +15,7 @@ start "Main App" cmd /k "npm start"
 
 echo.
 echo Both services are starting...
-echo - AI Service: http://localhost:8000
+echo - AI Service: http://localhost:5000
 echo - Main App: http://localhost:3000
 echo.
 echo Press any key to close this window...
