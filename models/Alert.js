@@ -40,11 +40,11 @@ class Alert {
                 WHERE a.alert_id = $1
             `;
             const result = await pool.query(query, [id]);
-            
+
             if (result.rows.length === 0) {
                 return null;
             }
-            
+
             return new Alert(result.rows[0]);
         } catch (error) {
             throw error;
@@ -130,7 +130,7 @@ class Alert {
                     WHERE alert_id = $7
                     RETURNING *
                 `;
-                
+
                 const result = await pool.query(query, [
                     this.user_id,
                     this.title,
@@ -140,7 +140,7 @@ class Alert {
                     this.is_read ? 'read' : 'unread',
                     this.alert_id
                 ]);
-                
+
                 const updatedAlert = new Alert(result.rows[0]);
                 Object.assign(this, updatedAlert);
                 return this;
@@ -151,7 +151,7 @@ class Alert {
                     VALUES ($1, $2, $3, $4, $5, $6)
                     RETURNING *
                 `;
-                
+
                 const result = await pool.query(query, [
                     this.user_id,
                     this.title,
@@ -160,7 +160,7 @@ class Alert {
                     this.details,
                     this.is_read ? 'read' : 'unread'
                 ]);
-                
+
                 const newAlert = new Alert(result.rows[0]);
                 Object.assign(this, newAlert);
                 return this;
@@ -179,14 +179,14 @@ class Alert {
                 WHERE alert_id = $1
                 RETURNING *
             `;
-            
+
             const result = await pool.query(query, [this.alert_id]);
-            
+
             if (result.rows.length > 0) {
                 this.status = 'read';
                 this.is_read = true;
             }
-            
+
             return this;
         } catch (error) {
             throw error;
@@ -202,14 +202,14 @@ class Alert {
                 WHERE alert_id = $1
                 RETURNING *
             `;
-            
+
             const result = await pool.query(query, [this.alert_id]);
-            
+
             if (result.rows.length > 0) {
                 this.status = 'unread';
                 this.is_read = false;
             }
-            
+
             return this;
         } catch (error) {
             throw error;
@@ -225,7 +225,7 @@ class Alert {
 
             const query = 'DELETE FROM Alerts WHERE alert_id = $1';
             await pool.query(query, [this.alert_id]);
-            
+
             return true;
         } catch (error) {
             throw error;
@@ -240,13 +240,13 @@ class Alert {
                 message: message,
                 status: 'unread'
             });
-            
+
             return await alert.save();
         } catch (error) {
             throw error;
         }
     }
-    
+
     // Enhanced static method to create alert with more details
     static async create(alertData) {
         try {
@@ -258,7 +258,7 @@ class Alert {
                 details: alertData.details || '{}',
                 is_read: false
             });
-            
+
             return await alert.save();
         } catch (error) {
             throw error;
@@ -306,7 +306,7 @@ class Alert {
             let message = '';
             let title = '';
             let type = alertType;
-            
+
             switch (alertType) {
                 case 'lowMoisture':
                     title = 'Low Moisture Alert';
@@ -344,7 +344,7 @@ class Alert {
                     title = `Plant Alert: ${plantName}`;
                     message = `🔔 ${plantName}: ${alertType}.`;
             }
-            
+
             return await Alert.create({
                 user_id: userId,
                 title: title,
@@ -362,7 +362,7 @@ class Alert {
             let message = '';
             let title = '';
             let type = alertType;
-            
+
             switch (alertType) {
                 case 'payment_success':
                     title = 'Payment Successful';
@@ -388,7 +388,7 @@ class Alert {
                     title = 'System Notification';
                     message = `🔔 System notification: ${alertType}.`;
             }
-            
+
             return await Alert.create({
                 user_id: userId,
                 title: title,
@@ -406,15 +406,15 @@ class Alert {
         if (!this.created_at) {
             return 'Unknown';
         }
-        
+
         const now = new Date();
         const alertTime = new Date(this.created_at);
         const diffMs = now - alertTime;
-        
+
         const diffMinutes = Math.floor(diffMs / (1000 * 60));
         const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
         const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-        
+
         if (diffMinutes < 1) {
             return 'Just now';
         } else if (diffMinutes < 60) {

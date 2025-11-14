@@ -108,15 +108,16 @@ describe('API Mapping Tests', () => {
       );
     });
     
-    test('resetPassword() maps to POST /auth/reset-password', () => {
+    test('resetPassword() maps to POST /auth/reset-password?token=<token>', () => {
       const resetData = {
         token: 'valid-reset-token',
-        newPassword: 'newPassword123'
+        password: 'newPassword123',
+        confirmPassword: 'newPassword123'
       };
       
       return checkApiMapping(
-        () => authApi.resetPassword(resetData.token, resetData.newPassword),
-        '/auth/reset-password',
+        () => authApi.resetPassword(resetData.token, resetData.password, resetData.confirmPassword),
+        `/auth/reset-password?token=${resetData.token}`,
         resetData
       );
     });

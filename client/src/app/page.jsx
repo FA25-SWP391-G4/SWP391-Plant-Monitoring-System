@@ -324,6 +324,75 @@ export default function Home() {
           </div>
         </section>
 
+        {/* Test AI Features Section */}
+        <section className="py-16 bg-blue-50">
+          <div className="container mx-auto px-4">
+            <div className="text-center mb-8">
+              <h2 className="text-3xl font-bold mb-4">🤖 Test AI Features</h2>
+              <p className="text-gray-600 mb-6">Try our AI-powered plant care features</p>
+              <div className="bg-white p-6 rounded-xl shadow-sm max-w-md mx-auto">
+                <h3 className="font-semibold mb-4">Quick Login for Testing</h3>
+                <div className="text-sm text-gray-600 mb-4">
+                  <p><strong>Email:</strong> test@example.com</p>
+                  <p><strong>Password:</strong> password123</p>
+                </div>
+                <div className="space-y-2">
+                  <Link
+                    href="/login"
+                    className="block bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded text-center transition"
+                  >
+                    Login to Test
+                  </Link>
+                  <Link
+                    href="/test-auth"
+                    className="block bg-gray-500 hover:bg-gray-600 text-white py-2 px-4 rounded text-center transition"
+                  >
+                    Check Auth Status
+                  </Link>
+                </div>
+              </div>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="bg-white p-6 rounded-xl shadow-sm">
+                <div className="text-4xl mb-4">💬</div>
+                <h3 className="text-xl font-semibold mb-2">AI Chatbot</h3>
+                <p className="text-gray-600 mb-4">Chat with AI about plant care</p>
+                <Link
+                  href="/ai/chat"
+                  className="inline-block bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded transition"
+                >
+                  Try Chat
+                </Link>
+              </div>
+              
+              <div className="bg-white p-6 rounded-xl shadow-sm">
+                <div className="text-4xl mb-4">📸</div>
+                <h3 className="text-xl font-semibold mb-2">Disease Detection</h3>
+                <p className="text-gray-600 mb-4">Upload plant photos for analysis</p>
+                <Link
+                  href="/ai/image-analysis"
+                  className="inline-block bg-purple-500 hover:bg-purple-600 text-white py-2 px-4 rounded transition"
+                >
+                  Analyze Image
+                </Link>
+              </div>
+              
+              <div className="bg-white p-6 rounded-xl shadow-sm">
+                <div className="text-4xl mb-4">🔮</div>
+                <h3 className="text-xl font-semibold mb-2">Watering Prediction</h3>
+                <p className="text-gray-600 mb-4">AI-powered watering recommendations</p>
+                <Link
+                  href="/ai/predictions"
+                  className="inline-block bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded transition"
+                >
+                  Get Predictions
+                </Link>
+              </div>
+            </div>
+          </div>
+        </section>
+
         {/* CTA Section */}
         <section className="py-16 bg-green-50">
           <div className="container mx-auto px-4">

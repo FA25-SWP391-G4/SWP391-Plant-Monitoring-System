@@ -4,6 +4,62 @@ const ChatHistory = require('../models/ChatHistory');
 const { initializeTensorFlow } = require('../services/aiUtils');
 const jwt = require('jsonwebtoken');
 
+// Rate limiting storage (in production, use Redis)
+const userRateLimit = new Map();
+
+/**
+ * Sanitize user input to prevent XSS and other attacks
+ */
+function sanitizeInput(message) {
+    if (!message || typeof message !== 'string') {
+        return null;
+    }
+    
+    // Remove script tags and other dangerous HTML
+    let sanitized = message
+        .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
+        .replace(/<[^>]*>/g, '') // Remove all HTML tags
+        .replace(/javascript:/gi, '')
+        .replace(/on\w+\s*=/gi, '') // Remove event handlers
+        .trim();
+    
+    // Limit length
+    if (sanitized.length > 1000) {
+        sanitized = sanitized.substring(0, 1000);
+    }
+    
+    // Must have some content
+    if (sanitized.length < 1) {
+        return null;
+    }
+    
+    return sanitized;
+}
+
+/**
+ * Check rate limiting for user
+ */
+function checkRateLimit(userId) {
+    if (!userId) return false;
+    
+    const now = Date.now();
+    const userRequests = userRateLimit.get(userId) || [];
+    
+    // Remove requests older than 1 minute
+    const recentRequests = userRequests.filter(time => now - time < 60000);
+    
+    // Allow max 15 requests per minute
+    if (recentRequests.length >= 15) {
+        return false;
+    }
+    
+    // Add current request
+    recentRequests.push(now);
+    userRateLimit.set(userId, recentRequests);
+    
+    return true;
+}
+
 /**
  * Process chatbot queries
  */
@@ -29,6 +85,23 @@ const processChatbotQuery = async (req, res) => {
             });
         }
 
+        // Input validation and sanitization
+        const sanitizedMessage = sanitizeInput(message);
+        if (!sanitizedMessage) {
+            return res.status(400).json({
+                success: false,
+                message: 'Invalid message content'
+            });
+        }
+
+        // Rate limiting check
+        if (!checkRateLimit(userId)) {
+            return res.status(429).json({
+                success: false,
+                message: 'Too many requests. Please wait a moment before asking another question.'
+            });
+        }
+
         if (!userId) {
             return res.status(401).json({
                 success: false,
@@ -45,16 +118,23 @@ const processChatbotQuery = async (req, res) => {
         const conversationHistory = await ChatHistory.getConversationContext(conversationId, 10);
 
         // Use OpenRouter service for chat completion
+        const startTime = Date.now();
         const chatResult = await openRouterService.generateChatCompletion(
-            message,
+            sanitizedMessage,
             conversationHistory,
             context || {}
         );
+        const responseTime = Date.now() - startTime;
+
+        // Log slow responses
+        if (responseTime > 5000) {
+            console.warn(`Slow chatbot response: ${responseTime}ms for user ${userId}`);
+        }
         
         // Store the conversation in database
         await ChatHistory.createChat(
             userId,
-            message,
+            sanitizedMessage,
             chatResult.response,
             plant_id,
             conversationId,
@@ -63,7 +143,9 @@ const processChatbotQuery = async (req, res) => {
                 source: chatResult.source,
                 model: chatResult.model,
                 confidence: chatResult.confidence,
-                isPlantRelated: chatResult.isPlantRelated
+                isPlantRelated: chatResult.isPlantRelated,
+                responseTime: responseTime,
+                language: chatResult.language
             }
         );
         
@@ -85,10 +167,21 @@ const processChatbotQuery = async (req, res) => {
     } catch (error) {
         console.error('Error processing chatbot query:', error);
 
+        // User-friendly error messages
+        let userMessage = 'I\'m having trouble right now. Please try again in a moment.';
+        
+        if (error.code === 'ECONNREFUSED') {
+            userMessage = 'I\'m temporarily unavailable. Please try again later.';
+        } else if (error.response?.status === 429) {
+            userMessage = 'I\'m getting too many requests right now. Please wait a moment and try again.';
+        } else if (error.message.includes('timeout')) {
+            userMessage = 'I\'m thinking too slowly right now. Please try a shorter question.';
+        }
+
         return res.status(500).json({
             success: false,
-            message: 'Failed to process chatbot query',
-            error: error.message
+            message: userMessage,
+            error: process.env.NODE_ENV === 'development' ? error.message : undefined
         });
     }
 };

@@ -145,6 +145,9 @@
  * 🔄 Monitoring: Winston logging + PM2 + Prometheus metrics
  */
 
+// Load .env early for server configs
+require('dotenv').config();
+
 const path = require('path');
 
 var createError = require('http-errors');
@@ -198,17 +201,33 @@ connectDB().catch(err => {
 
 // Add CORS middleware for cross-origin requests
 app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', process.env.FRONTEND_URL);
-  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
+  const allowedEnvOrigins = (process.env.CORS_ALLOWED_ORIGINS || process.env.FRONTEND_URL || '')
+    .split(',')
+    .map(o => o.trim())
+    .filter(Boolean);
+  // Default dev origins to handle Next.js choosing different ports
+  const defaultDevOrigins = ['http://localhost:3000', 'http://localhost:3001', 'http://localhost:3002', 'http://localhost:3050'];
+  const allowedOrigins = allowedEnvOrigins.length ? allowedEnvOrigins : defaultDevOrigins;
+  const requestOrigin = req.headers.origin;
+
+  if (requestOrigin && allowedOrigins.includes(requestOrigin)) {
+    res.header('Access-Control-Allow-Origin', requestOrigin);
+  } else if (allowedOrigins.length > 0) {
+    // Fallback to first allowed origin (required when credentials=true)
+    res.header('Access-Control-Allow-Origin', allowedOrigins[0]);
+  }
+
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
-  res.header('Access-Control-Allow-Credentials', true);
-  
+  res.header('Access-Control-Allow-Credentials', 'true');
+  // Explicitly expose some headers if needed (optional)
+  // res.header('Access-Control-Expose-Headers', 'Content-Length, ETag');
+
   // Handle preflight requests
   if (req.method === 'OPTIONS') {
-    res.sendStatus(200);
-  } else {
-    next();
+    return res.sendStatus(200);
   }
+  next();
 });
 
 // view engine setup
@@ -249,7 +268,7 @@ app.use('/api/sensor', sensorRouter);               // 🔄 Sensor data manageme
 app.use('/api/plants', plantRouter);                // ✅ UC5-9: Plant management API (implemented)
 app.use('/api/admin', adminRouter);                 // 🔄 UC24-31: Admin API
 // Temporarily disabled notifications route
-// app.use('/api/notifications', notificationRouter);  // 🔄 UC10: Notifications API
+app.use('/api/notifications', notificationRouter);  // 🔄 UC10: Notifications API
 // app.use('/api/language', languageRouter);           // 🔄 UC31: Multi-language API (tạm thời vô hiệu hóa)
 
 // TODO: Mount additional route handlers as they are implemented:

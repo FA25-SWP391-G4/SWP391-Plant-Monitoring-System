@@ -1,6 +1,6 @@
 // src/components/Footer.jsx
 import React from 'react';
-import { Link } from 'react-router-dom';
+import Link from 'next/link';
 import { useTranslation } from 'react-i18next';
 
 const Footer = () => {
@@ -17,8 +17,8 @@ const Footer = () => {
             </p>
           </div>
           <div className="col-md-6 text-md-end">
-            <Link to="/terms" className="text-decoration-none me-3">{t('footer.termsOfService')}</Link>
-            <Link to="/privacy" className="text-decoration-none">{t('footer.privacyPolicy')}</Link>
+            <Link href="/terms" className="text-decoration-none me-3">{t('footer.termsOfService')}</Link>
+            <Link href="/privacy" className="text-decoration-none">{t('footer.privacyPolicy')}</Link>
           </div>
         </div>
       </div>

@@ -49,11 +49,25 @@ const nextConfig = {
       },
     ];
   },
-  contentSecurityPolicy: {
-    directives: {
-      scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'", "https://www.gstatic.com", "https://apis.google.com"],
-      // other directives...
-    }
+  async headers() {
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL || '';
+    const csp = [
+      "default-src 'self'",
+      "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.gstatic.com https://apis.google.com",
+      "style-src 'self' 'unsafe-inline'",
+      "img-src 'self' data: blob: https:",
+      `connect-src 'self' ${apiUrl}`,
+      "font-src 'self' data:",
+      "frame-ancestors 'self'"
+    ].join('; ');
+    return [
+      {
+        source: '/(.*)',
+        headers: [
+          { key: 'Content-Security-Policy', value: csp },
+        ],
+      },
+    ];
   }
 }
 

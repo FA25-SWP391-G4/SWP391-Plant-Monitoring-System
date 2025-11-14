@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { useAuth } from '@/providers/AuthProvider';
 import { useRouter } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
-import DashboardHeader from '@/components/dashboard/DashboardHeader';
+
 import PlantCard from '@/components/dashboard/PlantCard';
 import WeatherWidget from '@/components/dashboard/WeatherWidget';
 import RecentActivity from '@/components/dashboard/RecentActivity';
@@ -127,17 +127,10 @@ export default function DashboardPage() {
   }
 
   return (
-<<<<<<< HEAD
     <AIProvider>
       <div className="min-h-screen bg-gray-50">
-        <DashboardHeader user={user} />
-        
+        <Navbar user={user} />
         <main className="container mx-auto px-4 py-8">
-=======
-    <div className="min-h-screen bg-gray-50">
-      <Navbar user={user} />
-      <main className="container mx-auto px-4 py-8">
->>>>>>> 71ef89edbadc5bc62baf2aec2a312ebf64c0e6fc
         {/* Welcome Banner */}
         <div className="bg-gradient-to-r from-emerald-500 to-emerald-700 rounded-xl shadow-lg mb-8 p-6 text-white flex items-center justify-between">
           <div>

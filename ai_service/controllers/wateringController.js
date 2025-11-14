@@ -30,7 +30,7 @@ const predictWateringNeeds = async (req, res) => {
 
         // Load watering prediction model (placeholder for now)
         // const model = await modelUtils.loadModel('../ai_models/watering_prediction');
-        
+
         // For now, return a simulated prediction based on sensor data
         const prediction = generateWateringPrediction(sensor_data, historical_data);
 
@@ -50,7 +50,7 @@ const predictWateringNeeds = async (req, res) => {
 
     } catch (error) {
         console.error('Error predicting watering needs:', error);
-        
+
         return res.status(500).json({
             success: false,
             message: 'Failed to predict watering needs',
@@ -64,14 +64,14 @@ const predictWateringNeeds = async (req, res) => {
  */
 function generateWateringPrediction(sensorData, historicalData = []) {
     const { moisture, temperature, humidity, light } = sensorData;
-    
+
     // Simple rule-based prediction for demonstration
     let needsWatering = false;
     let confidence = 0;
     let reasoning = '';
     let recommendedAction = '';
     let nextWatering = null;
-    
+
     if (moisture < 30) {
         needsWatering = true;
         confidence = 0.9;
@@ -97,7 +97,7 @@ function generateWateringPrediction(sensorData, historicalData = []) {
         recommendedAction = 'No watering needed at this time';
         nextWatering = new Date(Date.now() + 24 * 60 * 60 * 1000); // Check again in 24 hours
     }
-    
+
     return {
         prediction: needsWatering ? 'needs_water' : 'no_water_needed',
         confidence,

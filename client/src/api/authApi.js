@@ -32,8 +32,8 @@ const authApi = {
     axiosClient.post("/auth/forgot-password", { email }),
 
   // Reset Password
-  resetPassword: (token, newPassword) =>
-    axiosClient.post("/auth/reset-password", { token, newPassword }),
+  resetPassword: (token, password, confirmPassword) =>
+    axiosClient.post(`/auth/reset-password?token=${encodeURIComponent(token)}`, { password, confirmPassword }),
 };
 
 export default authApi;

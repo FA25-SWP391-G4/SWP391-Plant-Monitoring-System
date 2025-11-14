@@ -7,7 +7,6 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter }
 import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
 import axiosClient from '@/api/axiosClient';
-import Head from 'next/head';
 import { useGoogleAuth } from '@/hooks/useGoogleAuth';
 
 // API URL for redirect purposes
@@ -18,7 +17,7 @@ const clientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;
  * LoginForm component
  * Based on the PlantSmart design system
  */
-export function LoginForm() {
+function LoginForm() {
   const { t } = useTranslation();
   const [isLoading, setIsLoading] = useState(false);
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
@@ -53,13 +52,11 @@ export function LoginForm() {
     const checkConnection = async () => {
       try {
         console.log(`[DEBUG] Testing connection to backend: ${API_URL}`);
-        const response = await fetch(`${API_URL}/health`, {
-          method: 'GET',
-          headers: { 'Content-Type': 'application/json' }
-        });
+        // Use axiosClient to respect baseURL and CORS config
+        const response = await axiosClient.get('/health');
 
-        if (response.ok) {
-          const data = await response.json();
+        if (response.status === 200) {
+          const data = response.data;
           console.log(`[DEBUG] Backend server is reachable. Status: ${data.status}`);
         } else {
           console.warn(`[DEBUG] Backend server returned status: ${response.status}`);
@@ -239,177 +236,9 @@ export function LoginForm() {
     });
   };
   
-  // Initialize Google Auth API with the modern Google Identity Services
-  useEffect(() => {
-    // Check if Google Identity Services script is loaded
-    const checkGoogleScriptLoaded = () => {
-      // Script is now loaded via GoogleHeadTags component
-      if (window.google) {
-        initializeGoogleButton();
-        return true;
-      }
-      return false;
-    };
-
-    // Initialize the Google Sign In button
-    const initializeGoogleButton = () => {
-      console.log('Google Identity Services script loaded, initializing button');
-
-      // Make sure the Google object is available
-      if (window.google) {
-        try {
-          // Define the client ID and make sure it's properly loaded          
-          if (!clientId) {
-            console.error('[GOOGLE AUTH] Client ID is not defined. Please check your environment variables.');
-            setErrors({...errors, form: t('errors.googleSignInFailed', 'Failed to show Google sign-in due to missing client ID.')});
-            return;
-          }
-          
-          console.log('[GOOGLE AUTH] Using client ID:', clientId);
-          
-          // Initialize Google accounts with explicit popup mode and FedCM support
-          window.google.accounts.id.initialize({
-            client_id: clientId,
-            callback: handleCredentialResponse,
-            auto_select: false, // Changed to false to always prompt for account selection
-            cancel_on_tap_outside: true,
-            use_fedcm_for_prompt: true, // Explicitly opt-in to FedCM
-            fedcm_provider_url: "https://accounts.google.com", // Specify the provider URL for FedCM
-            context: "signin", // Use signin context for login
-            itp_support: true, // Add support for Intelligent Tracking Prevention
-            prompt_parent_id: "google-signin-wrapper", // Add this to specify where the prompt should appear
-            select_by_default: false // Ensure account selection is always shown
-          });
-
-          console.log('[GOOGLE AUTH] Google One Tap initialized with FedCM support');
-
-          // Use a custom button that triggers the Google popup manually
-          const googleButton = document.getElementById('custom-google-btn');
-          if (googleButton) {
-            googleButton.onclick = (e) => {
-              e.preventDefault();
-              console.log('[GOOGLE AUTH] Custom button clicked, showing sign-in');
-              setIsGoogleLoading(true);
-
-              // This will trigger the sign-in flow with FedCM
-              window.google.accounts.id.prompt((notification) => {
-                // FedCM-compatible handling of notification moments
-                if (notification.getMomentType() === "skipped") {
-                  // Skipped moment (user has not engaged with the prompt or it couldn't be shown)
-                  console.log('[GOOGLE AUTH] Sign-in prompt was skipped:', notification.getSkippedReason());
-                  setIsGoogleLoading(false);
-
-                  // Handle specific skipped reasons
-                  const skippedReason = notification.getSkippedReason();
-                  if (skippedReason === "browser_not_supported" ||
-                      skippedReason === "third_party_cookies_blocked" ||
-                      skippedReason === "browser_not_supported") {
-                    setErrors({
-                      ...errors,
-                      form: t('errors.googleSignInBlocked', 'Google sign-in is not available. This might be due to browser settings or cookie restrictions.')
-                    });
-                  } else {
-                    setErrors({
-                      ...errors,
-                      form: t('errors.googleSignInFailed', 'Failed to show Google sign-in. Please try again or use email login.')
-                    });
-                  }
-                } else if (notification.getMomentType() === "dismissed") {
-                  // Dismissed moment (user actively dismissed the prompt)
-                  console.log('[GOOGLE AUTH] User dismissed the sign-in prompt');
-                  setIsGoogleLoading(false);
-                } else if (notification.getMomentType() === "display") {
-                  // Successfully displayed to user
-                  console.log('[GOOGLE AUTH] Sign-in prompt displayed to user');
-                } else {
-                  // Unknown moment type
-                  console.log('[GOOGLE AUTH] Unknown prompt moment type:', notification.getMomentType());
-                  setIsGoogleLoading(false);
-                }
-              });
-            };
-          }
-
-          // Also set up the hidden Google button as fallback
-          const hiddenGoogleButton = document.getElementById('google-signin-button');
-          if (hiddenGoogleButton) {
-            window.google.accounts.id.renderButton(
-              hiddenGoogleButton,
-              {
-                type: 'standard',
-                theme: 'outline',
-                size: 'large',
-                shape: 'rectangular',
-                text: 'signin_with',
-                logo_alignment: 'center',
-                width: '100%'
-              }
-            );
-            // Hide this button as we're using our custom one
-            hiddenGoogleButton.style.display = 'none';
-          } else {
-            console.error('[GOOGLE AUTH] Hidden Google button element not found');
-          }
-        } catch (error) {
-          console.error('[GOOGLE AUTH] Error initializing Google Sign-In:', error);
-        }
-      }
-    };
-
-    // Function to handle the credential response
-    const handleCredentialResponse = async (response) => {
-      console.log('Google Sign-In response received');
-
-      try {
-        setIsGoogleLoading(true);
-
-        if (response.credential) {
-          // Send the credential to your backend
-          const authApi = (await import('@/api/authApi')).default;
-          const result = await authApi.loginWithGoogle(response.credential);
-
-          // Process successful authentication
-          if (result.data && result.data.token) {
-            login(result.data.token, result.data.user);
-
-            // Redirect to dashboard or stored redirect path
-            const redirectUrl = localStorage.getItem('redirectAfterLogin') || '/dashboard';
-            router.push(redirectUrl);
-            localStorage.removeItem('redirectAfterLogin');
-          }
-        }
-      } catch (error) {
-        console.error('Google authentication error:', error);
-        setErrors({
-          ...errors,
-          form: t('errors.googleLoginFailed', 'Failed to authenticate with Google. Please try again.')
-        });
-      } finally {
-        setIsGoogleLoading(false);
-      }
-    };
-
-    // Check if Google script is loaded
-    if (!checkGoogleScriptLoaded()) {
-      // If not loaded yet, set up an interval to check
-      const intervalId = setInterval(() => {
-        if (checkGoogleScriptLoaded()) {
-          clearInterval(intervalId);
-        }
-      }, 100);
-      
-      // Clear interval after 5 seconds as a fallback
-      setTimeout(() => clearInterval(intervalId), 5000);
-    }
-
-    // Cleanup function
-    return () => {
-      // No explicit cleanup needed for Google Identity Services
-    };
-  }, [login, router, t, errors]);
-
-  // Use our custom Google auth hook
-  const { initGoogleSignIn } = useGoogleAuth();
+  // Google Sign-In handled via custom hook
+  const googleAuth = useGoogleAuth();
+  const initGoogleSignIn = googleAuth.initGoogleSignIn;
 
   // Google login handler - Updated to use our custom hook
   const handleGoogleLogin = () => {
@@ -433,15 +262,8 @@ export function LoginForm() {
     }
   };
 
-  // Handle Google credentials after successful popup authentication
-  // Google credential handling is now done in the useGoogleAuth hook
-
-
   return (
     <>
-      <Head>
-        <meta name="google-signin-client_id" content={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID} />
-      </Head>
       <section aria-labelledby="signin-heading" className="bg-white rounded-2xl shadow-xl border border-emerald-100/70 p-6 sm:p-8">
         <h2 id="signin-heading" className="text-xl font-semibold text-gray-900 mb-6">
           {t('auth.loginTitle', 'Sign in to your account')}
@@ -566,12 +388,13 @@ export function LoginForm() {
         <div className="items-center justify-between">
           {/* Google Sign-In Button */}
           <div className="w-full flex justify-center">
-            {/* Custom button for when Google API is not loaded */}
+            {/* Custom button for Google sign-in using popup flow */}
             <button 
               type="button" 
               className="w-full inline-flex items-center justify-center gap-2 border border-gray-200 hover:border-emerald-300 text-gray-700 hover:text-emerald-800 rounded-lg py-2.5 transition-colors bg-white"
               onClick={handleGoogleLogin}
-              disabled={isGoogleLoading}
+              disabled={isGoogleLoading || !clientId}
+              title={!clientId ? 'Google Sign-In is not configured' : undefined}
               id="custom-google-btn"
             >
               <span className="sr-only">Continue with Google</span>

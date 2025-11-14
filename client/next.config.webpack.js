@@ -26,6 +26,17 @@ const customizeWebpack = (config, { isServer, dev }) => {
 
   // Optimize chunks for auth pages
   if (!isServer) {
+    // Ensure optimization and splitChunks exist
+    if (!config.optimization) {
+      config.optimization = {};
+    }
+    if (!config.optimization.splitChunks) {
+      config.optimization.splitChunks = { cacheGroups: {} };
+    }
+    if (!config.optimization.splitChunks.cacheGroups) {
+      config.optimization.splitChunks.cacheGroups = {};
+    }
+    
     config.optimization.splitChunks.cacheGroups.authPages = {
       test: /[\\/]pages[\\/]auth[\\/]/,
       name: 'auth-pages',

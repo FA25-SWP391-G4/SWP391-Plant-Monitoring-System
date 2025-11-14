@@ -100,17 +100,17 @@ describe('API Route Mapping', () => {
       );
     });
     
-    test('resetPassword() calls POST /auth/reset-password with token and new password', async () => {
+    test('resetPassword() calls POST /auth/reset-password?token=<token> with body passwords', async () => {
       const resetToken = 'valid-reset-token-123';
       const newPassword = 'NewSecurePass789!';
       
-      await authApi.resetPassword(resetToken, newPassword);
+      await authApi.resetPassword(resetToken, newPassword, newPassword);
       
       expect(axiosClient.post).toHaveBeenCalledWith(
-        '/auth/reset-password',
+        `/auth/reset-password?token=${resetToken}`,
         {
-          token: resetToken,
-          newPassword: newPassword
+          password: newPassword,
+          confirmPassword: newPassword
         }
       );
     });

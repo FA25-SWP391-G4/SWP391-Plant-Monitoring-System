@@ -36,8 +36,15 @@ export default function AuthProvider({ children }) {
 
   const login = (t, u) => { 
     // Set cookies with appropriate security settings
-    Cookies.set('token', t, { secure: true, sameSite: 'strict' }); 
-    Cookies.set('user', JSON.stringify(u), { secure: true, sameSite: 'strict' }); 
+    const isProduction = process.env.NODE_ENV === 'production';
+    const cookieOptions = { 
+      secure: isProduction, 
+      sameSite: 'strict',
+      expires: 7 // 7 days
+    };
+    
+    Cookies.set('token', t, cookieOptions); 
+    Cookies.set('user', JSON.stringify(u), cookieOptions); 
     setToken(t); 
     setUser(u); 
   };

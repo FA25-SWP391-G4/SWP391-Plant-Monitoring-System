@@ -93,22 +93,22 @@ const aiConfig = {
   // Validation functions
   validateImageFile: (file) => {
     if (!file) return { valid: false, error: 'No file provided' };
-    
+
     const allowedTypes = aiConfig.images.allowedTypes;
     if (!allowedTypes.includes(file.mimetype)) {
-      return { 
-        valid: false, 
-        error: `Invalid file type. Allowed types: ${allowedTypes.join(', ')}` 
+      return {
+        valid: false,
+        error: `Invalid file type. Allowed types: ${allowedTypes.join(', ')}`
       };
     }
-    
+
     if (file.size > aiConfig.images.maxSize) {
-      return { 
-        valid: false, 
-        error: `File too large. Maximum size: ${aiConfig.images.maxSize / 1024 / 1024}MB` 
+      return {
+        valid: false,
+        error: `File too large. Maximum size: ${aiConfig.images.maxSize / 1024 / 1024}MB`
       };
     }
-    
+
     return { valid: true };
   },
 
