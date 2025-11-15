@@ -9,6 +9,7 @@ import { useSettings } from '@/providers/SettingsProvider';
 import sensorApi from '@/api/sensorApi';
 import deviceApi from '@/api/deviceApi';
 import { plantApi } from '@/api';
+import { formatDate, formatDateTime } from '@/utils/dateFormat';
 
 export default function PlantCard({ plant, sensorData = {} }) {
   const { t } = useTranslation();
@@ -205,20 +206,21 @@ export default function PlantCard({ plant, sensorData = {} }) {
     if (lastWatered?.data?.last_watered) {
       const lastWateredDate = new Date(lastWatered.data.last_watered.timestamp);
       return {
-        date: lastWateredDate.toLocaleDateString(),
+        date: !isNaN(lastWateredDate.getTime()) ? lastWateredDate : null,
         timeAgo: lastWatered.data.last_watered.time_ago,
         triggerType: lastWatered.data.last_watered.trigger_type
       };
     }
     if (plant.lastWatered) {
+      const plantLastWatered = new Date(plant.lastWatered);
       return {
-        date: new Date(plant.lastWatered).toLocaleDateString(),
+        date: !isNaN(plantLastWatered.getTime()) ? plantLastWatered : null,
         timeAgo: null,
         triggerType: null
       };
     }
     return {
-      date: t('plants.neverWatered', 'Never watered'),
+      date: null,
       timeAgo: null,
       triggerType: null
     };
@@ -440,7 +442,11 @@ export default function PlantCard({ plant, sensorData = {} }) {
             <polyline points="12 6 12 12 16 14"></polyline>
           </svg>
           <span>
-            {t('plants.lastWatered', 'Last watered')}: {lastWateredInfo.date}
+            {t('plants.lastWatered', 'Last watered')}: {
+              lastWateredInfo.date ? 
+                formatDate(lastWateredInfo.date, settings.language.dateFormat) : 
+                t('plants.neverWatered', 'Never watered')
+            }
             {lastWateredInfo.timeAgo && (
               <span className="text-xs text-gray-400 ml-2">
                 ({lastWateredInfo.timeAgo})

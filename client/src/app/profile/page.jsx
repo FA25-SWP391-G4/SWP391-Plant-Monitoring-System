@@ -14,8 +14,9 @@ import axios from 'axios';
 import { getAuthToken } from '@/utils/auth';
 import { useTheme } from '@/contexts/ThemeContext';
 import UserRoleBadge from '@/components/shared/UserRoleBadge';
-import { authApi } from '@/api';
+import { authApi, userApi } from '@/api';
 import { useTranslation } from 'react-i18next';
+import { parsePhoneNumber, combinePhoneNumber } from '@/utils/phoneUtils';
 
 /**
  * User Profile Page
@@ -65,12 +66,15 @@ const ProfilePage = () => {
   // Initialize form data when user is loaded
   useEffect(() => {
     if (user) {
+      // Parse phone number using utility function
+      const { phoneNumber, countryCode } = parsePhoneNumber(user.phone_number, '+84');
+      
       setFormData({
         given_name: user.given_name || '',
         family_name: user.family_name || '',
         email: user.email || '',
-        phone_number: user.phone_number || '',
-        country_code: user.country_code || '+84',
+        phone_number: phoneNumber,
+        country_code: countryCode,
       });
     }
   }, [user]);
@@ -78,31 +82,37 @@ const ProfilePage = () => {
   const handleSave = async () => {
     setIsSaving(true);
     try {
-      const API_URL = process.env.NEXT_PUBLIC_API_URL;
-      const token = getAuthToken();
+      console.log('Sending profile update:', {
+        given_name: formData.given_name,
+        family_name: formData.family_name,
+        email: formData.email,
+        phone_number: combinePhoneNumber(formData.country_code, formData.phone_number)
+      });
+      
+      const response = await userApi.updateProfile({
+        given_name: formData.given_name,
+        family_name: formData.family_name,
+        email: formData.email,
+        phone_number: combinePhoneNumber(formData.country_code, formData.phone_number)
+      });
 
-      const response = await axios.put(
-        `${API_URL}/users/profile`,
-        formData,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            'Content-Type': 'application/json',
-          },
-        }
-      );
+      console.log('Profile update response:', response);
 
-      if (response.data.success) {
+      if (response.success) {
         toast.success(t('profile.profileUpdated'));
         setIsEditing(false);
-        // Update user in context
-        if (updateUser) {
-          updateUser({ ...user, ...formData });
+        // Update user in context with the returned data from server
+        if (updateUser && response.data) {
+          updateUser({ ...user, ...response.data });
         }
+      } else {
+        toast.error(response.error || t('profile.updateProfileError'));
       }
     } catch (error) {
       console.error('Failed to update profile:', error);
-      toast.error(error.response?.data?.error || t('profile.updateProfileError'));
+      console.error('Error details:', error.response?.data);
+      const errorMessage = error.response?.data?.error || error.message || t('profile.updateProfileError');
+      toast.error(errorMessage);
     } finally {
       setIsSaving(false);
     }
@@ -121,13 +131,17 @@ const ProfilePage = () => {
 
     setIsSaving(true);
     try {
+      console.log('Sending password change request...');
+      
       const response = await authApi.changePassword({
         currentPassword: passwordData.currentPassword,
         newPassword: passwordData.newPassword,
         confirmPassword: passwordData.confirmPassword,
       });
 
-      if (response.data.success) {
+      console.log('Password change response:', response);
+
+      if (response.success) {
         toast.success(t('profile.passwordChanged'));
         setIsChangingPassword(false);
         setPasswordData({
@@ -146,12 +160,15 @@ const ProfilePage = () => {
 
   const handleCancel = () => {
     if (user) {
+      // Parse phone number using utility function
+      const { phoneNumber, countryCode } = parsePhoneNumber(user.phone_number, '+84');
+      
       setFormData({
         given_name: user.given_name || '',
         family_name: user.family_name || '',
         email: user.email || '',
-        phone_number: user.phone_number || '',
-        country_code: user.country_code || '+84',
+        phone_number: phoneNumber,
+        country_code: countryCode,
       });
     }
     setIsEditing(false);
@@ -296,24 +313,33 @@ const ProfilePage = () => {
             </div>
 
             {/* Phone Number */}
-            <div className="">
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">{t('profile.phoneNumber')}</label>
-              {isEditing ? (
-                <PhoneInput
-                  value={formData.phone_number}
-                  countryCode={formData.country_code}
-                  onChange={(phone) => setFormData({ ...formData, phone_number: phone })}
-                  onCountryChange={(code) => setFormData({ ...formData, country_code: code })}
-                  className=""
-                />
-              ) : (
-                <p className="text-gray-900 dark:text-white">
-                  {user.country_code && user.phone_number
-                    ? `${user.country_code} ${user.phone_number}`
-                    : '-'}
-                </p>
-              )}
-            </div>
+          <div className="">
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">{t('profile.phoneNumber')}</label>
+            {isEditing ? (
+            <PhoneInput
+              value={formData.phone_number}
+              countryCode={formData.country_code}
+              onChange={(phone) => setFormData({ ...formData, phone_number: phone })}
+              onCountryChange={(code) => setFormData({ ...formData, country_code: code })}
+              className=""
+            />
+            ) : (
+            <p className="text-gray-900 dark:text-white">
+              {user.phone_number ? 
+              (() => {
+                const phoneMatch = user.phone_number.match(/^(\+\d+)(\d{9})$/);
+                if (phoneMatch) {
+                const [, countryCode, number] = phoneMatch;
+                const formatted = `${number.slice(0, 3)}-${number.slice(3, 6)}-${number.slice(6)}`;
+                return `${countryCode}${formatted}`;
+                }
+                return user.phone_number;
+              })()
+              : '-'
+              }
+            </p>
+            )}
+          </div>
           </div>
 
           {/* Account Created Date */}

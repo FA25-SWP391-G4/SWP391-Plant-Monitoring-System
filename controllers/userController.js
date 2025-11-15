@@ -117,11 +117,28 @@ async function updateUserProfile(req, res) {
         }
 
         // Extract updatable fields from request
-        const { full_name, notification_prefs } = req.body;
+        const { given_name, family_name, email, phone_number, full_name, notification_prefs } = req.body;
         
         // Update fields if provided
         const updatedFields = {};
         
+        if (given_name) {
+            updatedFields.given_name = given_name;
+        }
+        
+        if (family_name) {
+            updatedFields.family_name = family_name;
+        }
+        
+        if (email) {
+            updatedFields.email = email;
+        }
+        
+        if (phone_number) {
+            updatedFields.phone_number = phone_number;
+        }
+        
+        // Keep backward compatibility with full_name
         if (full_name) {
             updatedFields.full_name = full_name;
         }

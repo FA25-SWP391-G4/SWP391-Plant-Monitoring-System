@@ -75,28 +75,85 @@ const getAllDevices = async (req, res) => {
     }
 };
 
+/**
+ * PUT /api/devices/:deviceId
+ * Update device information (name, etc.)
+ */
 const updateDevice = async (req, res) => {
-    let query;
-        let params = [];
-    let { deviceKey, name } = req.body;
     try {
-        const query = `
-            UPDATE devices
-            SET device_name = $1, last_seen = NOW()
-            WHERE device_key = $2
+        const deviceId = req.params.deviceId;
+        const userId = req.user ? req.user.user_id : null;
+        const { device_name, device_type, location, description } = req.body;
+
+        // Validate required fields
+        if (!device_name || !device_name.trim()) {
+            return res.status(400).json({
+                success: false,
+                error: 'Device name is required'
+            });
+        }
+
+        // Check if device exists and belongs to user
+        const deviceCheckQuery = `
+            SELECT * FROM devices 
+            WHERE device_key = $1 AND user_id = $2
         `;
-        params = [name, deviceKey];
-        await pool.query(query, params);
-            return res.json({
+        const deviceCheck = await pool.query(deviceCheckQuery, [deviceId, userId]);
+
+        if (deviceCheck.rows.length === 0) {
+            return res.status(404).json({
+                success: false,
+                error: 'Device not found or not authorized'
+            });
+        }
+
+        // Update device
+        const updateQuery = `
+            UPDATE devices 
+            SET device_name = $1, 
+                last_seen = NOW()
+            WHERE device_key = $2 AND user_id = $3
+            RETURNING *
+        `;
+        
+        const result = await pool.query(updateQuery, [
+            device_name.trim(),
+            deviceId,
+            userId
+        ]);
+
+        if (result.rows.length === 0) {
+            return res.status(404).json({
+                success: false,
+                error: 'Failed to update device'
+            });
+        }
+
+        const updatedDevice = result.rows[0];
+
+        // Format the response consistently
+        const formattedDevice = {
+            device_key: updatedDevice.device_key ? updatedDevice.device_key.trim() : null,
+            device_name: updatedDevice.device_name,
+            status: updatedDevice.status || 'offline',
+            last_active: updatedDevice.last_seen || updatedDevice.created_at
+        };
+
+        await SystemLog.info('DeviceController', 'updateDevice', 
+            `Updated device ${deviceId} for user ${userId}`);
+
+        return res.json({
             success: true,
-            data: formattedDevices
+            message: 'Device updated successfully',
+            data: formattedDevice
         });
 
     } catch (error) {
-        await SystemLog.error('DeviceController', 'getAllDevices', error.message);
+        await SystemLog.error('DeviceController', 'updateDevice', error.message);
+        console.error('Error updating device:', error);
         res.status(500).json({
             success: false,
-            error: 'Failed to retrieve devices'
+            error: 'Failed to update device'
         });
     }
 };

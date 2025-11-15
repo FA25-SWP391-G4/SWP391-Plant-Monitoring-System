@@ -9,6 +9,7 @@ import Modal from '@/components/ui/Modal';
 import ConfirmDialog from '@/components/ui/ConfirmDialog';
 import deviceApi from '@/api/deviceApi';
 import { toast } from 'react-toastify';
+import { formatDate } from '@/utils/dateFormat';
 
 export default function DeviceListItem({ device, onUpdate, onDelete }) {
   const { t } = useTranslation();
@@ -128,7 +129,7 @@ export default function DeviceListItem({ device, onUpdate, onDelete }) {
     }
     
     if (device.last_active) {
-      return new Date(device.last_active).toLocaleDateString();
+      return formatDate(new Date(device.last_active).toLocaleDateString(), settings.language.dateFormat);
     }
     
     return t('device.neverActive', 'Never active');

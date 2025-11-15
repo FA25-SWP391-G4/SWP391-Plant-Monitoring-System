@@ -3,6 +3,7 @@ import Image from "next/image";
 import { useAuth } from "@/providers/AuthProvider";
 import { useTranslation } from "react-i18next";
 import UserMenu from './UserMenu';
+import ThemeLanguageMenu from './ThemeLanguageMenu';
 import { useState, useRef, useEffect } from "react";
 import { useTheme } from '@/contexts/ThemeContext';
 import LogoutConfirmationModal from '../../LogoutConfirmationModal';
@@ -193,7 +194,7 @@ export default function Navbar({ appearOnPages = ["/", "login", "register", "for
             </Link>
             
             {/* Language and theme for non-authenticated users */}
-            <UserMenu />
+            <ThemeLanguageMenu />
       </div>
 
       {/* Mobile Menu - Shows when menu button is clicked */}
@@ -247,21 +248,6 @@ export default function Navbar({ appearOnPages = ["/", "login", "register", "for
 
             {/* Auth buttons for mobile */}
             <div className="pt-4 border-t border-gray-100">
-              {isAuthenticated ? (
-                <div className="flex flex-col space-y-3">
-                  {user.role === "Regular" && (
-                    <Link href="/upgrade" className="text-amber-600 hover:text-amber-800 font-medium py-2" onClick={() => setMobileMenuOpen(false)}>
-                      {t('common.upgrade')}
-                    </Link>
-                  )}
-                  <Link href="/settings" className="text-gray-600 hover:text-green-600 font-medium py-2" onClick={() => setMobileMenuOpen(false)}>
-                    {t('navigation.settings')}
-                  </Link>
-                  <button onClick={() => { logout(); setMobileMenuOpen(false); }} className="text-left text-red-600 hover:text-red-800 py-2">
-                    {t('auth.logout')}
-                  </button>
-                </div>
-              ) : (
                 <div className="flex flex-col space-y-3">
                   <Link href="/login" className="text-green-600 hover:text-green-800 font-medium py-2" onClick={() => setMobileMenuOpen(false)}>
                     {t('auth.login')}
@@ -269,8 +255,10 @@ export default function Navbar({ appearOnPages = ["/", "login", "register", "for
                   <Link href="/register" className="bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded-md font-medium text-center" onClick={() => setMobileMenuOpen(false)}>
                     {t('common.getStarted')}
                   </Link>
+                  <div className="flex items-center justify-center pt-3 border-t border-gray-100">
+                    <ThemeLanguageMenu />
+                  </div>
                 </div>
-              )}
             </div>
           </nav>
         </div>

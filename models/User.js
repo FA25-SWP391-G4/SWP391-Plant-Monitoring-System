@@ -85,6 +85,7 @@ constructor(userData) {
 
     this.family_name = userData.family_name || userData.familyName;
     this.given_name = userData.given_name || userData.givenName;
+    this.phone_number = userData.phone_number || userData.phoneNumber;
     this.role = userData.role || 'Regular'; // Default role for UC1
     this.notification_prefs = userData.notification_prefs; // Notification preferences
     this.fcm_tokens = userData.fcm_tokens || []; // Firebase Cloud Messaging tokens for push notifications
@@ -600,7 +601,7 @@ createPasswordResetToken() {
             }));
             
             // Build dynamic query based on provided fields
-            const validFields = ['family_name', 'given_name', 'notification_prefs', 'role', 'language_preference', 'google_id', 'google_refresh_token', 'profile_picture'];
+            const validFields = ['family_name', 'given_name', 'email', 'phone_number', 'notification_prefs', 'role', 'language_preference', 'google_id', 'google_refresh_token', 'profile_picture'];
             const updates = [];
             const values = [this.user_id]; // First parameter is always user_id
             let paramIndex = 2; // Start parameter index at 2 (user_id is $1)
@@ -611,6 +612,8 @@ createPasswordResetToken() {
                     // Map JavaScript camelCase fields to database snake_case if needed
                     const dbField = key === 'family_name' ? 'family_name' : 
                                    key === 'given_name' ? 'given_name' : 
+                                   key === 'email' ? 'email' :
+                                   key === 'phone_number' ? 'phone_number' :
                                    key === 'notification_prefs' ? 'notification_prefs' : 
                                    key === 'role' ? 'role' : 
                                    key === 'language_preference' ? 'language_preference' :
@@ -649,6 +652,8 @@ createPasswordResetToken() {
                 const updatedUser = result.rows[0];
                 this.family_name = updatedUser.family_name;
                 this.given_name = updatedUser.given_name;
+                this.email = updatedUser.email;
+                this.phone_number = updatedUser.phone_number;
                 this.notification_prefs = updatedUser.notification_prefs;
                 this.role = updatedUser.role;
                 this.language_preference = updatedUser.language_preference;

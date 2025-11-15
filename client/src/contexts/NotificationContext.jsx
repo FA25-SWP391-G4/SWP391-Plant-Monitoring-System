@@ -1,4 +1,6 @@
 import React, { createContext, useContext, useReducer, useEffect, useCallback } from 'react';
+import { usePathname } from 'next/navigation';
+import { useAuth } from '../providers/AuthProvider';
 import notificationApi from '../api/notificationApi';
 import { useToast } from '../components/ui/use-toast';
 
@@ -209,22 +211,39 @@ const NotificationContext = createContext();
 export const NotificationProvider = ({ children }) => {
   const [state, dispatch] = useReducer(notificationReducer, initialState);
   const { toast } = useToast();
+  const { user, loading: authLoading } = useAuth();
+  const pathname = usePathname();
 
-  // Load initial data
-  useEffect(() => {
-    loadNotifications();
-    loadStats();
-    loadPreferences();
-  }, []);
+  // Check if we're on an excluded page (landing, demo, auth)
+  const isExcludedPage = pathname === '/' || 
+                         pathname.startsWith('/login') || 
+                         pathname.startsWith('/register') || 
+                         pathname.startsWith('/forgot-password') || 
+                         pathname.startsWith('/reset-password') || 
+                         pathname.startsWith('/demo');
 
-  // Auto-refresh stats periodically
+  // Check if user is authenticated
+  const isAuthenticated = !!user && !authLoading;
+
+  // Load initial data only if authenticated and not on excluded pages
   useEffect(() => {
+    if (isAuthenticated && !isExcludedPage) {
+      loadNotifications();
+      loadStats();
+      loadPreferences();
+    }
+  }, [isAuthenticated, isExcludedPage]);
+
+  // Auto-refresh stats periodically only if authenticated
+  useEffect(() => {
+    if (!isAuthenticated || isExcludedPage) return;
+
     const polling = notificationApi.startPolling((stats) => {
       dispatch({ type: actionTypes.SET_STATS, payload: stats });
     }, 60000); // Refresh every minute
 
     return () => polling.stop();
-  }, []);
+  }, [isAuthenticated, isExcludedPage]);
 
   // Actions
   const setLoading = (loading) => {
@@ -240,6 +259,11 @@ export const NotificationProvider = ({ children }) => {
   };
 
   const loadNotifications = useCallback(async (params = {}) => {
+    // Don't load notifications if not authenticated or on excluded pages
+    if (!isAuthenticated || isExcludedPage) {
+      return;
+    }
+
     try {
       setLoading(true);
       clearError();
@@ -282,25 +306,34 @@ export const NotificationProvider = ({ children }) => {
     } finally {
       setLoading(false);
     }
-  }, [state.filter, toast]);
+  }, [state.filter, toast, isAuthenticated, isExcludedPage]);
 
   const loadStats = useCallback(async () => {
+    // Don't load stats if not authenticated or on excluded pages
+    if (!isAuthenticated || isExcludedPage) {
+      return;
+    }
+
     try {
       const response = await notificationApi.getNotificationStats();
       dispatch({ type: actionTypes.SET_STATS, payload: response.data || response.data.data });
     } catch (error) {
       console.error('Failed to load notification stats:', error);
     }
-  }, []);
+  }, [isAuthenticated, isExcludedPage]);
 
   const loadPreferences = useCallback(async () => {
+    // Don't load preferences if not authenticated or on excluded pages
+    if (!isAuthenticated || isExcludedPage) {
+      return;
+    }
     try {
       const response = await notificationApi.getPreferences();
       dispatch({ type: actionTypes.SET_PREFERENCES, payload: response.data.data || response.data });
     } catch (error) {
       console.error('Failed to load notification preferences:', error);
     }
-  }, []);
+  }, [isAuthenticated, isExcludedPage]);
 
   const markAsRead = useCallback(async (notificationId) => {
     try {

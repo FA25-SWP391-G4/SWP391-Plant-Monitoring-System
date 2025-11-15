@@ -55,15 +55,30 @@
     "actions": "Actions",
     "view": "View",
     "viewDetails": "View Details",
-    "refresh": "Refresh"
+    "refresh": "Refresh",
+    "or": "or",
+    "backToSite": "Back to Site",
+    "optional": "optional"
   },
   
   "accessibility": {
     "email": "Email",
     "phone": "Phone",
     "location": "Location",
-    "userMenu": "User menu"
+    "userMenu": "User menu",
+    "themeLanguageMenu": "Theme and language menu"
   },
+  "menu": {
+    "appearance": "Appearance",
+    "language": "Language"
+  },
+  
+  "theme": {
+    "light": "Light",
+    "dark": "Dark",
+    "system": "System"
+  },
+  
   "auth": {
     "login": "Login",
     "loginTitle": "Welcome Back",
@@ -147,7 +162,10 @@
     "checkIns": "Check-ins",
     "objectives": "Objectives",
     "careerHub": "Career Hub",
-    "devices": "Devices"
+    "devices": "Devices",
+    "returnToMain": "Return to main site",
+    "privacy": "Privacy",
+    "terms": "Terms"
   },
   "dashboard": {
     "wateringHistory": "Watering History",
@@ -217,6 +235,7 @@
   "careInstructions": "Care Instructions",
   "noCareInstructions": "No care instructions available",
   "history": "Plant History",
+  "monsteraDeliciosa": "Monstera Deliciosa",
   "tabs": {
     "overview": "Overview",
     "sensorData": "Sensor Data",
@@ -284,6 +303,7 @@
     "startFreeTrial": "Start Free Trial",
     "watchDemo": "Watch Demo",
     "freeTrialDays": "14-day free trial",
+    "freeTrial": "14-day free trial",
     "noCardRequired": "No credit card required",
     "everythingYouNeed": "Everything you need for",
     "perfectPlantCare": "perfect plant care",
@@ -297,15 +317,21 @@
     "startYourFreeTrial": "Start Your Free Trial",
     "scheduleDemo": "Schedule a Demo",
     "futurePlantCare": "The future of plant care, today. Smart monitoring for happier, healthier plants.",
-    "allRightsReserved": "All rights reserved."
+    "allRightsReserved": "All rights reserved.",
+    "featuredFeatures": "Featured Features",
+    "testimonialSubheader": "Don't just take our word for it. See what our community of plant lovers has to say about their PlantSmart experience.",
+    "ctaTitle": "Ready to Transform Your Plant Care?",
+    "ctaSubtitle": "Join thousands of plant parents who never worry about their green friends again."
   },
   "features": {
     "smartWatering": "Smart Watering",
     "smartWateringDesc": "Our sensors monitor soil moisture and automatically water your plants at the perfect time, ensuring they're never over or under-watered.",
+    "description": "Smart watering schedules tailored to each plant",
     "lightOptimization": "Light Optimization",
     "lightOptimizationDesc": "Track light exposure throughout the day and receive recommendations on optimal placement for each of your plants' specific needs.",
     "healthAlerts": "Health Alerts",
-    "healthAlertsDesc": "Get instant notifications about potential health issues, pests, or diseases before they become serious problems."
+    "healthAlertsDesc": "Get instant notifications about potential health issues, pests, or diseases before they become serious problems.",
+    "dashboard": "Beautiful dashboard across all your devices"
   },
   "footer": {
     "product": "Product",
@@ -322,10 +348,14 @@
     "integrations": "Integrations",
     "privacyPolicy": "Privacy Policy",
     "termsOfService": "Terms of Service",
-    "cookies": "Cookies"
+    "cookies": "Cookies",
+    "tagline": "The future of intelligent plant care. Never let your plants suffer again.",
+    "allRightsReserved": "All rights reserved."
   },
   "status": {
-    "healthy": "Healthy"
+    "healthy": "Healthy",
+    "perfect": "Perfect",
+    "excellent": "Excellent"
   },
   "testimonials": {
     "heading": "Don't just take our word for it. See what our community of plant lovers has to say about their PlantSmart experience.",
@@ -527,6 +557,9 @@
     "disconnected": "Disconnected",
     "connected": "Connected",
     "lowBattery": "Low Battery",
+    "moisture": "Moisture",
+    "light": "Light",
+    "health": "Health",
     "sensorType": {
       "moisture": "Moisture Sensor",
       "temperature": "Temperature Sensor",
@@ -1100,5 +1133,10 @@
     "passwordTooShort": "Password must be at least 8 characters",
     "updateProfileError": "Failed to update profile",
     "changePasswordError": "Failed to change password"
+  },
+
+  "home": {
+    "pageTitle": "Plant Monitoring System - Smart Plant Care",
+    "metaDescription": "Monitor and care for your plants with our smart plant monitoring system"
   }
 }

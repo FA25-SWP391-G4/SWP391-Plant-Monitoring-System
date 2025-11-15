@@ -55,14 +55,29 @@
 "actions": "Hành động",
 "view": "Xem",
 "viewDetails": "Xem chi tiết",
-"refresh": "Làm mới"
+"refresh": "Làm mới",
+"or": "hoặc",
+"backToSite": "Quay lại trang chính",
+"optional": "tùy chọn"
 },
 
 "accessibility": {
   "email": "Email",
   "phone": "Điện thoại",
   "location": "Vị trí",
-  "userMenu": "Menu người dùng"
+  "userMenu": "Menu người dùng",
+  "themeLanguageMenu": "Menu giao diện và ngôn ngữ"
+},
+
+"menu": {
+  "appearance": "Giao diện",
+  "language": "Ngôn ngữ"
+},
+
+"theme": {
+  "light": "Sáng",
+  "dark": "Tối",
+  "system": "Hệ thống"
 },
 
 "auth": {
@@ -114,7 +129,22 @@
 "confirmPasswordPlaceholder": "Xác nhận mật khẩu của bạn",
 "phoneNumberPlaceholder": "Nhập số điện thoại của bạn",
 "createAccount": "Tạo tài khoản",
-"creatingAccount": "Đang tạo tài khoản..."
+"creatingAccount": "Đang tạo tài khoản...",
+"welcomeBack": "Chào mừng trở lại",
+"welcomeBackTo": "Chào mừng trở lại với",
+"loginMessage": "Đăng nhập để tiếp tục nuôi dưỡng khu vườn xanh của bạn với sự chăm sóc thông minh, thông tin thời gian thực và lời nhắc thân thiện.",
+"joinUs": "Tham gia với chúng tôi",
+"startGrowing": "Bắt đầu trồng cây",
+"registerMessage": "Tham gia cộng đồng những người yêu thích cây cối của chúng tôi và bắt đầu giám sát cây của bạn với sự chăm sóc thông minh và thông tin thời gian thực.",
+"signIn": "Đăng nhập",
+"passwordRecovery": "Khôi phục mật khẩu",
+"forgotPasswordHeader": "Quên mật khẩu?",
+"noWorries": "Đừng lo lắng",
+"forgotPasswordMessage": "Chúng tôi sẽ giúp bạn đặt lại mật khẩu và quay lại chăm sóc cây ngay lập tức.",
+"sendResetEmail": "Gửi email đặt lại",
+"googleAccountLinked": "Tài khoản Google đã liên kết",
+"googleAccountInfo": "Bạn đang đăng ký với tài khoản Google của mình. Bạn có thể đặt mật khẩu tùy chỉnh sau khi đăng ký trong cài đặt hồ sơ.",
+"termsNotice": "Bằng cách tiếp tục, bạn đồng ý với Điều khoản Dịch vụ và Chính sách Bảo mật của chúng tôi."
 },
 
 "navigation": {
@@ -149,7 +179,10 @@
 "checkIns": "Kiểm tra",
 "objectives": "Mục tiêu",
 "careerHub": "Trung tâm sự nghiệp",
-"devices": "Thiết bị"
+"devices": "Thiết bị",
+"returnToMain": "Quay lại trang chính",
+"privacy": "Quyền riêng tư",
+"terms": "Điều khoản"
 },
 
 "dashboard": {
@@ -221,6 +254,7 @@
 "careInstructions": "Hướng dẫn chăm sóc",
 "noCareInstructions": "Không có hướng dẫn chăm sóc",
 "history": "Lịch sử cây",
+"monsteraDeliciosa": "Cây Monstera Deliciosa",
 "tabs": {
   "overview": "Tổng quan",
   "sensorData": "Dữ liệu cảm biến",
@@ -306,7 +340,12 @@
 "startYourFreeTrial": "Bắt đầu dùng thử miễn phí của bạn",
 "scheduleDemo": "Lên lịch demo",
 "futurePlantCare": "Tương lai của việc chăm sóc cây, ngay hôm nay. Giám sát thông minh cho cây hạnh phúc, khỏe mạnh hơn.",
-"allRightsReserved": "Tất cả các quyền được bảo lưu."
+"allRightsReserved": "Tất cả các quyền được bảo lưu.",
+"freeTrial": "Dùng thử miễn phí 14 ngày",
+"featuredFeatures": "Tính năng nổi bật",
+"testimonialSubheader": "Đừng chỉ tin lời chúng tôi nói. Hãy xem những gì cộng đồng người yêu cây của chúng tôi nói về trải nghiệm PlantSmart của họ.",
+"ctaTitle": "Sẵn sàng thay đổi cách chăm sóc cây của bạn?",
+"ctaSubtitle": "Tham gia cùng hàng ngàn người nuôi cây không bao giờ lo lắng về những người bạn xanh của họ nữa."
 },
 
 "features": {
@@ -316,6 +355,8 @@
 "smartWateringDesc": "Cảm biến của chúng tôi theo dõi độ ẩm đất và tự động tưới nước cho cây của bạn vào thời điểm hoàn hảo, đảm bảo chúng không bao giờ bị tưới quá nhiều hoặc quá ít.",
 "lightOptimizationDesc": "Theo dõi mức độ tiếp xúc với ánh sáng trong suốt cả ngày và nhận các khuyến nghị về vị trí tối ưu cho nhu cầu cụ thể của từng cây của bạn.",
 "healthAlertsDesc": "Nhận thông báo ngay lập tức về các vấn đề sức khỏe tiềm ẩn, sâu bệnh, hoặc bệnh tật trước khi chúng trở nên nghiêm trọng.",
+"description": "Lịch tưới nước thông minh phù hợp với từng cây",
+"dashboard": "Bảng điều khiển đẹp trên tất cả các thiết bị của bạn",
 "mobileDashboard": {
   "title": "Bảng điều khiển di động",
   "description": "Quản lý cây hoàn chỉnh từ điện thoại của bạn với giám sát thời gian thực, lịch chăm sóc và theo dõi sự phát triển.",
@@ -334,7 +375,9 @@
 },
 
 "status": {
-"healthy": "Khỏe mạnh"
+"healthy": "Khỏe mạnh",
+"perfect": "Hoàn hảo",
+"excellent": "Tuyệt vời"
 },
 
 "cta": {
@@ -364,7 +407,9 @@
 "copyright": "© {{year}} PlantSmart. Tất cả các quyền được bảo lưu.",
 "privacyPolicy": "Chính sách bảo mật",
 "termsOfService": "Điều khoản dịch vụ",
-"cookies": "Cookie"
+"cookies": "Cookie",
+"tagline": "Tương lai của chăm sóc cây thông minh. Không bao giờ để cây của bạn khổ sở nữa.",
+"allRightsReserved": "Tất cả các quyền được bảo lưu."
 },
 
 "testimonials": {
@@ -665,6 +710,9 @@
 "disconnected": "Mất kết nối",
 "connected": "Đã kết nối",
 "lowBattery": "Pin yếu",
+"moisture": "Độ ẩm",
+"light": "Ánh sáng",
+"health": "Sức khỏe",
 "sensorType": {
   "moisture": "Cảm biến độ ẩm",
   "temperature": "Cảm biến nhiệt độ",
@@ -839,10 +887,6 @@
 "upgradeMessage": "Nâng cấp lên Premium để sử dụng lịch tưới tự động",
 "deviceOfflineWarning": "Thiết bị ngoại tuyến",
 "deviceOfflineMessage": "Thiết bị hiện đang ngoại tuyến. Tưới theo lịch sẽ không hoạt động cho đến khi thiết bị trực tuyến trở lại."
-},
-
-"premium": {
-"upgrade": "Nâng cấp lên Premium"
 },
 
 "days": {

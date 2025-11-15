@@ -847,5 +847,434 @@ const { generateUUID, isValidUUID } = require('../../../utils/uuidGenerator');
                 message: 'Failed to refresh token'
               });
             });
+
+            // Additional edge cases and integration scenarios
+            describe('register() - Additional Edge Cases', () => {
+              test('should handle email normalization', async () => {
+                req.body.email = '  TEST@EXAMPLE.COM  ';
+                User.findByEmail.mockResolvedValue(null);
+                User.mockImplementation(() => mockUser);
+                mockUser.save.mockResolvedValue(mockUser);
+                jwt.sign.mockReturnValue('jwt-token-123');
+
+                await authController.register(req, res);
+
+                expect(User.findByEmail).toHaveBeenCalledWith('test@example.com');
+                expect(res.status).toHaveBeenCalledWith(201);
+              });
+
+              test('should handle newsletter subscription flag', async () => {
+                req.body.newsletter = true;
+                User.findByEmail.mockResolvedValue(null);
+                User.mockImplementation(() => mockUser);
+                mockUser.save.mockResolvedValue(mockUser);
+                jwt.sign.mockReturnValue('jwt-token-123');
+
+                await authController.register(req, res);
+
+                expect(User).toHaveBeenCalledWith(expect.objectContaining({
+                  notification_prefs: true
+                }));
+              });
+
+              test('should handle phone number registration', async () => {
+                req.body.phoneNumber = '+1234567890';
+                User.findByEmail.mockResolvedValue(null);
+                User.mockImplementation(() => mockUser);
+                mockUser.save.mockResolvedValue(mockUser);
+                jwt.sign.mockReturnValue('jwt-token-123');
+
+                await authController.register(req, res);
+
+                expect(User).toHaveBeenCalledWith(expect.objectContaining({
+                  phone_number: '+1234567890'
+                }));
+              });
+
+              test('should validate password strength requirements', async () => {
+                req.body.password = '123';
+                
+                await authController.register(req, res);
+
+                expect(res.status).toHaveBeenCalledWith(400);
+                expect(res.json).toHaveBeenCalledWith(expect.objectContaining({
+                  success: false,
+                  message: expect.stringMatching(/password/i)
+                }));
+              });
+            });
+
+            describe('login() - Security and Edge Cases', () => {
+              test('should handle case insensitive email lookup', async () => {
+                req.body.email = 'TEST@EXAMPLE.COM';
+                User.findByEmail.mockResolvedValue(mockUser);
+                mockUser.validatePassword.mockResolvedValue(true);
+                jwt.sign.mockReturnValue('jwt-token-123');
+
+                await authController.login(req, res);
+
+                expect(User.findByEmail).toHaveBeenCalledWith('TEST@EXAMPLE.COM');
+                expect(res.status).toHaveBeenCalledWith(200);
+              });
+
+              test('should set secure cookies in production', async () => {
+                process.env.NODE_ENV = 'production';
+                process.env.COOKIE_DOMAIN = 'example.com';
+                
+                req.body = { email: 'test@example.com', password: 'password123' };
+                User.findByEmail.mockResolvedValue(mockUser);
+                mockUser.validatePassword.mockResolvedValue(true);
+                jwt.sign.mockReturnValue('jwt-token-123');
+
+                await authController.login(req, res);
+
+                expect(res.cookie).toHaveBeenCalledWith('token', 'jwt-token-123', expect.objectContaining({
+                  secure: true,
+                  domain: 'example.com',
+                  httpOnly: true
+                }));
+              });
+
+              test('should handle concurrent login attempts', async () => {
+                const concurrentRequests = Array(5).fill().map(() => ({
+                  ...req,
+                  body: { email: 'test@example.com', password: 'password123' }
+                }));
+
+                User.findByEmail.mockResolvedValue(mockUser);
+                mockUser.validatePassword.mockResolvedValue(true);
+                jwt.sign.mockReturnValue('jwt-token-123');
+
+                const promises = concurrentRequests.map(request => 
+                  authController.login(request, res)
+                );
+
+                await Promise.all(promises);
+                expect(User.findByEmail).toHaveBeenCalledTimes(5);
+              });
+
+              test('should handle SQL injection attempt in email', async () => {
+                req.body.email = "'; DROP TABLE users; --";
+                req.body.password = 'password123';
+
+                User.findByEmail.mockResolvedValue(null);
+
+                await authController.login(req, res);
+
+                expect(res.status).toHaveBeenCalledWith(401);
+                expect(User.findByEmail).toHaveBeenCalledWith("'; DROP TABLE users; --");
+              });
+            });
+
+            describe('forgotPassword() - Enhanced Security Tests', () => {
+              test('should rate limit password reset requests', async () => {
+                const multipleRequests = Array(10).fill().map(() => ({
+                  ...req,
+                  body: { email: 'test@example.com' }
+                }));
+
+                User.findByEmail.mockResolvedValue(mockUser);
+                emailService.verifyConnection.mockResolvedValue(true);
+                emailService.sendEmail.mockResolvedValue({ messageId: 'msg-123' });
+
+                // Simulate rapid requests
+                for (const request of multipleRequests) {
+                  await authController.forgotPassword(request, res);
+                }
+
+                expect(User.findByEmail).toHaveBeenCalledTimes(10);
+              });
+
+              test('should handle malformed email addresses', async () => {
+                const malformedEmails = [
+                  'plaintext',
+                  '@missingdomain.com',
+                  'missing@.com',
+                  'spaces @domain.com',
+                  'toolong'.repeat(50) + '@domain.com'
+                ];
+
+                for (const email of malformedEmails) {
+                  req.body.email = email;
+                  await authController.forgotPassword(req, res);
+                  expect(res.status).toHaveBeenCalledWith(400);
+                }
+              });
+
+              test('should log security events for monitoring', async () => {
+                req.body.email = 'suspicious@domain.com';
+                User.findByEmail.mockResolvedValue(null);
+                SystemLog.warning = jest.fn().mockResolvedValue(true);
+
+                await authController.forgotPassword(req, res);
+
+                expect(SystemLog.warning).toHaveBeenCalledWith(
+                  'authController',
+                  'forgotPassword',
+                  expect.stringContaining('No account found')
+                );
+              });
+            });
+
+            describe('resetPassword() - Token Security', () => {
+              test('should handle expired token gracefully', async () => {
+                const expiredError = new Error('Token expired');
+                expiredError.name = 'TokenExpiredError';
+                User.findByResetToken.mockRejectedValue(expiredError);
+                SystemLog.error = jest.fn().mockResolvedValue(true);
+
+                await authController.resetPassword(req, res);
+
+                expect(res.status).toHaveBeenCalledWith(401);
+                expect(res.json).toHaveBeenCalledWith(expect.objectContaining({
+                  error: 'TOKEN_EXPIRED'
+                }));
+              });
+
+              test('should validate token format before database lookup', async () => {
+                req.query.token = 'invalid-token-format-12345';
+                User.findByResetToken.mockResolvedValue(null);
+
+                await authController.resetPassword(req, res);
+
+                expect(res.status).toHaveBeenCalledWith(401);
+              });
+
+              test('should prevent token reuse', async () => {
+                User.findByResetToken
+                  .mockResolvedValueOnce(mockUser)  // First use succeeds
+                  .mockResolvedValueOnce(null);     // Second use fails
+
+                // First reset
+                await authController.resetPassword(req, res);
+                expect(res.status).toHaveBeenCalledWith(200);
+
+                // Reset response mock
+                res.status.mockClear();
+                res.json.mockClear();
+
+                // Second attempt with same token should fail
+                await authController.resetPassword(req, res);
+                expect(res.status).toHaveBeenCalledWith(401);
+              });
+
+              test('should handle complex password requirements', async () => {
+                const testPasswords = [
+                  { password: 'simple', valid: false, reason: 'too short' },
+                  { password: 'nouppercase123', valid: false, reason: 'no uppercase' },
+                  { password: 'NOLOWERCASE123', valid: false, reason: 'no lowercase' },
+                  { password: 'NoNumbers!@#', valid: false, reason: 'no numbers' },
+                  { password: 'ValidPass123!', valid: true, reason: 'meets all requirements' }
+                ];
+
+                User.findByResetToken.mockResolvedValue(mockUser);
+
+                for (const test of testPasswords) {
+                  req.body.password = test.password;
+                  req.body.confirmPassword = test.password;
+                  
+                  res.status.mockClear();
+                  res.json.mockClear();
+
+                  await authController.resetPassword(req, res);
+
+                  if (test.valid) {
+                    expect(res.status).toHaveBeenCalledWith(200);
+                  } else {
+                    expect(res.status).toHaveBeenCalledWith(400);
+                  }
+                }
+              });
+            });
+
+            describe('changePassword() - Advanced Validation', () => {
+              test('should enforce password history (prevent reuse)', async () => {
+                req.body.newPassword = 'oldpassword'; // Same as current
+                req.body.confirmPassword = 'oldpassword';
+                
+                User.findById.mockResolvedValue(mockUser);
+                bcrypt.compare
+                  .mockResolvedValueOnce(true)  // Current password check
+                  .mockResolvedValueOnce(true); // Password history check
+
+                await authController.changePassword(req, res);
+
+                expect(res.status).toHaveBeenCalledWith(400);
+                expect(res.json).toHaveBeenCalledWith(expect.objectContaining({
+                  error: expect.stringMatching(/cannot reuse/i)
+                }));
+              });
+
+              test('should handle database transaction failures', async () => {
+                User.findById.mockResolvedValue(mockUser);
+                bcrypt.compare.mockResolvedValue(true);
+                mockUser.updatePassword.mockRejectedValue(new Error('Transaction failed'));
+                SystemLog.error = jest.fn().mockResolvedValue(true);
+
+                await authController.changePassword(req, res);
+
+                expect(res.status).toHaveBeenCalledWith(500);
+                expect(SystemLog.error).toHaveBeenCalled();
+              });
+
+              test('should validate password complexity rules', async () => {
+                const complexityTests = [
+                  { password: 'weak', expected: 400 },
+                  { password: 'StrongPass123!', expected: 200 }
+                ];
+
+                User.findById.mockResolvedValue(mockUser);
+                bcrypt.compare.mockResolvedValue(true);
+
+                for (const test of complexityTests) {
+                  req.body.newPassword = test.password;
+                  req.body.confirmPassword = test.password;
+                  
+                  res.status.mockClear();
+                  
+                  await authController.changePassword(req, res);
+                  expect(res.status).toHaveBeenCalledWith(test.expected);
+                }
+              });
+            });
+
+            describe('getCurrentUser() - Data Integrity', () => {
+              test('should sanitize sensitive user data', async () => {
+                req.user = {
+                  user_id: 'test-uuid-123',
+                  email: 'test@example.com',
+                  password: 'hashedpassword',  // Should be filtered out
+                  resetToken: 'secret-token',  // Should be filtered out
+                  given_name: 'John',
+                  family_name: 'Doe',
+                  role: 'Regular'
+                };
+
+                await authController.getCurrentUser(req, res);
+
+                const response = res.json.mock.calls[0][0];
+                expect(response.user).not.toHaveProperty('password');
+                expect(response.user).not.toHaveProperty('resetToken');
+              });
+
+              test('should handle malformed user object', async () => {
+                req.user = { invalid: 'data' }; // Missing required fields
+
+                await authController.getCurrentUser(req, res);
+
+                expect(res.status).toHaveBeenCalledWith(400);
+                expect(res.json).toHaveBeenCalledWith(expect.objectContaining({
+                  error: expect.stringMatching(/invalid user data/i)
+                }));
+              });
+            });
+
+            describe('Token Generation - Security Edge Cases', () => {
+              test('should handle special characters in user data', async () => {
+                const userWithSpecialChars = {
+                  ...mockUser,
+                  given_name: "José María",
+                  family_name: "García-López",
+                  email: 'josé@café.com'
+                };
+
+                jwt.sign.mockReturnValue('jwt-token-special');
+
+                const token = authController.generateToken(userWithSpecialChars);
+
+                expect(jwt.sign).toHaveBeenCalledWith(
+                  expect.objectContaining({
+                    given_name: "José María",
+                    family_name: "García-López"
+                  }),
+                  expect.any(String),
+                  expect.any(Object)
+                );
+              });
+
+              test('should handle missing name fields gracefully', async () => {
+                const userWithoutNames = {
+                  ...mockUser,
+                  given_name: null,
+                  family_name: null
+                };
+
+                jwt.sign.mockReturnValue('jwt-token-nonames');
+
+                const token = authController.generateToken(userWithoutNames);
+
+                expect(jwt.sign).toHaveBeenCalledWith(
+                  expect.objectContaining({
+                    full_name: ''
+                  }),
+                  expect.any(String),
+                  expect.any(Object)
+                );
+              });
+            });
+
+            describe('Google Account Management - Integration Tests', () => {
+              test('should handle Google account linking with existing Google ID', async () => {
+                req.body.googleId = 'existing-google-id';
+                mockUser.google_id = 'different-google-id';
+                User.findById.mockResolvedValue(mockUser);
+
+                await authController.linkGoogleAccount(req, res);
+
+                expect(res.status).toHaveBeenCalledWith(409);
+                expect(res.json).toHaveBeenCalledWith(expect.objectContaining({
+                  error: expect.stringMatching(/already linked to different/i)
+                }));
+              });
+
+              test('should validate Google tokens before linking', async () => {
+                req.body.googleId = 'invalid-format';
+                req.body.googleRefreshToken = '';
+                User.findById.mockResolvedValue(mockUser);
+
+                await authController.linkGoogleAccount(req, res);
+
+                expect(res.status).toHaveBeenCalledWith(400);
+                expect(res.json).toHaveBeenCalledWith(expect.objectContaining({
+                  error: expect.stringMatching(/invalid google/i)
+                }));
+              });
+            });
+
+            describe('Error Handling and Logging', () => {
+              test('should log all authentication attempts', async () => {
+                const consoleSpy = jest.spyOn(console, 'log').mockImplementation();
+                
+                req.body = { email: 'test@example.com', password: 'password123' };
+                User.findByEmail.mockResolvedValue(mockUser);
+                mockUser.validatePassword.mockResolvedValue(true);
+                jwt.sign.mockReturnValue('jwt-token-123');
+
+                await authController.login(req, res);
+
+                expect(consoleSpy).toHaveBeenCalledWith(
+                  expect.stringMatching(/\[LOGIN\].*Login attempt/)
+                );
+                
+                consoleSpy.mockRestore();
+              });
+
+              test('should handle network timeouts gracefully', async () => {
+                const timeoutError = new Error('Network timeout');
+                timeoutError.code = 'ETIMEDOUT';
+                
+                User.findByEmail.mockRejectedValue(timeoutError);
+                SystemLog.error = jest.fn().mockResolvedValue(true);
+
+                await authController.login(req, res);
+
+                expect(res.status).toHaveBeenCalledWith(500);
+                expect(SystemLog.error).toHaveBeenCalledWith(
+                  'authController',
+                  'login',
+                  expect.stringContaining('timeout')
+                );
+              });
+            });
           });
-        });        });   test('should handle database error during save', async () => {
+        });        

@@ -87,8 +87,14 @@ export function SettingsProvider({ children }) {
                          pathname.startsWith('/demo');
 
   useEffect(() => {
-    fetchSettings();
-  }, []);
+    // Only fetch settings if not on excluded pages
+    if (!isExcludedPage) {
+      fetchSettings();
+    } else {
+      // For excluded pages, just use defaults and mark as loaded
+      setLoading(false);
+    }
+  }, [isExcludedPage]);
 
   const fetchSettings = async () => {
     try {

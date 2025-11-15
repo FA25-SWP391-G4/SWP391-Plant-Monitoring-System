@@ -307,18 +307,18 @@ export default function SettingsPage() {
               {/* Appearance Settings */}
               {activeTab === 'appearance' && (
                 <>
-                  <h2 className="text-xl font-semibold text-gray-900 mb-6">
+                  <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-6">
                     {t('settings.appearance', 'Appearance')}
                   </h2>
                   
                   <div className="mb-6">
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                       {t('settings.appearance', 'Appearance')}
                     </label>
                     <select 
                       value={settings.appearance.theme} 
                       onChange={(e) => handleSettingChange('appearance', 'theme', e.target.value)}
-                      className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 settings-form-element"
+                      className= "w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 settings-form-element dark:text-black"
                     >
                       <option value="system">{t('settings.themeSystem', 'System Default')}</option>
                       <option value="light">{t('settings.themeLight', 'Light')}</option>
@@ -330,7 +330,7 @@ export default function SettingsPage() {
                   </div>
                   
                   <div className="mb-6">
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                       {t('settings.fontSize', 'Font Size')}
                     </label>
                     <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
@@ -382,14 +382,14 @@ export default function SettingsPage() {
                   </div>
                   
                   <div className="mb-6">
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                       {t('settings.colorScheme', 'Color Scheme')}
                     </label>
                     <div className="grid grid-cols-3 gap-4">
                       <button 
                         className={`p-4 border rounded-lg flex flex-col items-center transition-all color-scheme-emerald ${
                           settings.appearance.colorScheme === 'default' 
-                            ? 'bg-emerald-50 border-emerald-500 ring-2 ring-emerald-200' 
+                            ? 'bg-emerald-50 border-emerald-500 ring-2 ring-emerald-200 dark:text-black' 
                             : 'border-gray-200 hover:bg-gray-50'
                         }`}
                         onClick={() => handleSettingChange('appearance', 'colorScheme', 'default')}
@@ -400,7 +400,7 @@ export default function SettingsPage() {
                       <button 
                         className={`p-4 border rounded-lg flex flex-col items-center transition-all ${
                           settings.appearance.colorScheme === 'blue' 
-                            ? 'bg-blue-50 border-blue-500 ring-2 ring-blue-200' 
+                            ? 'bg-blue-50 border-blue-500 ring-2 ring-blue-200 dark:text-black' 
                             : 'border-gray-200 hover:bg-gray-50'
                         }`}
                         onClick={() => handleSettingChange('appearance', 'colorScheme', 'blue')}
@@ -411,7 +411,7 @@ export default function SettingsPage() {
                       <button 
                         className={`p-4 border rounded-lg flex flex-col items-center transition-all ${
                           settings.appearance.colorScheme === 'purple' 
-                            ? 'bg-purple-50 border-purple-500 ring-2 ring-purple-200' 
+                            ? 'bg-purple-50 border-purple-500 ring-2 ring-purple-200 dark:text-black' 
                             : 'border-gray-200 hover:bg-gray-50'
                         }`}
                         onClick={() => handleSettingChange('appearance', 'colorScheme', 'purple')}
@@ -705,18 +705,18 @@ export default function SettingsPage() {
               {/* Language & Region Settings */}
               {activeTab === 'language' && (
                 <>
-                  <h2 className="text-xl font-semibold text-gray-900 mb-6">
+                  <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-6">
                     {t('settings.language', 'Language & Region')}
                   </h2>
                   
                   <div className="mb-6">
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                       {t('settings.preferredLanguage', 'Preferred Language')}
                     </label>
                     <select 
                       value={settings.language.preferred} 
                       onChange={(e) => handleSettingChange('language', 'preferred', e.target.value)}
-                      className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--primary-green)]"
+                      className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--primary-green)] dark:text-black settings-form-element"
                     >
                       <option value="en">{t('languages.english', 'English')}</option>
                       {/* <option value="es">🇪🇸 {t('languages.spanish', 'Español')}</option> */}
@@ -729,7 +729,7 @@ export default function SettingsPage() {
                   </div>
                   
                   <div className="mb-6">
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                       {t('settings.dateFormat', 'Date Format')}
                     </label>
                     <div className="flex flex-wrap gap-3">
@@ -767,7 +767,7 @@ export default function SettingsPage() {
                   </div>
                   
                   <div className="mb-6">
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                       {t('settings.timeFormat', 'Time Format')}
                     </label>
                     <div className="flex gap-3">
@@ -799,12 +799,12 @@ export default function SettingsPage() {
               {/* Notification Settings */}
               {activeTab === 'notifications' && (
                 <>
-                  <h2 className="text-xl font-semibold text-gray-900 mb-6">
+                  <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-6">
                     {t('settings.notifications', 'Notifications')}
                   </h2>
                   
                   <div className="mb-6">
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                       {t('settings.notificationChannels', 'Notification Channels')}
                     </label>
                     <div className="space-y-3">
@@ -862,7 +862,7 @@ export default function SettingsPage() {
                   </div>
                   
                   <div className="mb-6">
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                       {t('settings.notificationTypes', 'Notification Types')}
                     </label>
                     <div className="space-y-3">
@@ -921,7 +921,7 @@ export default function SettingsPage() {
               {/* Privacy & Security Settings */}
               {activeTab === 'privacy' && (
                 <>
-                  <h2 className="text-xl font-semibold text-gray-900 mb-6">
+                  <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-6">
                     {t('settings.privacy', 'Privacy & Security')}
                   </h2>
                   
@@ -931,7 +931,7 @@ export default function SettingsPage() {
                         <p className="text-sm font-medium">{t('settings.shareData', 'Share Anonymous Data')}</p>
                         <p className="text-xs text-gray-500">{t('settings.shareDataDescription', 'Share anonymous usage data to help improve the service')}</p>
                       </div>
-                      <label className="relative inline-flex items-center cursor-pointer">
+                      <label className="relative inline-flex items-center cursor-pointer ">
                         <input 
                           type="checkbox" 
                           className="sr-only peer" 
@@ -962,13 +962,13 @@ export default function SettingsPage() {
                   </div>
                   
                   <div className="mb-6">
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                       {t('settings.locationAccess', 'Location Access')}
                     </label>
                     <select 
                       value={settings.privacy.locationAccess} 
                       onChange={(e) => handleSettingChange('privacy', 'locationAccess', e.target.value)}
-                      className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 settings-form-element"
+                      className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 settings-form-element dark:text-black"
                     >
                       <option value="never">{t('settings.locationNever', 'Never')}</option>
                       <option value="while-using">{t('settings.locationWhileUsing', 'While Using the App')}</option>
@@ -980,7 +980,7 @@ export default function SettingsPage() {
                   </div>
                   
                   <div className="mb-6">
-                    <h3 className="text-sm font-medium text-gray-700 mb-2">
+                    <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                       {t('settings.dangerZone', 'Danger Zone')}
                     </h3>
                     <div className="border border-red-200 rounded-lg p-4 bg-red-50">

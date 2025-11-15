@@ -526,7 +526,8 @@ async function login(req, res) {
             isPremium: user.role === 'Premium' || user.role === 'Admin',
             profile_picture: user.profile_picture,
             language: user.language || 'en',
-            created_at: user.created_at
+            created_at: user.created_at,
+            phone_number: user.phone_number || null
         };
         
         console.log(`[LOGIN] User data being sent to client:`, JSON.stringify(userData));

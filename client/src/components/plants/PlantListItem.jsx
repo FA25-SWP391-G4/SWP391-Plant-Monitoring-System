@@ -6,6 +6,7 @@ import Modal from '@/components/ui/Modal';
 import ConfirmDialog from '@/components/ui/ConfirmDialog';
 import { useSettings } from '@/providers/SettingsProvider';
 import plantApi from '@/api/plantApi';
+import { formatDate } from '@/utils/dateFormat';
 
 export default function PlantListItem({ plant, isPremium, onUpdate, onDelete }) {
   const { t } = useTranslation();
@@ -77,7 +78,7 @@ export default function PlantListItem({ plant, isPremium, onUpdate, onDelete }) 
     if (lastWatered?.data?.last_watered) {
       const lastWateredDate = new Date(lastWatered.data.last_watered.timestamp);
       return {
-        date: lastWateredDate.toLocaleDateString(),
+        date: formatDate(lastWateredDate.toLocaleDateString(), settings.language.dateFormat),
         timeAgo: lastWatered.data.last_watered.time_ago,
         triggerType: lastWatered.data.last_watered.trigger_type
       };
@@ -225,19 +226,19 @@ export default function PlantListItem({ plant, isPremium, onUpdate, onDelete }) 
               href={`/plants/${plant.plant_id}`} 
               className="px-3 py-1.5 bg-emerald-600 text-white text-sm rounded hover:bg-emerald-700 transition-colors btn-transition"
             >
-              {t('plants.viewDetails', 'View Details')}
+              {t('common.viewDetails', 'View Details')}
             </Link>
             <button
               onClick={handleEdit}
               className="px-3 py-1.5 bg-blue-600 text-white text-sm rounded hover:bg-blue-700 transition-colors btn-transition"
             >
-              {t('plants.edit', 'Edit')}
+              {t('common.edit', 'Edit')}
             </button>
             <button
               onClick={handleDelete}
               className="px-3 py-1.5 bg-red-600 text-white text-sm rounded hover:bg-red-700 transition-colors btn-transition"
             >
-              {t('plants.delete', 'Delete')}
+              {t('common.delete', 'Delete')}
             </button>
           </div>
         </div>
