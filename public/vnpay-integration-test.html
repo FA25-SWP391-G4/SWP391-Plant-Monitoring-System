@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>VNPay Integration Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 800px; margin: 50px auto; padding: 20px; }
+        .form-group { margin: 15px 0; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; }
+        input, textarea { width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; }
+        button { background: #007bff; color: white; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer; }
+        button:hover { background: #0056b3; }
+        .result { margin-top: 20px; padding: 15px; border-radius: 4px; }
+        .success { background: #d4edda; border: 1px solid #c3e6cb; color: #155724; }
+        .error { background: #f8d7da; border: 1px solid #f5c6cb; color: #721c24; }
+    </style>
+</head>
+<body>
+    <h1>VNPay Community Library Integration Test</h1>
+    
+    <form id="paymentForm">
+        <div class="form-group">
+            <label for="amount">Amount (VND):</label>
+            <input type="number" id="amount" name="amount" value="50000" min="5000" max="500000000" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="orderInfo">Order Info:</label>
+            <textarea id="orderInfo" name="orderInfo" placeholder="Premium Subscription Payment" required>Premium Subscription Payment</textarea>
+        </div>
+        
+        <div class="form-group">
+            <label for="bankCode">Bank Code (optional):</label>
+            <input type="text" id="bankCode" name="bankCode" placeholder="Leave empty for all payment methods">
+        </div>
+        
+        <div class="form-group">
+            <label for="token">JWT Token:</label>
+            <input type="text" id="token" name="token" placeholder="Enter your JWT token for authentication" required>
+        </div>
+        
+        <button type="submit">Create Payment</button>
+    </form>
+    
+    <div id="result"></div>
+
+    <script>
+        document.getElementById('paymentForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(e.target);
+            const data = {
+                amount: parseInt(formData.get('amount')),
+                orderInfo: formData.get('orderInfo'),
+                bankCode: formData.get('bankCode') || undefined
+            };
+            
+            const token = formData.get('token');
+            const resultDiv = document.getElementById('result');
+            
+            try {
+                resultDiv.innerHTML = '<p>Creating payment...</p>';
+                
+                const response = await fetch('/payment/create', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + token
+                    },
+                    body: JSON.stringify(data)
+                });
+                
+                const result = await response.json();
+                
+                if (response.ok && result.success) {
+                    resultDiv.innerHTML = `
+                        <div class="result success">
+                            <h3>Payment URL Created Successfully!</h3>
+                            <p><strong>Order ID:</strong> ${result.orderId}</p>
+                            <p><strong>Amount:</strong> ${result.amount}</p>
+                            <p><strong>Payment URL:</strong></p>
+                            <p><a href="${result.paymentUrl}" target="_blank" style="word-break: break-all;">${result.paymentUrl}</a></p>
+                            <br>
+                            <button onclick="window.open('${result.paymentUrl}', '_blank')" style="background: #28a745;">
+                                Go to VNPay Payment Page
+                            </button>
+                        </div>
+                    `;
+                } else {
+                    resultDiv.innerHTML = `
+                        <div class="result error">
+                            <h3>Error Creating Payment</h3>
+                            <p>${result.error || result.message || 'Unknown error'}</p>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <div class="result error">
+                        <h3>Network Error</h3>
+                        <p>${error.message}</p>
+                    </div>
+                `;
+            }
+        });
+    </script>
+</body>
+</html>

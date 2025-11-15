@@ -1,0 +1,74 @@
+/*
+ * Language Switcher Styles
+ * Custom styling for the globe icon language dropdown
+ */
+
+.language-switcher .dropdown-toggle {
+  padding: 0.5rem;
+  border-radius: 50%;
+  transition: background-color 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.language-switcher .dropdown-toggle:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.language-switcher .dropdown-toggle::after {
+  display: none; /* Hide the default dropdown arrow */
+}
+
+.language-switcher .globe-icon-container {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.language-switcher .language-indicator {
+  font-size: 0.8rem;
+  position: absolute;
+  bottom: -2px;
+  right: -2px;
+  background-color: #ffffff;
+  border-radius: 50%;
+  width: 16px;
+  height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1);
+}
+
+.language-switcher .dropdown-menu {
+  min-width: 200px;
+  padding: 0.5rem 0;
+  margin-top: 8px;
+}
+
+.language-switcher .dropdown-header {
+  font-weight: 600;
+  color: #6c757d;
+}
+
+.language-switcher .dropdown-item {
+  padding: 0.5rem 1rem;
+  transition: background-color 0.15s ease;
+}
+
+.language-switcher .dropdown-item:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.language-switcher .dropdown-item.active {
+  background-color: rgba(13, 110, 253, 0.1);
+  color: #0d6efd;
+}
+
+.language-switcher .dropdown-item .me-2 {
+  display: inline-flex;
+  width: 20px;
+  justify-content: center;
+}

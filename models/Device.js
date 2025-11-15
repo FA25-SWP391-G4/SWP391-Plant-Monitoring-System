@@ -1,0 +1,354 @@
+/**
+ * ============================================================================
+ * DEVICE MODEL - IOT DEVICE MANAGEMENT & MONITORING
+ * ============================================================================
+ * 
+ * SUPPORTS THESE USE CASES:
+ * 🔄 UC3: Add Device - Device registration and setup
+ * 🔄 UC4: Connect to Device - Device pairing and authentication
+ * 🔄 UC5: Monitor Plant Status - Device status monitoring
+ * 🔄 UC6: Automated Watering - Device control commands
+ * 🔄 UC7: Receive Real-time Alerts - Device status changes
+ * 🔄 UC14: Historical Data Analysis - Device data history
+ * 🔄 UC15: Advanced Analytics - Device performance metrics
+ * 🔄 UC25: Monitor System Performance - Device uptime tracking
+ * 🔄 UC26: Manage IoT Devices - Admin device management
+ * 🔄 UC27: Generate Reports - Device usage reports
+ * 
+ * DEVICE STATES:
+ * - 'online': Device actively connected and responsive
+ * - 'offline': Device disconnected or unresponsive  
+ * - 'error': Device experiencing technical issues
+ * - 'maintenance': Device temporarily disabled for maintenance
+ * 
+ * SECURITY FEATURES:
+ * - Unique device keys for API authentication
+ * - User ownership validation
+ * - Last seen timestamp for connection monitoring
+ * - Secure device pairing process
+ * 
+ * RELATIONSHIPS:
+ * - Devices (N) → (1) Users (owner)
+ * - Devices (1) → (N) Plants
+ * - Devices (1) → (N) SensorData
+ * - Devices (1) → (N) WateringHistory
+ */
+
+const { pool } = require('../config/db');
+const crypto = require('crypto');
+const { generateUUID, isValidUUID } = require('../utils/uuidGenerator');
+
+class Device {
+    /**
+     * DEVICE CONSTRUCTOR
+     * Initializes device object with default values and validation
+     * SUPPORTS: UC3 (Add Device), UC26 (Admin device management)
+     * NOTE: device_key is the primary key (12-char key), device_id is deprecated
+     */
+    constructor(deviceData) {
+        this.device_key = deviceData.device_key;  // Primary key (12-char key)
+        this.user_id = deviceData.user_id;
+        this.device_name = deviceData.device_name;
+        this.status = deviceData.status || 'offline'; // Default to offline for security
+        this.last_seen = deviceData.last_seen;
+        this.created_at = deviceData.created_at;
+    }
+
+    /**
+     * FIND ALL DEVICES - ADMIN & USER DEVICE LISTING
+     * Retrieves all devices with owner information for management interfaces
+     * 
+     * SUPPORTS:
+     * - UC26: Manage IoT Devices - Admin device overview
+     * - UC27: Generate Reports - Device inventory reports
+     * - User dashboard device listing
+     */
+    // Static method to find all devices
+    static async findAll() {
+        try {
+            const query = `
+                SELECT d.*, u.family_name as owner_name 
+                FROM devices d
+                LEFT JOIN users u ON d.user_id = u.user_id
+                ORDER BY d.created_at DESC
+            `;
+            const result = await pool.query(query);
+            return result.rows.map(row => new Device(row));
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    /**
+     * FIND DEVICE BY ID - DEVICE IDENTIFICATION & CONTROL
+     * Retrieves specific device with owner info for operations and monitoring
+     * 
+     * SUPPORTS:
+     * - UC4: Connect to Device - Device lookup for pairing
+     * - UC5: Monitor Plant Status - Device status checking
+     * - UC6: Automated Watering - Device control target identification
+     * - UC26: Admin device management - Device details view
+     * 
+     * SECURITY: Includes owner validation for authorization checks
+     * NOTE: device_key is the primary key (12-char key)
+     */
+    // Static method to find device by device_key (primary key)
+    static async findById(deviceKey) {
+        try {
+
+            const query = `
+                SELECT d.*, u.family_name as owner_name 
+                FROM devices d
+                LEFT JOIN users u ON d.user_id = u.user_id
+                WHERE d.device_key = $1
+            `;
+            const result = await pool.query(query, [deviceKey]);
+            
+            if (result.rows.length === 0) {
+                return null;
+            }
+            
+            return new Device(result.rows[0]);
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    // Static method to find device by device key (alias for findById for backwards compatibility)
+    static async findByDeviceKey(deviceKey) {
+        return Device.findById(deviceKey);
+    }
+
+    // Static method to find devices by user ID
+    static async findByUserId(userId) {
+        try {
+            // Validate UUID format for user_id
+            if (!userId || !isValidUUID(userId)) {
+                console.error('[DEVICE FINDBYUSERID] Invalid user UUID format:', userId);
+                return [];
+            }
+
+            const query = `
+                SELECT d.*, u.family_name as owner_name 
+                FROM devices d
+                LEFT JOIN users u ON d.user_id = u.user_id
+                WHERE d.user_id = $1
+                ORDER BY d.created_at DESC
+            `;
+            const result = await pool.query(query, [userId]);
+            return result.rows.map(row => new Device(row));
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    // Static method to find devices by status
+    static async findByStatus(status) {
+        try {
+            const query = `
+                SELECT d.*, u.family_name as owner_name 
+                FROM devices d
+                LEFT JOIN users u ON d.user_id = u.user_id
+                WHERE d.status = $1
+                ORDER BY d.last_seen DESC
+            `;
+            const result = await pool.query(query, [status]);
+            return result.rows.map(row => new Device(row));
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    // Static method to get device status for multiple plants
+    static async getStatusForPlants(plants) {
+        if (!plants || plants.length === 0) {
+            return {};
+        }
+
+        const deviceIds = plants.map(p => p.device_key);
+        const placeholders = deviceIds.map((_, idx) => `$${idx + 1}`).join(', ');
+        
+        const query = `
+            SELECT device_key, status, last_seen
+            FROM devices
+            WHERE device_key IN (${placeholders})
+        `;
+        try {
+            const result = await pool.query(query, deviceIds);
+            const statusMap = {};
+            result.rows.forEach(row => {
+                statusMap[row.device_key] = {
+                    status: row.status,
+                    last_seen: row.last_seen
+                };
+            });
+            return statusMap;
+        } catch (error) {
+            console.error('Error getting device status for plants:', error);
+            throw error;
+        }
+    }
+
+    // Create or update device
+    async save() {
+        try {
+            if (this.device_key) {
+                // Update existing device (device_key is primary key)
+                const query = `
+                    UPDATE devices 
+                    SET user_id = $1, device_name = $2, 
+                        status = $3, last_seen = $4
+                    WHERE device_key = $5
+                    RETURNING *
+                `;
+                
+                const result = await pool.query(query, [
+                    this.user_id,
+                    this.device_name,
+                    this.status,
+                    this.last_seen,
+                    this.device_key
+                ]);
+                
+                if (result.rows.length === 0) {
+                    throw new Error('Device not found for update');
+                }
+                
+                const updatedDevice = new Device(result.rows[0]);
+                Object.assign(this, updatedDevice);
+                return this;
+            } else {                
+                const query = `
+                    INSERT INTO devices (device_key, user_id, device_name, status)
+                    VALUES ($1, $2, $3, $4)
+                    RETURNING *
+                `;
+                
+                const result = await pool.query(query, [
+                    this.device_key,
+                    this.user_id,
+                    this.device_name,
+                    this.status || 'offline'
+                ]);
+                
+                const newDevice = new Device(result.rows[0]);
+                Object.assign(this, newDevice);
+                return this;
+            }
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    // Update device status and last seen
+    async updateStatus(status) {
+        try {
+            const query = `
+                UPDATE devices 
+                SET status = $1, last_seen = CURRENT_TIMESTAMP
+                WHERE device_key = $2
+                RETURNING *
+            `;
+            
+            const result = await pool.query(query, [status, this.device_key]);
+            
+            if (result.rows.length > 0) {
+                this.status = status;
+                this.last_seen = result.rows[0].last_seen;
+            }
+            
+            return this;
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    // Ping device (update last seen)
+    async ping() {
+        try {
+            const query = `
+                UPDATE devices 
+                SET last_seen = CURRENT_TIMESTAMP, status = 'online'
+                WHERE device_key = $1
+                RETURNING *
+            `;
+            
+            const result = await pool.query(query, [this.device_key]);
+            
+            if (result.rows.length > 0) {
+                this.last_seen = result.rows[0].last_seen;
+                this.status = 'online';
+            }
+            
+            return this;
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    // Delete device
+    async delete() {
+        try {
+            if (!this.device_key) {
+                throw new Error('Cannot delete device without device_key');
+            }
+
+            const query = 'DELETE FROM devices WHERE device_key = $1';
+            await pool.query(query, [this.device_key]);
+            
+            return true;
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    // Check if device is online (last seen within 5 minutes)
+    isOnline() {
+        if (!this.last_seen || this.status === 'offline') {
+            return false;
+        }
+        
+        const fiveMinutesAgo = new Date(Date.now() - 5 * 60 * 1000);
+        return new Date(this.last_seen) > fiveMinutesAgo;
+    }
+
+    // Convert to JSON
+    toJSON() {
+        return {
+            device_key: this.device_key,  // Primary key (12-char key)
+            user_id: this.user_id,
+            device_name: this.device_name,
+            status: this.status,
+            last_seen: this.last_seen,
+            created_at: this.created_at,
+            is_online: this.isOnline()
+        };
+    }
+
+    /**
+     * ADMIN METHODS - Support for admin dashboard
+     */
+    static async countAll() {
+        try {
+            const query = 'SELECT COUNT(*) as count FROM devices';
+            const result = await pool.query(query);
+            return parseInt(result.rows[0].count);
+        } catch (error) {
+            console.error('[DEVICE COUNT ERROR] Error counting devices:', error.message);
+            throw error;
+        }
+    }
+
+    static async countActive() {
+        try {
+            const query = "SELECT COUNT(*) as count FROM devices WHERE last_seen >= NOW() - INTERVAL '1 hour'";
+            const result = await pool.query(query);
+            return parseInt(result.rows[0].count);
+        } catch (error) {
+            console.error('[DEVICE COUNT ACTIVE ERROR] Error counting active devices:', error.message);
+            throw error;
+        }
+    }
+}
+
+module.exports = Device;

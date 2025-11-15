@@ -1,0 +1,14 @@
+{
+  "ai": {
+    "plantAnalysis": "智能植物分析",
+    "analyzing": "分析中...",
+    "analyzePlant": "分析植物状况",
+    "overallCondition": "整体状况",
+    "warnings": "警告",
+    "careRecommendations": "养护建议",
+    "good": "良好",
+    "moderate": "一般",
+    "poor": "较差"
+  }
+}
+

@@ -1,0 +1,55 @@
+{
+  "name": "plant-system-istqb-tests",
+  "version": "1.0.0",
+  "description": "ISTQB Standard Test Suite for Plant Monitoring System",
+  "scripts": {
+    "test": "npm run test:unit && npm run test:integration",
+    "test:unit": "jest --config=jest.config.js --testMatch='**/unit/**/*.test.js'",
+    "test:integration": "jest --config=jest.config.js --testMatch='**/integration/**/*.test.js'",
+    "test:e2e": "jest --config=jest.config.e2e.js --testMatch='**/e2e/**/*.e2e.js'",
+    "test:acceptance": "jest --config=jest.config.js --testMatch='**/acceptance/**/*.acceptance.js'",
+    "test:all": "npm run test:unit && npm run test:integration && npm run test:e2e",
+    "test:coverage": "jest --config=jest.config.js --coverage",
+    "test:watch": "jest --config=jest.config.js --watch",
+    "test:models": "jest --config=jest.config.js --testMatch='**/unit/models/**/*.test.js'",
+    "test:controllers": "jest --config=jest.config.js --testMatch='**/unit/controllers/**/*.test.js'",
+    "test:services": "jest --config=jest.config.js --testMatch='**/unit/services/**/*.test.js'",
+    "test:frontend": "jest --config=jest.config.js --testMatch='**/unit/frontend/**/*.test.jsx'",
+    "test:ai-service": "jest --config=jest.config.js --testMatch='**/unit/ai-service/**/*.test.js'",
+    "selenium:chrome": "BROWSER=chrome npm run test:e2e",
+    "selenium:firefox": "BROWSER=firefox npm run test:e2e",
+    "selenium:edge": "BROWSER=edge npm run test:e2e"
+  },
+  "keywords": [
+    "testing",
+    "istqb",
+    "jest",
+    "selenium",
+    "e2e",
+    "integration",
+    "unit-tests"
+  ],
+  "devDependencies": {
+    "@babel/core": "^7.22.0",
+    "@babel/preset-env": "^7.22.0",
+    "@babel/preset-react": "^7.22.0",
+    "@testing-library/jest-dom": "^5.16.5",
+    "@testing-library/react": "^14.0.0",
+    "@testing-library/user-event": "^14.4.3",
+    "babel-jest": "^29.5.0",
+    "chromedriver": "^114.0.0",
+    "geckodriver": "^3.2.0",
+    "identity-obj-proxy": "^3.0.0",
+    "jest": "^29.5.0",
+    "jest-environment-jsdom": "^29.5.0",
+    "selenium-webdriver": "^4.10.0",
+    "supertest": "^6.3.3"
+  },
+   "jest": {
+  "preset": "jest-expo",
+  "transformIgnorePatterns": [
+    "node_modules/(?!((jest-)?react-native|@react-native(-community)?)|expo(nent)?|@expo(nent)?/.*|@expo-google-fonts/.*|react-navigation|@react-navigation/.*|@sentry/react-native|native-base|react-native-svg)"
+  ]
+  },
+  "type": "module"
+}

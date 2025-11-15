@@ -1,0 +1,1047 @@
+:root {
+  /* Light Theme (Green/White) */
+  --primary-green: #22c55e;
+  --primary-green-dark: #16a34a;
+  --primary-green-light: #86efac;
+  --primary-green-bg: #dcfce7;
+  --primary-green-hover: #15803d;
+  
+  --secondary-white: #ffffff;
+  --background-light: linear-gradient(135deg, #f8fafc 0%, #f0fdf4 50%, #f8fafc 100%);
+  --background-card: linear-gradient(135deg, #ffffff 0%, #f7fee7 50%, #ffffff 100%);
+  --text-primary: #1e293b;
+  --text-secondary: #64748b;
+  --text-muted: #94a3b8;
+  --border-light: #e2e8f0;
+  --shadow-light: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+  --shadow-medium: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-large: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  
+  /* Font size variables */
+  --base-font-size: 16px;
+  --font-scale-factor: 1;
+  
+  /* Success Colors */
+  --success: #10b981;
+  --success-bg: #d1fae5;
+  --warning: #f59e0b;
+  --warning-bg: #fef3c7;
+  --error: #ef4444;
+  --error-bg: #fee2e2;
+  --info: #3b82f6;
+  --info-bg: #dbeafe;
+  
+  /* Component Styles */
+  --sf-bg: var(--background-light);
+  --sf-panel: var(--background-card);
+  --sf-panel-2: var(--background-light);
+  --sf-text: var(--text-primary);
+  --sf-text-dim: var(--text-secondary);
+  --sf-accent: var(--primary-green);
+  --sf-accent-2: var(--info);
+  --sf-danger: var(--error);
+  --sf-border: var(--border-light);
+  --sf-card-shadow: var(--shadow-medium);
+}
+
+html.dark {
+  /* Dark Theme - Base styles only (no color scheme specific colors) */
+  --secondary-white: #1e1b2e;
+  --background-light: linear-gradient(135deg, #0f0f23 0%, #0c1c17 50%, #0f0f23 100%);
+  --background-card: linear-gradient(135deg, #1e1b2e 0%, #1a2e20 50%, #1e1b2e 100%);
+  --text-primary: #e2e8f0;
+  --text-secondary: #cbd5e1;
+  --text-muted: #94a3b8;
+  --border-light: #374151;
+  --shadow-light: 0 1px 3px 0 rgba(0, 0, 0, 0.3), 0 1px 2px 0 rgba(0, 0, 0, 0.2);
+  --shadow-medium: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
+  --shadow-large: 0 20px 25px -5px rgba(0, 0, 0, 0.4), 0 10px 10px -5px rgba(0, 0, 0, 0.2);
+  
+  /* Success Colors for dark mode */
+  --success: #10b981;
+  --success-bg: #064e3b;
+  --warning: #f59e0b;
+  --warning-bg: #78350f;
+  --error: #ef4444;
+  --error-bg: #7f1d1d;
+  --info: #3b82f6;
+  --info-bg: #1e3a8a;
+  
+  /* Component Styles for dark mode */
+  --sf-bg: var(--background-light);
+  --sf-panel: var(--background-card);
+  --sf-panel-2: var(--background-light);
+  --sf-text: var(--text-primary);
+  --sf-text-dim: var(--text-secondary);
+  --sf-accent: var(--primary-green);
+  --sf-accent-2: var(--info);
+  --sf-danger: var(--error);
+  --sf-border: var(--border-light);
+  --sf-card-shadow: var(--shadow-medium);
+}
+
+/* Default Dark Theme Colors (when no specific color scheme is applied) */
+html.dark:not([class*="color-"]) {
+  --primary-green: #8b5cf6;
+  --primary-green-dark: #7c3aed;
+  --primary-green-light: #a78bfa;
+  --primary-green-bg: #2e1065;
+  --primary-green-hover: #6d28d9;
+}
+
+html, body, #root { 
+  height: 100%; 
+  background: var(--sf-bg); 
+  color: var(--sf-text);
+  transition: all 0.3s ease;
+  min-height: 100vh;
+}
+
+.sf-app {
+  display: grid; 
+  grid-template-columns: 240px 1fr; 
+  grid-template-rows: 64px calc(100vh - 64px);
+  grid-template-areas: "sidebar topbar" "sidebar content";
+  transition: all 0.3s ease;
+}
+
+.sf-sidebar {
+  grid-area: sidebar; 
+  background: var(--sf-panel); 
+  border-right: 1px solid var(--sf-border);
+  padding: 16px 12px; 
+  position: sticky; 
+  top: 0; 
+  height: 100vh;
+  transition: all 0.3s ease;
+}
+
+.sf-brand{ 
+  font-weight: 700; 
+  letter-spacing: .4px; 
+  font-size: 18px; 
+  margin-bottom: 18px; 
+  display: flex; 
+  align-items: center; 
+  gap: 8px;
+}
+
+.sf-brand .dot{
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--sf-accent);
+  transition: all 0.3s ease;
+}
+
+.sf-nav a{
+  display: flex; 
+  align-items: center; 
+  gap: 10px; 
+  padding: 10px 12px; 
+  border-radius: 12px; 
+  color: var(--sf-text-dim);
+  text-decoration: none; 
+  transition: all 0.3s ease;
+  margin-bottom: 4px;
+}
+
+.sf-nav a:hover{ 
+  background: var(--sf-panel-2); 
+  color: var(--sf-text);
+  transform: translateX(4px);
+}
+
+.sf-nav a.active{ 
+  background: linear-gradient(90deg, var(--primary-green-bg), var(--info-bg)); 
+  color: var(--sf-accent);
+  border-left: 3px solid var(--sf-accent);
+}
+
+.sf-topbar { 
+  grid-area: topbar; 
+  background: var(--sf-panel); 
+  border-bottom: 1px solid var(--sf-border);
+  display: flex; 
+  align-items: center; 
+  justify-content: space-between; 
+  padding: 0 16px;
+  backdrop-filter: blur(10px);
+  transition: all 0.3s ease;
+}
+
+.sf-content { 
+  grid-area: content; 
+  padding: 18px; 
+  overflow: auto;
+  background: var(--sf-bg);
+}
+
+.sf-card {
+  background: var(--sf-panel);
+  border: 1px solid var(--sf-border); 
+  border-radius: 16px; 
+  padding: 16px; 
+  box-shadow: var(--sf-card-shadow);
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+}
+
+.sf-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-large);
+}
+
+.sf-card-header{ 
+  display: flex; 
+  align-items: center; 
+  justify-content: space-between; 
+  margin-bottom: 12px;
+}
+
+.sf-muted{ 
+  color: var(--sf-text-dim);
+}
+
+.sf-btn {
+  border: 1px solid var(--sf-border); 
+  background: transparent; 
+  color: var(--sf-text);
+  padding: 8px 12px; 
+  border-radius: 10px; 
+  transition: all 0.3s ease; 
+  cursor: pointer;
+  font-weight: 500;
+  position: relative;
+  overflow: hidden;
+}
+
+.sf-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+  transition: left 0.5s;
+}
+
+.sf-btn:hover::before {
+  left: 100%;
+}
+
+.sf-btn:hover{ 
+  background: var(--sf-panel-2);
+  transform: translateY(-1px);
+}
+
+.sf-btn.primary{ 
+  background: var(--sf-accent); 
+  color: white; 
+  border-color: var(--sf-accent);
+}
+
+.sf-btn.primary:hover {
+  background: var(--primary-green-hover);
+  border-color: var(--primary-green-hover);
+}
+
+.sf-btn.outline-danger{ 
+  border-color: var(--error); 
+  color: var(--error);
+}
+
+.sf-btn.outline-danger:hover {
+  background: var(--error-bg);
+}
+
+.sf-badge{ 
+  padding: 4px 8px; 
+  border-radius: 8px; 
+  background: var(--primary-green-bg); 
+  color: var(--sf-accent); 
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.table.sf-table { 
+  color: var(--sf-text);
+}
+
+.table.sf-table thead th{ 
+  color: var(--sf-text-dim); 
+  border-bottom: 1px solid var(--sf-border);
+}
+
+.table.sf-table td, .table.sf-table th{ 
+  border-color: var(--sf-border);
+}
+
+input.sf-input, select.sf-input {
+  width: 100%; 
+  background: var(--sf-panel); 
+  border: 1px solid var(--sf-border); 
+  color: var(--sf-text); 
+  border-radius: 12px; 
+  padding: 10px 12px;
+  transition: all 0.3s ease;
+  font-size: 14px;
+}
+
+input.sf-input:focus, select.sf-input:focus {
+  outline: none;
+  border-color: var(--sf-accent);
+  box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.1);
+  transform: translateY(-1px);
+}
+
+.sf-grid { 
+  display: grid; 
+  gap: 16px;
+}
+
+@media (min-width: 992px){ 
+  .sf-grid-3{ 
+    grid-template-columns: repeat(3, 1fr);
+  } 
+  .sf-grid-2{ 
+    grid-template-columns: repeat(2, 1fr);
+  } 
+}
+
+/* Animation Classes */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideIn {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(0); }
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.5s ease-out;
+}
+
+.animate-slide-in {
+  animation: slideIn 0.3s ease-out;
+}
+
+.animate-pulse {
+  animation: pulse 2s infinite;
+}
+
+/* Loading States */
+.loading-shimmer {
+  background: linear-gradient(90deg, var(--sf-border) 25%, var(--sf-panel-2) 50%, var(--sf-border) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* Sidebar Footer */
+.sidebar-footer {
+  margin-top: auto;
+  padding-top: 1rem;
+  border-top: 1px solid var(--sf-border);
+}
+
+.theme-toggle {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  justify-content: center;
+  padding: 0.75rem;
+  font-size: 0.875rem;
+}
+
+.theme-toggle:hover {
+  background: var(--sf-panel-2);
+  transform: none;
+}
+
+/* Topbar Updates */
+.topbar-left {
+  display: flex;
+  align-items: center;
+}
+
+.welcome-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.greeting {
+  font-size: 0.875rem;
+  color: var(--sf-text-dim);
+}
+
+.user-name {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--sf-text);
+}
+
+.topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.icon-btn {
+  position: relative;
+  padding: 0.5rem;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.notification-badge {
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  background: var(--error);
+  color: white;
+  font-size: 0.625rem;
+  font-weight: 600;
+  padding: 0.125rem 0.25rem;
+  border-radius: 8px;
+  min-width: 16px;
+  height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.user-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: 8px;
+  font-size: 0.875rem;
+}
+
+.logout-btn {
+  padding: 0.5rem;
+  border-radius: 8px;
+  color: var(--error);
+  border-color: var(--error);
+}
+
+.logout-btn:hover {
+  background: var(--error-bg);
+  color: var(--error);
+}
+
+/* Mobile Navigation */
+.mobile-nav-toggle {
+  display: none;
+  padding: 0.5rem;
+  border-radius: 8px;
+}
+
+/* Color Scheme Variations */
+html.color-emerald {
+  --primary-green: #22c55e;
+  --primary-green-dark: #16a34a;
+  --primary-green-light: #86efac;
+  --primary-green-bg: #dcfce7;
+  --primary-green-hover: #15803d;
+  --sf-accent: #22c55e;
+}
+
+html.color-blue {
+  --primary-green: #3b82f6;
+  --primary-green-dark: #2563eb;
+  --primary-green-light: #93c5fd;
+  --primary-green-bg: #dbeafe;
+  --primary-green-hover: #1d4ed8;
+  --sf-accent: #3b82f6;
+}
+
+html.color-purple {
+  --primary-green: #8b5cf6;
+  --primary-green-dark: #7c3aed;
+  --primary-green-light: #a78bfa;
+  --primary-green-bg: #ede9fe;
+  --primary-green-hover: #6d28d9;
+  --sf-accent: #8b5cf6;
+}
+
+html.color-indigo {
+  --primary-green: #6366f1;
+  --primary-green-dark: #4f46e5;
+  --primary-green-light: #a5b4fc;
+  --primary-green-bg: #e0e7ff;
+  --primary-green-hover: #4338ca;
+  --sf-accent: #6366f1;
+}
+
+/* Dark theme color scheme variations */
+html.dark.color-emerald {
+  --primary-green: #34d399;
+  --primary-green-dark: #10b981;
+  --primary-green-light: #6ee7b7;
+  --primary-green-bg: #064e3b;
+  --primary-green-hover: #059669;
+  --sf-accent: #34d399;
+}
+
+html.dark.color-blue {
+  --primary-green: #60a5fa;
+  --primary-green-dark: #3b82f6;
+  --primary-green-light: #93c5fd;
+  --primary-green-bg: #1e3a8a;
+  --primary-green-hover: #2563eb;
+  --sf-accent: #60a5fa;
+}
+
+html.dark.color-purple {
+  --primary-green: #a78bfa;
+  --primary-green-dark: #8b5cf6;
+  --primary-green-light: #c4b5fd;
+  --primary-green-bg: #581c87;
+  --primary-green-hover: #7c3aed;
+  --sf-accent: #a78bfa;
+}
+
+html.dark.color-indigo {
+  --primary-green: #818cf8;
+  --primary-green-dark: #6366f1;
+  --primary-green-light: #a5b4fc;
+  --primary-green-bg: #312e81;
+  --primary-green-hover: #4f46e5;
+  --sf-accent: #818cf8;
+}
+
+/* Font Size Variations */
+html.text-sm {
+  --base-font-size: 14px;
+  --font-scale-factor: 0.875;
+}
+
+html.text-base {
+  --base-font-size: 16px;
+  --font-scale-factor: 1;
+}
+
+html.text-lg {
+  --base-font-size: 18px;
+  --font-scale-factor: 1.125;
+}
+
+html.text-xl {
+  --base-font-size: 20px;
+  --font-scale-factor: 1.25;
+}
+
+/* Apply base font size to body */
+body {
+  font-size: var(--base-font-size);
+}
+
+/* Scale text elements based on font size */
+.text-responsive-sm {
+  font-size: calc(var(--base-font-size) * 0.875);
+}
+
+.text-responsive-base {
+  font-size: var(--base-font-size);
+}
+
+.text-responsive-lg {
+  font-size: calc(var(--base-font-size) * 1.125);
+}
+
+.text-responsive-xl {
+  font-size: calc(var(--base-font-size) * 1.25);
+}
+
+.text-responsive-2xl {
+  font-size: calc(var(--base-font-size) * 1.5);
+}
+
+.text-responsive-3xl {
+  font-size: calc(var(--base-font-size) * 1.875);
+}
+
+/* Compact Mode Styles */
+html.compact-mode {
+  --compact-spacing: 0.5rem;
+  --compact-padding: 0.75rem;
+}
+
+.compact-mode .sf-card,
+.compact-mode .widget {
+  padding: var(--compact-padding);
+  margin-bottom: var(--compact-spacing);
+}
+
+.compact-mode .widget-header {
+  padding: calc(var(--compact-padding) * 0.75);
+  margin-bottom: calc(var(--compact-spacing) * 0.5);
+}
+
+.compact-mode .widget-content {
+  padding: calc(var(--compact-padding) * 0.75);
+}
+
+.compact-mode .text-lg {
+  font-size: 1rem;
+}
+
+.compact-mode .text-xl {
+  font-size: 1.125rem;
+}
+
+.compact-mode .text-2xl {
+  font-size: 1.25rem;
+}
+
+.compact-mode .p-6 {
+  padding: var(--compact-padding) !important;
+}
+
+.compact-mode .p-4 {
+  padding: calc(var(--compact-padding) * 0.75) !important;
+}
+
+.compact-mode .mb-6 {
+  margin-bottom: var(--compact-spacing) !important;
+}
+
+.compact-mode .gap-6 {
+  gap: var(--compact-spacing) !important;
+}
+
+/* Widget Titles Toggle */
+html.hide-widget-titles .widget-title,
+html.hide-widget-titles .widget-header h2,
+html.hide-widget-titles .widget-header h3,
+html.hide-widget-titles .card-title {
+  display: none !important;
+}
+
+/* Widget Icons Toggle */
+html.hide-widget-icons .widget-icon,
+html.hide-widget-icons .icon,
+html.hide-widget-icons svg:not(.logo):not(.required-icon),
+html.hide-widget-icons [class*="icon-"]:not(.logo) {
+  display: none !important;
+}
+
+/* Animations Toggle */
+html.disable-animations *,
+html.disable-animations *::before,
+html.disable-animations *::after {
+  animation-duration: 0s !important;
+  animation-delay: 0s !important;
+  transition-duration: 0s !important;
+  transition-delay: 0s !important;
+  transform: none !important;
+}
+
+html.disable-animations .animate-spin,
+html.disable-animations .animate-pulse,
+html.disable-animations .animate-bounce {
+  animation: none !important;
+}
+
+@media (max-width: 768px) {
+  .sf-app {
+    grid-template-columns: 1fr;
+    grid-template-rows: 64px 1fr;
+    grid-template-areas: "topbar" "content";
+    position: relative;
+  }
+  
+  .sf-sidebar {
+    position: fixed;
+    top: 0;
+    left: -240px;
+    height: 100vh;
+    z-index: 1000;
+    transition: left 0.3s ease;
+  }
+  
+  .sf-sidebar.open {
+    left: 0;
+  }
+  
+  .mobile-nav-toggle {
+    display: flex;
+  }
+  
+  .topbar-right {
+    gap: 0.5rem;
+  }
+  
+  .user-btn span {
+    display: none;
+  }
+  
+  .welcome-text {
+    display: none;
+  }
+}
+
+/* ===== DYNAMIC GREEN COLOR MAPPINGS ===== */
+/* Override Tailwind green/emerald classes to use CSS variables that respond to color scheme */
+/* Only applies on dashboard pages (not landing, demo, auth) */
+
+/* Background Colors */
+html.apply-color-overrides .bg-green-50 { background-color: var(--primary-green-bg) !important; }
+html.apply-color-overrides .bg-green-100 { background-color: var(--primary-green-bg) !important; }
+html.apply-color-overrides .bg-green-200 { background-color: var(--primary-green-light) !important; }
+html.apply-color-overrides .bg-green-400 { background-color: var(--primary-green) !important; }
+html.apply-color-overrides .bg-green-500 { background-color: var(--primary-green) !important; }
+html.apply-color-overrides .bg-green-600 { background-color: var(--primary-green-dark) !important; }
+html.apply-color-overrides .bg-green-700 { background-color: var(--primary-green-dark) !important; }
+html.apply-color-overrides .bg-green-800 { background-color: var(--primary-green-dark) !important; }
+html.apply-color-overrides .bg-green-900 { background-color: var(--primary-green-dark) !important; }
+
+/* Emerald Colors */
+html.apply-color-overrides .bg-emerald-50 { background-color: var(--primary-green-bg) !important; }
+html.apply-color-overrides .bg-emerald-100 { background-color: var(--primary-green-bg) !important; }
+html.apply-color-overrides .bg-emerald-400 { background-color: var(--primary-green) !important; }
+html.apply-color-overrides .bg-emerald-500 { background-color: var(--primary-green) !important; }
+html.apply-color-overrides .bg-emerald-600 { background-color: var(--primary-green-dark) !important; }
+html.apply-color-overrides .bg-emerald-700 { background-color: var(--primary-green-dark) !important; }
+html.apply-color-overrides .bg-emerald-900 { background-color: var(--primary-green-dark) !important; }
+
+/* Text Colors */
+html.apply-color-overrides .text-green-50 { color: var(--primary-green-bg) !important; }
+html.apply-color-overrides .text-green-100 { color: var(--primary-green-bg) !important; }
+html.apply-color-overrides .text-green-400 { color: var(--primary-green) !important; }
+html.apply-color-overrides .text-green-500 { color: var(--primary-green) !important; }
+html.apply-color-overrides .text-green-600 { color: var(--primary-green-dark) !important; }
+html.apply-color-overrides .text-green-700 { color: var(--primary-green-dark) !important; }
+html.apply-color-overrides .text-green-800 { color: var(--primary-green-dark) !important; }
+html.apply-color-overrides .text-green-900 { color: var(--primary-green-dark) !important; }
+
+/* Emerald Text */
+html.apply-color-overrides .text-emerald-400 { color: var(--primary-green) !important; }
+html.apply-color-overrides .text-emerald-500 { color: var(--primary-green) !important; }
+html.apply-color-overrides .text-emerald-600 { color: var(--primary-green-dark) !important; }
+html.apply-color-overrides .text-emerald-700 { color: var(--primary-green-dark) !important; }
+
+/* Border Colors */
+html.apply-color-overrides .border-green-200 { border-color: var(--primary-green-light) !important; }
+html.apply-color-overrides .border-green-500 { border-color: var(--primary-green) !important; }
+html.apply-color-overrides .border-green-600 { border-color: var(--primary-green-dark) !important; }
+
+html.apply-color-overrides .border-emerald-500 { border-color: var(--primary-green) !important; }
+html.apply-color-overrides .border-emerald-600 { border-color: var(--primary-green-dark) !important; }
+
+/* Ring Colors (focus states) */
+html.apply-color-overrides .ring-green-200 { --tw-ring-color: var(--primary-green-light) !important; }
+html.apply-color-overrides .ring-green-500 { --tw-ring-color: var(--primary-green) !important; }
+
+html.apply-color-overrides .ring-emerald-200 { --tw-ring-color: var(--primary-green-light) !important; }
+html.apply-color-overrides .ring-emerald-500 { --tw-ring-color: var(--primary-green) !important; }
+
+/* Focus Ring Colors */
+html.apply-color-overrides .focus\:ring-green-500:focus { --tw-ring-color: var(--primary-green) !important; }
+html.apply-color-overrides .focus\:ring-emerald-500:focus { --tw-ring-color: var(--primary-green) !important; }
+
+/* Focus Border Colors */
+html.apply-color-overrides .focus\:border-green-500:focus { border-color: var(--primary-green) !important; }
+html.apply-color-overrides .focus\:border-emerald-500:focus { border-color: var(--primary-green) !important; }
+
+/* Hover States */
+html.apply-color-overrides .hover\:bg-green-600:hover { background-color: var(--primary-green-dark) !important; }
+html.apply-color-overrides .hover\:bg-green-700:hover { background-color: var(--primary-green-dark) !important; }
+html.apply-color-overrides .hover\:bg-emerald-600:hover { background-color: var(--primary-green-dark) !important; }
+html.apply-color-overrides .hover\:bg-emerald-700:hover { background-color: var(--primary-green-dark) !important; }
+
+/* Dark mode overrides for green colors */
+html.apply-color-overrides.dark .dark\:bg-green-900 { background-color: var(--primary-green-dark) !important; }
+html.apply-color-overrides.dark .dark\:bg-emerald-900 { background-color: var(--primary-green-dark) !important; }
+html.apply-color-overrides.dark .dark\:text-green-400 { color: var(--primary-green) !important; }
+html.apply-color-overrides.dark .dark\:text-emerald-400 { color: var(--primary-green) !important; }
+
+/* Gradient backgrounds */
+html.apply-color-overrides .from-green-400 { --tw-gradient-from: var(--primary-green) var(--tw-gradient-from-position) !important; }
+html.apply-color-overrides .from-green-500 { --tw-gradient-from: var(--primary-green) var(--tw-gradient-from-position) !important; }
+html.apply-color-overrides .to-green-600 { --tw-gradient-to: var(--primary-green-dark) var(--tw-gradient-to-position) !important; }
+
+html.apply-color-overrides .from-emerald-500 { --tw-gradient-from: var(--primary-green) var(--tw-gradient-from-position) !important; }
+html.apply-color-overrides .to-emerald-600 { --tw-gradient-to: var(--primary-green-dark) var(--tw-gradient-to-position) !important; }
+
+/* Spinner/loading animations border colors */
+html.apply-color-overrides .border-green-600 { border-color: var(--primary-green-dark) !important; }
+html.apply-color-overrides .border-emerald-500 { border-color: var(--primary-green) !important; }
+
+/* Special combinations for complex components */
+html.apply-color-overrides .bg-green-100.text-green-800 { 
+  background-color: var(--primary-green-bg) !important; 
+  color: var(--primary-green-dark) !important; 
+}
+
+html.apply-color-overrides .bg-green-100.text-green-600 { 
+  background-color: var(--primary-green-bg) !important; 
+  color: var(--primary-green-dark) !important; 
+}
+
+html.apply-color-overrides .bg-emerald-100.text-emerald-600 { 
+  background-color: var(--primary-green-bg) !important; 
+  color: var(--primary-green-dark) !important; 
+}
+
+/* Peer-checked states (for toggles/checkboxes) */
+html.apply-color-overrides .peer-checked\:bg-emerald-500 { background-color: var(--primary-green) !important; }
+
+/* Handle some specific gradient cases */
+html.apply-color-overrides .bg-gradient-to-r.from-emerald-500.to-teal-600 {
+  background: linear-gradient(to right, var(--primary-green), var(--primary-green-dark)) !important;
+}
+
+html.apply-color-overrides .bg-gradient-to-br.from-green-400.to-green-600 {
+  background: linear-gradient(to bottom right, var(--primary-green), var(--primary-green-dark)) !important;
+}
+
+/* Loading spinner specific cases */
+html.apply-color-overrides .border-t-2.border-b-2.border-emerald-500 {
+  border-top-color: var(--primary-green) !important;
+  border-bottom-color: var(--primary-green) !important;
+}
+
+/* Exclusions: Keep emerald color scheme button as emerald */
+/* Don't apply color overrides to the emerald color scheme selection button */
+html.apply-color-overrides button[onclick*="'emerald'"] .bg-emerald-500,
+html.apply-color-overrides button[onclick*="emerald"] .bg-emerald-500,
+html.apply-color-overrides .color-scheme-emerald .bg-emerald-500 {
+  background-color: #10b981 !important; /* Keep original emerald-500 */
+}
+
+html.apply-color-overrides button[onclick*="'emerald'"] .bg-emerald-50,
+html.apply-color-overrides button[onclick*="emerald"] .bg-emerald-50,
+html.apply-color-overrides .color-scheme-emerald .bg-emerald-50 {
+  background-color: #ecfdf5 !important; /* Keep original emerald-50 */
+}
+
+html.apply-color-overrides button[onclick*="'emerald'"] .border-emerald-500,
+html.apply-color-overrides button[onclick*="emerald"] .border-emerald-500,
+html.apply-color-overrides .color-scheme-emerald .border-emerald-500 {
+  border-color: #10b981 !important; /* Keep original emerald-500 */
+}
+
+html.apply-color-overrides button[onclick*="'emerald'"] .ring-emerald-200,
+html.apply-color-overrides button[onclick*="emerald"] .ring-emerald-200,
+html.apply-color-overrides .color-scheme-emerald .ring-emerald-200 {
+  --tw-ring-color: #a7f3d0 !important; /* Keep original emerald-200 */
+}
+
+/* Global Transitions & Animations */
+* {
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;
+  transition-timing-function: cubic-bezier(0.4, 0.0, 0.2, 1);
+  transition-duration: 300ms;
+}
+
+/* Smooth page transitions */
+.page-transition {
+  animation: pageEnter 0.5s ease-out;
+}
+
+@keyframes pageEnter {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Staggered animations for dashboard cards */
+.stagger-item {
+  animation: staggerFadeIn 0.6s ease-out forwards;
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+.stagger-item:nth-child(1) { animation-delay: 0.1s; }
+.stagger-item:nth-child(2) { animation-delay: 0.2s; }
+.stagger-item:nth-child(3) { animation-delay: 0.3s; }
+.stagger-item:nth-child(4) { animation-delay: 0.4s; }
+.stagger-item:nth-child(5) { animation-delay: 0.5s; }
+.stagger-item:nth-child(6) { animation-delay: 0.6s; }
+
+@keyframes staggerFadeIn {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Component-specific animations */
+.fade-in {
+  animation: fadeIn 0.4s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.slide-in-right {
+  animation: slideInRight 0.5s ease-out;
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.slide-in-left {
+  animation: slideInLeft 0.5s ease-out;
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.scale-in {
+  animation: scaleIn 0.4s ease-out;
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Button transitions */
+.btn-transition {
+  transition: all 0.2s ease-in-out;
+}
+
+.btn-transition:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+/* Card hover effects */
+.card-hover {
+  transition: all 0.3s ease;
+}
+
+.card-hover:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+/* AI Features toggle animations */
+.ai-toggle-enter {
+  animation: aiToggleEnter 0.5s ease-out;
+}
+
+.ai-toggle-exit {
+  animation: aiToggleExit 0.3s ease-in;
+}
+
+@keyframes aiToggleEnter {
+  from {
+    opacity: 0;
+    transform: translateY(-20px) scale(0.95);
+    max-height: 0;
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    max-height: 500px;
+  }
+}
+
+@keyframes aiToggleExit {
+  from {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    max-height: 500px;
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-20px) scale(0.95);
+    max-height: 0;
+  }
+}
+
+/* Loading animations */
+.loading-pulse {
+  animation: pulse 2s cubic-bezier(0.4, 0.0, 0.6, 1) infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: .5;
+  }
+}
+
+.loading-spin {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Smooth settings transitions */
+html.animate-transitions * {
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter, font-size;
+  transition-timing-function: cubic-bezier(0.4, 0.0, 0.2, 1);
+  transition-duration: 300ms;
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
