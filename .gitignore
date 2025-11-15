@@ -5,6 +5,12 @@
 .env.test
 .env.production
 
+# Next.js cache
+.next/cache/
+
+# Node modules cache
+node_modules/.cache/
+
 # Dependency directories
 node_modules/
 jspm_packages/
