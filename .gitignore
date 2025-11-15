@@ -20,6 +20,16 @@ backup/
 # Build output
 /dist
 /build
+.next/
+.next/**/*
+
+# Cache directories
+.cache/
+node_modules/.cache/
+client/node_modules/.cache/
+client/.next/cache/
+*.pack
+*.pack.gz
 
 # Logs
 logs
@@ -58,5 +68,23 @@ Thumbs.db
 !/ai_models/**/README.md
 /uploads/images/*
 !/uploads/images/.gitkeep
+
+# Large files and archives
+*.zip
+*.rar
+*.tar.gz
+*.7z
+*.exe
+*.dll
+*.wasm
+
+# Temporary files
+*.tmp
+*.temp
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
 
 /certs
