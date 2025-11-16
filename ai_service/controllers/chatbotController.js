@@ -65,18 +65,22 @@ function checkRateLimit(userId) {
  */
 const processChatbotQuery = async (req, res) => {
     try {
-        // Validate request
-        const errors = validationResult(req);
-        if (!errors.isEmpty()) {
+        const { message, chat_id, plant_id, context, conversation_history } = req.body;
+        const userId = req.user?.user_id || req.user?.id;
+
+        if (context && typeof context !== 'object') {
             return res.status(400).json({
                 success: false,
-                message: 'Validation failed',
-                errors: errors.array()
+                message: 'Context must be an array'
             });
         }
 
-        const { message, chat_id, plant_id, context } = req.body;
-        const userId = req.user?.user_id || req.user?.id;
+        if (conversation_history && !Array.isArray(conversation_history)) {
+            return res.status(400).json({
+                success: false,
+                message: 'Conversation history must be an array'
+            });
+        }
         
         if (!message) {
             return res.status(400).json({
@@ -109,20 +113,26 @@ const processChatbotQuery = async (req, res) => {
             });
         }
 
+        console.log(`Processing chatbot query for user ${userId}, plant_id: ${plant_id || 'N/A'}, chat_id: ${chat_id || 'N/A'}, message length: ${sanitizedMessage.length}, context length: ${context}`);
+
         // Generate conversation ID if not provided
         const conversationId = chat_id || `conv_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
 
         console.log(`Chatbot query received from user ${userId}: "${message.substring(0, 50)}..."`);
 
-        // Get conversation history from database
-        const conversationHistory = await ChatHistory.getConversationContext(conversationId, 10);
+        let chatHistory = [];
+        if (Array.isArray(conversation_history) && conversation_history.length > 0) {
+            chatHistory = conversation_history;
+        } else {
+            chatHistory = await ChatHistory.getConversationContext(conversationId, 10);
+        }
 
         // Use OpenRouter service for chat completion
         const startTime = Date.now();
         const chatResult = await openRouterService.generateChatCompletion(
             sanitizedMessage,
-            conversationHistory,
-            context || {}
+            chatHistory,
+            context || []
         );
         const responseTime = Date.now() - startTime;
 
@@ -131,6 +141,8 @@ const processChatbotQuery = async (req, res) => {
             console.warn(`Slow chatbot response: ${responseTime}ms for user ${userId}`);
         }
         
+        console.log(`Chatbot response for user ${userId}: "${chatResult.response}`);
+
         // Store the conversation in database
         await ChatHistory.createChat(
             userId,
@@ -139,7 +151,7 @@ const processChatbotQuery = async (req, res) => {
             plant_id,
             conversationId,
             {
-                ...context,
+                context,
                 source: chatResult.source,
                 model: chatResult.model,
                 confidence: chatResult.confidence,
@@ -151,17 +163,12 @@ const processChatbotQuery = async (req, res) => {
         
         console.log(`Chatbot response generated via ${chatResult.source}, plant-related: ${chatResult.isPlantRelated}, confidence: ${chatResult.confidence}`);
 
-        return res.json({
+        return res.status(200).json({
           success: true,
             data: {
                 response: chatResult.response,
                 chat_id: conversationId,
-                timestamp: new Date(),
-                isPlantRelated: chatResult.isPlantRelated,
-                confidence: chatResult.confidence,
-                source: chatResult.source,
-                model: chatResult.model,
-                usage: chatResult.usage
+                timestamp: new Date()
             }
         });
     } catch (error) {

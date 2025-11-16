@@ -10,6 +10,7 @@ import { toast } from 'sonner';
 import { Loader2, Search, Edit, Trash2, UserPlus, Shield } from 'lucide-react';
 import axios from 'axios';
 import { getAuthToken } from '@/utils/auth';
+import axiosClient from '@/api/axiosClient';  
 
 /**
  * Admin User Management Page
@@ -40,23 +41,20 @@ export default function AdminUsersPage() {
   }, [user]);
 
   const fetchUsers = async () => {
-    setIsLoading(true);
     try {
-      const API_URL = process.env.NEXT_PUBLIC_API_URL;
-      const token = getAuthToken();
-
-      const response = await axios.get(`${API_URL}/admin/users`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      if (response.data.success) {
-        setUsers(response.data.data.users || []);
-      }
+      setIsLoading(true);      
+      const [userResponse] = await Promise.all([
+        axiosClient.get('/api/admin/users'),
+      ]);
+      // Defensive: ensure users is always an array
+      const userList = Array.isArray(userResponse.data.data.users)
+        ? userResponse.data.data.users
+          : [];
+      setUsers(userList);
     } catch (error) {
       console.error('Failed to fetch users:', error);
       toast.error('Failed to load users');
+      setUsers([]); // fallback to empty array on error
     } finally {
       setIsLoading(false);
     }
@@ -76,7 +74,7 @@ export default function AdminUsersPage() {
       const token = getAuthToken();
 
       const response = await axios.put(
-        `${API_URL}/admin/users/${selectedUser.user_id}`,
+        `${API_URL}/api/admin/users/${selectedUser.user_id}`,
         {
           given_name: selectedUser.given_name,
           family_name: selectedUser.family_name,
@@ -116,7 +114,7 @@ export default function AdminUsersPage() {
       const API_URL = process.env.NEXT_PUBLIC_API_URL;
       const token = getAuthToken();
 
-      const response = await axios.delete(`${API_URL}/admin/users/${userId}`, {
+      const response = await axios.delete(`${API_URL}/api/admin/users/${userId}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -218,14 +216,15 @@ export default function AdminUsersPage() {
                     </td>
                     <td className="py-3 px-4">{userData.email}</td>
                     <td className="py-3 px-4">
-                      {userData.country_code && userData.phone_number
-                        ? `${userData.country_code} ${userData.phone_number}`
+                      {userData.phone_number
+                        ? `${userData.phone_number}`
                         : '-'}
                     </td>
                     <td className="py-3 px-4">
                       <span className={`inline-flex px-2 py-1 rounded-full text-xs font-medium ${
                         userData.role === 'Admin' ? 'bg-red-100 text-red-800' :
-                        userData.role === 'Premium' ? 'bg-purple-100 text-purple-800' :
+                        userData.role === 'Ultimate' ? 'bg-purple-100 text-purple-800' :
+                        userData.role === 'Premium' ? 'bg-green-100 text-green-800' :
                         'bg-gray-100 text-gray-800'
                       }`}>
                         {userData.role}

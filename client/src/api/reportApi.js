@@ -1,42 +1,25 @@
 // src/api/reportApi.js
 import axiosClient from "./axiosClient";
 
+/**
+ * Admin Reports API
+ * Mirrors the lightweight helper style used in adminApi for consistency.
+ */
 const reportApi = {
-  // Generate plant health report
-  generatePlantReport: (plantId, period = 'weekly') =>
-    axiosClient.post(`/reports/plant/${plantId}`, { period }),
+  // Fetch aggregated report data (users, devices, etc.)
+  getReports: (params) =>
+    axiosClient.get("/admin/reports", { params }),
 
-  // Get existing reports
-  getReports: (type = 'all', limit = 10, offset = 0) =>
-    axiosClient.get("/reports", {
-      params: { type, limit, offset }
+  // Fetch profit analysis dataset for selected period
+  getProfitAnalysis: (params) =>
+    axiosClient.get("/admin/profit-analysis", { params }),
+
+  // Download reports (CSV, PDF, etc.) with blob response
+  downloadReport: (params) =>
+    axiosClient.get("/admin/reports", {
+      params,
+      responseType: "blob",
     }),
-
-  // Get specific report by ID
-  getReportById: (reportId) =>
-    axiosClient.get(`/reports/${reportId}`),
-
-  // Download report as PDF
-  downloadReport: (reportId) =>
-    axiosClient.get(`/reports/${reportId}/download`, {
-      responseType: 'blob'
-    }),
-
-  // Generate system analytics report
-  generateSystemReport: (startDate, endDate) =>
-    axiosClient.post("/reports/system", { startDate, endDate }),
-
-  // Get report templates
-  getReportTemplates: () =>
-    axiosClient.get("/reports/templates"),
-
-  // Schedule automated report
-  scheduleReport: (reportConfig) =>
-    axiosClient.post("/reports/schedule", reportConfig),
-
-  // Delete report
-  deleteReport: (reportId) =>
-    axiosClient.delete(`/reports/${reportId}`),
 };
 
 export default reportApi;

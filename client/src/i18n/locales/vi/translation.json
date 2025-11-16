@@ -149,6 +149,7 @@
 
 "navigation": {
 "home": "Trang chủ",
+"users": "Người dùng",
 "dashboard": "Bảng điều khiển",
 "zones": "Khu vực",
 "reports": "Báo cáo",
@@ -860,7 +861,7 @@
 "customZones": "Vùng tùy chỉnh",
 "customZonesDesc": "Sắp xếp cây thành các vùng tùy chỉnh dựa trên vị trí, loại hoặc yêu cầu chăm sóc để tối ưu hóa giám sát và quản lý.",
 "dataExport": "Xuất dữ liệu",
-"dataExportDesc": "Xuất dữ liệu cây của bạn ở nhiều định dạng khác nhau, bao gồm CSV và PDF, để lưu trữ hồ sơ hoặc phân tích thêm.",
+"dataExportDesc": "Xuất dữ liệu cây của bạn ở nhiều định dạng khác nhau để lưu trữ hồ sơ hoặc phân tích thêm.",
 "prioritySupport": "Hỗ trợ ưu tiên",
 "prioritySupportDesc": "Nhận quyền ưu tiên với đội ngũ hỗ trợ của chúng tôi với thời gian phản hồi nhanh hơn và hỗ trợ chuyên dụng cho mọi vấn đề.",
 "manageSubscription": "Quản lý đăng ký của bạn",

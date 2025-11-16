@@ -7,6 +7,7 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter }
 import { Input } from '../ui/Input';
 import { Button } from '../ui/Button';
 import axios from 'axios';
+import { authApi } from '@/api';
 
 // Direct API URL - don't rely on the API client which might have issues
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3010';
@@ -78,19 +79,7 @@ export function ResetPasswordForm({ token }) {
     try {
       console.log('Sending password reset request with token:', token);
       
-      const response = await axios.post(
-        `${API_URL}/auth/reset-password?token=${token}`, 
-        { 
-          password: password.trim(),
-          confirmPassword: confirmPassword.trim()
-        },
-        { 
-          timeout: 15000, // 15 second timeout
-          headers: {
-            'Content-Type': 'application/json'
-          }
-        }
-      );
+      const response = await authApi.resetPassword(token, password);
       
       console.log('Password reset API response:', response.data);
       

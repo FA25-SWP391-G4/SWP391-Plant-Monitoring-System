@@ -101,7 +101,7 @@ export default function DevicesPage() {
 
           <div className="hidden md:block">
             <button 
-              onClick={() => router.push('/devices/add')}
+              onClick={() => router.push('/add-plant')}
               className="bg-white/20 backdrop-blur-sm hover:bg-white/30 text-white px-4 py-2 rounded-lg font-medium transition-colors flex items-center space-x-2 btn-transition"
             >
               <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">

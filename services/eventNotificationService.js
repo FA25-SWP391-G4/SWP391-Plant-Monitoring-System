@@ -147,6 +147,24 @@ class EventNotificationService {
             }
         }
 
+        if (message.toLowerCase().includes('device created')) {
+            return {
+                user_id: device ? device.user_id : metadata.userId || null,
+                type: 'device_created',
+                title: 'New Device Added',
+                message: `Your device "${device?.device_name || 'New Device'}" has been added`,
+                priority: 'medium',
+                details: JSON.stringify({
+                    device_key: deviceKey,
+                    device_name: device ? device.device_name : 'Unknown Device',
+                    timestamp: new Date(),
+                    source: source
+                }),
+                action_url: device ? `/devices/${deviceKey}` : '/devices',
+                expires_at: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000) // 7 days
+            };
+        }
+
         // Device offline/online events
         if (message.toLowerCase().includes('offline')) {
             return {
@@ -238,6 +256,25 @@ class EventNotificationService {
             } catch (error) {
                 // Plant not found, proceed without plant context
             }
+        }
+
+        if (message.toLowerCase().includes('plant created')) {
+            return {
+                user_id: plant ? plant.user_id : metadata.userId || null,
+                type: 'plant_created',
+                title: 'New Plant Added',
+                message: `Your plant "${plant?.custom_name || 'New Plant'}" has been added`,
+                priority: 'medium',
+                details: JSON.stringify({
+                    plant_id: plantId,
+                    plant_name: plant ? plant.custom_name : 'Unknown Plant',
+                    message: message,
+                    timestamp: new Date(),
+                    source: source
+                }),
+                action_url: plant ? `/plants/${plantId}` : '/plants',
+                expires_at: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000) // 7 days
+            };
         }
 
         // Watering alerts
@@ -432,6 +469,11 @@ class EventNotificationService {
 
         // Payment success
         if (message.toLowerCase().includes('success') || message.toLowerCase().includes('completed')) {
+            await SystemLog.info(
+                'payment',
+                'Payment completed successfully',
+                { userId: metadata.userId }
+            );
             return {
                 user_id: metadata.userId || null,
                 title: `Payment Successful`,

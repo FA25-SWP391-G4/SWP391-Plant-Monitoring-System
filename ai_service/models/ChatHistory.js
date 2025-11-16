@@ -26,8 +26,8 @@ class ChatHistory {
     static async createChat(userId, userMessage, aiResponse = null, plantId = null, conversationId = null, context = {}) {
         try {
             const query = `
-                INSERT INTO chat_history (user_id, plant_id, chat_id, message, response, context, created_at)
-                VALUES ($1, $2, $3, $4, $5, $6, $7)
+                INSERT INTO chat_history (user_id, plant_id, chat_id, user_message, ai_response, timestamp)
+                VALUES ($1, $2, $3, $4, $5, $6)
                 RETURNING *
             `;
             

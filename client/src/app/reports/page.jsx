@@ -10,7 +10,7 @@ import { Card, CardContent } from '@/components/ui/Card';
 import { Loader } from '@/components/ui/loader';
 import { AlertCircle, FileSpreadsheet, FileBarChart, Camera, Leaf, BarChart as BarChartIcon, Droplets } from 'lucide-react';
 import plantApi from '@/api/plantApi';
-import reportsApi from '@/api/reportsApi';
+import reportApi from '@/api/reportApi';
 import LineChart from '@/components/charts/LineChart';
 import BarChart from '@/components/charts/BarChart';
 import PieChart from '@/components/charts/PieChart';

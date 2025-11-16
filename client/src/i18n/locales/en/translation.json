@@ -135,6 +135,7 @@
     "dashboard": "Dashboard",
     "zones": "Zones",
     "reports": "Reports",
+    "users": "Users",
     "searchReports": "Search Reports",
     "thresholds": "Thresholds",
     "upgrade": "Upgrade",
@@ -1097,46 +1098,305 @@
   },
 
   "time": {
-    "today": "Today"
+  "today": "Today"
+},
+
+"profile": {
+  "title": "User Profile",
+  "subtitle": "Manage your account information and settings",
+  "information": "Profile Information",
+  "informationDesc": "Update your personal details",
+  "editProfile": "Edit Profile",
+  "save": "Save",
+  "cancel": "Cancel",
+  "role": "Role",
+  "firstName": "First Name",
+  "lastName": "Last Name",
+  "email": "Email",
+  "phoneNumber": "Phone Number",
+  "memberSince": "Member Since",
+  "password": "Password",
+  "passwordDesc": "Update your password",
+  "changePassword": "Change Password",
+  "currentPassword": "Current Password",
+  "newPassword": "New Password",
+  "confirmNewPassword": "Confirm New Password",
+  "updatePassword": "Update Password",
+  "enterFirstName": "Enter first name",
+  "enterLastName": "Enter last name",  
+  "enterEmail": "Enter email",
+  "enterCurrentPassword": "Enter current password",
+  "enterNewPassword": "Enter new password",
+  "profileUpdated": "Profile updated successfully",
+  "passwordChanged": "Password changed successfully",
+  "passwordsDoNotMatch": "Passwords do not match",
+  "passwordTooShort": "Password must be at least 8 characters",
+  "updateProfileError": "Failed to update profile",
+  "changePasswordError": "Failed to change password"
+},
+
+"home": {
+  "pageTitle": "Plant Monitoring System - Smart Plant Care",
+  "metaDescription": "Monitor and care for your plants with our smart plant monitoring system"
+},
+
+"admin": {
+  "common": {
+    "accessDeniedTitle": "Access Denied",
+    "accessDeniedDescription": "You do not have permission to access this page.",
+    "returnToDashboard": "Return to Dashboard",
+    "refresh": "Refresh"
   },
-
-  "profile": {
-    "title": "User Profile",
-    "subtitle": "Manage your account information and settings",
-    "information": "Profile Information",
-    "informationDesc": "Update your personal details",
-    "editProfile": "Edit Profile",
-    "save": "Save",
-    "cancel": "Cancel",
-    "role": "Role",
-    "firstName": "First Name",
-    "lastName": "Last Name",
-    "email": "Email",
-    "phoneNumber": "Phone Number",
-    "memberSince": "Member Since",
-    "password": "Password",
-    "passwordDesc": "Update your password",
-    "changePassword": "Change Password",
-    "currentPassword": "Current Password",
-    "newPassword": "New Password",
-    "confirmNewPassword": "Confirm New Password",
-    "updatePassword": "Update Password",
-    "enterFirstName": "Enter first name",
-    "enterLastName": "Enter last name",  
-    "enterEmail": "Enter email",
-    "enterCurrentPassword": "Enter current password",
-    "enterNewPassword": "Enter new password",
-
-    "profileUpdated": "Profile updated successfully",
-    "passwordChanged": "Password changed successfully",
-    "passwordsDoNotMatch": "Passwords do not match",
-    "passwordTooShort": "Password must be at least 8 characters",
-    "updateProfileError": "Failed to update profile",
-    "changePasswordError": "Failed to change password"
+  "reports": {
+    "loading": "Loading reports...",
+    "header": {
+      "title": "System Reports",
+      "subtitle": "Comprehensive analytics and reporting dashboard"
+    },
+    "controls": {
+      "period": {
+        "placeholder": "Last Day",
+        "day": "Last Day",
+        "week": "Last Week",
+        "month": "Last Month",
+        "year": "Last Year"
+      },
+      "reportType": {
+        "users": "User Reports",
+        "devices": "Device Reports",
+        "sensors": "Sensor Reports",
+        "watering": "Watering Reports"
+      }
+    },
+    "tabs": {
+      "overview": "Overview",
+      "financial": "Financial",
+      "technical": "Technical"
+    },
+    "metrics": {
+      "revenue": {
+        "title": "Revenue",
+        "description": "Total revenue for period"
+      },
+      "customers": {
+        "title": "Customers",
+        "description": "{{value}}% conversion rate"
+      },
+      "devices": {
+        "title": "Devices",
+        "description": "{{value}} active"
+      },
+      "avgCustomerValue": {
+        "title": "Avg. Customer Value",
+        "description": "Revenue per customer"
+      }
+    },
+    "charts": {
+      "primary": {
+        "title": "{{type}} Trend",
+        "description": "{{type}} data for the last {{period}}"
+      },
+      "revenueDistribution": {
+        "title": "Revenue Distribution",
+        "description": "Daily revenue breakdown"
+      },
+      "revenueTrendAnalysis": {
+        "title": "Revenue Trend Analysis",
+        "description": "Detailed revenue analysis for selected period"
+      }
+    },
+    "financial": {
+      "revenueBreakdown": {
+        "title": "Revenue Breakdown",
+        "description": "Financial performance metrics",
+        "totalRevenue": "Total Revenue:",
+        "operatingCosts": "Operating Costs:",
+        "grossProfit": "Gross Profit:",
+        "profitMargin": "Profit Margin:"
+      },
+      "customerMetrics": {
+        "title": "Customer Metrics",
+        "description": "Customer analysis data",
+        "roleUsers": "{{role}} Users:",
+        "avgValue": "Avg. Customer Value:"
+      },
+      "revenueForecast": {
+        "title": "Revenue Forecast",
+        "description": "Next 7 days prediction",
+        "methodology": "Based on {{method}} method"
+      }
+    },
+    "technical": {
+      "performance": {
+        "title": "System Performance",
+        "description": "Technical system metrics",
+        "totalUsers": "Total Users:",
+        "activeDevices": "Active Devices:",
+        "dataPoints": "Data Points:"
+      },
+      "dataQuality": {
+        "title": "Data Quality",
+        "description": "Data integrity and completeness",
+        "completeness": "Data Completeness:",
+        "errorRate": "Error Rate:",
+        "uptime": "Uptime:"
+      },
+      "systemActivity": {
+        "title": "System Activity",
+        "description": "System performance over time"
+      }
+    }
   },
-
-  "home": {
-    "pageTitle": "Plant Monitoring System - Smart Plant Care",
-    "metaDescription": "Monitor and care for your plants with our smart plant monitoring system"
+  "dashboard": {
+    "loading": "Loading admin dashboard...",
+    "header": {
+      "title": "Admin Dashboard",
+      "subtitle": "Welcome back, {{name}}",
+      "defaultName": "Administrator",
+      "viewUserDashboard": "View User Dashboard"
+    },
+    "features": {
+      "userManagement": {
+        "title": "User Management",
+        "description": "Manage users, roles, and permissions"
+      },
+      "systemReports": {
+        "title": "System Reports",
+        "description": "View system-wide analytics and reports"
+      },
+      "globalSettings": {
+        "title": "Global Settings",
+        "description": "Configure system-wide settings"
+      },
+      "security": {
+        "title": "Security & Logs",
+        "description": "Monitor system logs and security"
+      },
+      "database": {
+        "title": "Database Management",
+        "description": "Backup, restore, and manage data"
+      },
+      "content": {
+        "title": "Content Management",
+        "description": "Manage multi-language content"
+      }
+    },
+    "metrics": {
+      "totalUsers": {
+        "title": "Total Users",
+        "description": "{{value}}% premium users"
+      },
+      "activeDevices": {
+        "title": "Active Devices",
+        "description": "{{value}}% online"
+      },
+      "monthlyRevenue": {
+        "title": "Monthly Revenue",
+        "description": "{{value}} transactions"
+      },
+      "systemHealth": {
+        "title": "System Health",
+        "description": "{{value}} services monitored"
+      }
+    },
+    "charts": {
+      "userGrowth": {
+        "title": "User Growth Trend",
+        "description": "Daily new user registrations and premium upgrades"
+      },
+      "deviceStatus": {
+        "title": "Device Status",
+        "description": "Current online/offline device distribution"
+      },
+      "revenueTrend": {
+        "title": "Revenue Trend",
+        "description": "Daily revenue for the last 30 days"
+      },
+      "revenueDataset": "Daily Revenue ($)"
+    },
+    "sections": {
+      "systemHealth": {
+        "title": "System Health Status",
+        "description": "Current status of all system components"
+      },
+      "adminTools": {
+        "title": "Administrative Tools",
+        "access": "Access {{tool}} \u2192"
+      },
+      "recentErrors": {
+        "title": "Recent System Errors",
+        "description": "Latest error events that require attention"
+      },
+      "financialOverview": {
+        "title": "Financial Overview",
+        "description": "Key financial metrics and profit analysis"
+      }
+    }
+  },
+  "devices": {
+    "title": "Device Management",
+    "subtitle": "Monitor, filter, and audit all plant monitoring devices",
+    "filters": {
+      "title": "Filters",
+      "description": "Search across device name, key, or owner, and filter by status.",
+      "searchPlaceholder": "Search by name, key, or owner",
+      "status": {
+        "all": "All statuses",
+        "online": "Online",
+        "offline": "Offline",
+        "maintenance": "Maintenance",
+        "pending": "Pending Activation"
+      }
+    },
+    "table": {
+      "title": "Devices ({{count}})",
+      "description": "Overview of every registered IoT device in the system.",
+      "headers": {
+        "device": "Device",
+        "owner": "Owner",
+        "status": "Status",
+        "lastSeen": "Last Seen",
+        "created": "Created",
+        "key": "Key"
+      },
+      "unnamedDevice": "Unnamed Device",
+      "defaultType": "Sensor",
+      "unassigned": "Unassigned",
+      "empty": "No devices match your current filters."
+    }
+  },
+  "plants": {
+    "title": "Plant Management",
+    "subtitle": "Review every registered plant and its associated owner/device.",
+    "filters": {
+      "title": "Filters",
+      "description": "Search by plant name, species, or owner and narrow by health status.",
+      "searchPlaceholder": "Search by name, species, or owner",
+      "status": {
+        "all": "All statuses",
+        "healthy": "Healthy",
+        "warning": "Warning",
+        "critical": "Critical",
+        "dormant": "Dormant"
+      }
+    },
+    "table": {
+      "title": "Plants ({{count}})",
+      "description": "Complete view of every plant synced to the platform.",
+      "headers": {
+        "plant": "Plant",
+        "owner": "Owner",
+        "device": "Device",
+        "status": "Status",
+        "lastWatered": "Last Watered",
+        "created": "Created"
+      },
+      "unnamed": "Unnamed Plant",
+      "unknownSpecies": "Unknown Species",
+      "unassigned": "Unassigned",
+      "noDevice": "No Device Linked",
+      "empty": "No plants match your current filters."
+    }
   }
+}
 }

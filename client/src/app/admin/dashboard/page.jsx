@@ -11,6 +11,7 @@ import LineChart from '@/components/admin/LineChart';
 import DoughnutChart from '@/components/admin/DoughnutChart';
 import BarChart from '@/components/admin/BarChart';
 import axiosClient from '@/api/axiosClient';
+import { useTranslation } from 'react-i18next';
 
 /**
  * Admin Dashboard Page
@@ -19,6 +20,7 @@ import axiosClient from '@/api/axiosClient';
 export default function AdminDashboard() {
   const router = useRouter();
   const { user, loading } = useAuth();
+  const { t } = useTranslation();
   const [dashboardData, setDashboardData] = useState(null);
   const [profitData, setProfitData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -66,7 +68,7 @@ export default function AdminDashboard() {
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Loading admin dashboard...</p>
+          <p className="mt-4 text-gray-600">{t('admin.dashboard.loading', 'Loading admin dashboard...')}</p>
         </div>
       </div>
     );
@@ -77,12 +79,12 @@ export default function AdminDashboard() {
       <div className="flex items-center justify-center min-h-screen">
         <Card className="w-full max-w-md">
           <CardHeader>
-            <CardTitle className="text-destructive">Access Denied</CardTitle>
-            <CardDescription>You do not have permission to access this page.</CardDescription>
+            <CardTitle className="text-destructive">{t('admin.common.accessDeniedTitle', 'Access Denied')}</CardTitle>
+            <CardDescription>{t('admin.common.accessDeniedDescription', 'You do not have permission to access this page.')}</CardDescription>
           </CardHeader>
           <CardContent>
             <Button onClick={() => router.push('/dashboard')} className="w-full">
-              Return to Dashboard
+              {t('admin.common.returnToDashboard', 'Return to Dashboard')}
             </Button>
           </CardContent>
         </Card>
@@ -92,48 +94,48 @@ export default function AdminDashboard() {
 
   const adminFeatures = [
     {
-      title: 'User Management',
-      description: 'Manage users, roles, and permissions',
+      title: t('admin.dashboard.features.userManagement.title', 'User Management'),
+      description: t('admin.dashboard.features.userManagement.description', 'Manage users, roles, and permissions'),
       icon: Users,
       href: '/admin/users',
       color: 'text-blue-600',
       bgColor: 'bg-blue-50',
     },
     {
-      title: 'System Reports',
-      description: 'View system-wide analytics and reports',
+      title: t('admin.dashboard.features.systemReports.title', 'System Reports'),
+      description: t('admin.dashboard.features.systemReports.description', 'View system-wide analytics and reports'),
       icon: BarChart3,
       href: '/admin/reports',
       color: 'text-green-600',
       bgColor: 'bg-green-50',
     },
     {
-      title: 'Global Settings',
-      description: 'Configure system-wide settings',
+      title: t('admin.dashboard.features.globalSettings.title', 'Global Settings'),
+      description: t('admin.dashboard.features.globalSettings.description', 'Configure system-wide settings'),
       icon: Settings,
       href: '/admin/settings',
       color: 'text-purple-600',
       bgColor: 'bg-purple-50',
     },
     {
-      title: 'Security & Logs',
-      description: 'Monitor system logs and security',
+      title: t('admin.dashboard.features.security.title', 'Security & Logs'),
+      description: t('admin.dashboard.features.security.description', 'Monitor system logs and security'),
       icon: Shield,
       href: '/admin/security',
       color: 'text-red-600',
       bgColor: 'bg-red-50',
     },
     {
-      title: 'Database Management',
-      description: 'Backup, restore, and manage data',
+      title: t('admin.dashboard.features.database.title', 'Database Management'),
+      description: t('admin.dashboard.features.database.description', 'Backup, restore, and manage data'),
       icon: Database,
       href: '/admin/database',
       color: 'text-indigo-600',
       bgColor: 'bg-indigo-50',
     },
     {
-      title: 'Content Management',
-      description: 'Manage multi-language content',
+      title: t('admin.dashboard.features.content.title', 'Content Management'),
+      description: t('admin.dashboard.features.content.description', 'Manage multi-language content'),
       icon: FileText,
       href: '/admin/content',
       color: 'text-orange-600',
@@ -141,24 +143,87 @@ export default function AdminDashboard() {
     },
   ];
 
+  const formatPrice = (price, locale = 'vi-VN', currency = 'VND') => {
+    return new Intl.NumberFormat(locale, {
+      style: 'currency',
+      currency: currency,
+    }).format(price);
+  }
+
+  const buildMonthlyTimeline = (entries) => {
+    if (!Array.isArray(entries) || !entries.length) return null;
+
+    const sortedEntries = [...entries]
+      .filter((item) => item?.date)
+      .sort((a, b) => new Date(a.date) - new Date(b.date));
+
+    if (!sortedEntries.length) return null;
+
+    const baseDate = new Date(sortedEntries[0].date);
+    if (Number.isNaN(baseDate)) return null;
+
+    const targetMonth = baseDate.getMonth();
+    const targetYear = baseDate.getFullYear();
+    const daysInMonth = new Date(targetYear, targetMonth + 1, 0).getDate();
+
+    const dayMap = sortedEntries.reduce((acc, entry) => {
+      const entryDate = new Date(entry.date);
+      if (
+        !Number.isNaN(entryDate) &&
+        entryDate.getMonth() === targetMonth &&
+        entryDate.getFullYear() === targetYear
+      ) {
+        acc[entryDate.getDate()] = entry;
+      }
+      return acc;
+    }, {});
+
+    return {
+      labels: Array.from({ length: daysInMonth }, (_, idx) => `${idx + 1}`),
+      dayMap,
+    };
+  };
+
+  const buildDatasetValues = (timeline, key) => {
+    if (!timeline) return null;
+    return timeline.labels.map((_, idx) => timeline.dayMap[idx + 1]?.[key] ?? 0);
+  };
+
   // Prepare chart data
+  const userGrowthTimeline = buildMonthlyTimeline(dashboardData?.users?.growth);
+
   const userGrowthChartData = {
-    labels: dashboardData?.users?.growth?.map(item => 
-      new Date(item.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
-    ) || [],
+    labels:
+      userGrowthTimeline?.labels ||
+      dashboardData?.users?.growth?.map(item => 
+        new Date(item.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
+      ) || [],
     datasets: [
       {
         label: 'New Users',
-        data: dashboardData?.users?.growth?.map(item => item.new_users) || [],
+        data:
+          buildDatasetValues(userGrowthTimeline, 'new_users') ||
+          dashboardData?.users?.growth?.map(item => item.new_users) || [],
         borderColor: 'rgb(59, 130, 246)',
         backgroundColor: 'rgba(59, 130, 246, 0.1)',
         tension: 0.3,
       },
       {
         label: 'Premium Users',
-        data: dashboardData?.users?.growth?.map(item => item.new_premium_users) || [],
-        borderColor: 'rgb(16, 185, 129)',
+        data:
+          buildDatasetValues(userGrowthTimeline, 'new_premium_users') ||
+          dashboardData?.users?.growth?.map(item => item.new_premium_users) || [],
+        borderColor: 'rgb(22, 163, 74)',
         backgroundColor: 'rgba(16, 185, 129, 0.1)',
+        tension: 0.3,
+      },
+      {
+        label: 'Ultimate Users',
+        data:
+          buildDatasetValues(userGrowthTimeline, 'new_ultimate_users') ||
+          dashboardData?.users?.growth?.map(item => item.new_ultimate_users) || [],
+        borderColor: 'rgb(134, 46, 212)',
+        backgroundColor: 'rgba(234, 179, 8, 0.1)',
         tension: 0.3,
       },
     ],
@@ -185,7 +250,7 @@ export default function AdminDashboard() {
     ) || [],
     datasets: [
       {
-        label: 'Daily Revenue ($)',
+        label: t('admin.dashboard.charts.revenueDataset', 'Daily Revenue ($)'),
         data: profitData?.revenue?.periodData?.map(item => parseFloat(item.revenue) || 0) || [],
         backgroundColor: 'rgba(16, 185, 129, 0.8)',
         borderColor: 'rgb(16, 185, 129)',
@@ -199,18 +264,20 @@ export default function AdminDashboard() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Admin Dashboard</h1>
+          <h1 className="text-3xl font-bold text-gray-900">{t('admin.dashboard.header.title', 'Admin Dashboard')}</h1>
           <p className="mt-2 text-gray-600">
-            Welcome back, {user.given_name || user.full_name || 'Administrator'}
+            {t('admin.dashboard.header.subtitle', 'Welcome back, {{name}}', {
+              name: user.given_name || user.full_name || t('admin.dashboard.header.defaultName', 'Administrator')
+            })}
           </p>
         </div>
         <div className="flex space-x-3">
           <Button variant="outline" onClick={handleRefresh}>
             <RefreshCw className="w-4 h-4 mr-2" />
-            Refresh
+            {t('admin.common.refresh', 'Refresh')}
           </Button>
           <Button variant="outline" onClick={() => router.push('/dashboard')}>
-            View User Dashboard
+            {t('admin.dashboard.header.viewUserDashboard', 'View User Dashboard')}
           </Button>
         </div>
       </div>
@@ -218,30 +285,38 @@ export default function AdminDashboard() {
       {/* Key Metrics */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <StatCard
-          title="Total Users"
+          title={t('admin.dashboard.metrics.totalUsers.title', 'Total Users')}
           value={dashboardData?.users?.total?.toLocaleString() || '0'}
-          description={`${dashboardData?.users?.percentagePremium || 0}% premium users`}
+          description={t('admin.dashboard.metrics.totalUsers.description', '{{value}}% premium users', {
+            value: dashboardData?.users?.percentagePremium || 0
+          })}
           icon={Users}
           color="blue"
         />
         <StatCard
-          title="Active Devices"
+          title={t('admin.dashboard.metrics.activeDevices.title', 'Active Devices')}
           value={`${dashboardData?.devices?.active || 0}/${dashboardData?.devices?.total || 0}`}
-          description={`${dashboardData?.devices?.percentageActive || 0}% online`}
+          description={t('admin.dashboard.metrics.activeDevices.description', '{{value}}% online', {
+            value: dashboardData?.devices?.percentageActive || 0
+          })}
           icon={Smartphone}
           color="green"
         />
         <StatCard
-          title="Monthly Revenue"
-          value={`$${profitData?.revenue?.summary?.totalRevenue?.toFixed(2) || '0.00'}`}
-          description={`${profitData?.revenue?.summary?.totalTransactions || 0} transactions`}
+          title={t('admin.dashboard.metrics.monthlyRevenue.title', 'Monthly Revenue')}
+          value={formatPrice(profitData?.revenue?.summary?.totalRevenue || 0)}
+          description={t('admin.dashboard.metrics.monthlyRevenue.description', '{{value}} transactions', {
+            value: profitData?.revenue?.summary?.totalTransactions || 0
+          })}
           icon={DollarSign}
           color="purple"
         />
         <StatCard
-          title="System Health"
+          title={t('admin.dashboard.metrics.systemHealth.title', 'System Health')}
           value={Object.values(dashboardData?.systemHealth || {}).filter(Boolean).length}
-          description={`${Object.keys(dashboardData?.systemHealth || {}).length} services monitored`}
+          description={t('admin.dashboard.metrics.systemHealth.description', '{{value}} services monitored', {
+            value: Object.keys(dashboardData?.systemHealth || {}).length
+          })}
           icon={Activity}
           color="indigo"
         />
@@ -250,14 +325,14 @@ export default function AdminDashboard() {
       {/* Charts Row 1 */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <LineChart
-          title="User Growth Trend"
-          description="Daily new user registrations and premium upgrades"
+          title={t('admin.dashboard.charts.userGrowth.title', 'User Growth Trend')}
+          description={t('admin.dashboard.charts.userGrowth.description', 'Daily new user registrations and premium upgrades')}
           data={userGrowthChartData}
           height={300}
         />
         <DoughnutChart
-          title="Device Status"
-          description="Current online/offline device distribution"
+          title={t('admin.dashboard.charts.deviceStatus.title', 'Device Status')}
+          description={t('admin.dashboard.charts.deviceStatus.description', 'Current online/offline device distribution')}
           data={deviceStatusChartData}
           height={300}
         />
@@ -266,8 +341,8 @@ export default function AdminDashboard() {
       {/* Charts Row 2 */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <BarChart
-          title="Revenue Trend"
-          description="Daily revenue for the last 30 days"
+          title={t('admin.dashboard.charts.revenueTrend.title', 'Revenue Trend')}
+          description={t('admin.dashboard.charts.revenueTrend.description', 'Daily revenue for the last 30 days')}
           data={revenueChartData}
           height={300}
         />
@@ -275,8 +350,8 @@ export default function AdminDashboard() {
         {/* System Health Status */}
         <Card>
           <CardHeader>
-            <CardTitle>System Health Status</CardTitle>
-            <CardDescription>Current status of all system components</CardDescription>
+            <CardTitle>{t('admin.dashboard.sections.systemHealth.title', 'System Health Status')}</CardTitle>
+            <CardDescription>{t('admin.dashboard.sections.systemHealth.description', 'Current status of all system components')}</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="space-y-3">
@@ -293,7 +368,7 @@ export default function AdminDashboard() {
 
       {/* Admin Features Grid */}
       <div>
-        <h2 className="text-2xl font-bold text-gray-900 mb-6">Administrative Tools</h2>
+        <h2 className="text-2xl font-bold text-gray-900 mb-6">{t('admin.dashboard.sections.adminTools.title', 'Administrative Tools')}</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {adminFeatures.map((feature) => {
             const Icon = feature.icon;
@@ -312,7 +387,7 @@ export default function AdminDashboard() {
                 </CardHeader>
                 <CardContent>
                   <Button variant="ghost" className="w-full justify-start">
-                    Access {feature.title} →
+                    {t('admin.dashboard.sections.adminTools.access', 'Access {{tool}} →', { tool: feature.title })}
                   </Button>
                 </CardContent>
               </Card>
@@ -325,8 +400,8 @@ export default function AdminDashboard() {
       {dashboardData?.recentErrors && dashboardData.recentErrors.length > 0 && (
         <Card>
           <CardHeader>
-            <CardTitle>Recent System Errors</CardTitle>
-            <CardDescription>Latest error events that require attention</CardDescription>
+            <CardTitle>{t('admin.dashboard.sections.recentErrors.title', 'Recent System Errors')}</CardTitle>
+            <CardDescription>{t('admin.dashboard.sections.recentErrors.description', 'Latest error events that require attention')}</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
@@ -350,14 +425,14 @@ export default function AdminDashboard() {
       {profitData && (
         <Card>
           <CardHeader>
-            <CardTitle>Financial Overview</CardTitle>
-            <CardDescription>Key financial metrics and profit analysis</CardDescription>
+            <CardTitle>{t('admin.dashboard.sections.financialOverview.title', 'Financial Overview')}</CardTitle>
+            <CardDescription>{t('admin.dashboard.sections.financialOverview.description', 'Key financial metrics and profit analysis')}</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div className="text-center">
                 <div className="text-2xl font-bold text-green-600">
-                  ${profitData.profitMargins?.grossProfit?.toFixed(2) || '0.00'}
+                  {formatPrice(profitData.profitMargins?.grossProfit || 0)}
                 </div>
                 <div className="text-sm text-gray-500">Gross Profit</div>
                 <div className="text-xs text-gray-400">
@@ -366,16 +441,16 @@ export default function AdminDashboard() {
               </div>
               <div className="text-center">
                 <div className="text-2xl font-bold text-blue-600">
-                  ${profitData.profitMargins?.revenue?.toFixed(2) || '0.00'}
+                  {formatPrice(profitData.profitMargins?.revenue || 0)}
                 </div>
                 <div className="text-sm text-gray-500">Total Revenue</div>
                 <div className="text-xs text-gray-400">
-                  ${profitData.profitMargins?.revenuePerCustomer?.toFixed(2) || '0.00'} per customer
+                  {formatPrice(profitData.profitMargins?.revenuePerCustomer || 0)} per customer
                 </div>
               </div>
               <div className="text-center">
                 <div className="text-2xl font-bold text-orange-600">
-                  ${profitData.profitMargins?.totalCosts?.toFixed(2) || '0.00'}
+                  {formatPrice(profitData.profitMargins?.totalCosts || 0)}
                 </div>
                 <div className="text-sm text-gray-500">Operating Costs</div>
                 <div className="text-xs text-gray-400">

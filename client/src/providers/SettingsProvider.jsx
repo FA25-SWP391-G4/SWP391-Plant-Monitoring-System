@@ -19,7 +19,7 @@ const defaultSettings = {
   appearance: {
     theme: 'system',
     fontSize: 'medium',
-    colorScheme: 'blue' // Changed from 'green' to 'blue' as requested
+    colorScheme: 'emerald' // Changed from 'green' to 'blue' as requested
   },
   language: {
     preferred: 'en',

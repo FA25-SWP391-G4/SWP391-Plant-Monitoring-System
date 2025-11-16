@@ -41,8 +41,7 @@ const AIChatbotBubble = () => {
 
   // Check if user has ultimate access - check multiple role formats and subscription status
   const isUltimate = user && (
-    user.role === 'Ultimate' || user.role === 'Ultimate' || 
-    user.role === 'Admin' || user.role === 'admin' ||
+    user.role === 'Ultimate' || user.role === 'ultimate' ||
     user.subscriptionStatus === 'active' ||
     user.isUltimate === true
   );
@@ -124,7 +123,7 @@ const AIChatbotBubble = () => {
       // Add bot response
       const botMessage = {
         id: Date.now() + 1,
-        text: response.data.response,
+        text: response.data.response || response.data.data?.response,
         sender: 'bot',
         timestamp: new Date()
       };

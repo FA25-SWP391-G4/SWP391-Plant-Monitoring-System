@@ -1,0 +1,5 @@
+- form theme
+- google register
+- watering button fix
+- modal refresh
+- water low not start

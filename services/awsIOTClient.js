@@ -66,9 +66,10 @@ connection.on("connect", async () => {
           ? new Date(payloadObj.timestamp)
           : new Date();
         const soil = payloadObj.soil_moisture ?? payloadObj.soilMoisture ?? null;
-        const temp = payloadObj.temperature ?? null;
-        const humidity = payloadObj.air_humidity ?? payloadObj.humidity ?? null;
-        const light = payloadObj.light_intensity ?? payloadObj.light ?? null;
+        const temp = Math.round(payloadObj.temperature * 100) / 100 ?? null;
+        const humidity = Math.round(payloadObj.air_humidity ?? payloadObj.humidity ?? null);
+        const light = Math.round(payloadObj.light_intensity ?? payloadObj.light ?? null);
+        const water_level = Math.round(payloadObj.water_level ?? payloadObj.waterLevel ?? null);
 
         // First, get the plant_id from the device_key
         const plantResult = await pool.query(
@@ -113,6 +114,12 @@ connection.on("connect", async () => {
         } catch (broadcastErr) {
           console.warn("⚠️ Failed to broadcast sensor update via Socket.IO:", broadcastErr);
           // Don't throw - this is non-critical
+        }
+
+        // Send water level to ManualWateringControl if applicable
+        if (water_level !== null) {
+          const wateringControlService = require('./wateringControlService');
+          wateringControlService.updateWaterLevel(deviceId, water_level);
         }
 
         return;

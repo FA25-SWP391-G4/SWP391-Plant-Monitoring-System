@@ -829,55 +829,60 @@ async function forgotPassword(req, res) {
 // Reset Password Controller
 async function resetPassword(req, res) {
     try {
-        const { token } = req.query;
-        const { password, confirmPassword } = req.body;
+        // Accept token from either query string or request body for flexibility
+        const token = req.query.token || req.body.token;
+        const { password, confirmPassword, newPassword } = req.body;
+
+        // Normalize password fields to support both existing and new clients
+        const finalPassword = newPassword || password;
+        const finalConfirmPassword = confirmPassword || newPassword || password;
 
         // Validate inputs
         if (!token) {
             return res.status(400).json({ 
-                error: 'Reset token is required' 
+                success: false,
+                message: 'Reset token is required',
+                error: 'TOKEN_REQUIRED'
             });
         }
 
-        if (!password || !confirmPassword) {
+        if (!finalPassword || !finalConfirmPassword) {
             return res.status(400).json({ 
-                error: 'Password and confirm password are required' 
+                success: false,
+                message: 'Password and confirm password are required',
+                error: 'PASSWORD_REQUIRED'
             });
         }
 
-        if (password !== confirmPassword) {
+        if (finalPassword !== finalConfirmPassword) {
             return res.status(400).json({ 
-                error: 'Passwords do not match' 
+                success: false,
+                message: 'Passwords do not match',
+                error: 'PASSWORD_MISMATCH'
             });
         }
 
-        if (password.length < 6) {
+        if (finalPassword.length < 6) {
             return res.status(400).json({ 
-                error: 'Password must be at least 6 characters long' 
+                success: false,
+                message: 'Password must be at least 6 characters long',
+                error: 'PASSWORD_TOO_SHORT'
             });
         }
 
-        // Verify the token
-        let decodedToken;
-        try {
-            decodedToken = jwt.verify(token, process.env.JWT_SECRET);
-        } catch (error) {
-            return res.status(401).json({ 
-                error: 'Invalid or expired password reset token' 
-            });
-        }
-
-        // Find the user with the given token
+        // Find the user with the given token (database enforces token expiry)
         const user = await User.findByResetToken(token);
 
-        if (!user || user.user_id !== decodedToken.id) {
+        if (!user) {
             return res.status(401).json({ 
-                error: 'Invalid or expired password reset token' 
+                success: false,
+                message: 'Invalid or expired password reset token. Please request a new password reset.',
+                error: 'TOKEN_INVALID'
             });
         }
 
         // Update the user's password and remove the reset token
-        await user.updatePassword(password);
+        await user.updatePassword(finalPassword);
 
         // Send confirmation email with HTML template
         const mailOptions = {
@@ -932,13 +937,16 @@ async function resetPassword(req, res) {
         }
 
         res.status(200).json({ 
+            success: true,
             message: 'Password reset successful. You can now login with your new password.' 
         });
 
     } catch (error) {
         console.error('Reset password error:', error);
         res.status(500).json({ 
-            error: 'Failed to reset password. Please try again later.' 
+            success: false,
+            message: 'Failed to reset password. Please try again later.',
+            error: 'RESET_FAILED'
         });
     }
 }

@@ -35,6 +35,7 @@ const { data } = require('@tensorflow/tfjs');
 const mqttClient = require('../mqtt/mqttClient');
 const db = require('../config/db');
 const schedulerService = require('../services/schedulerService');
+const wateringControlService = require('../services/wateringControlService');
 
 // AWS IoT connection for device communication
 let awsIoTConnection = null;
@@ -120,6 +121,14 @@ async function waterPlant(req, res) {
             return res.status(400).json({
                 success: false,
                 error: 'Device is offline. Cannot water plant.'
+            });
+        }
+
+        const waterStatus = wateringControlService.getWaterStatus(device.device_key);
+        if (!wateringControlService.canWater(device.device_key)) {
+            return res.status(400).json({
+                success: false,
+                error: 'Water tank level is too low. Cannot water plant.'
             });
         }
 
@@ -1009,6 +1018,12 @@ const createPlant = async (req, res) => {
             data: responseData
         });
 
+        await SystemLog.info(
+            'PlantController',
+            `Plant created: ${createdPlant.plant_id}`,
+            { plantId: createdPlant.plant_id, userId: userId }
+        );
+
     } catch (error) {
         console.error('Create plant error:', error);
         
@@ -1394,7 +1409,7 @@ exports.waterPlant = async (req, res) => {
 const updatePlant = async (req, res) => {
     try {
         const { plantId } = req.params;
-        const { custom_name, notes, zone_id, moisture_threshold, species_name, location } = req.body;
+        const { custom_name, notes, zone_id, moisture_threshold, species_name, location, image } = req.body;
 
         // Find the plant first
         const plant = await Plant.findById(plantId);
@@ -1418,6 +1433,7 @@ const updatePlant = async (req, res) => {
         if (custom_name !== undefined) plant.custom_name = custom_name.trim();
         if (notes !== undefined) plant.notes = notes ? notes.trim() : null;
         if (zone_id !== undefined) plant.zone_id = zone_id;
+
         if (moisture_threshold !== undefined) {
             const threshold = parseInt(moisture_threshold);
             if (threshold >= 0 && threshold <= 100) {
@@ -1431,6 +1447,7 @@ const updatePlant = async (req, res) => {
         }
         if (species_name !== undefined) plant.species_name = species_name ? species_name.trim() : null;
         if (location !== undefined) plant.location = location ? location.trim() : null;
+        if (image !== undefined) plant.image = image || null;
 
         // Save the updated plant
         const updatedPlant = await plant.save();

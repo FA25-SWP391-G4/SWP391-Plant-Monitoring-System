@@ -138,6 +138,8 @@ const AIChatbot = ({ plant = null, className = '' }) => {
         location: plant?.location,
         care_info: plant?.care_info
       };
+
+      console.log(`Sending message ${input.trim()} with context ${JSON.stringify(context)} chat ID ${conversationId} plant ID ${plant?.id}`);
       
       // Send to AI service
       const response = await aiApi.chatWithAI({
@@ -177,15 +179,29 @@ const AIChatbot = ({ plant = null, className = '' }) => {
         setIsLoading(false);
         return;
       }
+
+      console.log('AI chatbot raw response:', response);
+
+      // Log possible response locations for debugging
+      console.log('response.data:', response.data);
+      console.log('response.data.data:', response.data?.data);
+      console.log('response.data.response:', response.data?.response);
+
+      const botResponse =
+        response.data.data?.response ||
+        response.data?.response || response.data.data.data?.response ||
+        'I apologize, but I couldn\'t generate a proper response. Please try again.';
+      console.log('botResponse:', botResponse);
+
       
       // Add bot response
       const botMessage = {
         id: Date.now() + 1,
-        text: response.data.response || response.data.data?.response || 'I apologize, but I couldn\'t generate a proper response. Please try again.',
+        text: botResponse,
         sender: 'bot',
         timestamp: new Date().toISOString(),
-        confidence: response.data.confidence || response.data.data?.confidence,
-        suggestions: response.data.suggestions || response.data.data?.suggestions || []
+        confidence: response.data.data?.confidence,
+        suggestions: response.data.data?.suggestions || []
       };
       
       const finalMessages = [...updatedMessages, botMessage];

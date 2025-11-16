@@ -560,6 +560,333 @@ async function bulkUserActions(req, res) {
 }
 
 /**
+ * UC24: GET ALL DEVICES
+ * ===============================
+ * Get all devices with optional filtering and pagination
+ * 
+ * @route GET /api/admin/devices
+ * @access Private - Admin only
+ * @param {string} search - Optional search term for email or name
+ * @param {string} role - Optional role filter (Regular, Premium, Admin)
+ * @param {number} page - Optional page number
+ * @param {number} limit - Optional items per page
+ * @returns {Object} Paginated list of devices
+ */
+async function getAllDevices(req, res) {
+    try {
+        const { search, role, page = 1, limit = 10 } = req.query;
+        const offset = (page - 1) * limit;
+        
+        // Log admin action
+        await SystemLog.create({
+            log_level: 'INFO',
+            source: 'AdminController',
+            message: `Admin ${req.user.user_id} accessed device list`,
+            user_id: req.user.user_id
+        });
+
+        const devices = await Device.findAll({
+            search,
+            role,
+            limit: parseInt(limit),
+            offset: parseInt(offset)
+        });
+
+        const totalCount = await Device.countAll({ search, role });
+        
+        res.status(200).json({
+            success: true,
+            data: {
+                devices,
+                pagination: {
+                    total: totalCount,
+                    page: parseInt(page),
+                    limit: parseInt(limit),
+                    pages: Math.ceil(totalCount / limit)
+                }
+            }
+        });
+    } catch (error) {
+        console.error('Error getting devices:', error);
+        res.status(500).json({
+            success: false,
+            error: 'Failed to retrieve devices'
+        });
+    }
+}
+
+/**
+ * UC24: GET DEVICE BY ID
+ * ===============================
+ * Get detailed information about a specific device
+ * 
+ * @route GET /api/admin/devices/:deviceId
+ * @access Private - Admin only
+ * @param {number} deviceId - ID of the device to get
+ * @returns {Object} Device details
+ */
+async function getDeviceById(req, res) {
+    try {
+        const { deviceId } = req.params;
+        
+        const device = await Device.findById(deviceId);
+        
+        if (!device) {
+            return res.status(404).json({
+                success: false,
+                error: 'Device not found'
+            });
+        }
+        
+        // Log admin action
+        await SystemLog.create({
+            log_level: 'INFO',
+            source: 'AdminController',
+            message: `Admin ${req.user.user_id} viewed device ${deviceId}`,
+            user_id: req.user.user_id
+        });
+        
+        res.status(200).json({
+            success: true,
+            data: {
+                device
+            }
+        });
+    } catch (error) {
+        console.error(`Error getting device ${req.params.deviceId}:`, error);
+        res.status(500).json({
+            success: false,
+            error: 'Failed to retrieve device information'
+        });
+    }
+}
+
+/**
+ * UC24: GET ALL PLANTS
+ * ===============================
+ * Get all plants with optional filtering and pagination
+ * 
+ * @route GET /api/admin/plants
+ * @access Private - Admin only
+ * @param {string} search - Optional search term for email or name
+ * @param {string} role - Optional role filter (Regular, Premium, Admin)
+ * @param {number} page - Optional page number
+ * @param {number} limit - Optional items per page
+ * @returns {Object} Paginated list of plants
+ */
+async function getAllPlants(req, res) {
+    try {
+        const { search, role, page = 1, limit = 10 } = req.query;
+        const offset = (page - 1) * limit;
+        
+        // Log admin action
+        await SystemLog.create({
+            log_level: 'INFO',
+            source: 'AdminController',
+            message: `Admin ${req.user.user_id} accessed plant list`,
+            user_id: req.user.user_id
+        });
+
+        const plants = await Plant.findAll({
+            search,
+            role,
+            limit: parseInt(limit),
+            offset: parseInt(offset)
+        });
+
+        const totalCount = await Plant.countAll({ search, role });
+        
+        res.status(200).json({
+            success: true,
+            data: {
+                plants,
+                pagination: {
+                    total: totalCount,
+                    page: parseInt(page),
+                    limit: parseInt(limit),
+                    pages: Math.ceil(totalCount / limit)
+                }
+            }
+        });
+    } catch (error) {
+        console.error('Error getting plants:', error);
+        res.status(500).json({
+            success: false,
+            error: 'Failed to retrieve plants'
+        });
+    }
+}
+
+/**
+ * UC24: GET PLANT BY ID
+ * ===============================
+ * Get detailed information about a specific plant
+ * 
+ * @route GET /api/admin/plants/:plantId
+ * @access Private - Admin only
+ * @param {number} plantId - ID of the plant to get
+ * @returns {Object} Plant details
+ */
+async function getPlantById(req, res) {
+    try {
+        const { plantId } = req.params;
+        
+        const plant = await Plant.findById(plantId);
+        
+        if (!plant) {
+            return res.status(404).json({
+                success: false,
+                error: 'Plant not found'
+            });
+        }
+        
+        // Log admin action
+        await SystemLog.create({
+            log_level: 'INFO',
+            source: 'AdminController',
+            message: `Admin ${req.user.user_id} viewed device ${deviceId}`,
+            user_id: req.user.user_id
+        });
+        
+        res.status(200).json({
+            success: true,
+            data: {
+                plant
+            }
+        });
+    } catch (error) {
+        console.error(`Error getting plant ${req.params.plantId}:`, error);
+        res.status(500).json({
+            success: false,
+            error: 'Failed to retrieve plant information'
+        });
+    }
+}
+
+
+/**
+ * UC24: RESET USER PASSWORD
+ * ===============================
+ * Reset a user's password (admin action)
+ * 
+ * @route POST /api/admin/users/:userId/reset-password
+ * @access Private - Admin only
+ * @param {number} userId - ID of the user whose password to reset
+ * @returns {Object} Success message with temporary password
+ */
+async function resetUserPassword(req, res) {
+    try {
+        const { userId } = req.params;
+        
+        // Find the user
+        const user = await User.findById(userId);
+        
+        if (!user) {
+            return res.status(404).json({
+                success: false,
+                error: 'User not found'
+            });
+        }
+        
+        // Generate a temporary password
+        const tempPassword = Math.random().toString(36).slice(-8);
+        
+        // Update user password
+        await user.updatePassword(tempPassword);
+        
+        // Log admin action
+        await SystemLog.create({
+            log_level: 'WARNING',
+            source: 'AdminController',
+            message: `Admin ${req.user.user_id} reset password for user ${userId}`,
+            user_id: req.user.user_id
+        });
+        
+        res.status(200).json({
+            success: true,
+            message: 'Password reset successfully',
+            data: {
+                user_id: user.user_id,
+                email: user.email,
+                temporary_password: tempPassword
+            }
+        });
+    } catch (error) {
+        console.error(`Error resetting password for user ${req.params.userId}:`, error);
+        res.status(500).json({
+            success: false,
+            error: 'Failed to reset user password'
+        });
+    }
+}
+
+/**
+ * UC24: DELETE USER
+ * ===============================
+ * Delete a user account
+ * 
+ * @route DELETE /api/admin/users/:userId
+ * @access Private - Admin only
+ * @param {number} userId - ID of the user to delete
+ * @returns {Object} Success message
+ */
+async function deleteUser(req, res) {
+    try {
+        const { userId } = req.params;
+        
+        // Prevent deleting self
+        if (parseInt(userId) === req.user.user_id) {
+            return res.status(403).json({
+                success: false,
+                error: 'Cannot delete your own account'
+            });
+        }
+        
+        // Find the user
+        const user = await User.findById(userId);
+        
+        if (!user) {
+            return res.status(404).json({
+                success: false,
+                error: 'User not found'
+            });
+        }
+        
+        // Record user data before deletion for audit
+        const userData = {
+            user_id: user.user_id,
+            email: user.email,
+            full_name: user.full_name,
+            role: user.role
+        };
+        
+        // Delete the user
+        await user.delete();
+        
+        // Log admin action
+        await SystemLog.create({
+            log_level: 'WARNING',
+            source: 'AdminController',
+            message: `Admin ${req.user.user_id} deleted user ${userId} (${userData.email})`,
+            user_id: req.user.user_id,
+            details: JSON.stringify(userData)
+        });
+        
+        res.status(200).json({
+            success: true,
+            message: 'User deleted successfully'
+        });
+    } catch (error) {
+        console.error(`Error deleting user ${req.params.userId}:`, error);
+        res.status(500).json({
+            success: false,
+            error: 'Failed to delete user'
+        });
+    }
+}
+
+
+/**
  * UC25: GET SYSTEM DASHBOARD
  * ===============================
  * Get system-wide dashboard metrics
@@ -1890,10 +2217,10 @@ async function getFinancialMetrics() {
         const revenueQuery = `
             SELECT 
                 COUNT(*) as total_payments,
-                SUM(CASE WHEN status = 'completed' THEN amount ELSE 0 END) as total_revenue,
-                SUM(CASE WHEN status = 'completed' AND created_at >= NOW() - INTERVAL '30 days' THEN amount ELSE 0 END) as monthly_revenue,
-                SUM(CASE WHEN status = 'completed' AND created_at >= NOW() - INTERVAL '7 days' THEN amount ELSE 0 END) as weekly_revenue,
-                SUM(CASE WHEN status = 'completed' AND DATE(created_at) = CURRENT_DATE THEN amount ELSE 0 END) as daily_revenue
+                SUM(CASE WHEN status = 'SUCCESS' THEN amount ELSE 0 END) as total_revenue,
+                SUM(CASE WHEN status = 'SUCCESS' AND created_at >= NOW() - INTERVAL '30 days' THEN amount ELSE 0 END) as monthly_revenue,
+                SUM(CASE WHEN status = 'SUCCESS' AND created_at >= NOW() - INTERVAL '7 days' THEN amount ELSE 0 END) as weekly_revenue,
+                SUM(CASE WHEN status = 'SUCCESS' AND DATE(created_at) = CURRENT_DATE THEN amount ELSE 0 END) as daily_revenue
             FROM payments
         `;
         
@@ -1904,7 +2231,7 @@ async function getFinancialMetrics() {
         const trendQuery = `
             SELECT 
                 DATE(created_at) as date,
-                SUM(CASE WHEN status = 'completed' THEN amount ELSE 0 END) as daily_revenue,
+                SUM(CASE WHEN status = 'SUCCESS' THEN amount ELSE 0 END) as daily_revenue,
                 COUNT(*) as daily_transactions
             FROM payments
             WHERE created_at >= NOW() - INTERVAL '30 days'
@@ -1920,7 +2247,7 @@ async function getFinancialMetrics() {
             SELECT COUNT(*) * 9.99 as estimated_mrr
             FROM users 
             WHERE role = 'Premium' 
-            AND updated_at >= NOW() - INTERVAL '30 days'
+            AND created_at >= NOW() - INTERVAL '30 days'
         `;
         
         const mrrResult = await pool.query(mrrQuery);
@@ -1948,7 +2275,8 @@ async function getFinancialMetrics() {
             totalPayments: parseInt(revenue.total_payments) || 0,
             monthlyRecurringRevenue: parseFloat(mrr) || 0,
             revenueTrend,
-            paymentStats
+            paymentStats,
+
         };
     } catch (error) {
         console.error('Error getting financial metrics:', error);
@@ -1974,12 +2302,14 @@ async function getUserGrowthData() {
     try {
         const query = `
             SELECT 
-                DATE(created_at) as date,
+                DATE(s.sub_start) as date,
                 COUNT(*) as new_users,
-                SUM(CASE WHEN role = 'Premium' THEN 1 ELSE 0 END) as new_premium_users
-            FROM users
-            WHERE created_at >= NOW() - INTERVAL '7 days'
-            GROUP BY DATE(created_at)
+                SUM(CASE WHEN role = 'Premium' THEN 1 ELSE 0 END) as new_premium_users,
+                SUM(CASE WHEN role = 'Ultimate' THEN 1 ELSE 0 END) as new_ultimate_users
+            FROM users u
+            LEFT JOIN subscriptions s ON u.user_id = s.user_id
+            WHERE s.sub_start >= NOW() - INTERVAL '7 days'
+            GROUP BY DATE(s.sub_start)
             ORDER BY date
         `;
         
@@ -2004,7 +2334,6 @@ async function getDeviceStatistics() {
                 SUM(CASE WHEN last_online >= NOW() - INTERVAL '1 hour' THEN 1 ELSE 0 END) as online,
                 SUM(CASE WHEN last_online < NOW() - INTERVAL '24 hours' THEN 1 ELSE 0 END) as offline
             FROM devices
-            GROUP BY device_type
         `;
         
         const result = await pool.query(statsQuery);
@@ -2102,10 +2431,10 @@ async function getRevenueAnalysis(period) {
         const query = `
             SELECT 
                 ${groupBy} as period,
-                SUM(CASE WHEN status = 'completed' THEN amount ELSE 0 END) as revenue,
-                COUNT(CASE WHEN status = 'completed' THEN 1 END) as successful_transactions,
+                SUM(CASE WHEN status = 'SUCCESS' THEN amount ELSE 0 END) as revenue,
+                COUNT(CASE WHEN status = 'SUCCESS' THEN 1 END) as successful_transactions,
                 COUNT(*) as total_transactions,
-                AVG(CASE WHEN status = 'completed' THEN amount END) as avg_transaction_value
+                AVG(CASE WHEN status = 'SUCCESS' THEN amount END) as avg_transaction_value
             FROM payments
             WHERE ${timeFrame}
             GROUP BY ${groupBy}
@@ -2172,8 +2501,8 @@ async function getCustomerAnalysis(period) {
                     u.user_id,
                     u.role,
                     u.created_at as signup_date,
-                    COALESCE(SUM(CASE WHEN p.status = 'completed' THEN p.amount END), 0) as total_spent,
-                    COUNT(CASE WHEN p.status = 'completed' THEN 1 END) as total_payments,
+                    COALESCE(SUM(CASE WHEN p.status = 'SUCCESS' THEN p.amount END), 0) as total_spent,
+                    COUNT(CASE WHEN p.status = 'SUCCESS' THEN 1 END) as total_payments,
                     MAX(p.created_at) as last_payment
                 FROM users u
                 LEFT JOIN payments p ON u.user_id = p.user_id
@@ -2221,12 +2550,12 @@ async function getProfitMargins(period) {
     try {
         // Simplified profit margin calculation
         // In a real app, you'd factor in operational costs, server costs, etc.
-        const operationalCostPerUser = 1.50; // Monthly cost per user
-        const serverCosts = 500; // Monthly server costs
+        const operationalCostPerUser = 6500; // Monthly cost per user
+        const serverCosts = 75000; // Monthly server costs
         
         const query = `
             SELECT 
-                SUM(CASE WHEN status = 'completed' THEN amount ELSE 0 END) as total_revenue,
+                SUM(CASE WHEN status = 'SUCCESS' THEN amount ELSE 0 END) as total_revenue,
                 COUNT(DISTINCT user_id) as unique_customers
             FROM payments
             WHERE created_at >= NOW() - INTERVAL '${period === 'year' ? '365' : '30'} days'
@@ -2273,7 +2602,7 @@ async function getRevenueForecast() {
         const query = `
             SELECT 
                 DATE(created_at) as date,
-                SUM(CASE WHEN status = 'completed' THEN amount ELSE 0 END) as daily_revenue
+                SUM(CASE WHEN status = 'SUCCESS' THEN amount ELSE 0 END) as daily_revenue
             FROM payments
             WHERE created_at >= NOW() - INTERVAL '30 days'
             GROUP BY DATE(created_at)
@@ -2371,7 +2700,15 @@ module.exports = {
     deleteUser,
     resetUserPassword,
     bulkUserActions,
-    
+
+    // Device Management
+    getAllDevices,
+    getDeviceById,
+
+    // Plant Management
+    getAllPlants,
+    getPlantById,
+
     // UC25: View System-Wide Reports
     getSystemDashboard,
     getSystemReports,

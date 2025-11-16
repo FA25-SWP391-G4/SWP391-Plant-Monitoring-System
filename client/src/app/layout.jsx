@@ -29,6 +29,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
+        <title>PlantSmart - Smart Plant Monitoring</title>
         <GoogleHeadTags />
       </head>
       <body>

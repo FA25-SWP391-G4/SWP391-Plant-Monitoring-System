@@ -62,61 +62,90 @@ const DashboardSidebar = ({ isOpen = true, onToggle, demoUser = null }) => {
 
   // Navigation items based on user role
   const getNavigationItems = () => {
-    const baseItems = [
+    // Only show navigation if authenticated
+    if (!isAuthenticated) return { mainItems: [], bottomItems: [] };
+
+    let baseItems = [
       {
-        name: t('navigation.dashboard'),
-        href: '/dashboard',
-        icon: (
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-layout-dashboard-icon lucide-layout-dashboard"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>
-        )
+      name: t('navigation.dashboard'),
+      href: isAdmin ? '/admin/dashboard' : '/dashboard',
+      icon: (
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-layout-dashboard-icon lucide-layout-dashboard"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>
+      )
       },
       {
-        name: t('navigation.plants'),
-        href: '/plants',
-        icon: (
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-sprout-icon lucide-sprout"><path d="M14 9.536V7a4 4 0 0 1 4-4h1.5a.5.5 0 0 1 .5.5V5a4 4 0 0 1-4 4 4 4 0 0 0-4 4c0 2 1 3 1 5a5 5 0 0 1-1 3"/><path d="M4 9a5 5 0 0 1 8 4 5 5 0 0 1-8-4"/><path d="M5 21h14"/></svg>
-        )
+      name: t('navigation.devices'),
+      href: isAdmin ? '/admin/devices' : '/devices',
+      icon: (
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 16 16" id="device-16px">
+          <rect id="Retângulo_223" data-name="Retângulo 223" width="16" height="16" fill="none" opacity="0"/>
+          <g id="Icone" transform="translate(0.648 0.648)">
+          <g id="Retângulo_203" data-name="Retângulo 203" transform="translate(2.352 2.352)" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" stroke-width="1">
+            <rect width="10" height="10" stroke="none"/>
+            <rect x="0.5" y="0.5" width="9" height="9" fill="none"/>
+          </g>
+          <g id="Retângulo_206" data-name="Retângulo 206" transform="translate(5.352 5.352)" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" stroke-width="1">
+            <rect width="4" height="4" stroke="none"/>
+            <rect x="0.5" y="0.5" width="3" height="3" fill="none"/>
+          </g>
+          <g id="Grupo_327" data-name="Grupo 327" transform="translate(-0.191 1)">
+            <line id="Linha_24" data-name="Linha 24" y1="3" transform="translate(5.543 10.852)" fill="none" stroke="currentColor" strokeLinecap="round" stroke-width="1"/>
+            <line id="Linha_28" data-name="Linha 28" y1="3" transform="translate(7.543 10.852)" fill="none" stroke="currentColor" strokeLinecap="round" stroke-width="1"/>
+            <line id="Linha_29" data-name="Linha 29" y1="3" transform="translate(9.543 10.852)" fill="none" stroke="currentColor" strokeLinecap="round" stroke-width="1"/>
+          </g>
+          <g id="Grupo_328" data-name="Grupo 328" transform="translate(-0.191 -11)">
+            <line id="Linha_24-2" data-name="Linha 24" y1="3" transform="translate(5.543 10.852)" fill="none" stroke="currentColor" strokeLinecap="round" stroke-width="1"/>
+            <line id="Linha_28-2" data-name="Linha 28" y1="3" transform="translate(7.543 10.852)" fill="none" stroke="currentColor" strokeLinecap="round" stroke-width="1"/>
+            <line id="Linha_29-2" data-name="Linha 29" y1="3" transform="translate(9.543 10.852)" fill="none" stroke="currentColor" strokeLinecap="round" stroke-width="1"/>
+          </g>
+          <g id="Grupo_329" data-name="Grupo 329" transform="translate(1 14.895) rotate(-90)">
+            <line id="Linha_24-3" data-name="Linha 24" y1="3" transform="translate(5.543 10.852)" fill="none" stroke="currentColor" strokeLinecap="round" stroke-width="1"/>
+            <line id="Linha_28-3" data-name="Linha 28" y1="3" transform="translate(7.543 10.852)" fill="none" stroke="currentColor" strokeLinecap="round" stroke-width="1"/>
+            <line id="Linha_29-3" data-name="Linha 29" y1="3" transform="translate(9.543 10.852)" fill="none" stroke="currentColor" strokeLinecap="round" stroke-width="1"/>
+          </g>
+          <g id="Grupo_330" data-name="Grupo 330" transform="translate(-11 14.895) rotate(-90)">
+            <line id="Linha_24-4" data-name="Linha 24" y1="3" transform="translate(5.543 10.852)" fill="none" stroke="currentColor" strokeLinecap="round" stroke-width="1"/>
+            <line id="Linha_28-4" data-name="Linha 28" y1="3" transform="translate(7.543 10.852)" fill="none" stroke="currentColor" strokeLinecap="round" stroke-width="1"/>
+            <line id="Linha_29-4" data-name="Linha 29" y1="3" transform="translate(9.543 10.852)" fill="none" stroke="currentColor" strokeLinecap="round" stroke-width="1"/>
+          </g>
+          </g>
+        </svg>
+      )
       },
-      { 
-        name: t('navigation.devices'),
-        href: '/devices',
-        icon: (
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 16 16" id="device-16px">
-              <rect id="Retângulo_223" data-name="Retângulo 223" width="16" height="16" fill="none" opacity="0"/>
-              <g id="Icone" transform="translate(0.648 0.648)">
-                <g id="Retângulo_203" data-name="Retângulo 203" transform="translate(2.352 2.352)" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1">
-                  <rect width="10" height="10" stroke="none"/>
-                  <rect x="0.5" y="0.5" width="9" height="9" fill="none"/>
-                </g>
-                <g id="Retângulo_206" data-name="Retângulo 206" transform="translate(5.352 5.352)" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1">
-                  <rect width="4" height="4" stroke="none"/>
-                  <rect x="0.5" y="0.5" width="3" height="3" fill="none"/>
-                </g>
-                <g id="Grupo_327" data-name="Grupo 327" transform="translate(-0.191 1)">
-                  <line id="Linha_24" data-name="Linha 24" y1="3" transform="translate(5.543 10.852)" fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="1"/>
-                  <line id="Linha_28" data-name="Linha 28" y1="3" transform="translate(7.543 10.852)" fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="1"/>
-                  <line id="Linha_29" data-name="Linha 29" y1="3" transform="translate(9.543 10.852)" fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="1"/>
-                </g>
-                <g id="Grupo_328" data-name="Grupo 328" transform="translate(-0.191 -11)">
-                  <line id="Linha_24-2" data-name="Linha 24" y1="3" transform="translate(5.543 10.852)" fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="1"/>
-                  <line id="Linha_28-2" data-name="Linha 28" y1="3" transform="translate(7.543 10.852)" fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="1"/>
-                  <line id="Linha_29-2" data-name="Linha 29" y1="3" transform="translate(9.543 10.852)" fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="1"/>
-                </g>
-                <g id="Grupo_329" data-name="Grupo 329" transform="translate(1 14.895) rotate(-90)">
-                  <line id="Linha_24-3" data-name="Linha 24" y1="3" transform="translate(5.543 10.852)" fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="1"/>
-                  <line id="Linha_28-3" data-name="Linha 28" y1="3" transform="translate(7.543 10.852)" fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="1"/>
-                  <line id="Linha_29-3" data-name="Linha 29" y1="3" transform="translate(9.543 10.852)" fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="1"/>
-                </g>
-                <g id="Grupo_330" data-name="Grupo 330" transform="translate(-11 14.895) rotate(-90)">
-                  <line id="Linha_24-4" data-name="Linha 24" y1="3" transform="translate(5.543 10.852)" fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="1"/>
-                  <line id="Linha_28-4" data-name="Linha 28" y1="3" transform="translate(7.543 10.852)" fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="1"/>
-                  <line id="Linha_29-4" data-name="Linha 29" y1="3" transform="translate(9.543 10.852)" fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="1"/>
-                </g>
-              </g>
-            </svg>
-        )
+      {
+      name: t('navigation.plants'),
+      href: isAdmin ? '/admin/plants' : '/plants',
+      icon: (
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-sprout-icon lucide-sprout"><path d="M14 9.536V7a4 4 0 0 1 4-4h1.5a.5.5 0 0 1 .5.5V5a4 4 0 0 1-4 4 4 4 0 0 0-4 4c0 2 1 3 1 5a5 5 0 0 1-1 3"/><path d="M4 9a5 5 0 0 1 8 4 5 5 0 0 1-8-4"/><path d="M5 21h14"/></svg>
+      )
       }
     ];
+
+    // Admin-only navigation items
+    if (isAdmin) {
+      baseItems = [
+      ...baseItems.slice(0, 1),
+      {
+        name: t('navigation.users'),
+        href: '/admin/users',
+        icon: (
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-users-icon lucide-users"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        )
+      },
+      ...baseItems.slice(1)
+      ];
+      baseItems.push({
+      name: t('navigation.reports'),
+      href: '/admin/reports',
+      icon: (
+        <svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="512" height="512" viewBox="0 0 512 512" style={{width: 24, height: 24}} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-sprout-icon lucide-sprout">
+        <g id="icomoon-ignore">
+        </g>
+        <path d="M64 448h448v64h-512v-512h64zM144 416c-26.51 0-48-21.49-48-48s21.49-48 48-48c1.414 0 2.811 0.074 4.194 0.193l51.596-85.993c-4.92-7.535-7.79-16.531-7.79-26.201 0-26.51 21.49-48 48-48s48 21.49 48 48c0 9.671-2.87 18.666-7.79 26.201l51.596 85.993c1.383-0.119 2.78-0.193 4.194-0.193 1.068 0 2.124 0.047 3.175 0.115l85.178-149.061c-5.268-7.704-8.353-17.018-8.353-27.055 0-26.51 21.49-48 48-48s48 21.49 48 48c0 26.51-21.49 48-48 48-1.070 0-2.124-0.047-3.175-0.116l-85.178 149.062c5.268 7.703 8.353 17.018 8.353 27.055 0 26.51-21.49 48-48 48s-48-21.49-48-48c0-9.67 2.87-18.666 7.789-26.201l-51.595-85.992c-1.383 0.119-2.78 0.193-4.194 0.193s-2.811-0.073-4.194-0.193l-51.596 85.993c4.92 7.534 7.79 16.53 7.79 26.2 0 26.51-21.49 48-48 48z"/>
+        </svg>
+      )
+      });
+    }
 
     // Add premium section for premium/admin users
     /*if (isUltimate || isAdmin) {
@@ -131,10 +160,10 @@ const DashboardSidebar = ({ isOpen = true, onToggle, demoUser = null }) => {
         }
       ]
       baseItems.push(...ultimateItems);
-    }
-    if (isPremium || isAdmin || isUltimate) {
+    }*/
+    if (isPremium || isUltimate) {
       const premiumItems = [
-        {
+        /*{
           name: t('navigation.reporting'),
           href: '/reports',
           icon: (
@@ -150,7 +179,7 @@ const DashboardSidebar = ({ isOpen = true, onToggle, demoUser = null }) => {
             { name: t('reports.plantHealth', 'Plant Health'), href: '/reports/plant-health' },
             { name: t('reports.customReports', 'Custom Reports'), href: '/reports/custom' }
           ]
-        },
+        },*/
         {
           name: t('navigation.zones'),
           href: '/zones',
@@ -163,7 +192,7 @@ const DashboardSidebar = ({ isOpen = true, onToggle, demoUser = null }) => {
     }
 
     // Add admin-specific items
-    if (isAdmin) {
+    /*if (isAdmin) {
       baseItems.push({
         name: t('navigation.admin'),
         href: '/admin',
@@ -171,7 +200,7 @@ const DashboardSidebar = ({ isOpen = true, onToggle, demoUser = null }) => {
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-user-star-icon lucide-user-star"><path d="M16.051 12.616a1 1 0 0 1 1.909.024l.737 1.452a1 1 0 0 0 .737.535l1.634.256a1 1 0 0 1 .588 1.806l-1.172 1.168a1 1 0 0 0-.282.866l.259 1.613a1 1 0 0 1-1.541 1.134l-1.465-.75a1 1 0 0 0-.912 0l-1.465.75a1 1 0 0 1-1.539-1.133l.258-1.613a1 1 0 0 0-.282-.866l-1.156-1.153a1 1 0 0 1 .572-1.822l1.633-.256a1 1 0 0 0 .737-.535z"/><path d="M8 15H7a4 4 0 0 0-4 4v2"/><circle cx="10" cy="7" r="4"/></svg>
         )
       });
-    }*/
+    */
 
     // Add bottom section items
     const bottomItems = [
@@ -189,7 +218,8 @@ const DashboardSidebar = ({ isOpen = true, onToggle, demoUser = null }) => {
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-message-square-warning-icon lucide-message-square-warning"><path d="M22 17a2 2 0 0 1-2 2H6.828a2 2 0 0 0-1.414.586l-2.202 2.202A.71.71 0 0 1 2 21.286V5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2z"/><path d="M12 15h.01"/><path d="M12 7v4"/></svg>
         )
       },
-      */{
+      */
+     {
         name: t('navigation.settings'),
         href: '/settings',
         icon: (

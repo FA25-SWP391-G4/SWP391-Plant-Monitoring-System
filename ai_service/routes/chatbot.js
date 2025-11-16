@@ -38,7 +38,8 @@ router.post('/query',
         body('message').notEmpty().withMessage('Message is required'),
         body('chat_id').optional().isString(),
         body('plant_id').optional().isNumeric(),
-        body('context').optional().isObject()
+        body('context').optional().isObject(),
+        body('conversation_history').optional().isArray()
     ],
     chatbotController.processChatbotQuery
 );

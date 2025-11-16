@@ -1,5 +1,15 @@
 import axiosClient from './axiosClient';
 
+/**
+ * Client-side wrapper for Plant-related API endpoints.
+ *
+ * Each function returns the parsed response data from the server. The
+ * functions intentionally rethrow errors so callers (UI components) can
+ * decide how to present failures to the user (toasts, alerts, retries).
+ *
+ * Note: `axiosClient` centralizes Authorization header/token handling and
+ * base URL configuration. Avoid duplicating token logic in this module.
+ */
 const plantApi = {
   // Get all plants for the authenticated user
   getAll: async () => {
@@ -105,7 +115,25 @@ const plantApi = {
     }
   },
 
-  // Toggle auto-watering for a plant
+  /**
+   * Convenience helper to trigger a short water action immediately.
+   * Note: some backends implement `/water-now` separately from `/water` for
+   * convenience; this wrapper calls that endpoint with a default duration.
+   */
+  waterNow: async (plantId, duration = 10) => {
+    try {
+      const response = await axiosClient.post(`/api/plants/${plantId}/water-now`, { duration });
+      return response.data;
+    } catch (error) {
+      console.error(`Error triggering waterNow for plant ${plantId}:`, error);
+      throw error;
+    }
+  },
+
+  /**
+   * Toggle server-side auto-watering feature for a plant.
+   * `enabled` should be boolean.
+   */
   toggleAutoWatering: async (plantId, enabled) => {
     try {
       const response = await axiosClient.post(`/api/plants/${plantId}/auto-watering`, { enabled });

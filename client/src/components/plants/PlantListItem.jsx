@@ -6,6 +6,7 @@ import Modal from '@/components/ui/Modal';
 import ConfirmDialog from '@/components/ui/ConfirmDialog';
 import { useSettings } from '@/providers/SettingsProvider';
 import plantApi from '@/api/plantApi';
+import axiosClient from '@/api/axiosClient';
 import { formatDate } from '@/utils/dateFormat';
 
 export default function PlantListItem({ plant, isPremium, onUpdate, onDelete }) {
@@ -30,7 +31,7 @@ export default function PlantListItem({ plant, isPremium, onUpdate, onDelete }) 
         icon: (
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-1">
             <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-            <path d="m9 11 3 3L22 4"></path>
+            <path d="M9 11l3 3L22 4"></path>
           </svg>
         )
       };
@@ -74,7 +75,7 @@ export default function PlantListItem({ plant, isPremium, onUpdate, onDelete }) 
 
   const statusInfo = getStatusInfo();
 
-    const getLastWateredDisplay = () => {
+  const getLastWateredDisplay = () => {
     if (lastWatered?.data?.last_watered) {
       const lastWateredDate = new Date(lastWatered.data.last_watered.timestamp);
       return {
@@ -140,6 +141,10 @@ export default function PlantListItem({ plant, isPremium, onUpdate, onDelete }) 
         onUpdate(plant.plant_id, response.data);
       }
       setShowEditModal(false);
+      //Show success toast or message if needed
+      setToast.success(t('plants.updateSuccess', 'Plant updated successfully'));
+      //Reload Plant data
+      loadLastWatered();
     } catch (error) {
       console.error('Error updating plant:', error);
       throw error; // Let modal handle the error display
@@ -283,6 +288,9 @@ function EditPlantModal({ plant, onClose, onSave, isPremium }) {
   const [zones, setZones] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [imageFile, setImageFile] = useState(null);
+  const [imagePreview, setImagePreview] = useState(plant.image || null);
+  const [imageError, setImageError] = useState('');
 
   useEffect(() => {
     if (isPremium) {
@@ -307,6 +315,50 @@ function EditPlantModal({ plant, onClose, onSave, isPremium }) {
     }
   };
 
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    if (!file.type.startsWith('image/')) {
+      setImageError(t('validation.invalidImageType', 'Please select a valid image file'));
+      return;
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+      setImageError(t('validation.imageTooLarge', 'Image size should be less than 5MB'));
+      return;
+    }
+
+    setImageFile(file);
+    setImagePreview(URL.createObjectURL(file));
+    setImageError('');
+  };
+
+  const uploadImage = async (file) => {
+    if (!file) return null;
+
+    const formData = new FormData();
+    formData.append('image', file);
+    formData.append('type', 'plant');
+
+    try {
+      const response = await axiosClient.post('/api/upload/image', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+
+      if (response.data?.success && response.data.data?.url) {
+        return response.data.data.url;
+      }
+
+      throw new Error('Upload failed');
+    } catch (err) {
+      console.error('Image upload failed:', err);
+      throw new Error(t('errors.imageUploadFailed', 'Failed to upload image'));
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     
@@ -324,7 +376,18 @@ function EditPlantModal({ plant, onClose, onSave, isPremium }) {
     setError('');
     
     try {
-      await onSave(formData);
+      let imageUrl = plant.image || null;
+
+      if (imageFile) {
+        imageUrl = await uploadImage(imageFile);
+      }
+
+      const payload = {
+        ...formData,
+        image: imageUrl,
+      };
+
+      await onSave(payload);
     } catch (err) {
       setError(t('errors.updateFailed', 'Failed to update plant'));
     } finally {
@@ -360,129 +423,186 @@ function EditPlantModal({ plant, onClose, onSave, isPremium }) {
 
         {error && (
           <div className="mb-4 p-3 bg-red-100 dark:bg-red-900/30 border border-red-300 dark:border-red-700 text-red-700 dark:text-red-300 rounded-lg">
-              {error}
+            {error}
+          </div>
+        )}
+
+        <form onSubmit={handleSubmit}>
+          {/* Plant Name */}
+          <div className="mb-4">
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              {t('plants.name', 'Plant Name')} *
+            </label>
+            <input
+              type="text"
+              name="custom_name"
+              value={formData.custom_name}
+              onChange={handleChange}
+              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 dark:bg-gray-700 dark:text-gray-100"
+              placeholder={t('plants.namePlaceholder', 'Enter plant name')}
+              required
+            />
+          </div>
+
+          {/* Species */}
+          <div className="mb-4">
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              {t('plants.species', 'Species')}
+            </label>
+            <input
+              type="text"
+              name="species_name"
+              value={formData.species_name}
+              onChange={handleChange}
+              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 dark:bg-gray-700 dark:text-gray-100"
+              placeholder={t('plants.speciesPlaceholder', 'Enter species name')}
+            />
+          </div>
+
+          {/* Location */}
+          <div className="mb-4">
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              {t('plants.location', 'Location')}
+            </label>
+            <input
+              type="text"
+              name="location"
+              value={formData.location}
+              onChange={handleChange}
+              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 dark:bg-gray-700 dark:text-gray-100"
+              placeholder={t('plants.locationPlaceholder', 'Enter location')}
+            />
+          </div>
+
+          {/* Zone (Premium only) */}
+          {isPremium && zones.length > 0 && (
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                {t('plants.zone', 'Zone')}
+              </label>
+              <select
+                name="zone_id"
+                value={formData.zone_id}
+                onChange={handleChange}
+                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 dark:bg-gray-700 dark:text-gray-100"
+              >
+                <option value="">{t('plants.noZone', 'No Zone')}</option>
+                {zones.map((zone) => (
+                  <option key={zone.zone_id} value={zone.zone_id}>
+                    {zone.name}
+                  </option>
+                ))}
+              </select>
             </div>
           )}
 
-          <form onSubmit={handleSubmit}>
-            {/* Plant Name */}
-            <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                {t('plants.name', 'Plant Name')} *
-              </label>
-              <input
-                type="text"
-                name="custom_name"
-                value={formData.custom_name}
-                onChange={handleChange}
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 dark:bg-gray-700 dark:text-gray-100"
-                placeholder={t('plants.namePlaceholder', 'Enter plant name')}
-                required
-              />
-            </div>
+          {/* Moisture Threshold */}
+          <div className="mb-4">
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              {t('plants.moistureThreshold', 'Moisture Threshold')} (%)
+            </label>
+            <input
+              type="number"
+              name="moisture_threshold"
+              value={formData.moisture_threshold}
+              onChange={handleChange}
+              min="0"
+              max="100"
+              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 dark:bg-gray-700 dark:text-gray-100"
+            />
+          </div>
 
-            {/* Species */}
-            <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                {t('plants.species', 'Species')}
-              </label>
-              <input
-                type="text"
-                name="species_name"
-                value={formData.species_name}
-                onChange={handleChange}
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 dark:bg-gray-700 dark:text-gray-100"
-                placeholder={t('plants.speciesPlaceholder', 'Enter species name')}
-              />
-            </div>
+          {/* Plant Image */}
+          <div className="mb-4">
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              {t('plants.plantImage', 'Plant Image')}
+            </label>
 
-            {/* Location */}
-            <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                {t('plants.location', 'Location')}
-              </label>
-              <input
-                type="text"
-                name="location"
-                value={formData.location}
-                onChange={handleChange}
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 dark:bg-gray-700 dark:text-gray-100"
-                placeholder={t('plants.locationPlaceholder', 'Enter location')}
-              />
-            </div>
-
-            {/* Zone (Premium only) */}
-            {isPremium && zones.length > 0 && (
-              <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  {t('plants.zone', 'Zone')}
-                </label>
-                <select
-                  name="zone_id"
-                  value={formData.zone_id}
-                  onChange={handleChange}
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 dark:bg-gray-700 dark:text-gray-100"
+            {imagePreview ? (
+              <div className="relative">
+                <div className="w-full h-48 border-2 border-gray-200 dark:border-gray-600 rounded-lg overflow-hidden">
+                  <img
+                    src={imagePreview}
+                    alt="Plant preview"
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setImageFile(null);
+                    setImagePreview(null);
+                    setImageError('');
+                    const input = document.getElementById('edit-plant-image-input');
+                    if (input) input.value = '';
+                  }}
+                  className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-1 hover:bg-red-600 transition-colors"
                 >
-                  <option value="">{t('plants.noZone', 'No Zone')}</option>
-                  {zones.map((zone) => (
-                    <option key={zone.zone_id} value={zone.zone_id}>
-                      {zone.name}
-                    </option>
-                  ))}
-                </select>
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
               </div>
+            ) : (
+              <label className="cursor-pointer flex items-center justify-center w-full h-32 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg hover:border-emerald-500 transition-colors">
+                <input
+                  type="file"
+                  id="edit-plant-image-input"
+                  accept="image/*"
+                  onChange={handleImageChange}
+                  className="hidden"
+                />
+                <div className="text-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 text-gray-400 mx-auto mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                  </svg>
+                  <span className="text-sm text-gray-500 dark:text-gray-300 block">{t('plants.uploadImage', 'Click to upload plant image')}</span>
+                  <span className="text-xs text-gray-400 dark:text-gray-500 block mt-1">
+                    {t('plants.imageRequirements', 'PNG, JPG up to 5MB')}
+                  </span>
+                </div>
+              </label>
             )}
 
-            {/* Moisture Threshold */}
-            <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                {t('plants.moistureThreshold', 'Moisture Threshold')} (%)
-              </label>
-              <input
-                type="number"
-                name="moisture_threshold"
-                value={formData.moisture_threshold}
-                onChange={handleChange}
-                min="0"
-                max="100"
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 dark:bg-gray-700 dark:text-gray-100"
-              />
-            </div>
+            {imageError && (
+              <p className="mt-1 text-sm text-red-600">{imageError}</p>
+            )}
+          </div>
 
-            {/* Notes */}
-            <div className="mb-6">
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                {t('plants.notes', 'Notes')}
-              </label>
-              <textarea
-                name="notes"
-                value={formData.notes}
-                onChange={handleChange}
-                rows="3"
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 dark:bg-gray-700 dark:text-gray-100"
-                placeholder={t('plants.notesPlaceholder', 'Enter notes about your plant')}
-              />
-            </div>
+          {/* Notes */}
+          <div className="mb-6">
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              {t('plants.notes', 'Notes')}
+            </label>
+            <textarea
+              name="notes"
+              value={formData.notes}
+              onChange={handleChange}
+              rows="3"
+              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 dark:bg-gray-700 dark:text-gray-100"
+              placeholder={t('plants.notesPlaceholder', 'Enter notes about your plant')}
+            />
+          </div>
 
-            {/* Submit Buttons */}
-            <div className="flex gap-3">
-              <button
-                type="button"
-                onClick={onClose}
-                className="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
-              >
-                {t('common.cancel', 'Cancel')}
-              </button>
-              <button
-                type="submit"
-                disabled={loading}
-                className="flex-1 px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 disabled:opacity-50 transition-colors"
-              >
-                {loading ? t('common.saving', 'Saving...') : t('common.save', 'Save')}
-              </button>
-            </div>
-          </form>
-        </div>
+          {/* Submit Buttons */}
+          <div className="flex gap-3">
+            <button
+              type="button"
+              onClick={onClose}
+              className="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+            >
+              {t('common.cancel', 'Cancel')}
+            </button>
+            <button
+              type="submit"
+              disabled={loading}
+              className="flex-1 px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 disabled:opacity-50 transition-colors"
+            >
+              {loading ? t('common.saving', 'Saving...') : t('common.save', 'Save')}
+            </button>
+          </div>
+        </form>
+      </div>
     </Modal>
   );
 }

@@ -23,7 +23,7 @@ const { v4: uuidv4 } = require('uuid');
 const SystemLog = require('../models/SystemLog');
 
 // Ensure uploads directory exists
-const uploadsDir = path.join(__dirname, '../uploads');
+const uploadsDir = path.join(__dirname, '../client/public/images');
 const ensureUploadsDir = async () => {
     try {
         await fs.access(uploadsDir);
@@ -118,7 +118,7 @@ const uploadImage = async (req, res) => {
         await fs.writeFile(filePath, processedBuffer);
 
         // Generate URL for accessing the image
-        const imageUrl = `/uploads/${fileName}`;
+        const imageUrl = `/images/${fileName}`;
 
         await SystemLog.info('UploadController', 'uploadImage', 
             `Image uploaded successfully: ${fileName} (${file.originalname}, ${(processedBuffer.length / 1024).toFixed(2)}KB)`);

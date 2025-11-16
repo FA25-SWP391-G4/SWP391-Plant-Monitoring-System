@@ -23,9 +23,19 @@ const WateringScheduleControl = ({
   });
 
   const handleSave = async (newScheduleData) => {
+    console.log('[WATERING DEBUG] WateringScheduleControl.handleSave called', {
+      plantId,
+      previousSchedule: scheduleData,
+      newSchedule: newScheduleData,
+    });
     setScheduleData(newScheduleData);
     if (onUpdateSchedule) {
-      await onUpdateSchedule(newScheduleData);
+      try {
+        await onUpdateSchedule(newScheduleData);
+        console.log('[WATERING DEBUG] onUpdateSchedule completed successfully');
+      } catch (error) {
+        console.error('[WATERING DEBUG] onUpdateSchedule failed', error);
+      }
     }
   };
 

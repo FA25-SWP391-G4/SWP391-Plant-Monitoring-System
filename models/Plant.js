@@ -95,6 +95,7 @@ class Plant {
         this.created_at = plantData.created_at;
         this.zone_id = plantData.zone_id;
         this.notes = plantData.notes;
+        this.image = plantData.image;
     }
 
     /**
@@ -255,8 +256,8 @@ class Plant {
                     UPDATE plants
                     SET user_id = $1, device_key = $2, profile_id = $3, 
                         custom_name = $4, moisture_threshold = $5, auto_watering_on = $6,
-                        zone_id = $7, status = $8, notes = $9
-                    WHERE plant_id = $10
+                        zone_id = $7, status = $8, notes = $9, image = $10
+                    WHERE plant_id = $11
                     RETURNING *
                 `;
                 
@@ -270,6 +271,7 @@ class Plant {
                     this.zone_id,
                     this.status,
                     this.notes,
+                    this.image,
                     this.plant_id
                 ]);
                 
@@ -436,7 +438,10 @@ class Plant {
             custom_name: this.custom_name,
             moisture_threshold: this.moisture_threshold,
             auto_watering_on: this.auto_watering_on,
-            created_at: this.created_at
+            created_at: this.created_at,
+            image: this.image,
+            zone_id: this.zone_id,
+            notes: this.notes
         };
     }
 

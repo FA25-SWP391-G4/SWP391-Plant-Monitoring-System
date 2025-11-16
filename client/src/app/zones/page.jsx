@@ -37,11 +37,16 @@ export default function ZonesPage() {
 
   const fetchZones = async () => {
     try {
-      setLoadingZones(true);
-      const response = await axiosClient.get('/api/zones');
-      if (response.data.success) {
-        setZones(response.data.data);
-      }
+      setLoading(true);
+        try {
+          // Fetch from API
+          const plantData = await plantApi.getAll();
+          setPlants(plantData);
+          setFilteredPlants(plantData);
+        } catch (err) {
+          console.error('Error fetching plants data:', err);
+          toast.error(t('plants.loadError', 'Failed to load plants data. Please try again later.'));
+        }
     } catch (error) {
       console.error('Failed to fetch zones:', error);
     } finally {
@@ -217,20 +222,26 @@ export default function ZonesPage() {
                 </p>
               </div>
             ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                {zones.map((zone) => (
-                  <div key={zone.zone_id} className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-4">
-                    <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-                      {zone.zone_name}
-                    </h3>
-                    {zone.description && (
-                      <p className="mt-2 text-gray-600 dark:text-gray-400">
-                        {zone.description}
-                      </p>
-                    )}
-                  </div>
-                ))}
-              </div>
+              <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.4, delay: 0.2 }}
+              className={`${compactMode ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2' : 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4'}`}
+            >
+              {Array.isArray(filteredZones) && filteredZones.map((zone, index) => (
+                <motion.div
+                  key={zone.zone_id}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.3, delay: index * 0.1 }}
+                >
+                  <ZoneListItem 
+                    zone={zone} 
+                    isPremium={isPremium}
+                  />
+                </motion.div>
+              ))}
+            </motion.div>
             )}
           </div>
         </main>

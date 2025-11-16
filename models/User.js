@@ -1025,15 +1025,15 @@ createPasswordResetToken() {
     static async findAll(options = {}) {
         try {
             let query = `
-                SELECT user_id, email, full_name, role, created_at, updated_at, last_login_at, is_active
-                FROM users WHERE 1=1
+                SELECT user_id, email, family_name, given_name, role, created_at, phone_number
+                FROM users WHERE role != 'Admin'
             `;
             const params = [];
             let paramIndex = 1;
 
             // Apply search filter
             if (options.search) {
-                query += ` AND (email ILIKE $${paramIndex} OR full_name ILIKE $${paramIndex})`;
+                query += ` AND (email ILIKE $${paramIndex} OR family_name ILIKE $${paramIndex} OR given_name ILIKE $${paramIndex})`;
                 params.push(`%${options.search}%`);
                 paramIndex++;
             }

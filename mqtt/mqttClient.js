@@ -150,6 +150,15 @@ async function processSensorData(deviceKey, data) {
       [deviceKey, data.soilMoisture, data.temperature, data.airHumidity, data.lightIntensity]
     );
 
+    if (data.soilMoisture != null &&
+        data.soilMoisture < Math.min(20, plant.moisture_threshold)) {
+      await SystemLog.warning(
+        'PlantMonitor',
+        `Moisture below threshold (<${Math.min(20, plant.moisture_threshold)}%) for plant ${plant.plant_id}`,
+        { plantId: plant.plant_id, deviceKey }
+      );
+    }
+
     //update device last seen
     await db.pool.query(
       `UPDATE devices SET last_seen = NOW(), status = 'online' WHERE device_key = $1`,
@@ -173,8 +182,12 @@ async function processDeviceStatus(deviceKey, data) {
       `UPDATE devices SET status = $1, last_seen = NOW() WHERE device_key = $2`,
       [status, deviceKey]
     );
-
-    await SystemLog.create('INFO', `Device ${deviceKey} status updated to ${data.status}`).catch(console.error);
+    if (status === 'offline') {
+      await SystemLog.info('DeviceService', `Device offline: ${deviceKey}`, { deviceKey });
+    }
+    if (status === 'online') {
+    await SystemLog.info('DeviceService', `Device online: ${deviceKey}`, { deviceKey });
+    }
   } catch (error) {
     console.error('Error processing device status:', error);
     await SystemLog.create('ERROR', `Error updating ${deviceKey} status: ${error.message}`).catch(console.error);
@@ -263,7 +276,16 @@ async function sendDeviceCommand(deviceId, command, parameters = {}, timeoutMs =
 
     // Ensure client connection state is visible
     try {
-      const connected = typeof client.connected === 'function' ? client.connected() : client && client.connected;
+      let connected;
+      if (client) {
+        if (typeof client.connected === 'function') {
+          connected = client.connected();
+        } else if (typeof client.connected === 'boolean') {
+          connected = client.connected;
+        } else {
+          connected = '(unknown)';
+        }
+      }
       console.log('🔌 [MQTT] client.connected =', connected);
     } catch (e) {
       console.log('🔌 [MQTT] client.connected check failed:', e.message);

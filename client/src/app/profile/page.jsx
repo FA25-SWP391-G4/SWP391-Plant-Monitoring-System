@@ -52,6 +52,8 @@ const ProfilePage = () => {
       'kr': 'ko-KR',
       'zh': 'zh-CN'
     };
+
+  const isAdmin = user?.role === 'Admin';
     
   const locale = localeMap[i18n.language] || 'en-US';
  
@@ -341,8 +343,9 @@ const ProfilePage = () => {
             )}
           </div>
           </div>
-
+          
           {/* Account Created Date */}
+          {!isAdmin && (
           <div className="">
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">{t('profile.memberSince')}</label>
             <p className="text-gray-900 dark:text-white">
@@ -353,6 +356,7 @@ const ProfilePage = () => {
               }) : '-'}
             </p>
           </div>
+          )}
         </div>
       </div>
 

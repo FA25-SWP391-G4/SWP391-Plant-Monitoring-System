@@ -10,7 +10,8 @@ const activeCronJobs = new Map(); // key: schedule_id, value: cron job
  * Schedule a single pump
  */
 async function schedulePump(schedule) {
-  if (!schedule.is_active) return;
+  // Only schedule active schedules
+  if (!schedule || !schedule.is_active) return;
 
   // Cancel existing job if present
   if (activeCronJobs.has(schedule.schedule_id)) {
@@ -19,17 +20,29 @@ async function schedulePump(schedule) {
     activeCronJobs.delete(schedule.schedule_id);
   }
 
-  // Schedule new job
-  const job = cron.schedule(schedule.cron_expression, async () => {
+  // Create a new cron job. The callback should be small and non-blocking.
+  const job = cron.schedule(
+    schedule.cron_expression,
+    async () => {
     console.log(`⏰ Triggering pump for schedule_id=${schedule.schedule_id}`);
     try {
-      await sendPumpCommand(schedule.plant_id, 'pump_on', schedule.duration_seconds || 10);
+        // Use sendDeviceCommand abstraction to send pump command via MQTT
+        // duration_seconds defaults to 10s when not provided.
+        await sendDeviceCommand(schedule.plant_id, 'pump_on', {
+          duration: schedule.duration_seconds || 10
+        });
       console.log(`✅ Pump triggered for schedule_id=${schedule.schedule_id}`);
     } catch (err) {
-      console.error(`❌ Failed to trigger pump for schedule_id=${schedule.schedule_id}:`, err.message);
+        // Always catch inside cron handler to prevent unhandled rejections
+        console.error(`❌ Failed to trigger pump for schedule_id=${schedule.schedule_id}:`, err.message || err);
     }
-  }, { timezone: 'Asia/Ho_Chi_Minh' }); // Adjust timezone if needed
+    },
+    {
+      timezone: 'Asia/Ho_Chi_Minh' // adjust as appropriate for your deployment
+    }
+  );
 
+  // Keep track of the running job so we can stop it later if needed.
   activeCronJobs.set(schedule.schedule_id, job);
 }
 
@@ -58,71 +71,55 @@ async function updateSchedule(scheduleId) {
 
   // Remove old job if exists
   removeSchedule(scheduleId);
+  await schedulePump(schedule);
+}
 
-  const job = cron.schedule(schedule.cron_expression, async () => {
-    console.log(`⏰ Running scheduled pump for schedule ${schedule.schedule_id}`);
-    
-    try {
-      // Check if device is online before executing
-      if (schedule.device_key) {
-        const device = await Device.findById(schedule.device_key);
-        
-        if (!device) {
-          console.error(`❌ Device not found for schedule ${schedule.schedule_id}: ${schedule.device_key}`);
-          await SystemLog.error('SchedulerService', 
-            `Device not found for scheduled watering: ${schedule.device_key}`);
-          return;
-        }
-        
-        if (!device.isOnline()) {
-          console.warn(`⚠️ Device offline for scheduled watering: ${schedule.device_key}`);
-          await SystemLog.create({
-            log_level: 'WARN',
-            source: 'SchedulerService',
-            message: `Skipped scheduled watering - device offline: ${schedule.device_key}`
-          });
-          return;
-        }
-        
-        console.log(`✅ Device ${schedule.device_key} is online, proceeding with scheduled watering`);
-      }
+
+/**
+ * Send a compact schedule command to a device over MQTT.
+ * This is used for syncing device-local schedule configuration (e.g. when
+ * the device stores and executes schedules itself).
+ */
+async function sendScheduleToDevice(deviceId, day, hour, minute, duration) {
+  try {
+    const parameters = { day, hour, minute, duration };
+
+    console.log('MQTT → Sending schedule to device:', deviceId, parameters);
+
+    // sendDeviceCommand is expected to return an ACK or throw on error
+    const result = await sendDeviceCommand(deviceId, 'set_schedule', parameters);
       
-      await sendPumpCommand(schedule.device_key, 'pump_on', schedule.duration_seconds);
-      
-      // Log successful execution
-      await SystemLog.create({
-        log_level: 'INFO',
-        source: 'SchedulerService',
-        message: `Scheduled watering executed successfully - Schedule: ${schedule.schedule_id}, Device: ${schedule.device_key}, Duration: ${schedule.duration_seconds}s`
-      });
-      
-      console.log(`✅ Scheduled pump execution completed for schedule ${schedule.schedule_id}`);
+    console.log('MQTT → ACK:', result);
     } catch (err) {
-      console.error('❌ Failed to run scheduled pump:', err);
-      await SystemLog.error('SchedulerService', 
-        `Failed scheduled watering execution - Schedule: ${schedule.schedule_id}, Error: ${err.message}`);
+    // Log the error but do not crash the scheduler service
+    console.error('Failed to send schedule command:', err);
     }
-  });
-
-  activeCronJobs.set(scheduleId, job);
-  console.log(`✅ Schedule ${schedule.schedule_id} is now active with cron: ${schedule.cron_expression}`);
 }
 
 /**
  * Remove a schedule dynamically
  */
 function removeSchedule(scheduleId) {
-  const job = activeCronJobs.get(scheduleId);
+  const job = activeCronJobs.get(schedule_idToKey(scheduleId));
   if (job) {
     job.stop();
-    activeCronJobs.delete(scheduleId);
+    activeCronJobs.delete(schedule_idToKey(scheduleId));
     console.log(`🗑️ Schedule ${scheduleId} removed`);
   }
 }
 
+
+// Helper to normalize schedule ids used as map keys. In some DBs the id
+// might be numeric or string; ensure a consistent key format.
+function schedule_idToKey(id) {
+  return String(id);
+}
+
+
 module.exports = {
   scheduleAllPumps,
   schedulePump,
+  sendScheduleToDevice,
   updateSchedule,
   removeSchedule
 };

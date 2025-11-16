@@ -52,6 +52,23 @@ router.post('/users/:userId/reset-password', adminController.resetUserPassword);
 router.post('/users/bulk', adminController.bulkUserActions);
 
 /**
+ * UC25: VIEW ALL DEVICES ROUTES    
+ */
+// Get all devices with filtering and pagination
+router.get('/devices', adminController.getAllDevices);
+// Get device by ID with detailed information
+router.get('/devices/:deviceId', adminController.getDeviceById);
+
+/**
+ * UC25: VIEW ALL PLANTS ROUTES
+ * 
+ */
+// Get all plants with filtering and pagination
+router.get('/plants', adminController.getAllPlants);
+// Get plant by ID with detailed information
+router.get('/plants/:plantId', adminController.getPlantById);
+
+ /**
  * UC25: VIEW SYSTEM-WIDE REPORTS ROUTES
  */
 // Get system dashboard data

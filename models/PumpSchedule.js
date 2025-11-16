@@ -91,6 +91,18 @@ class PumpSchedule {
         }
     }
 
+    // Delete all schedules for a specific plant
+    static async deleteByPlantId(plantId) {
+        try {
+            const query = 'DELETE FROM pump_schedules WHERE plant_id = $1';
+            await pool.query(query, [plantId]);
+            return true;
+        } catch (error) {
+            throw error;
+        }
+    }
+
+
     // Static method to find active pump schedules
     static async findActive() {
         try {
@@ -121,8 +133,8 @@ class PumpSchedule {
                 // Update existing schedule
                 const query = `
                     UPDATE pump_schedules 
-                    SET plant_id = $1, cron_expression = $2, is_active = $3
-                    WHERE schedule_id = $4
+                    SET plant_id = $1, cron_expression = $2, is_active = $3, duration = $4
+                    WHERE schedule_id = $5
                     RETURNING *
                 `;
                 
@@ -130,6 +142,7 @@ class PumpSchedule {
                     this.plant_id,
                     this.cron_expression,
                     this.is_active,
+                    this.duration,
                     this.schedule_id
                 ]);
                 
@@ -139,8 +152,8 @@ class PumpSchedule {
             } else {
                 // Create new schedule
                 const query = `
-                    INSERT INTO pump_schedules (plant_id, cron_expression, is_active)
-                    VALUES ($1, $2, $3)
+                    INSERT INTO pump_schedules (plant_id, cron_expression, is_active, duration)
+                    VALUES ($1, $2, $3, $4)
                     RETURNING *
                 `;
                 
@@ -320,7 +333,8 @@ class PumpSchedule {
             plant_id: this.plant_id,
             cron_expression: this.cron_expression,
             is_active: this.is_active,
-            description: this.getCronDescription()
+            duration: this.duration,
+            description: `${this.getCronDescription()} (Duration: ${this.duration}s)`
         };
     }
 }

@@ -7,7 +7,7 @@ const ManualWateringControl = ({ plantId, deviceStatus, className, isEmbedded = 
   const { t } = useTranslation();
   const [isWatering, setIsWatering] = useState(false);
   const [showControls, setShowControls] = useState(isEmbedded);
-  const [duration, setDuration] = useState(30);
+  const [duration, setDuration] = useState(5);
   const [wateringHistory, setWateringHistory] = useState(null);
 
 
@@ -32,6 +32,11 @@ const ManualWateringControl = ({ plantId, deviceStatus, className, isEmbedded = 
       return;
     }
 
+    //else if (waterlevel == 'LOW') {
+    //  alert(t('watering.deviceOffline', 'Low water. Cannot start watering.'));
+    //  return;
+    //}
+
     if (isWatering) {
       // Stop watering
       try {
@@ -39,6 +44,7 @@ const ManualWateringControl = ({ plantId, deviceStatus, className, isEmbedded = 
         await plantApi.waterPlant(plantId, null, 'pump_off'); // explicit stop
         alert(t('watering.stopped', 'Watering stopped successfully!'));
         await fetchWateringHistory(); // Refresh history after stopping
+        setIsWatering(true);
       } catch (error) {
         console.error('Failed to stop watering:', error);
         alert(t('watering.stopFailed', 'Failed to stop watering. Please try again.'));
@@ -50,21 +56,16 @@ const ManualWateringControl = ({ plantId, deviceStatus, className, isEmbedded = 
       try {
         await plantApi.waterPlant(plantId, duration);
         alert(t('watering.success', 'Watering started successfully!'));
-        await fetchWateringHistory(); // Refresh history after starting
-        
-        // Auto stop after duration
-        setTimeout(async () => {
-          try {
-            await plantApi.waterPlant(plantId, null, 'pump_off'); // Stop watering after duration
-            setIsWatering(false);
-            await fetchWateringHistory(); // Refresh history after auto-stop
-          } catch (error) {
-            console.error('Failed to stop watering after timeout:', error);
-          }
-        }, duration * 1000);
+        await fetchWateringHistory();
+        setIsWatering(false) // Refresh history after starting
       } catch (error) {
         console.error('Watering failed:', error);
-        alert(t('watering.failed', 'Failed to start watering. Please try again.'));
+        const backendMessage = error?.response?.data?.error || error?.response?.data?.message;
+        if (backendMessage && backendMessage.toLowerCase().includes('water tank level is too low')) {
+          alert(t('watering.lowWater', 'Water tank level is too low. Please refill the tank before watering.'));
+        } else {
+          alert(t('watering.failed', 'Failed to start watering. Please try again.'));
+        }
         setIsWatering(false);
       }
     }

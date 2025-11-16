@@ -120,9 +120,10 @@ export default function DashboardPage() {
     [user], // Only re-fetch when user changes
     {
       cacheKey: user ? `dashboard_plants_${user.user_id}` : null,
-      cacheDuration: 5 * 60 * 1000, // 5 minutes
+      cacheDuration: 5 * 1000, // 5 seconds
       onSuccess: (data) => {
         if (data) setPlants(data);
+        console.log("[DEBUG] Fetched plants data:", data);
       },
       onError: (err) => {
         console.error('Error fetching plants:', err);
@@ -145,7 +146,7 @@ export default function DashboardPage() {
     [user], // Only re-fetch when user changes
     {
       cacheKey: user ? `dashboard_sensors_${user.user_id}` : null,
-      cacheDuration: 60 * 1000, // 1 minute
+      cacheDuration: 5 * 1000, // 5 seconds
       onSuccess: (data) => {
         if (data?.data) {
           //normalize keys by trimming whitespace
@@ -261,14 +262,14 @@ export default function DashboardPage() {
               {t('dashboard.overview', 'Your plant monitoring dashboard')}
             </p>
           </div>
-          <div className="hidden md:block">
+          {/*<div className="hidden md:block">
             <button 
             onClick={() => router.push('/add-plant')}
             aria-label={t('dashboard.addPlant', 'Add New Plant')}
             className="bg-white dark:bg-gray-100 text-emerald-700 dark:text-emerald-800 px-4 py-2 rounded-lg font-medium hover:bg-emerald-50 dark:hover:bg-gray-200 transition-colors">
               {t('dashboard.addPlant', 'Add New Plant')}
             </button>
-          </div>
+          </div>*/}
         </div>
 
 

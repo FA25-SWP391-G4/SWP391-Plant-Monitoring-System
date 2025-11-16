@@ -9,7 +9,7 @@ import { useSettings } from '@/providers/SettingsProvider';
 import sensorApi from '@/api/sensorApi';
 import deviceApi from '@/api/deviceApi';
 import { plantApi } from '@/api';
-import { formatDate, formatDateTime } from '@/utils/dateFormat';
+import { formatDate, formatTime } from '@/utils/dateFormat';
 
 export default function PlantCard({ plant, sensorData = {} }) {
   const { t } = useTranslation();
@@ -32,6 +32,24 @@ export default function PlantCard({ plant, sensorData = {} }) {
   const [refreshInterval, setRefreshInterval] = useState(null);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [lastRefresh, setLastRefresh] = useState(new Date());
+
+  const getCurrentLocale = () => {
+    const language = t('locale', 'en-US');
+    // Map supported languages to proper locale codes
+    const localeMap = {
+      'en': 'en-US',
+      'ja': 'ja-JP', 
+      'zh': 'zh-CN',
+      'kr': 'ko-KR',
+      'vi': 'vi-VN',
+      'fr': 'fr-FR'
+    };
+    
+    const currentLang = language.split('-')[0];
+    return localeMap[currentLang] || 'en-US';
+  };
+
+  const locale = getCurrentLocale();
 
     const loadSensorHistory = async () => {
     if (!showHistory) return;
@@ -113,14 +131,30 @@ export default function PlantCard({ plant, sensorData = {} }) {
     loadLastWatered();
   }, [plant.plant_id]);
 
-  /*useEffect(() => {
-    // Reset watering state when device goes offline
-    const [deviceStatus, setDeviceStatus] = useState('offline');
-    if (deviceStatus !== 'online') {
-      setIsWatering(false);
-    }
-  }, [deviceStatus]);*/
-  
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      setIsRefreshing(true);
+
+      Promise.all([
+        loadLastWatered(),
+        getDeviceStatus(),
+        loadSensorHistory(),
+        loadWateringHistory()
+      ])
+        .catch((error) => {
+          console.error('Error refreshing plant card data:', error);
+        })
+        .finally(() => {
+          setLastRefresh(new Date());
+          setIsRefreshing(false);
+        });
+    }, 5000);
+
+    return () => {
+      clearInterval(intervalId);
+    };
+  }, [plant.plant_id]);
+
   // Calculate device status based on last sensor data timestamp
   const getDeviceStatus = () => {
     const now = new Date();
@@ -284,6 +318,7 @@ export default function PlantCard({ plant, sensorData = {} }) {
             {showIcons && statusInfo.icon}
             {statusInfo.text}
           </div>
+          {plant.device_key && (
           <div className={`px-2 py-1 rounded-full flex items-center text-xs font-medium ${
             deviceStatus === 'online' 
               ? 'bg-green-100 text-green-800' 
@@ -294,8 +329,9 @@ export default function PlantCard({ plant, sensorData = {} }) {
             }`} />
             {deviceStatus === 'online' ? t('device.online', 'Online') : t('device.offline', 'Offline')}
           </div>
+          )}
           {/* Auto-refresh indicator */}
-          <div className="flex items-center text-xs text-gray-400" title={`Last updated: ${lastRefresh.toLocaleTimeString()}`}>
+          <div className="flex items-center text-xs text-gray-400" title={`Last updated: ${lastRefresh.toLocaleTimeString(locale)}`}>
             <svg 
               xmlns="http://www.w3.org/2000/svg" 
               width="12" 
@@ -328,7 +364,8 @@ export default function PlantCard({ plant, sensorData = {} }) {
           {plant.location}
         </div>
         
-        {/* Sensor data */}
+        {plant.device_key && (
+        /* Sensor data */
         <div className="grid grid-cols-4 gap-2 mb-2">
           {/* Moisture level */}
           <div 
@@ -363,7 +400,7 @@ export default function PlantCard({ plant, sensorData = {} }) {
               </span>
             </div>
           </div> */}
-          
+
           {/* Temperature */}
           <div 
             className={`flex flex-col ${activeChart === 'temperature' ? 'bg-red-50 rounded p-1' : ''} cursor-pointer`}
@@ -414,9 +451,11 @@ export default function PlantCard({ plant, sensorData = {} }) {
             </div>
           </div>
         </div>
+        )}
+        
         
         {/* History chart - conditionally shown */}
-        {showHistory && (
+        {plant.device_key && showHistory && (
           <div className="mt-2 mb-4">
             <div className="flex justify-between items-center mb-2">
               <h4 className="text-sm font-medium">{t('charts.history', 'Sensor History')}</h4>
@@ -436,6 +475,7 @@ export default function PlantCard({ plant, sensorData = {} }) {
         )}
         
         {/* Last watered */}
+        {plant.plantId && (
         <div className="flex items-center text-sm text-gray-500 mb-4">
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-1">
             <circle cx="12" cy="12" r="10"></circle>
@@ -459,6 +499,7 @@ export default function PlantCard({ plant, sensorData = {} }) {
             )}
           </span>
         </div>
+        )}
         
         {/* AI Prediction Banner */}
         {enableAI && sensorData?.moisture && sensorData.moisture < 40 && (
@@ -485,12 +526,14 @@ export default function PlantCard({ plant, sensorData = {} }) {
           <Link href={`/plants/${plant.plant_id}`} className="px-3 py-1.5 bg-emerald-600 text-white text-sm rounded hover:bg-emerald-700 transition-all btn-transition">
             {t('common.viewDetails', 'View Details')}
           </Link>
+          {plant.device_key && (
           <button 
             onClick={() => setShowWateringControls(!showWateringControls)}
             className="px-3 py-1.5 bg-blue-600 text-white text-sm rounded hover:bg-blue-700 transition-all btn-transition"
           >
             {t('watering.waterNow', 'Water Now')}
           </button>
+          )}
           {enableAI && (
             <Link href={`/ai/chat?plant=${plant.plant_id}`} className="px-3 py-1.5 bg-purple-600 text-white text-sm rounded hover:bg-purple-700 transition-all btn-transition">
               {t('ai.askAI', 'Ask AI')}
@@ -507,8 +550,9 @@ export default function PlantCard({ plant, sensorData = {} }) {
           >
             {t('plants.log', 'Log Activity')}
           </button>
-        </div>        {/* Manual Watering Controls - conditionally shown */}
-        {showWateringControls && (
+        </div>        
+        {/* Manual Watering Controls - conditionally shown */}
+        {plant.device_key && showWateringControls && (
           <div className="mb-4 p-3 bg-blue-50 rounded-lg border border-blue-200">
             <div className="flex justify-between items-center mb-3">
               <h4 className="text-sm font-medium text-blue-900">{t('watering.manualControl', 'Manual Watering')}</h4>
