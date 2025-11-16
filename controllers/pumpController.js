@@ -45,3 +45,6 @@ app.delete('/api/schedules/:id', async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
+
+
+//funny debug

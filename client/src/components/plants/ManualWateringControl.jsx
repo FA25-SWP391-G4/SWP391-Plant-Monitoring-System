@@ -194,3 +194,5 @@ const ManualWateringControl = ({ plantId, deviceStatus, className, isEmbedded = 
 };
 
 export default ManualWateringControl;
+
+//funny debug

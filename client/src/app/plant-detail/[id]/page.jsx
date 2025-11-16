@@ -290,3 +290,5 @@ const fetchPlants = async () => {
     </div>
   );
 }
+
+//funny debug
