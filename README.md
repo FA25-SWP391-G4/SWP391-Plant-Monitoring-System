@@ -654,7 +654,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 👥 Team
 
-**SWP391 - Group 4**
+**SWP391 - Group 3**
 - Frontend Development Team
 - Backend Development Team
 - IoT Integration Team
@@ -673,4 +673,4 @@ For questions or support, please contact:
 
 ---
 
-**Made with ❤️ by SWP391 Group 4**
+**Made with ❤️ by SWP391 Group 3**
