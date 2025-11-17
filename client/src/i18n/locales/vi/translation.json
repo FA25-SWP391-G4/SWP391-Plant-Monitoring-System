@@ -887,17 +887,19 @@
 "premiumFeature": "Tính năng Premium",
 "upgradeMessage": "Nâng cấp lên Premium để sử dụng lịch tưới tự động",
 "deviceOfflineWarning": "Thiết bị ngoại tuyến",
-"deviceOfflineMessage": "Thiết bị hiện đang ngoại tuyến. Tưới theo lịch sẽ không hoạt động cho đến khi thiết bị trực tuyến trở lại."
+"deviceOfflineMessage": "Thiết bị hiện đang ngoại tuyến. Tưới theo lịch sẽ không hoạt động cho đến khi thiết bị trực tuyến trở lại.",
+"cronWithDuration": "{{day}} lúc {{time}} — {{duration}}s",
+"cron": "{{day}} lúc {{time}}"
 },
 
 "days": {
-"monday": "Thứ hai",
-"tuesday": "Thứ ba",
-"wednesday": "Thứ tư",
-"thursday": "Thứ năm",
-"friday": "Thứ sáu",
-"saturday": "Thứ bảy",
-"sunday": "Chủ nhật"
+"monday": "Thứ 2",
+"tuesday": "Thứ 3",
+"wednesday": "Thứ 4",
+"thursday": "Thứ 5",
+"friday": "Thứ 6",
+"saturday": "Thứ 7",
+"sunday": "Chủ Nhật"
 },
 
 "time": {

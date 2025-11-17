@@ -181,8 +181,13 @@ async function markNotificationAsRead(req, res) {
         }
 
         // Mark as read
-        notification.is_read = true;
-        await notification.save();
+        await notification.markAsRead();
+
+        // Log the read action
+        await SystemLog.info('notifications', 'mark_read', {
+            user_id: req.user.user_id,
+            notification_id: notification.alert_id
+        });
 
         res.status(200).json({
             success: true,

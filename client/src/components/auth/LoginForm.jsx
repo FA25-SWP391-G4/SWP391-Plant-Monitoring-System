@@ -567,7 +567,9 @@ export function LoginForm() {
             className="w-full px-4 py-3 bg-emerald-600 text-white rounded-lg font-semibold hover:bg-emerald-700 transition-colors shadow-md"
           >
             {isLoading ? t('common.loading', 'Loading...') : t('auth.login', 'Sign In')}
-          </button>        <div className="flex items-center my-4">
+          </button>        
+          {/*
+          <div className="flex items-center my-4">
           <div className="flex-1 h-px bg-gray-200" aria-hidden="true"></div>
           <span className="px-3 text-xs uppercase tracking-wider text-gray-500">
             {t('common.or', 'or')}
@@ -576,7 +578,6 @@ export function LoginForm() {
         </div>
         
         <div className="items-center justify-between">
-          {/* Google Sign-In Button */}
           <div className="w-full flex justify-center">
             <GoogleLoginButton 
               flowType="redirect" 
@@ -584,10 +585,10 @@ export function LoginForm() {
               className="bg-white"
             />
             
-            {/* Google's rendered button (hidden at first, shows when API loads) */}
             <div className="g-signin2" data-onsuccess="onSignIn" style={{display: 'none'}} id="google-signin-button"></div>
           </div>
         </div>
+        */}
         
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
           <Link href="/register" className="w-full px-4 py-3 border-2 border-emerald-600 text-emerald-700 rounded-lg font-semibold hover:bg-emerald-50 transition-colors text-center">

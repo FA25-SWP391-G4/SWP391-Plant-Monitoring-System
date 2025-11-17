@@ -20,6 +20,7 @@ const { isValidUUID } = require('../utils/uuidGenerator');
 const Subscription = require('../models/Subscription');
 const e = require('express');
 const { isUltimate } = require('../middlewares/accessMiddleware');
+const { generateToken } = require('../utils/tokenUtils');
 
 /**
  * UC13: GET USER PROFILE
@@ -150,12 +151,29 @@ async function updateUserProfile(req, res) {
         // Update the user profile
         const updatedUser = await user.update(updatedFields);
 
-        // Return updated user data
-        res.status(200).json({
-            success: true,
-            message: 'Profile updated successfully',
-            data: updatedUser.toJSON()
-        });
+
+        try {
+            if (updatedUser) {
+                const responsePayload = {
+                    success: true,
+                    message: 'Profile updated successfully',
+                    data: updatedUser.toJSON()
+                };
+                //Send new token in response header and reload page sign
+                try {
+                    const newToken = generateToken(updatedUser);
+                    console.log('[USER CONTROLLER] Generated new token for updated user:', updatedUser.user_id);
+                res.setHeader('Authorization', `Bearer ${newToken}`);
+                    responsePayload.token = newToken;
+                } catch (tokenError) {
+                    console.error('[USER CONTROLLER] Error generating new token:', tokenError);
+                }
+                
+                return res.status(200).json(responsePayload);
+            }
+        } catch (tokenError) {
+            console.error('[USER CONTROLLER] Error handling profile update response:', tokenError);
+        }
 
     } catch (error) {
         console.error('Update user profile error:', error);

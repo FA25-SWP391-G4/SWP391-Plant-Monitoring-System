@@ -224,9 +224,6 @@ const AIChatbotBubble = () => {
                     <h3 className="text-white font-semibold">
                       {t('ai.chatbot.title', 'AI Plant Assistant')}
                     </h3>
-                    <p className="text-white/80 text-sm">
-                      {t('ai.chatbot.subtitle', 'Ultimate Feature')}
-                    </p>
                   </div>
                 </div>
                 <div className="flex items-center gap-2">

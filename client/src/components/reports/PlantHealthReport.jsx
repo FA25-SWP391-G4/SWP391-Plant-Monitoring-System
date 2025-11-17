@@ -151,7 +151,7 @@ export default function PlantHealthReport({ plant }) {
                   <svg className="w-full h-full" viewBox="0 0 36 36">
                     <path
                       className="text-gray-200"
-                      stroke-width="3"
+                      strokeWidth="3"
                       fill="none"
                       d="M18 2.0845
                         a 15.9155 15.9155 0 0 1 0 31.831

@@ -178,7 +178,7 @@ var sensorRouter = require('./routes/sensor');      // 🔄 Sensor data manageme
 var plantRouter = require('./routes/plants');        // ✅ UC5-9: Plant management & watering (implemented)
 var adminRouter = require('./routes/admin');        // 🔄 UC24-31: Admin functions
 var deviceRouter = require('./routes/device');      // IoT device management API
-//var notificationRouter = require('./routes/notifications'); // 🔄 UC10: Real-time notifications
+var notificationRouter = require('./routes/notifications'); // 🔄 UC10: Real-time notifications
 // var languageRouter = require('./routes/language');  // 🔄 UC31: Multi-language settings (tạm thời vô hiệu hóa)
 
 // TODO: Create additional route modules for remaining use cases:
@@ -265,6 +265,7 @@ app.use('/api/subscriptions', require('./routes/subscriptions')); // ✅ Subscri
 app.use('/api/plant-profiles', plantProfileRouter); // Plant profile database API
 app.use('/api/devices', deviceRouter);          // IoT device management API
 app.use('/api/admin', adminRouter);             // ✅ UC24-31: Admin functions
+app.use('/api/notifications', notificationRouter); // UC10: Notifications API
 // app.use('/api/report', reportRouter);            // 🔄 UC8-9, UC15, UC17: Reports API
 // app.use('/api/premium', premiumRouter);          // 🔄 UC14-23: Premium features API
 

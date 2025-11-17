@@ -67,7 +67,7 @@ class Device {
     static async findAll() {
         try {
             const query = `
-                SELECT d.*, u.family_name as owner_name 
+                SELECT d.*, CONCAT(u.family_name, ' ', u.given_name) as owner_name 
                 FROM devices d
                 LEFT JOIN users u ON d.user_id = u.user_id
                 ORDER BY d.created_at DESC

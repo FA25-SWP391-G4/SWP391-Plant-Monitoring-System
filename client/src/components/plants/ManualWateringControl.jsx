@@ -3,19 +3,37 @@ import { useTranslation } from 'react-i18next';
 import { Button } from '../ui/Button';
 import plantApi from '@/api/plantApi';
 
+import sensorApi from '@/api/sensorApi';
+
 const ManualWateringControl = ({ plantId, deviceStatus, className, isEmbedded = false }) => {
   const { t } = useTranslation();
   const [isWatering, setIsWatering] = useState(false);
   const [showControls, setShowControls] = useState(isEmbedded);
   const [duration, setDuration] = useState(5);
   const [wateringHistory, setWateringHistory] = useState(null);
+  const [moisture, setMoisture] = useState(null);
+  const [moistureLoading, setMoistureLoading] = useState(false);
 
 
   useEffect(() => {
     if (showControls) {
       fetchWateringHistory();
+      fetchMoisture();
     }
   }, [showControls]);
+
+  const fetchMoisture = async () => {
+    setMoistureLoading(true);
+    try {
+      const data = await sensorApi.getLatestMoisture(plantId);
+      setMoisture(data?.moisture ?? null);
+    } catch (error) {
+      setMoisture(null);
+      console.error('Failed to fetch moisture:', error);
+    } finally {
+      setMoistureLoading(false);
+    }
+  };
 
   const fetchWateringHistory = async () => {
     try {
@@ -143,7 +161,7 @@ const ManualWateringControl = ({ plantId, deviceStatus, className, isEmbedded = 
       {/* Water Button */}
       <Button
         onClick={handleWater}
-        disabled={isWatering || deviceStatus !== 'online'}
+        disabled={isWatering || deviceStatus !== 'online' || (moisture !== null && moisture > 90) || moistureLoading}
         className="w-full"
         size="lg"
       >
@@ -164,6 +182,25 @@ const ManualWateringControl = ({ plantId, deviceStatus, className, isEmbedded = 
           </div>
         )}
       </Button>
+
+      {/* Moisture Warning */}
+      {moisture !== null && moisture > 90 && (
+        <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg mt-4 mb-4">
+          <div className="flex">
+            <svg className="w-5 h-5 text-blue-400 mr-2" fill="currentColor" viewBox="0 0 20 20">
+              <path fillRule="evenodd" d="M18 13a1 1 0 01-1 1H3a1 1 0 110-2h14a1 1 0 011 1zm-7-9a7 7 0 100 14A7 7 0 0011 4zm0 12a5 5 0 110-10 5 5 0 010 10z" clipRule="evenodd" />
+            </svg>
+            <div>
+              <p className="text-sm font-medium text-blue-800">
+                {t('watering.moistureHigh', 'Soil moisture is above 90%. Watering is not allowed.')}
+              </p>
+              <p className="text-sm text-blue-700">
+                {t('watering.moistureHighDesc', 'Wait until the soil dries below 90% before watering again.')}
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Warning Message */}
       {deviceStatus !== 'online' && (

@@ -24,7 +24,7 @@ import { parsePhoneNumber, combinePhoneNumber } from '@/utils/phoneUtils';
  */
 const ProfilePage = () => {
   const { t, i18n } = useTranslation();
-  const { user, loading: isLoading, updateUser } = useAuth();
+  const { user, loading: isLoading, login, updateUser } = useAuth();
   const router = useRouter();
   const { isDark, isLight, getThemeColor } = useTheme();
   const [isEditing, setIsEditing] = useState(false);
@@ -103,9 +103,15 @@ const ProfilePage = () => {
       if (response.success) {
         toast.success(t('profile.profileUpdated'));
         setIsEditing(false);
-        // Update user in context with the returned data from server
-        if (updateUser && response.data) {
-          updateUser({ ...user, ...response.data });
+
+        const updatedUserData = response.data ? { ...user, ...response.data } : user;
+
+        // Prefer using login() with fresh token so cookies and auth state are updated
+        if (login && response.token) {
+          login(response.token, updatedUserData);
+        } else if (updateUser && response.data) {
+          // Fallback for legacy contexts where updateUser exists but login/token are not used
+          updateUser(updatedUserData);
         }
       } else {
         toast.error(response.error || t('profile.updateProfileError'));
@@ -151,6 +157,16 @@ const ProfilePage = () => {
           newPassword: '',
           confirmPassword: '',
         });
+
+        // After password change, refresh JWT token and user data
+        try {
+          const refreshResponse = await authApi.refreshToken();
+          if (refreshResponse.data && refreshResponse.data.success && login) {
+            login(refreshResponse.data.token, refreshResponse.data.user);
+          }
+        } catch (refreshError) {
+          console.error('Failed to refresh token after password change:', refreshError);
+        }
       }
     } catch (error) {
       console.error('Failed to change password:', error);

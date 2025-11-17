@@ -159,29 +159,13 @@ export default function PlantCard({ plant, sensorData = {} }) {
   const getDeviceStatus = () => {
     const now = new Date();
     // Priority: realtime sensorData (from prop) -> plant.device_last_seen -> plant.last_sensor_data
-    const candidates = [
-      // common keys where timestamp may be present
-      sensorData?.timestamp,
-      sensorData?.ts,
-      plant.device_last_seen,
-      plant.last_sensor_data,
-      plant.lastSeen,
-      plant.device_lastSeen
-    ];
 
     // Find first valid timestamp candidate
     let lastUpdate = null;
-    for (const c of candidates) {
-      if (!c) continue;
-      const parsed = (typeof c === 'number') ? new Date(c) : new Date(c);
-      if (!isNaN(parsed.getTime())) {
-        lastUpdate = parsed;
-        break;
-      }
-    }
+    const parsed = new Date(sensorData?.timestamp);
 
     // If no timestamp available, treat as offline
-    if (!lastUpdate) return 'offline';
+    if (!isNaN(parsed.getTime())) return 'offline';
 
     const timeDiffMinutes = (now - lastUpdate) / (1000 * 60);
     const THRESHOLD_MINUTES = 5; // adjust if you want a different recency window
@@ -377,7 +361,7 @@ export default function PlantCard({ plant, sensorData = {} }) {
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-blue-500 mr-1">
                 <path d="M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5C6 11.1 5 15 5 15a7 7 0 0 0 7 7z"></path>
               </svg>
-              <span className="font-medium">{sensorData?.soil_moisture ?? 'N/A'}%</span>
+              <span className="font-medium">{`${sensorData?.soil_moisture ?? 'N/A'}%`}</span>
             </div>
           </div>
 
@@ -411,7 +395,7 @@ export default function PlantCard({ plant, sensorData = {} }) {
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-red-500 mr-1">
                 <path d="M14 4v10.54a4 4 0 1 1-4 0V4a2 2 0 0 1 4 0Z"></path>
               </svg>
-              <span className="font-medium">{sensorData?.temperature || 'N/A'}°C</span>
+              <span className="font-medium">{`${sensorData?.temperature ?? 'N/A'}°C`}</span>
             </div>
           </div>
           
@@ -433,7 +417,7 @@ export default function PlantCard({ plant, sensorData = {} }) {
                 <path d="m6.34 17.66-1.41 1.41"></path>
                 <path d="m19.07 4.93-1.41 1.41"></path>
               </svg>
-              <span className="font-medium">{sensorData?.light_intensity || 'N/A'} lux</span>
+              <span className="font-medium">{`${sensorData?.light_intensity ?? 'N/A'} lux`}</span>
             </div>
           </div>
           {/* Humidity */}
@@ -447,7 +431,7 @@ export default function PlantCard({ plant, sensorData = {} }) {
                 <path d="M12 2s-6 6.5-6 11a6 6 0 0 0 12 0c0-4.5-6-11-6-11z"></path>
                 <circle cx="12" cy="13" r="3"></circle>
               </svg>
-              <span className="font-medium">{sensorData?.air_humidity || 'N/A'}%</span>
+              <span className="font-medium">{`${sensorData?.air_humidity ?? 'N/A'}%`}</span>
             </div>
           </div>
         </div>

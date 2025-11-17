@@ -112,7 +112,7 @@ class Plant {
     static async findAll() {
         try {
             const query = `
-                SELECT p.*, u.family_name as owner_name, 
+                SELECT p.*, CONCAT(u.family_name, ' ', u.given_name) as owner_name, 
                        d.device_name, d.status as device_status,
                        pp.species_name, pp.ideal_moisture
                 FROM plants p
@@ -145,7 +145,7 @@ class Plant {
     static async findById(id) {
         try {
             const query = `
-                SELECT p.*, u.family_name as owner_name, 
+                SELECT p.*, CONCAT(u.family_name, ' ', u.given_name) as owner_name, 
                        d.device_name, d.status as device_status,
                        pp.species_name, pp.ideal_moisture
                 FROM plants p

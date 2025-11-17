@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import deviceApi from '@/api/deviceApi';
 import { useTranslation } from 'react-i18next';
 import Modal from '@/components/ui/Modal';
 import axiosClient from '@/api/axiosClient';
@@ -26,14 +27,31 @@ export default function AddPlantModal({ onClose, onAdd, isPremium }) {
   const [submitting, setSubmitting] = useState(false);
   const [dropdownRef, setDropdownRef] = useState(null);
   const [zones, setZones] = useState([]);
+  const [devices, setDevices] = useState([]);
 
-  // Fetch recommended profiles and zones on component mount
+  // Fetch recommended profiles, zones, and devices on component mount
   useEffect(() => {
     fetchRecommendedProfiles();
     if (isPremium) {
       fetchZones();
     }
+    fetchDevices();
   }, [isPremium]);
+
+  const fetchDevices = async () => {
+    try {
+      let response;
+      if (deviceApi?.getAll) {
+        response = await deviceApi.getAll();
+        if (response.success) setDevices(response.data);
+      } else {
+        const res = await axiosClient.get('/api/devices');
+        if (res.data?.success) setDevices(res.data.data);
+      }
+    } catch (err) {
+      console.error('Error fetching devices:', err);
+    }
+  };
 
   // Handle search with debouncing
   useEffect(() => {
@@ -550,6 +568,36 @@ export default function AddPlantModal({ onClose, onAdd, isPremium }) {
               )}
             </div>
             
+            {/* Device dropdown with plant device as default */}
+            <div className="mb-4">
+              <label htmlFor="device_id" className="block text-sm font-medium text-gray-700 mb-1">
+                {t('plants.device', 'Device')}
+              </label>
+              <select
+                id="device_id"
+                name="device_id"
+                value={formData.device_id || ''}
+                onChange={handleChange}
+                className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
+              >
+                {devices.map(device => (
+                  <option key={device.id} value={device.id}>
+                    {device.device_name}
+                    {device.description ? ` - ${device.description}` : ''}
+                  </option>
+                ))}
+              </select>
+              {formData.device_id && (
+                <button
+                  type="button"
+                  className="mt-2 text-xs text-red-600 underline"
+                  onClick={() => setFormData(prev => ({ ...prev, device_id: '' }))}
+                >
+                  {t('plants.unbindDevice', 'Unbind device')}
+                </button>
+              )}
+            </div>
+
             {/* Zone (Premium only) */}
             {isPremium && (
               <div className="mb-4">

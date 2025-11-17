@@ -37,6 +37,19 @@ router.get('/:plantId', authMiddleware, (req, res, next) => {
   next();
 }, getPlantById);
 
+//get plant by user id
+router.get('/user/:userId', authMiddleware, (req, res, next) => {
+  // Validate userId parameter
+  const { userId } = req.params;
+  if (!userId || isNaN(userId)) {
+    return res.status(400).json({
+      success: false,
+      error: 'Invalid user ID format'
+    });
+  }
+  next();
+}, getUserPlants);
+
 //water plant
 router.post('/:plantId/water', authMiddleware, waterPlant);
 

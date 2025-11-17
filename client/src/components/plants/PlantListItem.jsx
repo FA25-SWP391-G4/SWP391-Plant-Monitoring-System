@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
 import Modal from '@/components/ui/Modal';
-import ConfirmDialog from '@/components/ui/ConfirmDialog';
+import {ConfirmDialog } from '@/components/ui/ConfirmDialog';
 import { useSettings } from '@/providers/SettingsProvider';
 import plantApi from '@/api/plantApi';
 import axiosClient from '@/api/axiosClient';
@@ -20,6 +20,8 @@ export default function PlantListItem({ plant, isPremium, onUpdate, onDelete }) 
   const showIcons = settings?.widgets?.showWidgetIcons ?? true;
   const compactMode = settings?.widgets?.compactMode ?? false;
   const animationsEnabled = settings?.widgets?.animationsEnabled ?? true;
+
+  const [zones, setZones] = useState([]);
   
   // Calculate health status
   const getStatusInfo = () => {
@@ -98,13 +100,36 @@ export default function PlantListItem({ plant, isPremium, onUpdate, onDelete }) 
     };
   };
 
+  const fetchZones = async () => {
+    try {
+      setLoadingRecommended(true);
+      // Get available zones (sorted by name, limit to top 15)
+      const response = await axiosClient.get('/api/zones?limit=15&sort=zone_name&order=ASC');
+      if (response.data.success) {
+        // Transform zone data to be compatible with the dropdown if needed
+        // Zones should have structure: { id, zone_name, description, etc. }
+        setZones(response.data.data);
+      }
+    } catch (error) {
+      console.error('Failed to fetch zones:', error);
+      // Set some default zones as fallback
+      setZones([
+        { id: 1, zone_name: 'Indoor', description: 'Indoor growing area' },
+        { id: 2, zone_name: 'Outdoor', description: 'Outdoor growing area' },
+        { id: 3, zone_name: 'Greenhouse', description: 'Controlled greenhouse environment' }
+      ]);
+    } finally {
+      setLoadingRecommended(false);
+    }
+  };
+
   const lastWateredInfo = getLastWateredDisplay();
 
-  // Animation variants
+  // Animation variants - aligned with page transition style
   const cardVariants = {
-    hidden: { opacity: 0, scale: 0.9 },
-    visible: { opacity: 1, scale: 1, transition: { duration: 0.3, ease: "easeOut" } },
-    hover: { y: -4, transition: { duration: 0.2 } }
+    hidden: { opacity: 0, y: 20 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.3, ease: "easeOut" } },
+    hover: { scale: 1.02, transition: { duration: 0.2 } }
   };
 
   useEffect(() => {
@@ -115,6 +140,14 @@ export default function PlantListItem({ plant, isPremium, onUpdate, onDelete }) 
   // Handle edit action
   const handleEdit = () => {
     setShowEditModal(true);
+  };
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
   };
 
   // Handle delete action
@@ -152,10 +185,10 @@ export default function PlantListItem({ plant, isPremium, onUpdate, onDelete }) 
   };
   
   return (
-    <motion.div 
-      variants={cardVariants}
-      initial="hidden"
-      animate="visible"
+    <div 
+      variants={animationsEnabled ? cardVariants : undefined}
+      initial={animationsEnabled ? "hidden" : undefined}
+      animate={animationsEnabled ? "visible" : undefined}
       whileHover={animationsEnabled ? "hover" : undefined}
       className={`bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden hover:shadow-md transition-shadow ${animationsEnabled ? 'duration-200 ease-in-out fade-in' : ''}`}
     >
@@ -262,6 +295,7 @@ export default function PlantListItem({ plant, isPremium, onUpdate, onDelete }) 
       {/* Delete Confirmation Dialog */}
       {showDeleteConfirm && (
       <ConfirmDialog
+        isOpen={showDeleteConfirm}
         onClose={() => setShowDeleteConfirm(false)}
         onConfirm={handleConfirmDelete}
         title={t('plants.confirmDeleteTitle', 'Delete Plant')}
@@ -270,22 +304,26 @@ export default function PlantListItem({ plant, isPremium, onUpdate, onDelete }) 
         variant="danger"
       />
       )}
-    </motion.div>
+    </div>
   );
 }
 
 // EditPlantModal component for editing plant information
+import deviceApi from '@/api/deviceApi';
 function EditPlantModal({ plant, onClose, onSave, isPremium }) {
   const { t } = useTranslation();
   const [formData, setFormData] = useState({
     custom_name: plant.name || '',
     notes: plant.notes || '',
     zone_id: plant.zone_id || '',
+    device_id: plant.device_id || '',
     moisture_threshold: plant.moisture_threshold || 50,
     species_name: plant.species || '',
     location: plant.location || ''
   });
   const [zones, setZones] = useState([]);
+  const [devices, setDevices] = useState([]);
+  const [deviceName, setDeviceName] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [imageFile, setImageFile] = useState(null);
@@ -293,25 +331,50 @@ function EditPlantModal({ plant, onClose, onSave, isPremium }) {
   const [imageError, setImageError] = useState('');
 
   useEffect(() => {
-    if (isPremium) {
-      fetchZones();
+    fetchDevices();
+    fetchZones();
+  }, []);
+
+  useEffect(() => {
+    // Set device name for default option
+    if (devices.length > 0 && formData.device_id) {
+      const found = devices.find(d => d.id === formData.device_id);
+      setDeviceName(found ? found.device_name : '');
+    } else {
+      setDeviceName('');
     }
-  }, [isPremium]);
+  }, [devices, formData.device_id]);
+
+  const fetchDevices = async () => {
+    try {
+      let response;
+      if (deviceApi?.getAll) {
+        response = await deviceApi.getAll();
+        if (response.success) setDevices(response.data);
+      } else {
+        const res = await axiosClient.get('/api/devices');
+        if (res.data?.success) setDevices(res.data.data);
+      }
+    } catch (err) {
+      console.error('Error fetching devices:', err);
+    }
+  };
 
   const fetchZones = async () => {
     try {
-      // Note: You might need to adjust this API call based on your actual zones API
-      const response = await fetch('/api/zones', {
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
-        }
-      });
-      const data = await response.json();
-      if (data.success) {
-        setZones(data.data);
+      // Get available zones (sorted by name, limit to top 15) - match AddPlantModal
+      const response = await axiosClient.get('/api/zones?limit=15&sort=zone_name&order=ASC');
+      if (response.data.success) {
+        setZones(response.data.data);
       }
-    } catch (err) {
-      console.error('Error fetching zones:', err);
+    } catch (error) {
+      console.error('Failed to fetch zones:', error);
+      // Set some default zones as fallback
+      setZones([
+        { id: 1, zone_name: 'Indoor', description: 'Indoor growing area' },
+        { id: 2, zone_name: 'Outdoor', description: 'Outdoor growing area' },
+        { id: 3, zone_name: 'Greenhouse', description: 'Controlled greenhouse environment' }
+      ]);
     }
   };
 
@@ -427,6 +490,7 @@ function EditPlantModal({ plant, onClose, onSave, isPremium }) {
           </div>
         )}
 
+
         <form onSubmit={handleSubmit}>
           {/* Plant Name */}
           <div className="mb-4">
@@ -443,6 +507,40 @@ function EditPlantModal({ plant, onClose, onSave, isPremium }) {
               required
             />
           </div>
+
+          {/* Device Dropdown */}
+          <div className="mb-4">
+            <label htmlFor="device_id" className="block text-sm font-medium text-gray-700 mb-1">
+              {t('plants.device', 'Device')}
+            </label>
+            <select
+              id="device_id"
+              name="device_id"
+              value={formData.device_id || ''}
+              onChange={handleChange}
+              className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
+            >
+              <option value="">
+                {deviceName ? deviceName : t('plants.unbindDevice', 'Unbind device')}
+              </option>
+              {devices.map(device => (
+                <option key={device.id} value={device.id}>
+                  {device.device_name}
+                  {device.description ? ` - ${device.description}` : ''}
+                </option>
+              ))}
+            </select>
+            {formData.device_id && (
+              <button
+                type="button"
+                className="mt-2 text-xs text-red-600 underline"
+                onClick={() => setFormData(prev => ({ ...prev, device_id: '' }))}
+              >
+                {t('plants.unbindDevice', 'No device')}
+              </button>
+            )}
+          </div>
+
 
           {/* Species */}
           <div className="mb-4">
@@ -475,25 +573,27 @@ function EditPlantModal({ plant, onClose, onSave, isPremium }) {
           </div>
 
           {/* Zone (Premium only) */}
-          {isPremium && zones.length > 0 && (
-            <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                {t('plants.zone', 'Zone')}
-              </label>
-              <select
-                name="zone_id"
-                value={formData.zone_id}
-                onChange={handleChange}
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 dark:bg-gray-700 dark:text-gray-100"
-              >
-                <option value="">{t('plants.noZone', 'No Zone')}</option>
-                {zones.map((zone) => (
-                  <option key={zone.zone_id} value={zone.zone_id}>
-                    {zone.name}
-                  </option>
-                ))}
-              </select>
-            </div>
+          {isPremium && (
+              <div className="mb-4">
+                <label htmlFor="zone" className="block text-sm font-medium text-gray-700 mb-1">
+                  {t('plants.zone', 'Zone')}
+                </label>
+                <select
+                  id="zoneId"
+                  name="zone_id"
+                  value={formData.zone_id}
+                  onChange={handleChange}
+                  className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                >
+                  <option value="">{t('zones.noZone', 'No zone')}</option>
+                  {zones.map(zone => (
+                    <option key={zone.id} value={zone.id}>
+                      {zone.zone_name}
+                      {zone.description && ` - ${zone.description}`}
+                    </option>
+                  ))}
+                </select>
+              </div>
           )}
 
           {/* Moisture Threshold */}

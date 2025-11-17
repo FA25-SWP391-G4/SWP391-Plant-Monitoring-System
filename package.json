@@ -8,7 +8,7 @@
     "@tensorflow/tfjs": "^4.15.0",
     "@tensorflow/tfjs-backend-cpu": "^4.15.0",
     "aws-iot-device-sdk": "^2.2.12",
-    "aws-iot-device-sdk-v2": "^1.23.0",
+    "aws-iot-device-sdk-v2": "^1.23.1",
     "aws-sdk": "^2.1598.0",
     "axios": "^1.12.2",
     "bcrypt": "^6.0.0",

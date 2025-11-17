@@ -31,7 +31,14 @@ connection.on("connect", async () => {
   console.log("✅ Connected to AWS IoT Core");
 
     const handleIncomingMessage = async (topic, payload) => {
-    const data = JSON.parse(new TextDecoder().decode(payload));
+    let data;
+    try {
+      data = JSON.parse(new TextDecoder().decode(payload));
+    } catch (jsonErr) {
+      console.warn(`⚠️ Received non-JSON payload on topic ${topic}:`, new TextDecoder().decode(payload));
+      // Optionally log to DB or system log here
+      return; // Skip further processing
+    }
     console.log("📩 Received message from ESP32:", topic, data);
 
       try {

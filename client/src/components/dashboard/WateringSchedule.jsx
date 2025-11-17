@@ -25,20 +25,26 @@ export default function WateringSchedule({ plants = [] }) {
   }
 
   function formatCronExpression(cronExpression, duration = null) {
-  if (!cronExpression) return 'No schedule set';
+  if (!cronExpression) return t('schedule.noSchedule', 'No schedule');
 
   const parts = cronExpression.split(' ');
   if (parts.length < 5) return cronExpression; // fallback
 
   const [minute, hour, , , dayOfWeek] = parts;
-  const day =
-    dayOfWeek.charAt(0).toUpperCase() + dayOfWeek.slice(1).toLowerCase();
+  const day = t(`days.${dayOfWeek.toLowerCase()}`, dayOfWeek);
   const time = `${hour.padStart(2, '0')}:${minute.padStart(2, '0')}`;
 
   return duration
-    ? `${day} at ${time} — ${duration}s`
-    : `${day} at ${time}`;
-}
+    ? t('schedule.cronWithDuration', '{{day}} at {{time}} — {{duration}}s', {
+        day,
+        time,
+        duration,
+      })
+    : t('schedule.cron', '{{day}} at {{time}}', {
+        day,
+        time,
+      });
+  }
 
 
   // Load last watered data for all plants
@@ -229,18 +235,18 @@ export default function WateringSchedule({ plants = [] }) {
                     {Array.isArray(schedules[plant.plant_id]) && schedules[plant.plant_id].length > 0 && (
                       <div className="mt-1">
                         <p className={`text-xs ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
-                          Schedule:
-                        </p>
-                        {schedules[plant.plant_id].map((sch) => (
-                          <div key={sch.schedule_id} className="text-xs ml-2">
+                          {t('schedule.title', 'Schedule:')}:
+                          {schedules[plant.plant_id].map((sch) => (
+                          <span key={sch.schedule_id} className="text-xs ml-2">
                             {formatCronExpression(sch.cron_expression, sch.duration_seconds)}
                             {sch.is_active ? (
                               <span className="text-green-500 ml-1">(Active)</span>
                             ) : (
                               <span className="text-gray-400 ml-1">(Inactive)</span>
                             )}
-                          </div>
-                        ))}
+                            </span>
+                          ))}
+                        </p>
                       </div>
                     )}
 
@@ -253,7 +259,7 @@ export default function WateringSchedule({ plants = [] }) {
               isDark
                 ? 'bg-blue-900/30 text-blue-400 border-blue-700 hover:bg-blue-900/50'
                 : 'bg-blue-50 text-blue-600 border-blue-200 hover:bg-blue-100'
-            }`}>
+            }`} onClick={() => setShowAddModal(true)}>
               {t('watering.waterNow', 'Water')}
             </button>
           </div>
@@ -301,7 +307,7 @@ export default function WateringSchedule({ plants = [] }) {
               onChange={(e) => setSelectedPlant(e.target.value)}
             >
               <option value="">Select a plant...</option>
-              {plants.map((p) => (
+              {plants.filter((p) => p.device_key !== null).map((p) => (
                 <option key={p.plant_id} value={p.plant_id}>
                   {p.name}
                 </option>

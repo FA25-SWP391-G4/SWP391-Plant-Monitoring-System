@@ -160,7 +160,8 @@ class PumpSchedule {
                 const result = await pool.query(query, [
                     this.plant_id,
                     this.cron_expression,
-                    this.is_active !== false // Default to true
+                    this.is_active !== false,
+                    this.duration
                 ]);
                 
                 const newSchedule = new PumpSchedule(result.rows[0]);

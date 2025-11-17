@@ -15,10 +15,10 @@ async function updateWaterLevel(deviceId, level) {
 
   waterLevels.set(entry.deviceId, entry);  
 
-  if (safeLevel !== null && safeLevel < 20) {
+  if (safeLevel !== null && safeLevel < 400) {
     await SystemLog.warning(
       'WaterReservoir',
-      `Water level low (<20%) for device ${entry.deviceId}`,
+      `Water level low for device ${entry.deviceId}`,
       { deviceKey: entry.deviceId, level: safeLevel }
     );
   }
@@ -26,8 +26,8 @@ async function updateWaterLevel(deviceId, level) {
 
 async function getStatusFromLevel(level) {
   if (level === null || level === undefined || Number.isNaN(level)) return 'unknown';
-  if (level <= 10) return 'critical';
-  if (level <= 30) return 'low';
+  if (level <= 100) return 'critical';
+  if (level <= 400) return 'low';
   return 'ok';
 }
 

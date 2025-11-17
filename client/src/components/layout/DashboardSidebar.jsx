@@ -3,13 +3,15 @@
  * Modern sidebar navigation for dashboard pages
  * Based on the reference UI design with expandable/collapsible functionality
  */
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter, usePathname } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../providers/AuthProvider';
 import { useTheme } from '../../contexts/ThemeContext';
 import { useDashboard } from '../../contexts/DashboardContext';
+import { useNotifications } from '../../contexts/NotificationContext';
+
 import UserMenu from '../dashboard/navigation/UserMenu';
 import DemoSidebarUserMenu from '../demo/DemoSidebarUserMenu';
 import Footer from '../Footer';
@@ -22,6 +24,7 @@ const DashboardSidebar = ({ isOpen = true, onToggle, demoUser = null }) => {
   const { sidebarOpen, toggleSidebar } = useDashboard();
   const router = useRouter();
   const pathname = usePathname();
+  const { unreadCount = 0 } = useNotifications();
   
   // State for expandable menu items
   const [expandedItems, setExpandedItems] = useState({});
@@ -31,24 +34,7 @@ const DashboardSidebar = ({ isOpen = true, onToggle, demoUser = null }) => {
   
   // Use demoUser if provided, otherwise use authenticated user
   const currentUser = demoUser || user;
-  const [notifications, setNotifications] = useState([
-    {
-      id: 1,
-      title: 'Plant moisture alert',
-      message: 'Snake plant needs watering! Moisture level is below 20%.',
-      read: false,
-      type: 'alert',
-      time: new Date(Date.now() - 30 * 60000)
-    },
-    {
-      id: 2,
-      title: 'Device connected', 
-      message: 'Your new soil moisture sensor has been successfully connected.',
-      read: false,
-      type: 'success',
-      time: new Date(Date.now() - 5 * 3600000)
-    }
-  ]);
+
 
   // Determine user role for conditional rendering
   const isPremium = currentUser?.role === "Premium";
@@ -57,8 +43,9 @@ const DashboardSidebar = ({ isOpen = true, onToggle, demoUser = null }) => {
 
   const isAuthenticated = !!currentUser;
 
-  // Calculate unread notifications
-  const unreadNotifications = notifications.filter(n => !n.read).length;
+  // Calculate unread notifications from shared notification context
+  const unreadNotifications = unreadCount;
+
 
   // Navigation items based on user role
   const getNavigationItems = () => {
@@ -80,33 +67,33 @@ const DashboardSidebar = ({ isOpen = true, onToggle, demoUser = null }) => {
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 16 16" id="device-16px">
           <rect id="Retângulo_223" data-name="Retângulo 223" width="16" height="16" fill="none" opacity="0"/>
           <g id="Icone" transform="translate(0.648 0.648)">
-          <g id="Retângulo_203" data-name="Retângulo 203" transform="translate(2.352 2.352)" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" stroke-width="1">
+          <g id="Retângulo_203" data-name="Retângulo 203" transform="translate(2.352 2.352)" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1">
             <rect width="10" height="10" stroke="none"/>
             <rect x="0.5" y="0.5" width="9" height="9" fill="none"/>
           </g>
-          <g id="Retângulo_206" data-name="Retângulo 206" transform="translate(5.352 5.352)" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" stroke-width="1">
+          <g id="Retângulo_206" data-name="Retângulo 206" transform="translate(5.352 5.352)" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1">
             <rect width="4" height="4" stroke="none"/>
             <rect x="0.5" y="0.5" width="3" height="3" fill="none"/>
           </g>
           <g id="Grupo_327" data-name="Grupo 327" transform="translate(-0.191 1)">
-            <line id="Linha_24" data-name="Linha 24" y1="3" transform="translate(5.543 10.852)" fill="none" stroke="currentColor" strokeLinecap="round" stroke-width="1"/>
-            <line id="Linha_28" data-name="Linha 28" y1="3" transform="translate(7.543 10.852)" fill="none" stroke="currentColor" strokeLinecap="round" stroke-width="1"/>
-            <line id="Linha_29" data-name="Linha 29" y1="3" transform="translate(9.543 10.852)" fill="none" stroke="currentColor" strokeLinecap="round" stroke-width="1"/>
+            <line id="Linha_24" data-name="Linha 24" y1="3" transform="translate(5.543 10.852)" fill="none" stroke="currentColor" strokeLinecap="round" strokeWidth="1"/>
+            <line id="Linha_28" data-name="Linha 28" y1="3" transform="translate(7.543 10.852)" fill="none" stroke="currentColor" strokeLinecap="round" strokeWidth="1"/>
+            <line id="Linha_29" data-name="Linha 29" y1="3" transform="translate(9.543 10.852)" fill="none" stroke="currentColor" strokeLinecap="round" strokeWidth="1"/>
           </g>
           <g id="Grupo_328" data-name="Grupo 328" transform="translate(-0.191 -11)">
-            <line id="Linha_24-2" data-name="Linha 24" y1="3" transform="translate(5.543 10.852)" fill="none" stroke="currentColor" strokeLinecap="round" stroke-width="1"/>
-            <line id="Linha_28-2" data-name="Linha 28" y1="3" transform="translate(7.543 10.852)" fill="none" stroke="currentColor" strokeLinecap="round" stroke-width="1"/>
-            <line id="Linha_29-2" data-name="Linha 29" y1="3" transform="translate(9.543 10.852)" fill="none" stroke="currentColor" strokeLinecap="round" stroke-width="1"/>
+            <line id="Linha_24-2" data-name="Linha 24" y1="3" transform="translate(5.543 10.852)" fill="none" stroke="currentColor" strokeLinecap="round" strokeWidth="1"/>
+            <line id="Linha_28-2" data-name="Linha 28" y1="3" transform="translate(7.543 10.852)" fill="none" stroke="currentColor" strokeLinecap="round" strokeWidth="1"/>
+            <line id="Linha_29-2" data-name="Linha 29" y1="3" transform="translate(9.543 10.852)" fill="none" stroke="currentColor" strokeLinecap="round" strokeWidth="1"/>
           </g>
           <g id="Grupo_329" data-name="Grupo 329" transform="translate(1 14.895) rotate(-90)">
-            <line id="Linha_24-3" data-name="Linha 24" y1="3" transform="translate(5.543 10.852)" fill="none" stroke="currentColor" strokeLinecap="round" stroke-width="1"/>
-            <line id="Linha_28-3" data-name="Linha 28" y1="3" transform="translate(7.543 10.852)" fill="none" stroke="currentColor" strokeLinecap="round" stroke-width="1"/>
-            <line id="Linha_29-3" data-name="Linha 29" y1="3" transform="translate(9.543 10.852)" fill="none" stroke="currentColor" strokeLinecap="round" stroke-width="1"/>
+            <line id="Linha_24-3" data-name="Linha 24" y1="3" transform="translate(5.543 10.852)" fill="none" stroke="currentColor" strokeLinecap="round" strokeWidth="1"/>
+            <line id="Linha_28-3" data-name="Linha 28" y1="3" transform="translate(7.543 10.852)" fill="none" stroke="currentColor" strokeLinecap="round" strokeWidth="1"/>
+            <line id="Linha_29-3" data-name="Linha 29" y1="3" transform="translate(9.543 10.852)" fill="none" stroke="currentColor" strokeLinecap="round" strokeWidth="1"/>
           </g>
           <g id="Grupo_330" data-name="Grupo 330" transform="translate(-11 14.895) rotate(-90)">
-            <line id="Linha_24-4" data-name="Linha 24" y1="3" transform="translate(5.543 10.852)" fill="none" stroke="currentColor" strokeLinecap="round" stroke-width="1"/>
-            <line id="Linha_28-4" data-name="Linha 28" y1="3" transform="translate(7.543 10.852)" fill="none" stroke="currentColor" strokeLinecap="round" stroke-width="1"/>
-            <line id="Linha_29-4" data-name="Linha 29" y1="3" transform="translate(9.543 10.852)" fill="none" stroke="currentColor" strokeLinecap="round" stroke-width="1"/>
+            <line id="Linha_24-4" data-name="Linha 24" y1="3" transform="translate(5.543 10.852)" fill="none" stroke="currentColor" strokeLinecap="round" strokeWidth="1"/>
+            <line id="Linha_28-4" data-name="Linha 28" y1="3" transform="translate(7.543 10.852)" fill="none" stroke="currentColor" strokeLinecap="round" strokeWidth="1"/>
+            <line id="Linha_29-4" data-name="Linha 29" y1="3" transform="translate(9.543 10.852)" fill="none" stroke="currentColor" strokeLinecap="round" strokeWidth="1"/>
           </g>
           </g>
         </svg>

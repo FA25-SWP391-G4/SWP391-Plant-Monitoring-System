@@ -1126,7 +1126,7 @@ const getWateringStats = async (req, res) => {
 
         const stats = await WateringHistory.getStatsByPlantId(plantId);
         
-        return res.json({
+        return res.status(200).json({
             success: true,
             data: stats
         });

@@ -154,9 +154,9 @@ export default function PlantsPage() {
 
   return (
     <motion.div 
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.3, ease: "easeOut" }}
+      initial={animationsEnabled ? { opacity: 0, y: 20 } : undefined}
+      animate={animationsEnabled ? { opacity: 1, y: 0 } : undefined}
+      transition={animationsEnabled ? { duration: 0.3, ease: "easeOut" } : undefined}
       className="min-h-screen bg-gray-50 dark:bg-gray-900 page-transition"
     >
       <main className={`container mx-auto px-4 py-8 ${animationsEnabled ? 'transition-all duration-200' : ''}`}>
@@ -243,17 +243,17 @@ export default function PlantsPage() {
             </div>
           ) : (
             <motion.div 
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.4, delay: 0.2 }}
+              initial={animationsEnabled ? { opacity: 0 } : undefined}
+              animate={animationsEnabled ? { opacity: 1 } : undefined}
+              transition={animationsEnabled ? { duration: 0.4, delay: 0.2 } : undefined}
               className={`${compactMode ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2' : 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4'}`}
             >
               {Array.isArray(filteredPlants) && filteredPlants.map((plant, index) => (
                 <motion.div
                   key={plant.plant_id}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.3, delay: index * 0.1 }}
+                  initial={animationsEnabled ? { opacity: 0, y: 20 } : undefined}
+                  animate={animationsEnabled ? { opacity: 1, y: 0 } : undefined}
+                  transition={animationsEnabled ? { duration: 0.3, delay: index * 0.1 } : undefined}
                 >
                   <PlantListItem 
                     plant={plant} 

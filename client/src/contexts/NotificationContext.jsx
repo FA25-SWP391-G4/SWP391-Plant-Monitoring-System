@@ -316,7 +316,9 @@ export const NotificationProvider = ({ children }) => {
 
     try {
       const response = await notificationApi.getNotificationStats();
-      dispatch({ type: actionTypes.SET_STATS, payload: response.data || response.data.data });
+      const raw = response?.data;
+      const stats = raw?.data ?? raw;
+      dispatch({ type: actionTypes.SET_STATS, payload: stats });
     } catch (error) {
       console.error('Failed to load notification stats:', error);
     }

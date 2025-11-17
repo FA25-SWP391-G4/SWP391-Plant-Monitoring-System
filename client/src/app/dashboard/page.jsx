@@ -20,6 +20,7 @@ import Link from 'next/link';
 import { useRenderDebug, useOperationTiming } from '@/utils/renderDebug';
 import { useDataFetchDebug } from '@/utils/renderDebug';
 import PlantCard from '@/components/plants/PlantCard';
+import { plantApi } from '@/api';
 
 export default function DashboardPage() {
   const { user, loading, isPremium } = useAuth();
@@ -87,19 +88,16 @@ export default function DashboardPage() {
   }
 
   const fetchPlants = async () => {
-      try {
-        setIsLoading(true);
-        const response = await axiosClient.get('/api/plants');
-        setPlants(response.data.data);
-        setError(null);
-      } catch (err) {
-        console.error('Error fetching plants:', err);
-        setError(t('errors.fetchFailed', 'Failed to fetch plants'));
-      } finally {
-        setIsLoading(false);
-      }
-    };
-  
+    try {
+      const plants = await plantApi.getAll();
+      console.log('[DEBUG] fetchPlants returned:', plants);
+      setPlants(plants);
+    } catch (error) {
+      console.error('Error fetching plants:', error);
+      throw error;
+    }
+  };
+    
   // Fetch sensor data using the custom hook
   const fetchSensorData = async () => {
     const response = await axiosClient.get('/api/sensor/latest');
@@ -186,6 +184,89 @@ export default function DashboardPage() {
       }
     }
   );
+
+  useEffect(() => {
+    if (!user) return;
+    let cancelled = false;
+    let intervalId = null;
+    const POLL_MS = 3000; // poll interval (adjust as needed)
+
+    const normalize = (raw) => {
+      if (!raw) return {};
+      const obj = typeof raw.data === 'object' ? raw.data : raw;
+      try {
+        return Object.fromEntries(
+          Object.entries(obj).map(([key, value]) => [key.trim(),
+            {
+              ...value,
+              soil_moisture:
+                value?.soil_moisture ??
+                value?.moisture ??
+                value?.soilMoisture ??
+                null,
+              temperature:
+                value?.temperature ??
+                value?.temp ??
+                null,
+              light_intensity:
+                value?.light ??
+                value?.light_intensity ??
+                value?.lightLevel ??
+                null,
+              air_humidity:
+                value?.air_humidity ??
+                value?.humidity ??
+                value?.airHumidity ??
+                null,
+              device_key: value?.device_key ?? value?.deviceKey ?? undefined,
+              plant_id: value?.plant_id ?? value?.plantId ?? undefined,
+              timestamp: value?.timestamp ?? value?.time ?? undefined
+            }
+          ])
+        );
+      } catch (e) {
+        console.error('Normalization failed', e);
+        return {};
+      }
+    };
+
+    const poll = async () => {
+      if (document.hidden) return; // skip when tab is hidden
+      try {
+        const resp = await plantApi.getCurrentSensorData();
+        if (cancelled) return;
+        const normalized = normalize(resp.data);
+        // shallow compare keys to avoid unnecessary re-renders (optional)
+        setSensorData((prev) => {
+          const prevKeys = Object.keys(prev || {});
+          const newKeys = Object.keys(normalized || {});
+          if (prevKeys.length === newKeys.length && prevKeys.every(k => normalized[k] && JSON.stringify(prev[k]) === JSON.stringify(normalized[k]))) {
+            return prev;
+          }
+          return normalized;
+        });
+      } catch (err) {
+        // keep silent; backend may be temporarily unreachable
+        console.debug('Sensor poll error:', err?.message || err);
+      }
+    };
+
+    // initial immediate poll and then interval
+    poll();
+    intervalId = setInterval(poll, POLL_MS);
+
+    // when tab becomes visible, trigger immediate poll
+    const onVisibility = () => {
+      if (!document.hidden) poll();
+    };
+    document.addEventListener('visibilitychange', onVisibility);
+
+    return () => {
+      cancelled = true;
+      if (intervalId) clearInterval(intervalId);
+      document.removeEventListener('visibilitychange', onVisibility);
+    };
+  }, [user, axiosClient]);
   
   // Update loading state based on authentication and data fetches
   useEffect(() => {
@@ -500,7 +581,7 @@ export default function DashboardPage() {
                 <WeatherWidget />
               </div>
             )}
-            
+            {/*
             {settings.widgets?.showNotifications && (
               <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-5 slide-in-right card-hover">
                 <div className="flex items-center gap-3 mb-4">
@@ -516,6 +597,7 @@ export default function DashboardPage() {
                 <RecentActivity />
               </div>
             )}
+            */}
             
             {settings.widgets?.showWateringSchedule && (
               <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-5 slide-in-right card-hover">

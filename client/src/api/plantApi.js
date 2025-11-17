@@ -36,6 +36,16 @@ const plantApi = {
     }
   },
 
+  getByUser: async (userId) => {
+    try {
+      const response = await axiosClient.get(`/api/plants/user/${userId}`);
+      return response.data;
+    } catch (error) {
+      console.error(`Error fetching plants for user ${userId}:`, error);
+      throw error;
+    }
+  },
+
   // Water a plant manually
   waterPlant: async (plantId, duration, action) => {
     try {

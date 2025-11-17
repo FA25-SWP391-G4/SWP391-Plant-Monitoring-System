@@ -12,6 +12,7 @@ import { useRouter } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../providers/AuthProvider';
 import { useDashboard } from '../../contexts/DashboardContext';
+import { useNotifications } from '../../contexts/NotificationContext';
 import UserMenu from '../dashboard/navigation/UserMenu';
 import NotificationBell from '../notifications/NotificationBell';
 
@@ -26,6 +27,7 @@ const DashboardTopBar = ({
   const { user } = useAuth();
   const router = useRouter();
   const { toggleSidebar } = useDashboard();
+  const { notifications = [], unreadCount = 0, markAsRead, markAllAsRead, loadNotifications } = useNotifications();
   
   // Use !!user for clean boolean user authentication state  
   const isAuthenticated = !!user;
@@ -182,7 +184,13 @@ const DashboardTopBar = ({
           </button>
         )}
         {/* Notifications */}
-        <NotificationBell />
+        <NotificationBell
+          unreadCount={unreadCount}
+          notifications={notifications}
+          onMarkAsRead={markAsRead}
+          onMarkAllAsRead={markAllAsRead}
+          onRefresh={loadNotifications}
+        />
 
         {/* User Menu or Auth Buttons */}
         {isDemo || !isAuthenticated ? (

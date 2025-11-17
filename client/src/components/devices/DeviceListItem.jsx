@@ -191,7 +191,7 @@ export default function DeviceListItem({ device, onUpdate, onDelete }) {
 
   
   return (
-    <motion.div 
+    <div 
       variants={cardVariants}
       initial="hidden"
       animate="visible"
@@ -298,16 +298,17 @@ export default function DeviceListItem({ device, onUpdate, onDelete }) {
 
       {/* Delete Confirmation Dialog */}
       {showDeleteConfirm && (
-      <ConfirmDialog
-        onClose={() => setShowDeleteConfirm(false)}
-        onConfirm={handleConfirmDelete}
-        title={t('devices.confirmDeleteTitle', 'Delete Device')}
-        message={t('devices.confirmDelete', 'Are you sure you want to delete this device? This action cannot be undone.')}
-        confirmText={t('common.delete', 'Delete')}
-        variant="danger"
-      />
-    )}
-    </motion.div>
+        <ConfirmDialog
+          isOpen={showDeleteConfirm}
+          onClose={() => setShowDeleteConfirm(false)}
+          onConfirm={handleConfirmDelete}
+          title={t('devices.confirmDeleteTitle', 'Delete Device')}
+          message={t('devices.confirmDelete', 'Are you sure you want to delete this device? This action cannot be undone.')}
+          confirmText={t('common.delete', 'Delete')}
+          variant="danger"
+        />
+      )}
+    </div>
   );
 }
 
