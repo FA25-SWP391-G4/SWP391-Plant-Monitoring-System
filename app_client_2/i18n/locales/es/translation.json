@@ -1,0 +1,710 @@
+{
+  "errors": {
+    "genericError": "Se produjo un error. Por favor, inténtelo de nuevo más tarde.",
+    "loginFailed": "Error de inicio de sesión. Verifique sus credenciales.",
+    "registrationFailed": "Registro fallido. Inténtelo de nuevo.",
+    "unauthorized": "Acceso no autorizado. Por favor inicie sesión.",
+    "forbidden": "No tiene permiso para acceder a este recurso.",
+    "notFound": "Recurso no encontrado.",
+    "serverError": "Error del servidor. Por favor, inténtelo de nuevo más tarde.",
+    "validationError": "Verifique su entrada e inténtelo de nuevo.",
+    "connectionError": "No se pudo conectar al servidor. Verifique su conexión a internet.",
+    "timeoutError": "La solicitud expiró. Por favor, inténtelo de nuevo.",
+    "unsupportedBrowser": "Su navegador no es compatible. Actualice a una versión más reciente.",
+    "fetchFailed": "No se pudo obtener datos. Por favor, inténtelo de nuevo más tarde.",
+    "updateFailed": "No se pudo actualizar los datos. Por favor, inténtelo de nuevo.",
+    "wateringFailed": "No se pudo activar el riego. Por favor, inténtelo de nuevo.",
+    "analysisError": "No se pudo analizar el estado de la planta. Por favor, inténtelo de nuevo más tarde."
+  },
+  
+  "common": {
+    "submit": "Enviar",
+    "cancel": "Cancelar",
+    "delete": "Eliminar",
+    "add": "Añadir",
+    "edit": "Editar",
+    "save": "Guardar",
+    "close": "Cerrar",
+    "back": "Atrás",
+    "next": "Siguiente",
+    "upgrade": "Mejorar",
+    "email": "Correo electrónico",
+    "password": "Contraseña",
+    "confirmPassword": "Confirmar contraseña",
+    "fullName": "Nombre completo",
+    "firstName": "Nombre",
+    "lastName": "Apellido",
+    "phoneNumber": "Número de teléfono (opcional)",
+    "and": "y",
+    "required": "Campo obligatorio",
+    "success": "Éxito",
+    "error": "Error",
+    "loading": "Cargando...",
+    "sending": "Enviando...",
+    "getStarted": "Comenzar",
+    "learnMore": "Más información",
+    "retry": "Reintentar",
+    "expand": "Expandir",
+    "collapse": "Colapsar",
+    "appName": "PlantSmart",
+    "plantLover": "Amante de Plantas"
+  },
+
+  "accessibility": {
+    "email": "Correo electrónico",
+    "phone": "Teléfono",
+    "location": "Ubicación"
+  },
+
+  "auth": {
+    "login": "Iniciar sesión",
+    "loginTitle": "Inicia sesión en tu cuenta",
+    "register": "Registrarse",
+    "registerTitle": "Crear una cuenta",
+    "forgotPassword": "Olvidé la contraseña",
+    "forgotPasswordTitle": "Restablecer tu contraseña",
+    "forgotPasswordDescription": "Ingresa tu dirección de correo electrónico y te enviaremos un enlace para restablecer tu contraseña.",
+    "resetPassword": "Restablecer contraseña",
+    "resetPasswordTitle": "Crear nueva contraseña",
+    "changePassword": "Cambiar contraseña",
+    "changePasswordTitle": "Actualizar tu contraseña",
+    "logout": "Cerrar sesión",
+    "rememberMe": "Recordarme",
+    "passwordRequirements": "La contraseña debe tener al menos 6 caracteres",
+    "passwordMatch": "Las contraseñas deben coincidir",
+    "passwordChanged": "Contraseña cambiada con éxito",
+    "resetEmailSent": "Correo de restablecimiento de contraseña enviado",
+    "resetLinkSent": "Hemos enviado un enlace de restablecimiento de contraseña a {{email}}",
+    "resetSuccess": "Contraseña restablecida con éxito",
+    "registerSuccess": "Registro exitoso",
+    "continueWithGoogle": "Continuar con Google",
+    "orLoginWith": "o inicia sesión con",
+    "alreadyHaveAccount": "¿Ya tienes una cuenta?",
+    "dontHaveAccount": "¿No tienes una cuenta?",
+    "goToLogin": "Volver al inicio de sesión",
+    "checkYourEmail": "Revisa tu correo electrónico",
+    "checkSpamFolder": "Si no lo ves, por favor revisa tu carpeta de spam.",
+    "sendResetLink": "Enviar enlace de restablecimiento",
+    "newsletter": "Envíame correos con consejos de cuidado de plantas y actualizaciones",
+    "acceptTerms": "Acepto los",
+    "termsOfService": "Términos de servicio",
+    "privacyPolicy": "Política de privacidad"
+  },
+  "navigation": {
+    "home": "Inicio",
+    "dashboard": "Panel de control",
+    "zones": "Zonas",
+    "reports": "Informes",
+    "settings": "Configuración",
+    "profile": "Perfil",
+    "plants": "Plantas",
+    "sensors": "Sensores",
+    "chat": "Chat",
+    "support": "Soporte",
+    "admin": "Administración",
+    "login": "Iniciar sesión",
+    "logout": "Cerrar sesión",
+    "register": "Registrarse",
+    "changePassword": "Cambiar contraseña",
+    "forgotPassword": "Olvidé la contraseña",
+    "searchReports": "Buscar informes",
+    "thresholds": "Umbrales",
+    "upgrade": "Actualizar"
+  },
+  "dashboard": {
+    "wateringHistory": "Historial de riego",
+    "sensorReadings": "Lecturas de sensores",
+    "plantHealth": "Salud de la planta",
+    "recentActivities": "Actividades recientes",
+    "systemStatus": "Estado del sistema",
+    "waterNow": "Regar ahora",
+    "soilMoisture": "Humedad del suelo",
+    "temperature": "Temperatura",
+    "humidity": "Humedad",
+    "sunlight": "Luz solar",
+    "lastWatered": "Último riego",
+    "nextScheduled": "Próximo riego programado",
+    "title": "Panel de control",
+    "plantStatus": "Estado de la planta",
+    "allHealthy": "Todas las plantas están saludables",
+    "nextWatering": "Próximo riego",
+    "welcome": "Bienvenido de nuevo",
+    "overview": "Aquí tienes un resumen de tu colección de plantas",
+    "addPlant": "Añadir nueva planta",
+    "totalPlants": "Total de plantas",
+    "needsWatering": "Necesitan riego",
+    "needsAttention": "Necesitan atención",
+    "yourPlants": "Tus plantas",
+    "noPlants": "Aún no hay plantas añadidas",
+    "startAdding": "Comienza a añadir plantas a tu colección",
+    "addFirstPlant": "Añade tu primera planta",
+    "recentActivity": "Actividad reciente",
+    "wateringSchedule": "Programa de riego",
+    "errorLoading": "Error al cargar el panel",
+    "loadError": "No se pudieron cargar los datos del panel. Inténtelo de nuevo más tarde."
+  },
+  "plants": {
+    "myPlants": "Mis plantas",
+    "manage": "Administra y monitorea tu colección de plantas",
+    "addNew": "Añadir nueva planta",
+    "noMatchingPlants": "No hay plantas que coincidan con tus filtros",
+    "noPlants": "Aún no hay plantas añadidas",
+    "tryDifferentFilter": "Prueba con un filtro diferente o un término de búsqueda diferente",
+    "startAdding": "Comienza a añadir plantas a tu colección",
+    "addFirstPlant": "Añade tu primera planta",
+    "errorLoading": "Error al cargar plantas",
+    "loadError": "No se pudieron cargar los datos de las plantas. Inténtelo de nuevo más tarde.",
+    "notFound": "Planta no encontrada",
+    "manualWatering": "Riego manual",
+    "tabs": {
+      "overview": "Vista general",
+      "sensorData": "Datos del sensor",
+      "wateringSchedule": "Programa de riego"
+    }
+  },
+  
+  "notFound": {
+    "title": "Página no encontrada",
+    "message": "La página que está buscando no existe o ha sido movida.",
+    "goBack": "Volver a la página de inicio",
+    "errorCode": "Error 404"
+  },
+  
+  "forbidden": {
+    "title": "Acceso denegado",
+    "message": "No tiene permiso para acceder a esta página.",
+    "goBack": "Volver a la página de inicio",
+    "errorCode": "Error 403",
+    "upgradeMessage": "Esta función requiere una suscripción premium.",
+    "upgrade": "Actualizar ahora"
+  },
+  
+  "zones": {
+    "title": "Administrar múltiples zonas de plantas",
+    "createZone": "Crear zona",
+    "zoneName": "Nombre",
+    "zoneDescription": "Descripción",
+    "devices": "Dispositivos",
+    "unassignedDevices": "Dispositivos no asignados",
+    "device": "Dispositivo",
+    "deviceType": "Tipo",
+    "assignTo": "Asignar a",
+    "noDevices": "No hay dispositivos no asignados disponibles",
+    "selectPump": "Seleccionar bomba para la zona",
+    "assignPump": "-- Asignar bomba para {{zone}} --",
+    "deleteZoneConfirm": "¿Eliminar esta zona?",
+    "deleteZone": "Eliminar zona",
+    "zoneDevices": "Dispositivos en la zona",
+    "unassign": "Desasignar",
+    "noZoneDevices": "No hay dispositivos en esta zona",
+    "zone1": "Zona 1: Sala de estar",
+    "zone2": "Zona 2: Jardín",
+    "zone3": "Zona 3: Patio",
+    "plantsMonitored": "{{count}} plantas monitoreadas"
+  },
+  
+  "validation": {
+    "emailRequired": "El correo electrónico es obligatorio",
+    "invalidEmail": "Formato de correo electrónico inválido",
+    "passwordRequired": "La contraseña es obligatoria",
+    "passwordLength": "La contraseña debe tener al menos 8 caracteres",
+    "passwordsDoNotMatch": "Las contraseñas no coinciden",
+    "firstNameRequired": "El nombre es obligatorio",
+    "lastNameRequired": "El apellido es obligatorio",
+    "termsRequired": "Debes aceptar los términos y condiciones"
+  },
+  
+  "landing": {
+    "smartPlantCare": "Cuidado inteligente de plantas",
+    "neverKill": "Nunca más",
+    "anotherPlant": "mates otra planta",
+    "transformHome": "Transforma tu hogar en un paraíso de plantas próspero con nuestro sistema de monitoreo inteligente y recomendaciones de cuidado personalizadas.",
+    "startFreeTrial": "Comenzar prueba gratuita",
+    "watchDemo": "Ver demostración",
+    "freeTrialDays": "Prueba gratuita de 14 días",
+    "noCardRequired": "No se requiere tarjeta de crédito",
+    "everythingYouNeed": "Todo lo que necesitas para",
+    "perfectPlantCare": "el cuidado perfecto de tus plantas",
+    "comprehensiveSystem": "Nuestro sistema integral de monitoreo de plantas te da todas las herramientas para asegurar que tus plantas prosperen en cualquier entorno.",
+    "happyPlantParents": "Padres de plantas felices",
+    "lovedByThousands": "Amado por miles de",
+    "plantEnthusiasts": "entusiastas de las plantas en todo el mundo",
+    "testimonialDescription": "Escucha lo que nuestra comunidad está diciendo sobre cómo PlantSmart ha transformado su experiencia de cuidado de plantas.",
+    "readyToTransform": "¿Listo para transformar el cuidado de tus plantas?",
+    "joinThousands": "Únete a miles de amantes de las plantas que ya han hecho que sus plantas sean más felices y saludables con PlantSmart.",
+    "startYourFreeTrial": "Comienza tu prueba gratuita",
+    "scheduleDemo": "Programar una demostración",
+    "futurePlantCare": "El futuro del cuidado de plantas, hoy. Monitoreo inteligente para plantas más felices y saludables.",
+    "allRightsReserved": "Todos los derechos reservados."
+  },
+  
+  "features": {
+    "smartWatering": {
+      "title": "Riego inteligente",
+      "description": "Sistema de riego automatizado que proporciona la cantidad perfecta de agua basada en la humedad del suelo, tipo de planta y condiciones ambientales."
+    },
+    "smartWateringDesc": "Nuestros sensores monitorean la humedad del suelo y riegan automáticamente sus plantas en el momento perfecto, asegurando que nunca estén sobre o infra regadas.",
+    "lightOptimization": {
+      "title": "Optimización de luz",
+      "description": "Sensores de luz avanzados monitorean y optimizan las condiciones de iluminación, asegurando que sus plantas reciban el espectro e intensidad ideales."
+    },
+    "lightOptimizationDesc": "Rastree la exposición a la luz durante todo el día y reciba recomendaciones sobre la ubicación óptima para las necesidades específicas de cada una de sus plantas.",
+    "healthAlerts": {
+      "title": "Alertas de salud"
+    },
+    "healthAlertsDesc": "Reciba notificaciones instantáneas sobre posibles problemas de salud, plagas o enfermedades antes de que se conviertan en problemas graves.",
+    "mobileDashboard": {
+      "title": "Panel móvil",
+      "description": "Gestión completa de plantas desde su teléfono con monitoreo en tiempo real, horarios de cuidado y seguimiento del crecimiento.",
+      "cta": "Más información"
+    },
+    "aiDoctor": {
+      "title": "Doctor de plantas IA",
+      "description": "Algoritmos de aprendizaje automático analizan los datos de sus plantas para proporcionar recomendaciones de cuidado personalizadas y predecir posibles problemas.",
+      "cta": "Más información"
+    },
+    "iotSensors": {
+      "title": "Sensores IoT",
+      "description": "Red de sensores inalámbricos que monitorean temperatura, humedad, pH del suelo y nutrientes para un cuidado integral de las plantas.",
+      "cta": "Más información"
+    }
+  },
+
+  "cta": {
+    "upgradeToPremium": "Actualizar a Premium",
+    "startFreeTrial": "Comenzar prueba gratuita",
+    "learnMore": "Aprender más",
+    "subscribeNow": "Suscribirse ahora",
+    "monthlyPlan": "Plan mensual",
+    "yearlyPlan": "Plan anual (Ahorra 20%)",
+    "featuresIncluded": "Funciones incluidas",
+    "premiumBenefits": "Beneficios premium",
+    "basicFeatures": "Funciones básicas",
+    "advancedFeatures": "Funciones avanzadas",
+    "aiDiagnostics": "Diagnósticos de IA",
+    "diseaseDetection": "Detección de enfermedades",
+    "plantCareTips": "Consejos de cuidado de plantas",
+    "prioritySupport": "Soporte prioritario",
+    "dataExport": "Exportación de datos",
+    "customizableThresholds": "Umbrales personalizables",
+    "smartAlerts": "Alertas inteligentes",
+    "sensorIntegration": "Integración de sensores",
+    "mobileApp": "Aplicación móvil",
+    "webDashboard": "Panel web",
+    "setupGuide": "Guía de configuración",
+    "videoTutorials": "Tutoriales en video",
+    "communityAccess": "Acceso a la comunidad",
+    "feedback": "Comentarios",
+    "featureRequests": "Solicitudes de funciones",
+    "bugReports": "Informes de errores",
+    "contactSupport": "Contactar soporte"
+  },
+
+  "footer": {
+    "companyDescription": "Cuidado inteligente de plantas, simple y efectivo.",
+    "product": "Producto",
+    "features": "Características",
+    "pricing": "Precios",
+    "security": "Seguridad",
+    "integrations": "Integraciones",
+    "company": "Compañía",
+    "about": "Sobre nosotros",
+    "blog": "Blog",
+    "careers": "Carreras",
+    "contact": "Contacto",
+    "support": "Soporte",
+    "helpCenter": "Centro de ayuda",
+    "documentation": "Documentación",
+    "community": "Comunidad",
+    "status": "Estado del sistema",
+    "copyright": "© {{year}} PlantSmart. Todos los derechos reservados.",
+    "privacyPolicy": "Política de privacidad",
+    "termsOfService": "Términos de servicio",
+    "cookies": "Cookies"
+  },
+
+  "testimonials": {
+    "heading": "No solo tome nuestra palabra. Vea lo que nuestra comunidad de amantes de las plantas tiene que decir sobre su experiencia con PlantSmart.",
+    "verified": "Reseña verificada",
+    "plantsThriving": "{{count}} plantas prosperando",
+    "plantsSaved": "{{count}} plantas salvadas",
+    "plantsMonitored": "{{count}} plantas monitoreadas",
+    "testimonial1": {
+      "quote": "PlantSmart transformó completamente mi rutina de cuidado de plantas. Solía matar cada planta que tocaba, pero ahora mi apartamento es una selva próspera. Las recomendaciones de IA son increíblemente precisas.",
+      "name": "Sarah Chen",
+      "location": "San Francisco, CA",
+      "count": "12"
+    },
+    "testimonial2": {
+      "quote": "Como emprendedor ocupado, nunca tuve tiempo para el cuidado adecuado de las plantas. El sistema de riego automatizado es un cambio de juego. Mis plantas nunca se han visto mejor, y me da tranquilidad.",
+      "name": "Marcus Rodriguez",
+      "location": "Austin, TX",
+      "count": "8"
+    },
+    "testimonial3": {
+      "quote": "Las alertas de salud salvaron mi higuera de violín de una infestación de plagas que nunca habría detectado temprano. La aplicación móvil hace que el monitoreo sea muy conveniente y realmente divertido.",
+      "name": "Emily Watson",
+      "location": "Portland, OR",
+      "count": "15"
+    }
+  },
+
+  "ui": {
+    "buttons": {
+      "save": "Guardar",
+      "cancel": "Cancelar",
+      "delete": "Eliminar",
+      "edit": "Editar",
+      "apply": "Aplicar",
+      "confirm": "Confirmar",
+      "continue": "Continuar",
+      "goBack": "Regresar",
+      "seeAll": "Ver todo",
+      "viewMore": "Ver más",
+      "viewLess": "Ver menos",
+      "addToCollection": "Añadir a la colección",
+      "removeFromCollection": "Eliminar de la colección",
+      "uploadPhoto": "Subir foto",
+      "takePhoto": "Tomar foto",
+      "scanPlant": "Escanear planta",
+      "analyze": "Analizar",
+      "share": "Compartir",
+      "download": "Descargar"
+    },
+    "alerts": {
+      "success": "¡Éxito!",
+      "error": "¡Error!",
+      "warning": "¡Advertencia!",
+      "info": "Información",
+      "saved": "Cambios guardados exitosamente",
+      "deleted": "Eliminado exitosamente",
+      "updated": "Actualizado exitosamente",
+      "copied": "Copiado al portapapeles"
+    },
+    "modals": {
+      "confirm": "¿Estás seguro?",
+      "confirmDelete": "¿Estás seguro de que quieres eliminar esto?",
+      "confirmAction": "Esta acción no se puede deshacer.",
+      "closeButton": "Cerrar",
+      "cancelButton": "Cancelar",
+      "confirmButton": "Confirmar"
+    },
+    "placeholders": {
+      "search": "Buscar...",
+      "email": "Ingresa tu correo electrónico",
+      "password": "Ingresa tu contraseña",
+      "name": "Ingresa tu nombre",
+      "notes": "Añade notas aquí..."
+    }
+  },
+  "ai": {
+    "chatbot": {
+      "title": "Asistente de plantas",
+      "placeholder": "Pregúntame cualquier cosa sobre tus plantas...",
+      "greeting": "¡Hola! ¿Cómo puedo ayudarte con tus plantas hoy?",
+      "suggestions": [
+        "¿Por qué mis hojas se están volviendo amarillas?",
+        "¿Con qué frecuencia debo regar mi monstera?",
+        "¿Cuál es la mejor iluminación para suculentas?",
+        "¿Cómo me deshago de los mosquitos del hongos?"
+      ],
+      "loading": "Pensando...",
+      "error": "Lo siento, no pude procesar tu solicitud. Inténtalo de nuevo."
+    },
+    "imageRecognition": {
+      "title": "Identificación de plantas",
+      "upload": "Subir una foto",
+      "capture": "Tomar una foto",
+      "analyzing": "Analizando tu planta...",
+      "results": "Resultados",
+      "accuracy": "Confianza: {{percent}}%",
+      "noMatch": "No se encontró coincidencia. Prueba con otra foto con mejor iluminación.",
+      "matchFound": "¡Encontramos una coincidencia!",
+      "plantDetails": "Ver detalles de la planta",
+      "tips": "Toma una foto clara de las hojas y el tallo para obtener mejores resultados."
+    },
+    "plantAnalysis": {
+      "title": "Análisis de salud de plantas",
+      "healthy": "Saludable",
+      "unhealthy": "Necesita atención",
+      "critical": "Estado crítico",
+      "analyzeButton": "Analizar salud",
+      "issuesDetected": "Problemas detectados",
+      "noIssues": "No se detectaron problemas",
+      "recommendations": "Recomendaciones",
+      "moreInfo": "Más información",
+      "commonIssues": {
+        "overwatering": "Exceso de riego",
+        "underwatering": "Falta de riego",
+        "pestInfestation": "Infestación de plagas",
+        "nutrientDeficiency": "Deficiencia de nutrientes",
+        "poorLighting": "Mala iluminación",
+        "rootRot": "Pudrición de la raíz",
+        "fungalInfection": "Infección fúngica"
+      }
+    }
+  },
+  "weather": {
+    "title": "Clima local",
+    "today": "Hoy",
+    "forecast": "Pronóstico",
+    "precipitation": "Precipitación",
+    "humidity": "Humedad",
+    "wind": "Viento",
+    "sunrise": "Amanecer",
+    "sunset": "Atardecer",
+    "highTemp": "Alta",
+    "lowTemp": "Baja",
+    "feels": "Se siente como",
+    "indoor": "Interior",
+    "outdoor": "Exterior"
+  },
+  "reviews": {
+    "title": "Opiniones de clientes",
+    "averageRating": "Calificación promedio",
+    "basedOn": "Basado en {{count}} opiniones",
+    "writeReview": "Escribir una opinión",
+    "reviewPlaceholder": "Comparte tu experiencia con PlantSmart...",
+    "yourRating": "Tu calificación",
+    "filterBy": "Filtrar por",
+    "sortBy": "Ordenar por",
+    "newest": "Más recientes",
+    "oldest": "Más antiguas",
+    "highestRated": "Mejor calificadas",
+    "lowestRated": "Peor calificadas",
+    "helpful": "Útil",
+    "notHelpful": "No útil",
+    "wasHelpful": "¿Te resultó útil esta opinión?",
+    "verified": "Compra verificada",
+    "testimonials": [
+      {
+        "name": "Sara J.",
+        "rating": 5,
+        "comment": "PlantSmart ha transformado completamente cómo cuido mis plantas. ¡Solía matar todo lo que tocaba, pero ahora mi hogar es una jungla próspera!",
+        "date": "hace 2 meses"
+      },
+      {
+        "name": "Miguel T.",
+        "rating": 5,
+        "comment": "Los sensores son increíblemente precisos y la aplicación es intuitiva. Me encanta recibir notificaciones cuando mis plantas necesitan atención.",
+        "date": "hace 1 mes"
+      },
+      {
+        "name": "Emma R.",
+        "rating": 4,
+        "comment": "Gran sistema en general. La función de identificación de plantas con IA es increíblemente útil para una principiante como yo.",
+        "date": "hace 3 semanas"
+      }
+    ]
+  },
+  "notifications": {
+    "title": "Notificaciones",
+    "markAllRead": "Marcar todo como leído",
+    "clearAll": "Borrar todo",
+    "noNotifications": "No hay nuevas notificaciones",
+    "watering": "Hora de regar {{plantName}}",
+    "moistureLow": "La humedad del suelo está baja para {{plantName}}",
+    "temperatureHigh": "La temperatura es demasiado alta para {{plantName}}",
+    "temperatureLow": "La temperatura es demasiado baja para {{plantName}}",
+    "lightLow": "{{plantName}} necesita más luz",
+    "lightHigh": "{{plantName}} está recibiendo demasiada luz",
+    "batteryLow": "Batería baja del sensor para {{plantName}}",
+    "systemUpdate": "Actualización del sistema disponible",
+    "tipOfTheDay": "Consejo de cuidado de plantas: {{tip}}"
+  },
+  "sensors": {
+    "title": "Sensores",
+    "mySensors": "Mis sensores",
+    "addSensor": "Añadir sensor",
+    "pairSensor": "Emparejar nuevo sensor",
+    "sensorStatus": "Estado del sensor",
+    "lastReading": "Última lectura",
+    "batteryLevel": "Nivel de batería",
+    "signalStrength": "Intensidad de la señal",
+    "calibrate": "Calibrar sensor",
+    "firmwareUpdate": "Actualización de firmware",
+    "updateAvailable": "Actualización disponible",
+    "upToDate": "Actualizado",
+    "disconnected": "Desconectado",
+    "connected": "Conectado",
+    "lowBattery": "Batería baja",
+    "sensorType": {
+      "moisture": "Sensor de humedad",
+      "temperature": "Sensor de temperatura",
+      "light": "Sensor de luz",
+      "humidity": "Sensor de humedad ambiental",
+      "combo": "Sensor combinado"
+    },
+    "readingFrequency": {
+      "title": "Frecuencia de lectura",
+      "realTime": "Tiempo real",
+      "minutes15": "Cada 15 minutos",
+      "hourly": "Cada hora",
+      "hours2": "Cada 2 horas",
+      "hours6": "Cada 6 horas",
+      "daily": "Diariamente"
+    },
+    "noSensors": "No se encontraron sensores",
+    "addFirstSensor": "Añade tu primer sensor",
+    "calibration": {
+      "title": "Calibración del sensor",
+      "instructions": "Sigue estos pasos para calibrar tu sensor",
+      "step1": "Coloca el sensor en condición seca",
+      "step2": "Presiona el botón 'Calibrar seco'",
+      "step3": "Coloca el sensor en agua",
+      "step4": "Presiona el botón 'Calibrar húmedo'",
+      "calibrateDry": "Calibrar seco",
+      "calibrateWet": "Calibrar húmedo",
+      "success": "Calibración exitosa"
+    }
+  },
+  "reports": {
+    "title": "Informes",
+    "wateringReport": "Informe de riego",
+    "soilMoistureReport": "Informe de humedad del suelo",
+    "temperatureReport": "Informe de temperatura",
+    "humidityReport": "Informe de humedad",
+    "lightReport": "Informe de luz",
+    "generateReport": "Generar informe",
+    "exportReport": "Exportar informe",
+    "dateRange": "Rango de fechas",
+    "lastWeek": "Última semana",
+    "lastMonth": "Último mes",
+    "lastYear": "Último año",
+    "customRange": "Rango personalizado",
+    "from": "Desde",
+    "to": "Hasta",
+    "applyRange": "Aplicar",
+    "noData": "No hay datos disponibles para el período seleccionado",
+    "downloadAs": "Descargar como",
+    "pdf": "PDF",
+    "csv": "CSV",
+    "excel": "Excel",
+    "summary": "Resumen",
+    "details": "Detalles"
+  },
+  "thresholds": {
+    "title": "Umbrales de plantas",
+    "soilMoisture": "Humedad del suelo",
+    "temperature": "Temperatura",
+    "humidity": "Humedad",
+    "light": "Nivel de luz",
+    "minimum": "Mínimo",
+    "maximum": "Máximo",
+    "optimal": "Óptimo",
+    "current": "Actual",
+    "setThresholds": "Establecer umbrales",
+    "resetDefaults": "Restablecer a valores predeterminados",
+    "saveChanges": "Guardar cambios",
+    "thresholdsUpdated": "Umbrales actualizados exitosamente",
+    "presets": {
+      "title": "Preajustes",
+      "tropical": "Plantas tropicales",
+      "succulents": "Suculentas",
+      "herbs": "Hierbas",
+      "vegetables": "Verduras",
+      "indoor": "Plantas de interior",
+      "custom": "Personalizado"
+    },
+    "alertSettings": {
+      "title": "Configuración de alertas",
+      "enableAlerts": "Habilitar alertas",
+      "belowMinimum": "Por debajo del mínimo",
+      "aboveMaximum": "Por encima del máximo",
+      "outOfRange": "Fuera de rango"
+    }
+  },
+  "profile": {
+    "title": "Mi perfil",
+    "personalInfo": "Información personal",
+    "accountSettings": "Configuración de la cuenta",
+    "subscription": "Suscripción",
+    "planDetails": "Detalles del plan",
+    "billingHistory": "Historial de facturación",
+    "changePassword": "Cambiar contraseña",
+    "notifications": "Notificaciones",
+    "preferences": "Preferencias",
+    "saveChanges": "Guardar cambios",
+    "cancelChanges": "Cancelar",
+    "updateSuccess": "Perfil actualizado exitosamente",
+    "updateError": "Error al actualizar el perfil",
+    "uploadPhoto": "Subir foto",
+    "removePhoto": "Eliminar foto",
+    "currentSubscription": "Suscripción actual: {{plan}}",
+    "subscriptionStatus": "Estado: {{status}}",
+    "nextBilling": "Próxima fecha de facturación: {{date}}",
+    "upgradeAccount": "Actualizar cuenta",
+    "manageSubscription": "Administrar suscripción",
+    "cancelSubscription": "Cancelar suscripción",
+    "deleteAccount": "Eliminar cuenta",
+    "confirmDelete": "¿Estás seguro de que quieres eliminar tu cuenta? Esta acción no se puede deshacer."
+  },
+  "network": {
+    "title": "Configuración de red",
+    "wifiSetup": "Configuración WiFi",
+    "availableNetworks": "Redes disponibles",
+    "noNetworksFound": "No se encontraron redes",
+    "refreshNetworks": "Actualizar",
+    "networkName": "Nombre de la red",
+    "password": "Contraseña",
+    "connect": "Conectar",
+    "disconnect": "Desconectar",
+    "connecting": "Conectando...",
+    "connected": "Conectado",
+    "connectionFailed": "Conexión fallida",
+    "security": {
+      "none": "Ninguna",
+      "wep": "WEP",
+      "wpa": "WPA",
+      "wpa2": "WPA2"
+    },
+    "advancedSettings": "Configuración avanzada",
+    "ipAddress": "Dirección IP",
+    "subnetMask": "Máscara de subred",
+    "gateway": "Puerta de enlace",
+    "dns": "DNS",
+    "useDhcp": "Usar DHCP",
+    "staticIp": "IP estática",
+    "applySettings": "Aplicar configuración"
+  },
+  "feature": {
+    "healthAlerts": {
+      "title": "Alertas de salud",
+      "description": "Notificaciones instantáneas sobre problemas de salud de las plantas, enfermedades o requisitos de cuidado enviados directamente a su smartphone."
+    },
+    "lightOptimization": {
+      "title": "Optimización de luz",
+      "description": "Sensores de luz avanzados monitorean y optimizan las condiciones de iluminación, asegurando que sus plantas reciban el espectro e intensidad ideales."
+    },
+    "smartWatering": {
+      "title": "Riego inteligente",
+      "description": "Sistema de riego automatizado que proporciona la cantidad perfecta de agua basada en la humedad del suelo, tipo de planta y condiciones ambientales."
+    }
+  },
+
+  "payment": {
+    "success": {
+      "title": "¡Pago exitoso!",
+      "verifying": {
+        "title": "Verificando pago..."
+      },
+      "details": {
+        "title": "Detalles del pago",
+        "orderId": "ID del pedido",
+        "amount": "Cantidad",
+        "status": "Estado"
+      },
+      "actions": {
+        "dashboard": "Ir al Dashboard"
+      }
+    },
+    "failed": {
+      "title": "Pago fallido",
+      "description": "No pudimos procesar su pago. Por favor, inténtelo de nuevo.",
+      "actions": {
+        "retry": "Intentar de nuevo",
+        "dashboard": "Ir al Dashboard"
+      }
+    }
+  }
+}

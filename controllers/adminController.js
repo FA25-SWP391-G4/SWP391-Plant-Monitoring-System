@@ -48,7 +48,7 @@ const execPromise = util.promisify(exec);
  */
 async function getAllUsers(req, res) {
     try {
-        const { search, role, page = 1, limit = 10 } = req.query;
+        const { search, role, page = 2, limit = 4 } = req.query;
         const offset = (page - 1) * limit;
         
         // Log admin action

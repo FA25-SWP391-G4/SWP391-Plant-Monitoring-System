@@ -32,13 +32,7 @@ connection.on("connect", async () => {
 
     const handleIncomingMessage = async (topic, payload) => {
     let data;
-    try {
       data = JSON.parse(new TextDecoder().decode(payload));
-    } catch (jsonErr) {
-      console.warn(`⚠️ Received non-JSON payload on topic ${topic}:`, new TextDecoder().decode(payload));
-      // Optionally log to DB or system log here
-      return; // Skip further processing
-    }
     console.log("📩 Received message from ESP32:", topic, data);
 
       try {
@@ -127,6 +121,79 @@ connection.on("connect", async () => {
         if (water_level !== null) {
           const wateringControlService = require('./wateringControlService');
           wateringControlService.updateWaterLevel(deviceId, water_level);
+        }
+
+        // --- Handle ESP32 response for pump notifications ---
+        try {
+          const notificationService = require('./notificationService');
+          // Only handle if this is a response with command/status/message
+          if (payloadObj.command && payloadObj.status) {
+            let notifType = 'pump';
+            let notifTitle = 'Pump Notification';
+            let notifMsg = payloadObj.message || '';
+            let notifDetails = {
+              deviceId,
+              command: payloadObj.command,
+              commandId: payloadObj.commandId,
+              status: payloadObj.status,
+              errorCode: payloadObj.errorCode,
+              data: payloadObj.data || {}
+            };
+
+            // Intercept low water error and broadcast to UI (e.g., via WebSocket or cache)
+            if (payloadObj.status === 'error' && payloadObj.errorCode === 'WATER_TOO_LOW') {
+              // Option 1: Use notificationService to broadcast a special event
+              try {
+                const notificationService = require('./notificationService');
+                notificationService.broadcastSensorUpdate(deviceId, {
+                  ...notifDetails,
+                  lowWater: true,
+                  timestamp: payloadObj.timestamp || new Date().toISOString(),
+                });
+              } catch (err) {
+                console.error('Failed to broadcast low water event:', err);
+              }
+            }
+
+            // Find user(s) for this device (DB lookup)
+            const { pool } = require('../config/db');
+            const userRes = await pool.query(
+              `SELECT u.user_id FROM users u
+                JOIN plants p ON p.user_id = u.user_id
+                WHERE p.device_key = $1 LIMIT 1`,
+              [deviceId]
+            );
+            if (userRes.rows.length > 0) {
+              const userId = userRes.rows[0].user_id;
+              if (payloadObj.status === 'success') {
+                // Success: Watering started/completed
+                notifType = 'pump_success';
+                notifTitle = 'Pump Success';
+                notifMsg = notifMsg || 'Pump action completed successfully.';
+                await notificationService.sendToUser(
+                  userId,
+                  notifType,
+                  notifMsg,
+                  notifTitle,
+                  notifDetails
+                );
+              } else if (payloadObj.status === 'error') {
+                // Error: Water too low, etc.
+                notifType = 'pump_error';
+                notifTitle = 'Pump Error';
+                notifMsg = notifMsg || 'Pump action failed.';
+                await notificationService.sendToUser(
+                  userId,
+                  notifType,
+                  notifMsg,
+                  notifTitle,
+                  notifDetails
+                );
+              }
+            }
+          }
+        } catch (notiErr) {
+          console.error('Failed to send pump notification:', notiErr);
         }
 
         return;

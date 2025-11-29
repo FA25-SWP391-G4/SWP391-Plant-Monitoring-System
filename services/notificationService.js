@@ -261,11 +261,12 @@ async function getUnreadCount(userId) {
  */
 async function sendToUser(userId, type, message, title, details = {}) {
     try {
+        // Ensure details is a string for DB
+        const detailsStr = typeof details === 'string' ? details : JSON.stringify(details);
         // Create notification in database
         const notification = await notificationController.createNotification(
-            userId, type, message, title, details
+            userId, type, message, title, detailsStr
         );
-        
         // Send via WebSocket if user is connected
         if (io) {
             io.to(`user:${userId}`).emit('notification', {
@@ -276,12 +277,10 @@ async function sendToUser(userId, type, message, title, details = {}) {
                         : notification.details
                 }
             });
-            
             // Update unread count
             const unreadCount = await getUnreadCount(userId);
             io.to(`user:${userId}`).emit('unread-count', { count: unreadCount });
         }
-        
         return notification;
     } catch (error) {
         console.error('Error sending notification to user:', error);

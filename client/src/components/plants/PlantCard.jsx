@@ -131,13 +131,39 @@ export default function PlantCard({ plant, sensorData = {} }) {
     loadLastWatered();
   }, [plant.plant_id]);
 
+  // Device status state and calculation
+  const [deviceStatus, setDeviceStatus] = useState('offline');
+  const getDeviceStatus = () => {
+    const now = new Date();
+    let lastUpdate = null;
+    if (sensorData && sensorData.timestamp) {
+      const parsed = new Date(sensorData.timestamp);
+      if (!isNaN(parsed.getTime())) lastUpdate = parsed;
+    }
+    if (!lastUpdate && plant.device_last_seen) {
+      const parsed = new Date(plant.device_last_seen);
+      if (!isNaN(parsed.getTime())) lastUpdate = parsed;
+    }
+    if (!lastUpdate && plant.last_sensor_data) {
+      const parsed = new Date(plant.last_sensor_data);
+      if (!isNaN(parsed.getTime())) lastUpdate = parsed;
+    }
+    if (!lastUpdate) return 'offline';
+    const timeDiffMinutes = (now - lastUpdate) / (1000 * 60);
+    const THRESHOLD_MINUTES = 5;
+    return timeDiffMinutes <= THRESHOLD_MINUTES ? 'online' : 'offline';
+  };
+
+  // Update device status on mount, interval, and relevant prop changes
+  useEffect(() => {
+    setDeviceStatus(getDeviceStatus());
+  }, [sensorData?.timestamp, plant.device_last_seen, plant.last_sensor_data, plant.plant_id]);
+
   useEffect(() => {
     const intervalId = setInterval(() => {
       setIsRefreshing(true);
-
       Promise.all([
         loadLastWatered(),
-        getDeviceStatus(),
         loadSensorHistory(),
         loadWateringHistory()
       ])
@@ -146,33 +172,14 @@ export default function PlantCard({ plant, sensorData = {} }) {
         })
         .finally(() => {
           setLastRefresh(new Date());
+          setDeviceStatus(getDeviceStatus());
           setIsRefreshing(false);
         });
     }, 5000);
-
     return () => {
       clearInterval(intervalId);
     };
-  }, [plant.plant_id]);
-
-  // Calculate device status based on last sensor data timestamp
-  const getDeviceStatus = () => {
-    const now = new Date();
-    // Priority: realtime sensorData (from prop) -> plant.device_last_seen -> plant.last_sensor_data
-
-    // Find first valid timestamp candidate
-    let lastUpdate = null;
-    const parsed = new Date(sensorData?.timestamp);
-
-    // If no timestamp available, treat as offline
-    if (!isNaN(parsed.getTime())) return 'offline';
-
-    const timeDiffMinutes = (now - lastUpdate) / (1000 * 60);
-    const THRESHOLD_MINUTES = 5; // adjust if you want a different recency window
-    return timeDiffMinutes <= THRESHOLD_MINUTES ? 'online' : 'offline';
-  };
-  
-  const deviceStatus = getDeviceStatus();
+  }, [plant.plant_id, sensorData?.timestamp, plant.device_last_seen, plant.last_sensor_data]);
   
   // Calculate health status and water status
   const getStatusInfo = () => {
@@ -361,7 +368,15 @@ export default function PlantCard({ plant, sensorData = {} }) {
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-blue-500 mr-1">
                 <path d="M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5C6 11.1 5 15 5 15a7 7 0 0 0 7 7z"></path>
               </svg>
-              <span className="font-medium">{`${sensorData?.soil_moisture ?? 'N/A'}%`}</span>
+              <span className="font-medium">{
+                (() => {
+                  const arr = sensorHistory?.soil_moisture;
+                  const val = Array.isArray(arr) && arr.length > 0 ? arr[arr.length-1].value : sensorData?.soil_moisture;
+                  if (val === null || val === undefined) return 'N/A';
+                  if (val === 0) return '0%';
+                  return `${val}%`;
+                })()
+              }</span>
             </div>
           </div>
 
@@ -395,7 +410,15 @@ export default function PlantCard({ plant, sensorData = {} }) {
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-red-500 mr-1">
                 <path d="M14 4v10.54a4 4 0 1 1-4 0V4a2 2 0 0 1 4 0Z"></path>
               </svg>
-              <span className="font-medium">{`${sensorData?.temperature ?? 'N/A'}°C`}</span>
+              <span className="font-medium">{
+                (() => {
+                  const arr = sensorHistory?.temperature;
+                  const val = Array.isArray(arr) && arr.length > 0 ? arr[arr.length-1].value : sensorData?.temperature;
+                  if (val === null || val === undefined) return 'N/A';
+                  if (val === 0) return '0°C';
+                  return `${val}°C`;
+                })()
+              }</span>
             </div>
           </div>
           
@@ -417,7 +440,15 @@ export default function PlantCard({ plant, sensorData = {} }) {
                 <path d="m6.34 17.66-1.41 1.41"></path>
                 <path d="m19.07 4.93-1.41 1.41"></path>
               </svg>
-              <span className="font-medium">{`${sensorData?.light_intensity ?? 'N/A'} lux`}</span>
+              <span className="font-medium">{
+                (() => {
+                  const arr = sensorHistory?.light_intensity;
+                  const val = Array.isArray(arr) && arr.length > 0 ? arr[arr.length-1].value : sensorData?.light_intensity;
+                  if (val === null || val === undefined) return 'N/A';
+                  if (val === 0) return '0 lux';
+                  return `${val} lux`;
+                })()
+              }</span>
             </div>
           </div>
           {/* Humidity */}
@@ -431,7 +462,15 @@ export default function PlantCard({ plant, sensorData = {} }) {
                 <path d="M12 2s-6 6.5-6 11a6 6 0 0 0 12 0c0-4.5-6-11-6-11z"></path>
                 <circle cx="12" cy="13" r="3"></circle>
               </svg>
-              <span className="font-medium">{`${sensorData?.air_humidity ?? 'N/A'}%`}</span>
+              <span className="font-medium">{
+                (() => {
+                  const arr = sensorHistory?.air_humidity;
+                  const val = Array.isArray(arr) && arr.length > 0 ? arr[arr.length-1].value : sensorData?.air_humidity;
+                  if (val === null || val === undefined) return 'N/A';
+                  if (val === 0) return '0%';
+                  return `${val}%`;
+                })()
+              }</span>
             </div>
           </div>
         </div>
@@ -459,30 +498,32 @@ export default function PlantCard({ plant, sensorData = {} }) {
         )}
         
         {/* Last watered */}
-        {plant.plantId && (
-        <div className="flex items-center text-sm text-gray-500 mb-4">
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-1">
-            <circle cx="12" cy="12" r="10"></circle>
-            <polyline points="12 6 12 12 16 14"></polyline>
-          </svg>
-          <span>
-            {t('plants.lastWatered', 'Last watered')}: {
-              lastWateredInfo.date ? 
-                formatDate(lastWateredInfo.date, settings.language.dateFormat) : 
-                t('plants.neverWatered', 'Never watered')
-            }
-            {lastWateredInfo.timeAgo && (
-              <span className="text-xs text-gray-400 ml-2">
-                ({lastWateredInfo.timeAgo})
-              </span>
-            )}
-            {lastWateredInfo.triggerType && (
-              <span className="text-xs bg-gray-100 text-gray-600 px-1 rounded ml-2">
-                {lastWateredInfo.triggerType}
-              </span>
-            )}
-          </span>
-        </div>
+
+        {/* Last watered info - robust param display */}
+        {plant.plant_id && (
+          <div className="flex items-center text-sm text-gray-500 mb-4">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-1">
+              <circle cx="12" cy="12" r="10"></circle>
+              <polyline points="12 6 12 12 16 14"></polyline>
+            </svg>
+            <span>
+              {t('plants.lastWatered', 'Last watered')}: {
+                lastWateredInfo && lastWateredInfo.date
+                  ? formatDate(lastWateredInfo.date, settings?.language?.dateFormat || 'yyyy-MM-dd')
+                  : t('plants.neverWatered', 'Never watered')
+              }
+              {lastWateredInfo && lastWateredInfo.timeAgo && (
+                <span className="text-xs text-gray-400 ml-2">
+                  ({lastWateredInfo.timeAgo})
+                </span>
+              )}
+              {lastWateredInfo && lastWateredInfo.triggerType && (
+                <span className="text-xs bg-gray-100 text-gray-600 px-1 rounded ml-2">
+                  {lastWateredInfo.triggerType}
+                </span>
+              )}
+            </span>
+          </div>
         )}
         
         {/* AI Prediction Banner */}

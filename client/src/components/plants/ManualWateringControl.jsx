@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import io from 'socket.io-client';
 import { useTranslation } from 'react-i18next';
 import { Button } from '../ui/Button';
 import plantApi from '@/api/plantApi';
@@ -13,6 +14,8 @@ const ManualWateringControl = ({ plantId, deviceStatus, className, isEmbedded = 
   const [wateringHistory, setWateringHistory] = useState(null);
   const [moisture, setMoisture] = useState(null);
   const [moistureLoading, setMoistureLoading] = useState(false);
+  const [lowWater, setLowWater] = useState(false);
+  const socketRef = useRef(null);
 
 
   useEffect(() => {
@@ -21,6 +24,39 @@ const ManualWateringControl = ({ plantId, deviceStatus, className, isEmbedded = 
       fetchMoisture();
     }
   }, [showControls]);
+
+  // WebSocket interceptor for low water events
+  useEffect(() => {
+    if (!plantId) return;
+    if (!window.io && !io) return;
+    if (socketRef.current) return; // Prevent multiple connections
+    // Connect to Socket.IO server
+    const socket = io({
+      path: '/socket.io',
+      transports: ['websocket'],
+      auth: {
+        token: localStorage.getItem('token'),
+      },
+    });
+    socketRef.current = socket;
+    // Subscribe to device room
+    socket.emit('subscribe-device', plantId);
+    // Listen for sensor-update events
+    socket.on('sensor-update', (data) => {
+      if (data.deviceId === plantId && data.lowWater) {
+        setLowWater(true);
+      } else if (data.deviceId === plantId && data.lowWater === false) {
+        setLowWater(false);
+      }
+    });
+    return () => {
+      if (socketRef.current) {
+        socketRef.current.emit('unsubscribe-device', plantId);
+        socketRef.current.disconnect();
+        socketRef.current = null;
+      }
+    };
+  }, [plantId]);
 
   const fetchMoisture = async () => {
     setMoistureLoading(true);
@@ -161,10 +197,25 @@ const ManualWateringControl = ({ plantId, deviceStatus, className, isEmbedded = 
       {/* Water Button */}
       <Button
         onClick={handleWater}
-        disabled={isWatering || deviceStatus !== 'online' || (moisture !== null && moisture > 90) || moistureLoading}
+        disabled={isWatering || deviceStatus !== 'online' || (moisture !== null && moisture > 90) || moistureLoading || lowWater}
         className="w-full"
         size="lg"
       >
+              {/* Low Water Warning */}
+              {lowWater && (
+                <div className="p-3 bg-red-50 border border-red-200 rounded-lg mt-4 mb-4">
+                  <div className="flex">
+                    <svg className="w-5 h-5 text-red-400 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M18 13a1 1 0 01-1 1H3a1 1 0 110-2h14a1 1 0 011 1zm-7-9a7 7 0 100 14A7 7 0 0011 4zm0 12a5 5 0 110-10 5 5 0 010 10z" clipRule="evenodd" />
+                    </svg>
+                    <div>
+                      <p className="text-sm font-medium text-red-800">
+                        {t('watering.lowWater', 'Water tank level is too low. Please refill the tank before watering.')}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              )}
         {isWatering ? (
           <div className="flex items-center">
             <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">

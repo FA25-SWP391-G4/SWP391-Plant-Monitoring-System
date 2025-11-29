@@ -25,6 +25,7 @@
     "debug": "~2.6.9",
     "dotenv": "^17.2.3",
     "ejs": "^3.1.10",
+    "explore": "^0.2.0",
     "express": "~4.16.1",
     "express-rate-limit": "^7.2.0",
     "express-session": "^1.18.2",
