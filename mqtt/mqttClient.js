@@ -8,6 +8,7 @@ const fs = require('fs');
 const dotenv = require('dotenv');
 const SystemLog = require('../models/SystemLog');
 const db = require('../config/db');
+const { EventEmitter } = require('events');
 
 dotenv.config();
 
@@ -17,26 +18,106 @@ const DEFAULT_COMMAND_TIMEOUT_MS = 20000;
 
 // Determine which MQTT connection to use
 const USE_AWS_IOT = process.env.USE_AWS_IOT === 'true';
+
+// Shared client id so both implementations can use the same identity if desired
+const CLIENT_ID = process.env.MQTT_CLIENT_ID || process.env.AWS_CLIENT_ID || ('ESP32_SmartPlant_Server_' + Math.random().toString(16).slice(3));
+
 let client = null;
 let isClientConnected = false;
 
 if (USE_AWS_IOT) {
-  // AWS IoT connection
-  const awsIot = require('aws-iot-device-sdk');
-  
-  client = awsIot.device({
-    keyPath: process.env.AWS_PRIVATE_KEY_PATH,
-    certPath: process.env.AWS_CERT_PATH,
-    caPath: process.env.AWS_ROOT_CA_PATH,
-    clientId: 'ESP32_SmartPlant_Server' + Math.random().toString(16).slice(3),
-    host: process.env.AWS_IOT_ENDPOINT
+  // Use aws-iot-device-sdk-v2 and create a small adapter to mimic mqtt.js API used in the rest of the module
+  const { mqtt: AwsMqtt, iot, io } = require('aws-iot-device-sdk-v2');
+
+  const clientBootstrap = new io.ClientBootstrap();
+
+  const configBuilder = iot.AwsIotMqttConnectionConfigBuilder
+    .new_mtls_builder_from_path(
+      process.env.AWS_CERT_PATH,
+      process.env.AWS_PRIVATE_KEY_PATH
+    );
+
+  configBuilder.with_certificate_authority_from_path(
+    undefined,
+    process.env.AWS_ROOT_CA_PATH
+  );
+  configBuilder.with_client_id(CLIENT_ID);
+  configBuilder.with_endpoint(process.env.AWS_IOT_ENDPOINT);
+
+  const config = configBuilder.build();
+
+  const awsMqttClient = new AwsMqtt.MqttClient(clientBootstrap);
+  const connection = awsMqttClient.new_connection(config);
+
+  // Adapter object to give a mqtt.js-like surface
+  const awsAdapter = new EventEmitter();
+  awsAdapter.options = { clientId: CLIENT_ID };
+  awsAdapter.connected = false;
+
+  // Emit connect/close/error events from the v2 connection
+  connection.on('connect', () => {
+    awsAdapter.connected = true;
+    awsAdapter.emit('connect');
   });
+  connection.on('disconnect', () => {
+    awsAdapter.connected = false;
+    awsAdapter.emit('close');
+  });
+  connection.on('error', (err) => {
+    awsAdapter.emit('error', err);
+  });
+
+  // subscribe: wrap v2 subscribe and route incoming payloads to 'message' events
+  awsAdapter.subscribe = async (topic, cb) => {
+    try {
+      await connection.subscribe(topic, AwsMqtt.QoS.AtLeastOnce, (topicReceived, payload) => {
+        // payload is Uint8Array — convert to Buffer for compatibility
+        const buf = Buffer.from(payload);
+        awsAdapter.emit('message', topicReceived, buf);
+      });
+      if (typeof cb === 'function') cb(null);
+    } catch (err) {
+      if (typeof cb === 'function') cb(err);
+      else awsAdapter.emit('error', err);
+    }
+  };
+
+  // publish: support callback-style used elsewhere
+  awsAdapter.publish = (topic, payload, opts = {}, cb) => {
+    const qos = (opts && opts.qos) ? opts.qos : AwsMqtt.QoS.AtMostOnce;
+    const out = (typeof payload === 'string' || Buffer.isBuffer(payload)) ? payload : JSON.stringify(payload);
+    connection.publish(topic, out, qos)
+      .then(() => {
+        if (typeof cb === 'function') cb && cb(null);
+      })
+      .catch((err) => {
+        if (typeof cb === 'function') cb && cb(err);
+        else awsAdapter.emit('error', err);
+      });
+  };
+
+  // compatibility helpers
+  awsAdapter.removeListener = (ev, fn) => EventEmitter.prototype.removeListener.call(awsAdapter, ev, fn);
+  awsAdapter.on && awsAdapter.on('newListener', () => {}); // keep standard EventEmitter behavior
+
+  // connect the underlying v2 client
+  connectAws = async () => {
+    try {
+      await connection.connect();
+    } catch (err) {
+      console.error('AWS IoT v2 connection error:', err);
+      awsAdapter.emit('error', err);
+    }
+  };
+  connectAws().catch(console.error);
+
+  client = awsAdapter;
 } else {
-  // Local or cloud MQTT broker connection
+  // Local or cloud MQTT broker connection (mqtt.js)
   const mqttUrl = process.env.MQTT_URL;
   
   client = mqtt.connect(mqttUrl, {
-    clientId: 'ESP32_SmartPlant_Server' + Math.random().toString(16).slice(3),
+    clientId: CLIENT_ID,
     clean: true,
     connectTimeout: 4000,
     reconnectPeriod: 1000
@@ -108,7 +189,7 @@ client.on('message', async (topic, payload) => {
 
     if(topic === 'smartplant/pub') {
       console.log('Smartplant message:', message);
-      await handleSmartplantMessage(message);
+      // await handleSmartplantMessage(message);
       return;
     }
     
@@ -439,4 +520,3 @@ module.exports = {
   sendPumpCommand
 };
 
-// funny
