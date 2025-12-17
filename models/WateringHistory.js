@@ -296,6 +296,24 @@ class WateringHistory {
             duration_string: this.getDurationString()
         };
     }
+
+    /**
+     * ADMIN METHODS - Support for admin dashboard
+     */
+    static async countToday() {
+        try {
+            const query = `
+                SELECT COUNT(*) as count 
+                FROM watering_history 
+                WHERE DATE(timestamp) = CURRENT_DATE
+            `;
+            const result = await pool.query(query);
+            return parseInt(result.rows[0].count);
+        } catch (error) {
+            console.error('[WATERING HISTORY COUNT TODAY ERROR] Error counting today watering events:', error.message);
+            throw error;
+        }
+    }
 }
 
 module.exports = WateringHistory;

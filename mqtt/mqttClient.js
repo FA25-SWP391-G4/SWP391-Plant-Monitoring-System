@@ -195,7 +195,6 @@ client.on('message', async (topic, payload) => {
     
     const topicParts = topic.split('/');
     const deviceKey = topicParts[1];
-
     // Route message based on topic structure
     if (topic.includes('/sensor-data')) {
       // Extract device key from topic

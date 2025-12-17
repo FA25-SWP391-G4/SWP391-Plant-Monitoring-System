@@ -28,10 +28,9 @@ const plantApi = {
     }
   },
 
-  /**
-   * Get details for a single plant by id.
-   * Example response: { id, name, thresholds, device_id, ... }
-   */
+  // Get a specific plant by ID
+  // [2025-11-06] Removed redundant token handling to fix JWT malformed error
+  // Letting axiosClient handle token management to prevent duplication
   getById: async (plantId) => {
     try {
       const response = await axiosClient.get(`/api/plants/${plantId}`);
@@ -74,10 +73,7 @@ const plantApi = {
     }
   },
 
-  /**
-   * Fetch recent sensor history (default window: last 12 hours).
-   * Use this to show charts or trend lines in the UI.
-   */
+  // Get sensor history for last 12 hours
   getSensorHistory: async (plantId) => {
     try {
       const response = await axiosClient.get(`/api/plants/${plantId}/history/sensors`);
@@ -88,9 +84,7 @@ const plantApi = {
     }
   },
 
-  /**
-   * Get aggregated sensor statistics for a plant (averages, mins, maxes).
-   */
+  // Get sensor statistics
   getSensorStats: async (plantId) => {
     try {
       const response = await axiosClient.get(`/api/plants/${plantId}/stats/sensors`);
@@ -101,10 +95,7 @@ const plantApi = {
     }
   },
 
-  /**
-   * Get recent watering history entries for a plant.
-   * Useful to display a log of past watering events in the UI.
-   */
+  // Get recent watering history
   getWateringHistory: async (plantId) => {
     try {
       const response = await axiosClient.get(`/api/plants/${plantId}/history/watering`);
@@ -115,11 +106,7 @@ const plantApi = {
     }
   },
 
-  /**
-   * Returns the most recent watering event (single object) for the plant.
-   * This endpoint is used by the UI to detect when watering completes.
-   * Example return: { timestamp: '2025-11-16T...', duration_seconds: 30 }
-   */
+  // Get last watered information
   getLastWatered: async (plantId) => {
     try {
       const response = await axiosClient.get(`/api/plants/${plantId}/last-watered`);
@@ -130,10 +117,7 @@ const plantApi = {
     }
   },
 
-  /**
-   * Persist a set of schedules for the plant.
-   * `schedule` should be a payload shape that the server expects (often an array).
-   */
+  // Set watering schedule for a plant
   setWateringSchedule: async (plantId, schedule) => {
     try {
       const response = await axiosClient.post(`/api/plants/${plantId}/schedule`, schedule);
@@ -173,10 +157,29 @@ const plantApi = {
     }
   },
 
-  /**
-   * Update sensor thresholds for a plant.
-   * `thresholds` expected example: { moisture: 30, temperature: 28 }
-   */
+  // Connect device to plant
+  connectDevice: async (plantId, deviceId) => {
+    try {
+      const response = await axiosClient.put(`/api/plants/${plantId}/connect-device`, { deviceId });
+      return response.data;
+    } catch (error) {
+      console.error(`Error connecting device to plant ${plantId}:`, error);
+      throw error;
+    }
+  },
+
+  // Get current sensor data for a plant
+  getCurrentSensorData: async (plantId) => {
+    try {
+      const response = await axiosClient.get(`/api/plants/${plantId}/sensors/current`);
+      return response.data;
+    } catch (error) {
+      console.error(`Error fetching current sensor data for plant ${plantId}:`, error);
+      throw error;
+    }
+  },
+
+  // Set sensor thresholds for a plant
   setSensorThresholds: async (plantId, thresholds) => {
     try {
       const response = await axiosClient.put(`/api/plants/${plantId}/thresholds`, thresholds);

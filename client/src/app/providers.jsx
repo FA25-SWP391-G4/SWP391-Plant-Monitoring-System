@@ -2,12 +2,15 @@
 
 import { SettingsProvider } from '@/providers/SettingsProvider';
 import { AuthProvider } from '@/providers/AuthProvider';
+import { NotificationProvider } from '@/contexts/NotificationContext';
 
 export default function Providers({ children }) {
   return (
     <AuthProvider>
       <SettingsProvider>
-        {children}
+        <NotificationProvider>
+          {children}
+        </NotificationProvider>
       </SettingsProvider>
     </AuthProvider>
   );

@@ -56,6 +56,8 @@ const ManualWateringControl = ({ plantId, deviceStatus, className, isEmbedded = 
         setTimeout(async () => {
           try {
             await plantApi.waterPlant(plantId, null, 'pump_off'); // Stop watering after duration
+
+            // await plantApi.waterPlant(plantId, 0); // Stop watering after duration
             setIsWatering(false);
             await fetchWateringHistory(); // Refresh history after auto-stop
           } catch (error) {

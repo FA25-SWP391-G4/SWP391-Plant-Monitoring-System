@@ -12,6 +12,8 @@
  * All functions require authentication and work with user-specific settings
  */
 
+console.log('🔥🔥🔥 SETTINGS CONTROLLER FILE LOADED 🔥🔥🔥');
+
 const User = require('../models/User');
 const { isValidUUID } = require('../utils/uuidGenerator');
 
@@ -23,12 +25,12 @@ const DEFAULT_SETTINGS = {
   appearance: {
     theme: 'system',
     fontSize: 'medium',
-    colorScheme: 'default'
+    colorScheme: 'blue'
   },
   language: {
     preferred: 'en',
-    dateFormat: 'MM/DD/YYYY',
-    timeFormat: '12h'
+    dateFormat: 'DD/MM/YYYY',
+    timeFormat: '24h'
   },
   notifications: {
     email: true,
@@ -77,20 +79,24 @@ const DEFAULT_SETTINGS = {
     showWidgetTitles: true,
     showWidgetIcons: true,
     animationsEnabled: true,
-    darkModeCompatible: true
+    darkModeCompatible: true,
+    
+    // AI Features
+    enableAIFeatures: false
   }
 };
 
 /**
  * GET ALL USER SETTINGS
  * ======================
- * Retrieves all user settings or returns defaults
+ * Retrieves stored user settings or returns defaults - NO MERGING
  * 
  * @route GET /settings
  * @access Private
  */
 async function getUserSettings(req, res) {
   try {
+    console.log('🔥 [SETTINGS] getUserSettings CALLED - function is executing');
     const userId = req.user.user_id;
     
     if (!isValidUUID(userId)) {
@@ -110,24 +116,14 @@ async function getUserSettings(req, res) {
       });
     }
 
-    // Parse existing settings or use defaults
-    const settings = user.settings ? JSON.parse(user.settings) : DEFAULT_SETTINGS;
-    
-    // Merge with defaults to ensure all keys exist
-    const mergedSettings = {
-      ...DEFAULT_SETTINGS,
-      ...settings,
-      appearance: { ...DEFAULT_SETTINGS.appearance, ...(settings.appearance || {}) },
-      language: { ...DEFAULT_SETTINGS.language, ...(settings.language || {}) },
-      notifications: { ...DEFAULT_SETTINGS.notifications, ...(settings.notifications || {}) },
-      privacy: { ...DEFAULT_SETTINGS.privacy, ...(settings.privacy || {}) },
-      dashboard: { ...DEFAULT_SETTINGS.dashboard, ...(settings.dashboard || {}) },
-      widgets: { ...DEFAULT_SETTINGS.widgets, ...(settings.widgets || {}) }
-    };
+    // Return stored settings or defaults - NO MERGING
+    let settings = user.settings || DEFAULT_SETTINGS;
+    console.log('[SETTINGS] Raw stored settings:', settings);
+    console.log('[SETTINGS] Returning settings exactly as stored (no merging)');
 
     res.json({
       success: true,
-      data: mergedSettings
+      data: settings
     });
 
   } catch (error) {
@@ -142,15 +138,20 @@ async function getUserSettings(req, res) {
 /**
  * UPDATE ALL USER SETTINGS
  * =========================
- * Updates the complete user settings object
+ * Updates the complete user settings object - NO MERGING, just save what's sent
  * 
  * @route PUT /settings
  * @access Private
  */
 async function updateUserSettings(req, res) {
   try {
+    console.log('🔥🔥 [SETTINGS] updateUserSettings CALLED - PUT request received! 🔥🔥');
     const userId = req.user.user_id;
     const newSettings = req.body;
+    
+    console.log('[SETTINGS] PUT request details:');
+    console.log('[SETTINGS] User ID:', userId);
+    console.log('[SETTINGS] Request body:', JSON.stringify(newSettings, null, 2));
 
     if (!isValidUUID(userId)) {
       return res.status(400).json({
@@ -158,8 +159,6 @@ async function updateUserSettings(req, res) {
         error: 'Invalid user ID format'
       });
     }
-
-    console.log('[SETTINGS] Updating settings for user:', userId);
 
     // Validate settings structure
     if (!newSettings || typeof newSettings !== 'object') {
@@ -169,29 +168,11 @@ async function updateUserSettings(req, res) {
       });
     }
 
-    // Merge with existing settings to prevent data loss
-    const user = await User.findById(userId);
-    if (!user) {
-      return res.status(404).json({
-        success: false,
-        error: 'User not found'
-      });
-    }
-
-    const existingSettings = user.settings ? JSON.parse(user.settings) : {};
-    const mergedSettings = {
-      ...existingSettings,
-      ...newSettings,
-      appearance: { ...existingSettings.appearance, ...(newSettings.appearance || {}) },
-      language: { ...existingSettings.language, ...(newSettings.language || {}) },
-      notifications: { ...existingSettings.notifications, ...(newSettings.notifications || {}) },
-      privacy: { ...existingSettings.privacy, ...(newSettings.privacy || {}) },
-      dashboard: { ...existingSettings.dashboard, ...(newSettings.dashboard || {}) },
-      widgets: { ...existingSettings.widgets, ...(newSettings.widgets || {}) }
-    };
-
-    // Update user settings
-    const updated = await User.updateUserSettings(userId, JSON.stringify(mergedSettings));
+    // NO MERGING - Save exactly what the frontend sends
+    console.log('[SETTINGS] Saving settings exactly as received (no merging)');
+    
+    // Update user settings in database
+    const updated = await User.updateUserSettings(userId, JSON.stringify(newSettings));
     if (!updated) {
       return res.status(500).json({
         success: false,
@@ -199,10 +180,12 @@ async function updateUserSettings(req, res) {
       });
     }
 
+    console.log('[SETTINGS] ✅ Settings successfully saved to database');
+
     res.json({
       success: true,
       message: 'Settings updated successfully',
-      data: mergedSettings
+      data: newSettings
     });
 
   } catch (error) {
@@ -573,3 +556,5 @@ module.exports = {
   getAppearanceSettings,
   updateAppearanceSettings
 };
+
+console.log('🔥🔥🔥 SETTINGS CONTROLLER MODULE.EXPORTS EXECUTED 🔥🔥🔥');

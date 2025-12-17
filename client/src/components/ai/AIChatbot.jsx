@@ -160,10 +160,10 @@ const AIChatbot = ({ plant = null, className = '' }) => {
       if (!response.success) {
         let errorMessage = response.error || 'Sorry, I encountered an error. Please try again.';
         
-        if (response.requiresLogin) {
-          errorMessage = 'Please log in to use the AI chatbot.';
-        } else if (response.requiresPremium) {
-          errorMessage = 'Premium subscription required to use the AI chatbot.';
+        if (response.requiresLogin || response.code === 'TOKEN_EXPIRED' || response.code === 'INVALID_TOKEN') {
+          errorMessage = 'Your session has expired. Please refresh the page and log in again.';
+        } else if (response.requiresUltimate || response.code === 'ULTIMATE_REQUIRED') {
+          errorMessage = 'Ultimate subscription required to use the AI chatbot.';
         }
         
         const errorBotMessage = {
@@ -340,7 +340,14 @@ const AIChatbot = ({ plant = null, className = '' }) => {
                   
                   {/* Timestamp */}
                   <p className="text-xs opacity-50 mt-1">
-                    {new Date(message.timestamp).toLocaleTimeString()}
+                    {message.timestamp ? (() => {
+                      try {
+                        const date = new Date(message.timestamp);
+                        return isNaN(date.getTime()) ? '' : date.toLocaleTimeString();
+                      } catch (error) {
+                        return '';
+                      }
+                    })() : ''}
                   </p>
                 </div>
               </div>

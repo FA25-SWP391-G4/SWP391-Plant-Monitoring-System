@@ -35,4 +35,20 @@ const settingsApi = {
   updateAppearanceSettings: (appearanceSettings) => axiosClient.put("/api/settings/appearance", appearanceSettings),
 };
 
+// Export individual functions for convenience
+export const {
+  getUserSettings,
+  updateUserSettings,
+  updateSettingCategory,
+  getWidgetSettings,
+  updateWidgetSettings,
+  resetWidgetSettings,
+  getNotificationSettings,
+  updateNotificationSettings,
+  getPrivacySettings,
+  updatePrivacySettings,
+  getAppearanceSettings,
+  updateAppearanceSettings,
+} = settingsApi;
+
 export default settingsApi;

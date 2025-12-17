@@ -54,10 +54,10 @@ const AIChatbotPopup = () => {
       if (!response.success) {
         let errorMessage = response.error || 'Sorry, I encountered an error. Please try again.';
         
-        if (response.requiresLogin) {
-          errorMessage = 'Please log in to use the AI chatbot.';
-        } else if (response.requiresPremium) {
-          errorMessage = 'Premium subscription or admin access required to use the AI chatbot.';
+        if (response.requiresLogin || response.code === 'TOKEN_EXPIRED' || response.code === 'INVALID_TOKEN') {
+          errorMessage = 'Your session has expired. Please refresh the page and log in again.';
+        } else if (response.requiresUltimate || response.code === 'ULTIMATE_REQUIRED') {
+          errorMessage = 'Ultimate subscription required to use the AI chatbot.';
         }
 
         const errorBotMessage = {

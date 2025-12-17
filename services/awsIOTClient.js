@@ -38,11 +38,27 @@ connection.on("connect", async () => {
         // determine device id (payload-first, then topic)
         let deviceId = payloadObj.deviceId || payloadObj.device_id || null;
 
-        // If payload didn't include a device id, try to extract from topic
-        if (!deviceId && typeof topic === 'string') {
-          // match smartplant/device/<deviceKey>/...
-          const m = topic.match(/^smartplant\/device\/([^\/]+)\/?/);
-          if (m && m[1]) deviceId = m[1];
+          // Look up plant_id for this device_key
+          let plantId = null;
+          try {
+            const plantQuery = await pool.query(
+              `SELECT plant_id FROM plants WHERE device_key = $1`,
+              [deviceId]
+            );
+            if (plantQuery.rows.length > 0) {
+              plantId = plantQuery.rows[0].plant_id;
+            }
+          } catch (error) {
+            console.error(`⚠️ Failed to lookup plant_id for device ${deviceId}:`, error);
+          }
+
+          await pool.query(
+            `INSERT INTO sensors_data(device_key, plant_id, timestamp, soil_moisture, temperature, air_humidity, light_intensity)
+             VALUES($1, $2, $3, $4, $5, $6, $7)`,
+            [deviceId, plantId, ts, soil, temp, humidity, light]
+          );
+          console.log(`📥 Stored sensor data for device ${deviceId}${plantId ? ` (plant ${plantId})` : ' (no plant linked)'}`);
+          return;
         }
 
         // Normalize/truncate device key and guard
@@ -103,7 +119,79 @@ async function sendCommand(command) {
   console.log(`🚀 Sent command to ESP32: ${command}`);
 }
 
+// Enhanced pump command function that matches the interface expected by plantController
+async function sendPumpCommand(device_key, command, duration = null) {
+  try {
+    console.log('🚰 [AWS-IOT-PUMP] Sending pump command:', { device_key, command, duration });
+    
+    // Validate command
+    if (command !== 'pump_on' && command !== 'pump_off') {
+      throw new Error('Invalid pump command. Must be pump_on or pump_off');
+    }
+
+    if (command === 'pump_on' && (!duration || duration < 1 || duration > 300)) {
+      throw new Error('Duration must be between 1 and 300 seconds for pump_on command');
+    }
+
+    const state = command === 'pump_on' ? 'ON' : 'OFF';
+    const parameters = {
+      duration: command === 'pump_on' ? parseInt(duration) : 0,
+      state: state
+    };
+
+    // Generate command ID for tracking
+    const commandId = `cmd_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    
+    // Prepare the command payload
+    const commandPayload = {
+      command,
+      parameters,
+      commandId,
+      timestamp: new Date().toISOString(),
+      responseRequired: true
+    };
+
+    // Use the device-specific topic structure
+    const topic = `smartplant/device/${device_key.trim()}/command`;
+    const payload = JSON.stringify(commandPayload);
+
+    console.log('📦 [AWS-IOT-PUMP] Command payload:', {
+      topic,
+      payload: commandPayload,
+      qos: mqtt.QoS.AtLeastOnce
+    });
+
+    // Publish the command using AWS IoT v2 SDK
+    await connection.publish(topic, payload, mqtt.QoS.AtLeastOnce);
+    
+    console.log('✅ [AWS-IOT-PUMP] Pump command sent successfully via AWS IoT');
+    
+    // Return success response (matching the expected interface)
+    return {
+      status: 'sent',
+      message: 'Command sent successfully via AWS IoT',
+      commandId: commandId,
+      topic: topic
+    };
+
+  } catch (error) {
+    console.error('❌ [AWS-IOT-PUMP] Failed to send pump command:', {
+      device_key,
+      command,
+      error: error.message
+    });
+    
+    // Return error response (matching the expected interface)
+    return {
+      status: 'error',
+      message: error.message,
+      device_key: device_key
+    };
+  }
+}
+
 module.exports = {
   connectAwsIoT,
-  sendCommand
+  sendCommand,
+  sendPumpCommand
 };

@@ -446,6 +446,31 @@ class Plant {
             created_at: this.created_at
         };
     }
+
+    /**
+     * ADMIN METHODS - Support for admin dashboard
+     */
+    static async countAll() {
+        try {
+            const query = 'SELECT COUNT(*) as count FROM plants';
+            const result = await pool.query(query);
+            return parseInt(result.rows[0].count);
+        } catch (error) {
+            console.error('[PLANT COUNT ERROR] Error counting plants:', error.message);
+            throw error;
+        }
+    }
+
+    static async findByUserId(userId) {
+        try {
+            const query = 'SELECT * FROM plants WHERE user_id = $1 ORDER BY created_at DESC';
+            const result = await pool.query(query, [userId]);
+            return result.rows.map(row => new Plant(row));
+        } catch (error) {
+            console.error('[PLANT FIND BY USER ID ERROR] Error finding plants by user ID:', error.message);
+            throw error;
+        }
+    }
 }
 
 module.exports = Plant;

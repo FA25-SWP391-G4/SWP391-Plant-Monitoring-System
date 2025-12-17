@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/providers/AuthProvider';
 import { useRouter } from 'next/navigation';
-import DashboardLayout from '@/components/DashboardLayout';
+import DashboardLayout from '@/components/layout/DashboardLayout';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/Card';
 import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
@@ -157,38 +157,52 @@ const ProfilePage = () => {
   }
 
   return (
-      <div className="container mx-auto px-4 py-8 fade-in">
-        <div className="mb-8 stagger-item">
-          <h1 className="text-3xl font-bold text-foreground">User Profile</h1>
-          <p className="mt-2 text-muted-foreground">Manage your account information</p>
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+      <main className="container mx-auto px-4 py-8">
+        {/* Welcome Banner */}
+        <div className="bg-gradient-to-r from-emerald-500 to-emerald-700 dark:from-emerald-600 dark:to-emerald-800 rounded-xl shadow-lg mb-8 p-6 text-white flex items-center justify-between">
+          <div className="flex items-center space-x-4">
+            <div className="bg-white/20 backdrop-blur-sm p-3 rounded-lg">
+              <UserIcon className="h-8 w-8" />
+            </div>
+            
+            <div>
+              <h1 className="text-2xl font-bold mb-2">
+                User Profile
+              </h1>
+              <p className="opacity-90">
+                Manage your account information and settings
+              </p>
+            </div>
+          </div>
         </div>
 
       {/* Profile Information Card */}
-      <Card className="mb-6 stagger-item">
-        <CardHeader>
+      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 mb-6">
+        <div className="p-6 border-b border-gray-200 dark:border-gray-700">
           <div className="flex justify-between items-center">
             <div>
-              <CardTitle className="flex items-center gap-2">
+              <h3 className="text-lg font-medium text-gray-900 dark:text-white flex items-center gap-2">
                 <UserIcon className="h-5 w-5" />
                 Profile Information
-              </CardTitle>
-              <CardDescription>Update your personal details</CardDescription>
+              </h3>
+              <p className="text-gray-600 dark:text-gray-400">Update your personal details</p>
             </div>
             <div>
               {!isEditing ? (
-                <Button
+                <button
                   onClick={() => setIsEditing(true)}
-                  className="flex items-center gap-2 btn-transition slide-in-right"
+                  className="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg font-medium transition-colors flex items-center gap-2"
                 >
                   <Edit className="h-4 w-4" />
                   Edit Profile
-                </Button>
+                </button>
               ) : (
-                <div className="flex gap-2 slide-in-right">
-                  <Button
+                <div className="flex gap-2">
+                  <button
                     onClick={handleSave}
                     disabled={isSaving}
-                    className="flex items-center gap-2 btn-transition stagger-item"
+                    className="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg font-medium transition-colors flex items-center gap-2 disabled:opacity-50"
                   >
                     {isSaving ? (
                       <Loader2 className="h-4 w-4 animate-spin" />
@@ -196,88 +210,89 @@ const ProfilePage = () => {
                       <Save className="h-4 w-4" />
                     )}
                     Save
-                  </Button>
-                  <Button
-                    variant="outline"
+                  </button>
+                  <button
                     onClick={handleCancel}
                     disabled={isSaving}
-                    className="flex items-center gap-2 btn-transition stagger-item"
+                    className="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-lg font-medium transition-colors flex items-center gap-2 disabled:opacity-50"
                   >
                     <X className="h-4 w-4" />
                     Cancel
-                  </Button>
+                  </button>
                 </div>
               )}
             </div>
           </div>
-        </CardHeader>
-        <CardContent className="space-y-6">
+        </div>
+        <div className="p-6 space-y-6">
           {/* Role Badge */}
-          <div className="stagger-item">
-            <label className="block text-sm font-medium text-gray-700 mb-2">Role</label>
+          <div className="">
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Role</label>
               {user && <UserRoleBadge role={user.role || 'free'} className="ml-2" />}
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {/* First Name */}
-            <div className="stagger-item">
-              <label className="block text-sm font-medium text-gray-700 mb-2">First Name</label>
+            <div className="">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">First Name</label>
               {isEditing ? (
-                <Input
+                <input
+                  type="text"
                   value={formData.given_name}
                   onChange={(e) => setFormData({ ...formData, given_name: e.target.value })}
                   placeholder="Enter first name"
-                  className="slide-in"
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                 />
               ) : (
-                <p className="text-gray-900">{user.given_name || '-'}</p>
+                <p className="text-gray-900 dark:text-white">{user.given_name || '-'}</p>
               )}
             </div>
 
             {/* Last Name */}
-            <div className="stagger-item">
-              <label className="block text-sm font-medium text-gray-700 mb-2">Last Name</label>
+            <div className="">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Last Name</label>
               {isEditing ? (
-                <Input
+                <input
+                  type="text"
                   value={formData.family_name}
                   onChange={(e) => setFormData({ ...formData, family_name: e.target.value })}
                   placeholder="Enter last name"
-                  className="slide-in"
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                 />
               ) : (
-                <p className="text-gray-900">{user.family_name || '-'}</p>
+                <p className="text-gray-900 dark:text-white">{user.family_name || '-'}</p>
               )}
             </div>
 
             {/* Email */}
-            <div className="stagger-item">
-              <label className="block text-sm font-medium text-gray-700 mb-2">Email</label>
+            <div className="">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Email</label>
               {isEditing ? (
-                <Input
+                <input
                   type="email"
                   value={formData.email}
                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                   placeholder="Enter email"
-                  className="slide-in"
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                 />
               ) : (
-                <p className="text-gray-900">{user.email || '-'}</p>
+                <p className="text-gray-900 dark:text-white">{user.email || '-'}</p>
               )}
             </div>
 
             {/* Phone Number */}
-            <div className="stagger-item">
-              <label className="block text-sm font-medium text-gray-700 mb-2">Phone Number</label>
+            <div className="">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Phone Number</label>
               {isEditing ? (
                 <PhoneInput
                   value={formData.phone_number}
                   countryCode={formData.country_code}
                   onChange={(phone) => setFormData({ ...formData, phone_number: phone })}
                   onCountryChange={(code) => setFormData({ ...formData, country_code: code })}
-                  className="slide-in"
+                  className=""
                 />
               ) : (
-                <p className="text-gray-900">
+                <p className="text-gray-900 dark:text-white">
                   {user.country_code && user.phone_number
                     ? `${user.country_code} ${user.phone_number}`
                     : '-'}
@@ -287,9 +302,9 @@ const ProfilePage = () => {
           </div>
 
           {/* Account Created Date */}
-          <div className="stagger-item">
-            <label className="block text-sm font-medium text-gray-700 mb-2">Member Since</label>
-            <p className="text-gray-900">
+          <div className="">
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Member Since</label>
+            <p className="text-gray-900 dark:text-white">
               {user.created_at ? new Date(user.created_at).toLocaleDateString('en-US', {
                 year: 'numeric',
                 month: 'long',
@@ -297,73 +312,72 @@ const ProfilePage = () => {
               }) : '-'}
             </p>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
 
       {/* Password Change Card */}
-      <Card className="stagger-item">
-        <CardHeader>
+      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
+        <div className="p-6 border-b border-gray-200 dark:border-gray-700">
           <div className="flex justify-between items-center">
             <div>
-              <CardTitle className="flex items-center gap-2">
+              <h3 className="text-lg font-medium text-gray-900 dark:text-white flex items-center gap-2">
                 <Lock className="h-5 w-5" />
                 Password
-              </CardTitle>
-              <CardDescription>Update your password</CardDescription>
+              </h3>
+              <p className="text-gray-600 dark:text-gray-400">Update your password</p>
             </div>
             <div>
               {!isChangingPassword && (
-                <Button
-                  variant="outline"
+                <button
                   onClick={() => setIsChangingPassword(true)}
-                  className="btn-transition slide-in-right"
+                  className="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg font-medium transition-colors"
                 >
                   Change Password
-                </Button>
+                </button>
               )}
             </div>
           </div>
-        </CardHeader>
+        </div>
         {isChangingPassword && (
-          <CardContent className="space-y-4 slide-in">
-            <div className="stagger-item">
-              <label className="block text-sm font-medium text-gray-700 mb-2">Current Password</label>
-              <Input
+          <div className="p-6 space-y-4">
+            <div className="">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Current Password</label>
+              <input
                 type="password"
                 value={passwordData.currentPassword}
                 onChange={(e) => setPasswordData({ ...passwordData, currentPassword: e.target.value })}
                 placeholder="Enter current password"
-                className="slide-in"
+                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
               />
             </div>
 
-            <div className="stagger-item">
-              <label className="block text-sm font-medium text-gray-700 mb-2">New Password</label>
-              <Input
+            <div className="">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">New Password</label>
+              <input
                 type="password"
                 value={passwordData.newPassword}
                 onChange={(e) => setPasswordData({ ...passwordData, newPassword: e.target.value })}
                 placeholder="Enter new password"
-                className="slide-in"
+                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
               />
             </div>
 
-            <div className="stagger-item">
-              <label className="block text-sm font-medium text-gray-700 mb-2">Confirm New Password</label>
-              <Input
+            <div className="">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Confirm New Password</label>
+              <input
                 type="password"
                 value={passwordData.confirmPassword}
                 onChange={(e) => setPasswordData({ ...passwordData, confirmPassword: e.target.value })}
                 placeholder="Confirm new password"
-                className="slide-in"
+                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
               />
             </div>
 
             <div className="flex gap-3 pt-4 stagger-item">
-              <Button
+              <button
                 onClick={handleChangePassword}
                 disabled={isSaving}
-                className="flex items-center gap-2 btn-transition slide-in-right"
+                className="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg font-medium transition-colors flex items-center gap-2 disabled:opacity-50"
               >
                 {isSaving ? (
                   <Loader2 className="h-4 w-4 animate-spin" />
@@ -371,9 +385,8 @@ const ProfilePage = () => {
                   <Lock className="h-4 w-4" />
                 )}
                 Update Password
-              </Button>
-              <Button
-                variant="outline"
+              </button>
+              <button
                 onClick={() => {
                   setIsChangingPassword(false);
                   setPasswordData({
@@ -383,14 +396,15 @@ const ProfilePage = () => {
                   });
                 }}
                 disabled={isSaving}
-                className="btn-transition slide-in-right"
+                className="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-lg font-medium transition-colors disabled:opacity-50"
               >
                 Cancel
-              </Button>
+              </button>
             </div>
-          </CardContent>
+          </div>
         )}
-      </Card>
+      </div>
+      </main>
       </div>
   );
 };

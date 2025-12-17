@@ -1,0 +1,40 @@
+# .gitignore for tests-istqb
+
+# Dependencies
+node_modules/
+package-lock.json
+yarn.lock
+
+# Coverage
+coverage/
+*.lcov
+
+# Test results
+test-results/
+*.xml
+
+# Screenshots
+screenshots/*.png
+screenshots/*.jpg
+!screenshots/.gitkeep
+
+# Logs
+*.log
+npm-debug.log*
+
+# Environment
+.env
+.env.test
+.env.local
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Build
+dist/
+build/

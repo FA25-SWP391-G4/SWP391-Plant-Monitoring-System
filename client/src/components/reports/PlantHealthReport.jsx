@@ -141,8 +141,8 @@ export default function PlantHealthReport({ plant }) {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
             {/* Current health status */}
-            <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-4 mb-6">
-              <h3 className="font-medium text-gray-900 mb-3">
+            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-100 dark:border-gray-700 p-4 mb-6">
+              <h3 className="font-medium text-gray-900 dark:text-gray-100 mb-3">
                 {t('reports.currentHealthStatus', 'Current Health Status')}
               </h3>
               <div className="flex items-center justify-center">

@@ -1,0 +1,3076 @@
+
+
+WikipediaThe Free Encyclopedia
+Search Wikipedia
+Search
+Donate
+Create account
+Log in
+Contents hide
+(Top)
+Early life
+Youth career
+
+Club career
+
+International career
+Player profile
+
+Reception
+
+In popular culture
+
+Personal life
+
+Career statistics
+
+Honours
+See also
+Notes
+References
+External links
+Lionel Messi
+
+Article
+Talk
+Read
+View source
+View history
+
+Tools
+Appearance hide
+Text
+
+Small
+
+Standard
+
+Large
+Width
+
+Standard
+
+Wide
+Color (beta)
+
+Automatic
+
+Light
+
+Dark
+This is a good article. Click here for more information.
+Page extended-confirmed-protected
+From Wikipedia, the free encyclopedia
+"Messi" redirects here. For other uses, see Messi (disambiguation).
+Lionel Messi
+
+Messi with Inter Miami in 2025
+Personal information
+Full name	Lionel Andrés Messi[1]
+Date of birth	24 June 1987 (age 38)[1]
+Place of birth	Rosario, Santa Fe, Argentina
+Height	1.70 m (5 ft 7 in)[1]
+Position	Forward
+Team information
+Current team	Inter Miami
+Number	10
+Youth career
+1992–1995	Grandoli
+1995–2000	Newell's Old Boys
+2000–2004	Barcelona
+Senior career*
+Years	Team	Apps	(Gls)
+2003–2004	Barcelona C	10	(5)
+2004–2005	Barcelona B	22	(6)
+2004–2021	Barcelona	520	(474)
+2021–2023	Paris Saint-Germain	58	(22)
+2023–	Inter Miami	53	(50)
+International career‡
+2004–2005	Argentina U20	18	(14)
+2008	Argentina U23	5[α]	(2)
+2005–	Argentina	195	(114)
+Medal record
+Website	messi.com
+Signature
+Lionel Messi signature
+* Club domestic league appearances and goals as of 00:28, 19 October 2025 (UTC)
+‡ National team caps and goals as of 02:32, 15 October 2025 (UTC)
+	
+This article is part of
+a series about
+Lionel Messi
+Argentine professional footballer
+CareerInternational goalsAchievementsRivalry with Cristiano RonaldoNew Maradona
+Eponyms and public art
+CougarDogLiolaemus messiiSistine Chapel of Football
+Media
+Messi (2014)Messi (2017)Messi and Maud (2017)Take the Ball Pass the Ball (2018)Messi's World Cup: The Rise of a Legend (2024)
+Family
+Antonela RoccuzzoMaxi BiancucchiEmanuel Biancucchi
+Related
+Hong Kong v Inter MiamiMás+Deportivo LSM
+vte
+Lionel Andrés "Leo" Messi[note 1] (Spanish: [ljoˈnel anˈdɾes ˈmesi] ⓘ; born 24 June 1987) is an Argentine professional footballer who plays as a forward for and captains both Major League Soccer club Inter Miami and the Argentina national team. Widely regarded as one of the greatest players in history, Messi has set numerous records for individual accolades won throughout his professional footballing career, including eight Ballon d'Ors, six European Golden Shoes, and eight times being named the world's best player by FIFA.[note 2] In 2025, he was named the All Time Men's World Best Player by the IFFHS. He is the most decorated player in the history of professional football having won 45 team trophies.[note 3] Messi's records include most goals in a calendar year (91), most goals for a single club (672 for Barcelona), most goals in La Liga (474), most assists in international football (60), most goal contributions in the FIFA World Cup (21), and most goal contributions in the Copa América (32). A prolific goalscorer and creative playmaker, Messi has scored over 890 senior career goals and provided over 390 assists for club and country—the most of any player—resulting in over 1,290 goal contributions, the highest total in the sport's history.[21]
+
+Messi made his competitive debut for Barcelona at age 17 in October 2004. He gradually established himself as an integral player for the club, and during his first uninterrupted season at age 22 in 2008–09 he helped Barcelona achieve the first treble in Spanish football. This resulted in Messi winning the first of four consecutive Ballon d'Ors, and by the 2011–12 season he set the European record for most goals in a season and established himself as Barcelona's all-time top scorer. During the 2014–15 campaign, where he became the all-time top scorer in La Liga, he led Barcelona to a historic second treble, leading to a fifth Ballon d'Or in 2015. He assumed Barcelona's captaincy in 2018 and won a record sixth Ballon d'Or in 2019. At Barcelona, Messi won a club-record 34 trophies, including ten La Liga titles and four Champions Leagues, among others. Financial difficulties at Barcelona led to Messi signing with French club Paris Saint-Germain in August 2021, where he won the Ligue 1 title during both of his seasons there. He joined MLS club Inter Miami in July 2023.
+
+An Argentine international, Messi is the national team's all-time leading goalscorer and most-capped player. Several years after his senior debut in 2005, he won the gold medal at the 2008 Summer Olympics. Assuming captaincy in 2011, he led Argentina to three consecutive finals in the 2014 World Cup, the 2015 Copa América and the Copa América Centenario, all of which they would lose. After initially announcing his international retirement in 2016, he returned to help his country narrowly qualify for the 2018 World Cup. Messi was central to ending Argentina's 28-year trophy drought by winning the 2021 Copa América, which helped him secure his seventh Ballon d'Or that year. In the following year, he led Argentina to winning the 2022 World Cup, the country's first in 36 years. This followed with a record-extending eighth Ballon d'Or in 2023. Messi was victorious at the 2024 Copa América, his third major international title.
+
+Messi has endorsed sportswear company Adidas since 2006. According to France Football, he was the world's highest-paid footballer for five years out of six between 2009 and 2014, and was ranked the world's highest-paid athlete by Forbes in 2019 and 2022. Messi was among Time's 100 most influential people in the world in 2011, 2012, and 2023. In 2020 and 2023, he was named the Laureus World Sportsman of the Year, the first team-sport athlete to win it. In 2020, Messi was named to the Ballon d'Or Dream Team and became the second footballer and second team-sport athlete to surpass $1 billion in career earnings. Following his arrival and impact on football in the US, Messi was named Time's Athlete of the Year in 2023, and was bestowed with the Presidential Medal of Freedom by US president Joe Biden in 2025.
+
+Early life
+Messi was born on 24 June 1987 in Rosario, Santa Fe Province.[22] He was the third of four children of Jorge Messi, a steel factory manager, and his wife Celia Cuccittini, who worked in a magnet manufacturing workshop. On his father's side, he is of Italian and Spanish descent, the great-grandson of immigrants from the north-central Adriatic Marche region of Italy, and on his mother's side, he has primarily Italian ancestry.[3] Growing up in a tight-knit, football-loving family, "Leo" developed a passion for the sport from an early age, playing constantly with his older brothers, Rodrigo and Matías, and his cousins, Maximiliano and Emanuel Biancucchi, both of whom became professional footballers.[23]
+
+At the age of four he joined local club Grandoli, where he was coached by his father. Another early influence came from his maternal grandmother, Celia, who accompanied him to training and matches.[24] He was greatly affected by her death, shortly before his eleventh birthday. Since then, as a devout Catholic, he has celebrated his goals by looking up and pointing to the sky in tribute to his grandmother.[25][26]
+
+Youth career
+Newell's Old Boys
+"When you saw him you would think: this kid can't play ball. He's a dwarf, he's too fragile, too small. But immediately you'd realise that he was born different, that he was a phenomenon and that he was going to be something impressive."
+
+– Newell's Old Boys youth coach Adrián Coria shares his first impression of the 12-year-old Messi.[27]
+Messi is a lifelong supporter of Newell's Old Boys, based in Rosario. When he was seven years old, he first started playing for Newell's. During the six years he played for them, he scored almost 500 goals, and was a member of "The Machine of '87", a nearly unbeatable youth side named for the year of their birth. Messi would regularly entertain crowds by performing ball tricks during half-time, when the first team played home games.[28][29][30] His goalscoring idol growing up was Brazilian striker Ronaldo, who Messi called "the best forward I've ever seen".[31]
+
+His future as a professional player was threatened when, aged 10, he was diagnosed with a growth hormone deficiency. He began growth hormone therapy at age 11;[32] however, his father's health insurance covered only two years of the therapy, which cost at least 1,000 pesos per month. Newell's agreed to contribute, but later reneged on their promise.[33] He was scouted by Buenos Aires club River Plate, whose playmaker Pablo Aimar he idolised.[34][35] It was speculated for a time that he failed to sign with River Plate due to his ill health; however, in a 2019 interview, Messi revealed that River Plate had wanted to sign him after he scored four goals at a trial, and even offered to pay for his medical treatment, but Newell's refused to release his player card, preventing the transfer.[36]
+
+Barcelona
+As the Messi family had relatives in Catalonia, they sought to arrange a trial with Barcelona in September 2000. First-team director Carles Rexach immediately wanted to sign him, but the board of directors hesitated; at the time it was highly unusual for European clubs to sign foreign players of such a young age. On 14 December, an ultimatum was issued for Barcelona to prove their commitment, and Rexach, with no other paper at hand, offered a contract on a paper napkin.[34][37] In February 2001, the family relocated to Barcelona, where they moved into an apartment near the club's stadium, Camp Nou. During his first year in Spain, Messi rarely played with the Infantiles due to a transfer conflict with Newell's; as a foreigner, he could only be fielded in friendlies and the Catalan league. Without football, he struggled to integrate into the team. He was reserved by nature, and was so quiet that some of his teammates initially believed he was mute. At home, he suffered from homesickness after his mother moved back to Rosario with his brothers and younger sister, María Sol, while he stayed in Barcelona with his father.[28][37][38]
+
+
+Messi enrolled at Barcelona's youth academy, La Masia, aged 13.
+After a year at Barcelona's youth academy, La Masia, Messi was finally enrolled in the Royal Spanish Football Federation (RFEF) in February 2002. Now he could play in all competitions, and quickly befriended his teammates, among whom were Cesc Fàbregas and Gerard Piqué.[39] After completing his growth hormone therapy at 14,[40] Messi became an integral part of the "Baby Dream Team", Barcelona's greatest-ever youth side. During his first full season (2002–03), he was top scorer with 36 goals in 30 games for the Cadetes A, who won an unprecedented treble of the league, the Spanish cup, and the Copa Catalunya.[39][41] In the Copa Catalunya final, their 4–1 victory over Espanyol became referred to in club lore as the partido de la máscara, the final of the mask. A week after suffering a broken cheekbone during a league match, Messi was allowed to start the game on the condition that he wear a plastic protector; soon hindered by the mask, he took it off and scored two goals in 10 minutes before his substitution.[42] At the close of the season, he received an offer to join Arsenal, his first from a foreign club. Although Fàbregas and Piqué soon left for England with their own offers, Messi chose to remain in Barcelona.[37][43][44]
+
+Messi continued to progress through his club's ranks at a rapid pace, debuting for four youth teams during the 2003–04 season.[45] After being named player of the tournament in four separate international pre-season competitions with the Juvenil B, he played only one official match with the team before being promoted to the Juvenil A. In the Juvenil A he scored 18 goals in 11 league games.[46][47] Messi was then one of several youth players called up to strengthen a depleted first team during the international break. French winger Ludovic Giuly explained that Messi caught everyone's attention in a training session with Frank Rijkaard's first team: "He destroyed us all... They were kicking him all over the place to avoid being ridiculed by this kid, he just got up and kept on playing. He would dribble past four players and score a goal. Even the team's starting centre-backs were nervous. He was an alien."[48]
+
+"It seemed as if he had been playing with us all his life."
+
+– Barcelona's then assistant coach Henk ten Cate on Messi's first-team debut.[49]
+At 16 years, four months, and 23 days old, Messi made his first-team debut when he came on in the 75th minute during a friendly against José Mourinho's Porto on 16 November 2003.[37][50] His performance, creating two chances and a shot on goal, impressed the technical staff, and he subsequently began training daily with the club's reserve side, Barcelona B, as well as weekly with the first team.[51] After his first training session with the senior squad, Barça's new star player, Ronaldinho, told his teammates that he believed the 16-year-old would become an even better player than himself.[52] Ronaldinho soon befriended Messi, whom he called "little brother". This greatly eased Messi's transition into the first team.[53][54]
+
+To gain further match experience, Messi joined Barcelona C in addition to the Juvenil A, playing his first game for the third team on 29 November. He helped save them from the relegation zone of the Tercera División, scoring five goals in ten games, including a hat-trick in eight minutes during a Copa del Rey match while man-marked by Sevilla's Sergio Ramos.[46][55] His progress was reflected in his first professional contract, signed on 4 February 2004, which lasted until 2012 and contained an initial buyout clause of €30 million. A month later, on 6 March, he made his debut for Barcelona B in the Segunda División B, and his buyout clause automatically increased to €80 million.[46][56] He played five games with the B team that season but did not score.[57] Physically he was weaker than his opponents, who were often much older and taller, and in training he worked on increasing his muscle mass and overall strength in order to be able to shake off defenders. Towards the end of the season, he returned to both youth teams, helping the Juvenil B win the league. He finished the campaign having scored goals for four of his five teams, with a total of 36 goals in all official competitions.[46][55]
+
+Club career
+Main article: Career of Lionel Messi § Club career
+Barcelona
+2004–2008: Rise to the first team
+
+Messi (pictured in 2005) at the age of 18 playing for FC Barcelona, where he played for 17 years
+Messi began the 2004–05 season as a guaranteed starter for the Barcelona B team, but after some lobbying by the senior players, he was promoted to the first team by manager Frank Rijkaard.[52] He made his La Liga debut for Barcelona on 16 October 2004 against Espanyol,[37] and scored his first senior goal on 1 May 2005 against Albacete, from an assist by Ronaldinho, becoming at that time the youngest-ever scorer for the club.[58][59] At 17 years, three months, and 22 days old, he was at the time the youngest player to represent Barcelona in an official competition, and the club won the league title during that season.[54][60]
+
+On his 18th birthday, he signed his first contract as a senior team player, a five-year contract through 2010 with a release clause of €150 million.[61] Three months later, as his performance continued to make waves, his contract was updated to a nine-year contract, doubling his salary and keeping him at the club until 2014.[56][62]
+
+Barcelona began the 2005–06 season by winning the Supercopa de España without Messi, who was not selected to participate in the competition.[19] By the end of the season, the team won La Liga again as well as the UEFA Champions League, although Messi did not play in the final for the latter due to injury.[63][64]
+
+During the 2006–07 season, Messi scored his first hat-trick in a Clásico against Real Madrid, the first player to do so in 12 years.[65] An incredibly finesse goal from Messi against Getafe and another goal scored by a handball against Espanyol gained notice for their similarities to the two famous goals scored by fellow Argentine Diego Maradona in the 1986 World Cup match against England, drawing comparisons between the two that Messi would face throughout his career.[66][67][68] The team finished the season with only one trophy – the 2006 Supercopa de España.
+
+Barcelona finished the next 2007–08 season trophyless, leading to Rijkaard's departure.[69]
+
+2008–2012: Success under Pep Guardiola
+At the beginning of the 2008–09 season, his first under Barcelona's new manager, former captain Pep Guardiola, Messi was given the number 10 shirt.[70] Over time, he effectively became the tactical focal point of Guardiola's possession-based system, increasing his goalscoring rate as a result.[71] During that season, Messi scored 38 total goals, and alongside Samuel Eto'o and Thierry Henry, contributed to a total of 100 goals in all competitions, a record at the time for the club.[72][73] Messi played as a false nine for the first time in a Clásico against Real Madrid, setting up his side's first goal and scoring twice in the team's greatest-ever score at Santiago Bernabéu Stadium.[74][75] He played his first final, winning the Copa del Rey.[76] In addition, Barcelona won the La Liga title and later won the Champions League, thus achieving the first treble in the history of Spanish football.[77]
+
+
+Messi during the 2009 Joan Gamper Trophy against Manchester City
+During the first half of the 2009–10 season, Barcelona would also win the Supercopa de España, UEFA Super Cup and FIFA Club World Cup, resulting in becoming the first club to achieve the sextuple.[78][79] Messi finished as the Champions League top scorer, the youngest in the tournament's history.[80] For his efforts in 2009, Messi won the Ballon d'Or and the FIFA World Player of the Year award.[81] Messi scored a total of 47 goals in all competitions, equalling Ronaldo's club record from the 1996–97 campaign.[82][83] He finished the season as top scorer in the Champions League,[84] and La Liga, winning his second consecutive league trophy and earned his first European Golden Shoe.[83][85] After the team won the Champions League, he signed a new 7-year contract through 2016.[61]
+
+In the 2010–11 campaign, Messi won the Supercopa de España,[86] Champions League,[87] and a third consecutive La Liga title. His club performances in 2010 earned him his second consecutive Ballon d'Or.[88] Messi was the top scorer in the Champions League, for the third consecutive year,[89] and the league's top scorer and assist provider.[90][91] He became Barcelona's all-time single-season top scorer with 53 goals.[90][92]
+
+"I feel sorry for those who want to compete for Messi's throne – it's impossible, this kid is unique."
+
+– Pep Guardiola after Messi became Barcelona's all-time top scorer at the age of 24 in March 2012[93]
+Messi began the 2011–12 season winning both the Spanish and European Super Cups trophies.[94][95] At the close of the year, he won the FIFA Club World Cup and earned the Golden Ball for a second time.[96] For his efforts in 2011, he received the FIFA Ballon d'Or, becoming only the fourth player in history to win the Ballon d'Or three times,[97] and the inaugural UEFA Best Player in Europe Award.[98] During the year 2012, Messi became the second player to be top scorer in four Champions League campaigns.[99][100] Messi became the top goalscorer in Barcelona's history at 24 years old, overtaking the 57-year record of César Rodríguez's 232 goals with a hat-trick against Granada.[101] He finished the season as league top scorer in Spain and Europe for a second time, with 50 goals, a La Liga record, while his 73 goals in all competitions made him the single-season top scorer in the history of European club football excluding regional and local competitions.[102][103] The team would also win the Copa del Rey that season, their 14th trophy under Guardiola, who resigned following the season after a four-year cycle of success.[104]
+
+2012–2014: Record-breaking year and Messidependencia
+
+Messi scored a record-breaking 91 goals with Argentina (above) and Barcelona (below) in 2012.
+For the start of the 2012–13 season, Barcelona had virtually secured their La Liga title by the start of 2013.[105] A double scored against Real Betis saw Messi becoming Barcelona's all-time top scorer in La Liga, and surpassed Gerd Müller's record of most goals scored in a calendar year; Messi would score a record 91 goals in all competitions for Barcelona and Argentina throughout 2012.[106][107] Messi again won the FIFA Ballon d'Or, becoming the first player in history to win the Ballon d'Or four times.[107][108] He signed a new contract committing himself to the club through 2018, and wore the captain's armband for the first time in a league match against Rayo Vallecano.[109][110][111] The team would win La Liga again that year, Messi's sixth, equalling Real Madrid's 100-point record of the previous season. With 60 goals in all competitions, including 46 goals in La Liga, he finished the campaign as league top scorer in Spain and Europe for the second consecutive year, becoming the first player in history to win the European Golden Shoe three times.[112]
+
+Messi's overall input into the team's attack had increased significantly. Whereas he contributed to 24% of the team's goals in their treble-winning campaign in 2008–09, this number rose to more than 40% by the end of the 2012–13 season.[113] These statistics, as well as lopsided losses in the Champions League where Messi was unfit, gave credence to the notion of Messidependencia, Barcelona's perceived tactical and psychological dependence on their star player.[114]
+
+To offset the load on Messi, Barcelona would sign Brazilian forward Neymar from Santos before the 2013–14 season.[115] The team would win the Supercopa de España at the beginning of the season.[116] Messi finished the campaign with his worst output in five seasons, though he still managed to score 41 goals in all competitions.[117] For the first time in five years, Barcelona ended the season without a major trophy.[118]
+
+2014–2017: Arrival of Luis Enrique and birth of MSN
+
+Messi dribbling past Patrice Evra of Juventus during the 2015 UEFA Champions League final
+Barcelona hired coach Luis Enrique before the 2014–15 season, and would continue to aid Messi in the attack by signing Uruguayan forward Luis Suárez, who had won the European Golden Shoe the year before at Liverpool.[119][120] Luis Enrique's system would feature quick transitions from defence to attack, led by the front three of Messi, Suárez and Neymar. The attacking trio, which colloquially became known as 'MSN', would break goalscoring records.[121] A hat-trick scored against Sevilla earlier in the season would also make him the all-time top scorer in La Liga, as he surpassed the 59-year record of 251 league goals held by Telmo Zarra.[122] After securing the La Liga title, the Copa del Rey, and the Champions League that year, Messi helped Barcelona become the first club to win the continental treble twice.[123][124] He would record 58 goals, but combined with Neymar and Suárez, the attacking trio scored a total of 122 goals in all competitions that season, a record in Spanish football.[125]
+
+Messi opened the 2015–16 season by helping Barcelona's win over Sevilla in the UEFA Super Cup.[126] Messi capped off the year by winning the 2015 FIFA Club World Cup final over River Plate in Yokohama, collecting his fifth club trophy of the calendar year.[127] On 11 January 2016, Messi won the FIFA Ballon d'Or for a record fifth time in his career.[128] He would end the season by winning La Liga as well as the Copa del Rey again.[129] In total, Messi scored 41 goals, and Barcelona's attacking trio of him, Neymar and Suárez managed a Spanish record of 131 combined goals throughout the season, breaking the record they had set the previous season.[130]
+
+The 2016–17 season would end with Messi winning the Supercopa de España and the Copa del Rey.[131][132] He would finish the season with 54 goals, while his 37 goals in La Liga saw him claim both the Pichichi and European Golden Boot Awards for the fourth time in his career.[133] Messi, Neymar and Suárez would combine for 110 goals by season's end. Neymar would depart for Paris Saint Germain the next year, leaving the attacking trio with a combined total of 363 goals over the course of three seasons.[134] Luis Enrique would also leave Barcelona at the end of the season after managing the club to a total of nine trophies during his three-year tenure.[135]
+
+2017–2021: Final years at Barcelona
+
+Messi, wearing the captain's armband, against Real Valladolid in 2018
+Messi would sign a new deal with Barcelona on 25 November 2017, his ninth contract with the club, keeping him with the club through 2021.[136] The 2017–18 season saw Messi achieving the domestic double, winning La Liga and the Copa del Rey once again.[137] He once again finished the season as the top scorer in La Liga, with 34 goals, which also saw him win his fifth European Golden Shoe award.[138] With the departure of former captain Andrés Iniesta in May 2018, Messi was named the team's new captain for the 2018–19 season.[139] He lifted his first trophy as Barcelona's captain, the Supercopa de España, following a 2–1 victory over Sevilla. He helped Barcelona clinch the La Liga title, his tenth but first as captain.[140] With 36 goals in 34 appearances that season, he won his sixth league Golden Boot trophy, equalling Zarra as the player with the most top-scorer awards in La Liga.[141][142] He also captured his sixth Golden Shoe award, and a record third consecutive award since the 2016–17 season.[143]
+
+Messi would win his sixth Ballon d'Or, but the subsequent 2019–20 season saw Barcelona go trophyless for the first time since 2007–08.[144] Following a disappointing season, Barcelona announced that Messi sent the club "a document expressing his desire to leave", but Messi ultimately decided to fulfill the final year of his contract.[145][146] The 2020–21 season saw Messi surpass Xavi's record to reach a club record of 768 appearances.[147] He would lead the club to victory in the 2021 Copa del Rey final.[148][149] His last two seasons with Barcelona saw him lead La Liga in goal scoring, giving him a record-breaking total of eight Pichichi trophies.[150][151]
+
+Messi became a free agent after his contract expired, with negotiations on a new deal complicated due to Barcelona's financial issues.[152][153] Barcelona would eventually announce that Messi would not be staying at the club, citing financial and structural obstacles posed by La Liga regulations as a reason for Messi's departure.[154][155] In a tearful press conference held at the Camp Nou, Messi confirmed that he would be leaving Barcelona.[156]
+
+Paris Saint-Germain
+
+Messi (middle) with PSG team-mates Kylian Mbappé (left) and Neymar
+On 10 August 2021, Messi joined Ligue 1 club Paris Saint-Germain (PSG), reuniting him with Neymar, for the 2021–22 season on a two-year deal until June 2023 with an option for an extra year.[157][158] Messi chose 30 as his squad number, the same he wore as a teenager when he made his senior debut for Barcelona.[159] He would make his debut with the club against Reims, made his first start and Champions League debut for the club against Club Brugge, and made his home debut in a match against Lyon[160][161][162] He scored his first goal for the club in a Champions League group stage win over former manager Pep Guardiola's Manchester City.[163] Having scored 40 goals at club and international level for the calendar year in addition to captaining Argentina to the 2021 Copa América, Messi received a record seventh Ballon d'Or.[164] He finished his debut season with PSG with 11 goals and 14 assists across all competitions, helping the club win their 10th Ligue 1 title.[165]
+
+Beginning the 2022–23 season, Messi would win his second trophy with PSG in the Trophée des Champions.[166] A goal against Nice resulted in him surpassing Cristiano Ronaldo as the all-time highest goalscorer in European club football with 702 goals; during the match, he also achieved 1,000 career direct goal contributions at club level.[167][168] By the end of the season, he had 21 goals across all competitors and the highest number of assists in the league with 16, which helped PSG clinch their 11th Ligue 1 title and his second in a row.[169][170][171] Following the last game of the season, manager Christophe Galtier confirmed that it would be Messi's last for PSG, with the club confirming his departure two days later.[172]
+
+Inter Miami
+
+Messi with Inter Miami in the 2023 U.S. Open Cup
+Major League Soccer (MLS) club Inter Miami CF announced the signing of Messi on a two-and-a-half-year contract on 15 July 2023.[173][174] Messi's arrival in the US was praised as a revelation, on and off the pitch, and his presence was credited for helping to raise the profile of MLS within the US and abroad. According to Goal, "Every game that he graces sparks a scramble for tickets, with plenty of A-list guests eager to watch him in action".[175] The frenzy over his arrival was dubbed "Messimania", and Inter Miami's No. 10 Messi jersey became the best-selling jersey in the league, and nearly the world.[176]
+
+Messi made his 2023 debut for the club in a Leagues Cup match against Cruz Azul, scoring with a free-kick in stoppage time for a victory.[177] DeAndre Yedlin, the previous captain of Inter Miami, gave his armband to Messi, who took over as team captain.[178] After scoring nine goals in his first six games for Miami, Messi led the team to the club's first-ever trophy, as it won the Leagues Cup final against Nashville SC.[179] Messi made his MLS debut against the New York Red Bulls.[180] Miami would miss the playoffs, finishing 14th in the Eastern Conference, having gone winless in their last seven games.[181] On 30 October 2023, following his World Cup win with Argentina and Ligue 1 trophy with PSG, Messi was awarded a record-extending eighth Ballon d'Or.[182] He was also named Time Athlete of the Year, the first footballer ever to win the award.[183]
+
+During the 2024 season, Messi broke the record for the most assists in a single MLS game with five assists, and broke the record for the most goal contributions in an MLS game with six, in a 6–2 win over the New York Red Bulls.[184] On 2 October, Messi scored a brace in a 3–2 win over the Columbus Crew, clinching the Supporters' Shield, his 46th trophy.[185] In the final game of the regular season on 19 October against the New England Revolution, Messi scored his first hat-trick for the club in a 6–2 victory. Inter Miami's victory over the Revolution also allowed the club to finish with 74 points throughout the regular season, a league record for MLS. He would finish the regular season with 20 goals and 16 assists in 19 matches.[186] In doing so, he became Inter Miami's all-time top goalscorer.[187] Miami made its first postseason appearance in the 2024 MLS Cup playoffs but were eliminated in the first round after losing two games against Atlanta United. Messi would have his first postseason goal in the third game, a 3–2 loss.[188] He would be named the MLS Most Valuable Player following the conclusion of the regular season.[189]
+
+During the 2025 season, Messi became the fastest player to reach 40 goals in league history.[190] He was featured in a Super Bowl ad by Apple TV for their exclusive MLS coverage. He ended the season winning the MLS Golden Boot as the league's top scorer, with 29 goals and 19 assists in 28 games.[191] On 23 October, Messi signed a three-year contract extension which would see him at the club through 2028, by which time he would be 41-years-old.[192]
+
+International career
+Main article: Career of Lionel Messi § International career
+As a dual Argentine-Spanish national, Messi was eligible to play for the national team of both countries.[193] He debuted for Argentina in 2004 for Argentina's U20 team against Paraguay, and was subsequently included in the squad for the 2005 South American U-20 Championship, where they would finish third.[194] Messi would then lead the team to victory in the 2005 FIFA World Youth Championship, his first success with Argentina. Finishing the tournament with six goals and two assists, he would also win the Golden Ball.[195][196][197]
+
+
+Messi evades Brazil's Marcelo in the semi-final of the 2008 Summer Olympics.
+Messi would make his debut with the senior national team in 2005, at age 18, coming off the bench in a friendly against Hungary.[198] Messi would have his first start in 2006 against Peru, and would score his first international goal in a friendly against Croatia.[199][200] His World Cup debut came in the 2006 FIFA World Cup as a substitute in the 74th minute against Serbia and Montenegro, assisting one goal and scoring the final one in their victory. This made him the youngest player to represent and score for Argentina in the World Cup.[201] He would represent Argentina again for the 2007 Copa América, where they would ultimately lose in the final. Messi was named the best young player of the tournament, having scored two goals and provided one assist.[202] The 2008 Summer Olympics would mark another major achievement with his country, as he led Argentina's U23 team to claim the Olympic gold medal over Nigeria. Messi registered two goals and three assists throughout, and was singled out by FIFA as the stand-out player from the tournament's best team.[203]
+
+
+Messi in his number 10 shirt captaining Argentina in 2012
+With the international retirement of Juan Román Riquelme, Messi was given Argentina's number 10 shirt.[204] During a 2010 FIFA World Cup group stage match against Greece, where a majority of the starters rested due to a secured place in the knockout rounds, Messi would wear the captain's armband for the first time.[205] Argentina were ultimately eliminated in the quarter-final against Germany, but Messi was identified as one of the tournament's 10 best players due to his pace and creativity, despite failing to register a single goal and only having one assist.[206] Ahead of the 2011 Copa América, Argentina began building their team around Messi.[207] However, Messi would again be goalless during the tournament but had three assists. The team would ultimately lose to Uruguay on penalties during the quarter-final.[208]
+
+
+Messi against Germany in the 2014 FIFA World Cup final
+Following their unsuccessful performance, a 24-year-old Messi would be awarded the captaincy of the squad.[209] The next several years saw many frustrations for Messi due to his inability to lead Argentina to win an international trophy. During the 2014 FIFA World Cup, Messi and Argentina lost to Germany in the final, though Messi was awarded the Golden Ball as the best player of the tournament regardless due to his overall performance with four goals and an assist.[210][211] Argentina would lose to Chile on penalties in the 2015 Copa América final the next year. At the close of the tournament, Messi was reportedly selected to receive the Golden Ball award, having scored one goal and provided three assists, but he rejected the honour.[212] In the 2016 Copa América Centenario semi-final against the United States, a goal from Messi would put him ahead of Gabriel Batistuta as Argentina's all-time leading goalscorer in international matches.[213] However, Argentina would again fall to Chile on penalties in the final.[214] Messi would have five goals and four assists throughout the tournament.[215]
+
+Losing three consecutive finals in three consecutive years caused Messi to retire from international football, but a nationwide campaign in Argentina helped convince him to reverse his decision.[214][216] He would return to the national team to lead them to the 2018 FIFA World Cup. Argentina were in jeopardy of missing the tournament on the last game of the qualifiers against Ecuador, but a hat-trick from Messi dramatically secured their entry.[217] They would go on to lose to France in the round of 16 during the World Cup, with Messi having one goal and two assists in the tournament.[218] The next year, Messi would again represent Argentina in the 2019 Copa América, where he registered only a single goal and assist. They would lose to hosts Brazil in the semi-final but ended with a third-place finish after defeating Chile.[219] Despite not winning the tournament, this victory would mark the beginning of a 36-game unbeaten streak for Argentina that would last for more than three years.[220]
+
+
+Messi facing off against Érick Gutiérrez of Mexico in the 2022 FIFA World Cup group stage
+
+Lionel Messi raising the World Cup after the final match v France
+Messi would finally end Argentina's 28-year trophy drought in the 2021 Copa América, as they had not won an international tournament since 1993.[221] During a group stage match against Bolivia, he surpassed Javier Mascherano to become Argentina's most-capped player.[222] Argentina defeated Brazil in the final, and Messi was named the player of the tournament having been directly involved in nine out of the 12 goals scored by Argentina, scoring four of them and assisting five.[221] He captained Argentina to win another international trophy in the 2022 Finalissima against UEFA Euro 2020 winners Italy, where he was named player of the match after providing two assists.[223] At the 2022 FIFA World Cup, Messi led Argentina to its first World Cup victory in 36 years, scoring twice in the final to defeat France.[224] Having scored seven goals and assisted three during the tournament, Messi would again win the Golden Ball, becoming the first player to win it twice.[225] His appearance in the final also set new records for the most appearances (26) and direct goal contributions (21 – 13 goals and 8 assists) at the World Cup.[226]
+
+A hat-trick in a 2023 friendly against Curaçao saw Messi reach 100 international goals, the third player and the first South American in history to achieve this milestone, and a brace against Peru later that year resulted in Messi becoming the all-time top goalscorer in CONMEBOL World Cup qualifiers.[227][228] During the 2024 Copa América semi-final against Canada, Messi scored his first and only goal of the tournament which also made him the second-highest international goalscorer of all time.[229] Argentina eventually won the final against Colombia for their second consecutive Copa América title, with Messi contributing one goal and one assist overall while also setting a new record for most appearances (39) at Copa América.[230] His start against Venezuela in 2025 saw him tie the record set by Iván Hurtado for most appearances in CONMEBOL World Cup qualification matches (72), and the two assists he provided in a friendly against Puerto Rico later that year resulted in him reaching 60 in total, making him the top assist-provider in men’s international football history.[231][232]
+
+Player profile
+Style of play
+
+Messi prepares to shoot with his dominant left foot in the 2014 FIFA World Cup final.
+Due to his short stature, Messi has a lower centre of gravity than taller players, which gives him greater agility, allowing him to change direction more quickly and evade opposing tackles;[233][234] this has led the Spanish media to dub him La Pulga Atómica ("The Atomic Flea").[235][236][237] Despite being physically unimposing, he possesses significant upper-body strength, which, combined with his low centre of gravity and resulting balance, aids him in withstanding physical challenges from opponents; he has consequently been noted for his lack of diving in a sport rife with playacting.[28][234][238] His short, strong legs allow him to excel in short bursts of acceleration while his quick feet enable him to retain control of the ball when dribbling at speed.[239] His former Barcelona manager Pep Guardiola once stated, "Messi is the only player that runs faster with the ball than he does without it."[240] Although he has improved his ability with his weaker foot since his mid-20s, Messi is predominantly a left-footed player; with the outside of his left foot, he usually begins dribbling runs, while he uses the inside of his foot to finish and provide passes and assists.[241][242]
+
+A prolific goalscorer, Messi is known for his finishing, positioning, quick reactions, and ability to make attacking runs to beat the defensive line. He also functions in a playmaking role, courtesy of his vision and range of passing.[243] He has often been described as a magician; a conjurer, creating goals and opportunities where seemingly none exist.[244][245][246] Moreover, he is an accurate free kick and penalty kick taker.[234][247] As of July 2025, Messi ranks third all time in goals scored from direct free kicks with 69,[248] the most among active players.[249] He also has a penchant for scoring from chips.[250]
+
+
+Messi's dribbling abilities allow him to weave past several defenders and orchestrate attacking plays.
+Messi's pace and technical ability enable him to undertake individual dribbling runs towards goal, in particular during counterattacks, usually starting from the halfway line or the right side of the pitch.[238][247][251] He is widely considered to be one of the greatest dribblers of all time.[252][253] With regard to this ability, his former Argentina manager Diego Maradona has said of him, "The ball stays glued to his foot; I've seen great players in my career, but I've never seen anyone with Messi's ball control."[242] Beyond his individual qualities, he is also a well-rounded, hard-working team player, known for his creative combinations, in particular with former Barcelona midfielders Xavi and Andrés Iniesta.[233][234]
+
+As his career advanced, and his athleticism and tendency to dribble diminished slightly with age, Messi began to dictate play in deeper areas of the pitch and developed into one of the best passers and playmakers in football history.[254][255][256] His work-rate off the ball and defensive responsibilities also decreased as his career progressed; by covering less ground on the pitch, and instead conserving his energy for short bursts of speed, he was able to improve his efficiency, movement, and positional play, and was also able to avoid muscular injuries, despite often playing a large number of matches throughout a particular season on a consistent basis. Indeed, while he was injury-prone in his early career, he was later able to improve his injury record by running less off the ball, and by adopting a stricter diet, training regime, and sleep schedule.[257]
+
+Tactical positioning
+
+A versatile forward, Messi often plays as a classic number 10.
+Tactically, Messi plays in a free attacking role; a versatile player, he is capable of attacking on either wing or through the centre of the pitch. His favoured position in childhood was the playmaker behind two strikers, known as the enganche in Argentine football, but he began his career in Spain as a left-winger or left-sided forward.[258] Upon his first-team debut, he was moved onto the right wing by manager Frank Rijkaard; from this position, he could more easily cut through the defence into the middle of the pitch and curl shots on goal with his left foot, rather than predominantly cross balls for teammates.[240] Under Guardiola and subsequent managers, he most often played in a false nine role; positioned as a centre-forward or lone striker, he would roam the centre, often moving deep into midfield and drawing defenders with him, in order to create and exploit spaces for passes, other teammates' attacking runs off the ball, Messi's own dribbling runs, or combinations with Xavi and Iniesta.[38]
+
+Under the stewardship of Luis Enrique, Messi initially returned to playing in the right-sided position that characterised much of his early career in the manager's 4–3–3 formation,[259][260] while he was increasingly deployed in a deeper, free playmaking role in later seasons.[261][262] Under manager Ernesto Valverde, Messi played in a variety of roles. While he occasionally continued to be deployed in a deeper role, from which he could make runs from behind into the box,[263] or even on the right wing[264] or as a false nine,[265][266] he was also used in a more offensive, central role in a 4–2–3–1,[262] or as a second striker in a 4–4–2 formation, where he was once again given the licence to drop deep, link-up with midfielders, orchestrate his team's attacking plays, and create chances for his attacking partner Luis Suárez.[267][268] With the Argentina national team, Messi has similarly played anywhere along the frontline. Under various managers, he has been employed on the right wing, as a false nine, as an out-and-out striker, in a supporting role alongside another forward, or in a deeper, free creative role as a classic number 10 playmaker or attacking midfielder behind the strikers.[269][270]
+
+Reception
+Messi is widely regarded as one of the two best players of his generation, alongside Portuguese forward Cristiano Ronaldo.[271] He is also considered one of the greatest footballers in the history of the sport.[272] In 2025, he was named the All Time Men's World Best Player by the IFFHS.[273]
+
+A prodigious talent as a teenager, Messi established himself among the world's best players before age 20.[274] Shortly after teammate Ronaldinho won the 2005 Ballon d'Or, he commented, "I'm not even the best at Barça" in reference to his 18-year-old protégé.[275] Four years later, after Messi won his first Ballon d'Or by a record margin,[81] the public debate regarding his qualities as a player moved beyond his status in contemporary football to the possibility that he was one of the greatest players in history.[24][238][276] An early proponent was his then-Barcelona manager Pep Guardiola, who, as early as August 2009, declared Messi to be the best player he had ever seen.[277] In the following years, this opinion gained greater acceptance among pundits, managers, former and current players.[92][278] By the end of Barça's second treble-winning season, the view of Messi as one of the greatest footballers of all time had become the apparent view among many fans and pundits in continental Europe.[279][280]
+
+Messi would receive dismissals by critics throughout his career based on the fact that he had not won an international tournament at senior level with Argentina.[281][282][283] However, his subsequent victories in the 2021 Copa América and the 2022 FIFA World Cup resulted in him finally winning every top tier trophy at both the club and country levels, an achievement that many pundits felt cemented Messi's legacy.[272]
+
+Comparisons with Cristiano Ronaldo
+Main article: Messi–Ronaldo rivalry
+
+Messi has been compared with Cristiano Ronaldo (left) throughout much of their careers.
+Among his contemporary peers, Messi is most often compared and contrasted with Cristiano Ronaldo, who many consider his career rival.[271] Both achieved numerous individual accolades, won dozens of trophies for both club and country, and are the two leading goal scorers in history. Although Messi has at times denied any rivalry,[284][285] they are widely believed to push one another in their aim to be the best player in the world.[286] Pundits have compared the ongoing rivalry to past sports rivalries like the Muhammad Ali–Joe Frazier rivalry in boxing, the Prost–Senna rivalry in motorsport, and the tennis rivalries between Federer–Nadal and Borg–McEnroe.[287]
+
+Fans and pundits alike regularly argue the individual merits of both players.[286][288] Messi is lauded for his combination of dribbling, playmaking, passing and goalscoring, while Ronaldo has received praise for his exceptional speed and athleticism, goalscoring skills, and performance under pressure.[289][290] Beyond their playing styles, the debate also revolves around their differing physiques – Ronaldo is 1.87 m (6 ft 1+1⁄2 in) with a muscular build, compared to Messi's smaller size – and contrasting public personalities with Ronaldo's self-confidence and theatrics a foil to Messi's humility.[291] Regarding individual achievements, Messi has won eight Ballons d'Or to Ronaldo's five,[292] eight FIFA World's Best Player awards to Ronaldo's five, and six European Golden Shoes to Ronaldo's four.[293] Off the pitch, Ronaldo is his direct competitor in terms of salary, sponsorships, and social media fanbase.[294]
+
+Messi's head-to-head record against teams that feature Ronaldo consists of 15 wins, 9 draws, and 10 losses in competitive club matches, one win and loss each in international friendlies, and one win in a club friendly. The first competitive matchup between the two occurred in 2008, when Ronaldo's Manchester United were drawn to play Messi's Barcelona in the 2007–08 UEFA Champions League semi-finals, where Ronaldo and Manchester United would eventually advance 1–0 on aggregate, and go on to win the final.[295] The two players and their teams would meet again in the next year's Champions League, this time in the final, with Messi and Barcelona emerging as the victors after a 2–0 result.[296] After this, Ronaldo would transfer to Real Madrid, the main rivals of Barcelona, and from 2009–10 to 2017–18, Messi faced Ronaldo at least twice every season in El Clásico, which ranks among the world's most viewed annual sports events.[297][294] Ronaldo's would then transfer to Juventus in the summer of 2018; their final matchup in a competitive match would occur during a 2020–21 UEFA Champions League group stage match, where Ronaldo's two goals from the penalty spot helped Juventus to a 3–0 victory against Messi's Barcelona.[298] After Ronaldo left Real Madrid for Juventus, Messi stated: "I miss Cristiano. Although it was a bit difficult to see him win trophies, he gave La Liga prestige."[299]
+
+Following Messi leading Argentina to victory in the 2022 World Cup, a number of football critics, commentators, and players have opined that Messi settled the debate between the two players.[300][301] Ronaldo himself declared a year later that his rivalry with Messi was over and "gone", after 36 official fixtures and 15 years of "sharing the stage".[302]
+
+Comparisons with Diego Maradona
+Main article: New Maradona
+"I have seen the player who will inherit my place in Argentinian football and his name is Messi."
+
+– Diego Maradona hailing the 18-year-old Messi as his successor in February 2006[303]
+Throughout his career, Messi has been compared with his compatriot Diego Maradona, who was also considered the best player of his generation and one of greatest in the history of the sport.[304][305] This was due to their short statures, their similar playing styles as diminutive, left-footed playmakers, and the fact that they both came from Argentina.[306] Initially, Messi was merely one of many young Argentine players to receive the "New Maradona" moniker, but as his career progressed, Messi proved his similarity beyond all previous contenders, establishing himself as the best player Argentina had produced since Maradona.[35][307] Even when Messi was 18 years old, Maradona called him the best player in the world and hailed him as his successor.[303] Messi and Maradona would work together as player and manager for Argentina's national side from 2008 through the 2010 FIFA World Cup, the latter thoroughly impressed with the former's skills.[308] It was during this period that Messi was given Argentina's number 10 shirt that Maradona famously wore. Maradona gave Messi his blessing, telling him: "the No 10 is yours. There's nobody better than you to wear it."[204]
+
+
+Due to their similar size and style of play, Messi was constantly compared with his compatriot Diego Maradona by pundits and his countrymen.
+During the early and middle parts of his career, Messi was generally held in lesser esteem than Maradona in Argentine society. Part of this had to do with Messi's lack of tournament success and perceived uneven output with the national team during this period – Maradona had famously led Argentina to victory in the 1986 FIFA World Cup with a dominant overall performance, which set expectations for Messi to do the same.[281][304][309] Also unlike Maradona, Messi never played in the Argentine Primera División, therefore depriving his countrymen a chance to watch him develop and prove himself, and through no fault of his own would do this overseas in La Liga instead.[28][309] Argentines also identified more with the fiery, extroverted and controversial Maradona who came from the slums, character traits that they felt aligned with their national values, as opposed to the reserved, introverted and unassuming Messi who had a comparably unremarkable upbringing in Rosario.[283][309][310] Several pundits, footballing figures, and Maradona himself would point to this temperament to question Messi's leadership capabilities for the national team.[281][311][312] Furthermore, Messi's lack of outward passion for the Albiceleste shirt, early tendency not to sing the national anthem, and disinclination to emotional displays have in the past led to the false perception that he felt more Catalan rather than truly Argentine.[208][313] However, despite having lived in Barcelona since age 13, Messi rejected the option of representing Spain internationally, saying: "Argentina is my country, my family, my way of expressing myself. I would change all my records to make the people in my country happy."[314]
+
+Football journalist Tim Vickery stated the perception of Messi among Argentines changed in 2019, with Messi making a conscious effort to become "more one of the group, more Argentine".[313] Other pundits noted that Messi had grown more assertive as a leader during the 2019 Copa América by becoming more vocal with his teammates both on and off the pitch, finally singing the national anthem with the team before matches, and speaking with journalists at length after matches, the latter of which he rarely did for Barcelona.[315] Following the 2022 World Cup win for Messi and Argentina, Vickery felt that Messi would now be held in the same esteem by his compatriots as Maradona.[313] Former footballer turned journalist Jorge Valdano said he saw a "Maradonian" edge to Messi's performances during the tournament, while compatriot Osvaldo Ardiles mentioned that Messi's provoking actions against the Netherlands side during the quarter-final were "more of a Maradona reaction," further endearing Messi to his countrymen.[316][317] Messi himself later remarked that the World Cup victory "won over all the people of Argentina. Today 95% or 100% of Argentines love me and that's a beautiful feeling."[318]
+
+In popular culture
+Popularity
+
+Messi's success on the pitch earned him several lucrative endorsement deals along with widespread recognition and popularity.
+Messi was among the Time 100, an annual list of the world's most influential people, in 2011, 2012 and 2023.[319][320][321] According to a 2014 survey in 15 international markets, Messi was familiar to 87% of respondents around the world, of whom 78% perceived him favourably, making him the second-most recognised player globally, behind Cristiano Ronaldo, and the most likeable of all contemporary players.[322][323] World Press Photo selected "The Final Game", a photo of Messi facing the World Cup trophy after Argentina's final defeat to Germany, as the best sports image of 2014.[324] On his economic impact on the city in which he plays, Terry Gibson called him a "tourist attraction".[325]
+
+His fanbase on Facebook is among the largest of public figures: within seven hours of its launch in April 2011, Messi's Facebook page had nearly seven million followers, and by July 2023 he had more than 114 million followers, the second highest for a sportsperson after Ronaldo.[326][327] He has over 500 million Instagram followers, the second highest for an individual and sportsperson after Ronaldo.[328] His World Cup celebration post from 18 December 2022 is the most liked post on Instagram with more than 75 million likes.[329]
+
+On 20 March 2023, during a return to Buenos Aires following his World Cup victory, Messi was mobbed by hundreds of adoring fans when he and his family were out to dinner. When news spread where Messi and his family were, the restaurant was soon surrounded by locals hoping to get a glimpse of their World Cup-winning captain. Police assistance would be needed to get Messi back to his car in the early hours of the morning.[330] In April 2023, Messi was featured in the 200 year old Thrissur Pooram festival in Kerala, India.[331] During the festival, umbrellas carrying the illuminated cut outs of Messi holding the World Cup trophy were displayed on the top of caparisoned elephants during the Kudamattam ceremony.[332] In December 2023, a set of shirts Messi had worn during the 2022 World Cup was sold at auction for $7.8 million.[333]
+
+During an exhibition match on 4 February 2024 in which Inter Miami faced off against the Hong Kong League players at Hong Kong Stadium, Messi remained on the bench the entire game, causing massive backlash in Hong Kong and China as a result.[334] A Messi commercial was taken off air in those regions,[335] while others remained despite pressure from Chinese social-media users.[336][337][338] Furthermore, the Chinese Football Association temporarily halted its partnership with the Argentine Football Association over the incident on 8 February.[339]
+
+Wealth and sponsorships
+Messi was the world's highest-paid footballer for five years out of six between 2009 and 2014; he was the first player to exceed the €40 million benchmark, with earnings of €41 million in 2013, and the €50–€60 million points, with income of €65 million in 2014.[340][341] Messi was second on Forbes list of the world's highest-paid athletes, after Cristiano Ronaldo, with income of $81 million from salary and endorsements in 2015–16.[342] In 2018, he was the first player to exceed the €100 million benchmark for a calendar year, with earnings of €126 million ($154 million) in combined income from salaries, bonuses and endorsements.[343] Forbes ranked him the world's highest-paid athlete in 2019.[344] From 2008, he was Barcelona's highest-paid player, receiving a salary that increased incrementally from €7.8 million to €13 million over the next five years.[345][346][109] Signing a new contract in 2017, he earned $667,000 per week in wages, and Barcelona paid him $60 million as a signing on bonus.[347] His buyout clause was set at $835 million (€700 million).[347] In 2020, Messi became the second footballer, as well as the second athlete in a team sport, after Ronaldo, to surpass $1 billion in earnings during their careers.[348] When signing with Inter Miami, his base salary was set at $12 million with guaranteed compensation totalling $20.4 million for the 2023 season; Messi was also set to earn additional shares from shirt sales, MLS Season Pass subscriptions, and a stake in the club itself.[349]
+
+
+Messi's Argentina jersey, supplied by Adidas, was sold out worldwide during the 2022 World Cup.[350]
+In addition to salary and bonuses, much of Messi's income derives from endorsements; SportsPro has consequently cited him as one of the world's most marketable athletes every year since their research began in 2010.[351] His main sponsor since 2006 is Adidas. As Barcelona's leading youth prospect, he was signed with Nike since age 14, but transferred to Adidas after they successfully challenged their rival's claim to his image rights in court.[352] Messi established himself as their leading brand endorser;[294] from 2008, he had a long-running signature collection of Adidas F50 boots, and in 2015, became the first footballer to receive his own sub-brand of Adidas boots, the Adidas Messi.[353][354] Since 2017, he has worn the latest version of the Adidas Nemeziz.[355] In 2015, a Barcelona jersey with Messi's name and number was the best-selling replica jersey worldwide.[356] At the 2022 World Cup, Adidas sold out Messi's No. 10 Argentina jersey worldwide.[350]
+
+
+After blessing himself, Messi often celebrates a goal by pointing a finger on each hand towards the sky in dedication to his late grandmother.[357] His goal celebration features in the FIFA video game series.
+As a commercial entity, Messi's brand has been based exclusively on his talents and achievements as a player, in contrast to arguably more glamorous players like Ronaldo and David Beckham. At the start of his career, he thus mainly held sponsorship contracts with companies that employ sports-oriented marketing, such as Adidas, Pepsi, and Konami.[358][359] From 2010, concurrently with increased achievements as a player, his marketing appeal widened, leading to long-term endorsement deals with luxury brands Dolce & Gabbana and Audemars Piguet.[358][360] Messi is a global brand ambassador for Gillette, Turkish Airlines, Ooredoo, and Tata Motors, among other companies.[361][362][363][364] In order to celebrate his achievement of becoming Barcelona's all-time goalscorer, Budweiser sent personalised bottles of beer to every goalkeeper whom Messi has scored against.[365] Messi was the face of Konami's video game series Pro Evolution Soccer, appearing on the covers of PES 2009, PES 2010, PES 2011 and PES 2020. He subsequently signed with rival company EA Sports to become the face of their series FIFA and appeared on consecutive covers from FIFA 13 to FIFA 16.[366][367]
+
+In 2013, a Turkish Airlines advertisement starring Messi, in which he engages in a selfie competition with Kobe Bryant, was the most-watched ad on YouTube in 2013, receiving 137 million views, and was voted the best advertisement of the 2005–15 decade to commemorate YouTube's founding.[368][369] In June 2021, Messi signed a five-year deal to become an ambassador for the Hard Rock Cafe brand. He stated, "sports and music are an integral part of my life. It is an honor to be the first athlete to partner with a brand who has a history of teaming with music legends."[370]
+
+In May 2022, Messi was unveiled as Saudi Arabia's tourism ambassador. Due to Saudi Arabia's poor human rights record, Messi was widely criticised for the role which was viewed as an attempt of Saudi sportswashing.[371][372]
+
+Philanthropy
+Throughout his career, Messi has been involved in charitable efforts aimed at vulnerable children, a commitment that stems in part from the medical difficulties he faced in his own childhood. Since 2004, he has contributed his time and finances to the United Nations Children's Fund (UNICEF), an organisation with which Barcelona also have a strong association.[373][374] Messi has served as a UNICEF Goodwill Ambassador since his appointment in March 2010, completing his first field mission for the organisation four months later as he travelled to Haiti to bring public awareness to the plight of the country's children in the wake of the 2010 Haiti earthquake. He has since participated in UNICEF campaigns targeting HIV prevention, education, and the social inclusion of disabled children.[375] To celebrate his son's first birthday, in November 2013, Messi and Thiago were part of a publicity campaign to raise awareness of mortality rates among disadvantaged children.[376]
+
+
+Messi (pictured in 2007) has worked with UNICEF since 2004 and has served as a UNICEF Goodwill Ambassador since 2010.
+In addition to his work with UNICEF, Messi founded his own charitable organisation, the Leo Messi Foundation, which supports access to health care, education, and sport for children.[377] It was established in 2007 following a visit Messi paid to a hospital for terminally ill children in Boston, an experience that resonated with him to the point that he decided to reinvest part of his earnings into society.[378] Through his foundation, Messi has awarded research grants, financed medical training, and invested in the development of medical centres and projects in Argentina, Spain, and elsewhere in the world.[378][379] In addition to his own fundraising activities, such as his global "Messi and Friends" football matches, his foundation receives financial support from various companies to which he has assigned his name in endorsement agreements, with Adidas as their main sponsor.[380][381] A gold replica of his left foot, weighing 25 kg (55 lb) and valued at $5.3 million, went on sale in Japan in 2013 to raise funds for victims of the 2011 Tōhoku earthquake and tsunami.[382]
+
+Messi has also invested in youth football in Argentina: he financially supports Sarmiento, a football club based in the Rosario neighbourhood where he was born, committing in 2013 to the refurbishment of their facilities and the installation of all-weather pitches, and funds the management of several youth players at Newell's Old Boys and rival club Rosario Central, as well as at River Plate and Boca Juniors in Buenos Aires.[378] At Newell's Old Boys, his boyhood club, he funded the 2012 construction of a new gymnasium and a dormitory inside the club's stadium for their youth academy. His former youth coach at Newell's, Ernesto Vecchio, is employed by the Leo Messi Foundation as a talent scout for young players.[28] On 7 June 2016, Messi won a libel case against La Razón newspaper and was awarded €65,000 in damages, which he donated to the charity Médecins Sans Frontières.[383] Messi made a donation worth €1 million ($1.1 million) to fight the spread of coronavirus.[384] This was split between Clinic Barcelona in Barcelona and his native Argentina.[385] In addition to this, Messi along with his fellow FC Barcelona teammates announced he would be taking a 70% cut in salaries during the 2020 coronavirus emergency, and contribute further to the club to provide fully to salaries of all the clubs employees.[386]
+
+In November 2016, with the Argentine Football Association being run by a FIFA committee for emergency due to an economic crisis, it was reported that three of the national team's security staff told Messi that they had not received their salaries for six months. He stepped in and paid the salaries of the three members.[387][388] In February 2021, Messi donated to the Museu Nacional d'Art de Catalunya his Adidas shoes which he wore when he scored his 644th goal for Barcelona and broke Pelé's record for most goals scored for a single club; the shoes were later auctioned off in April by the museum for charity to help children with cancer and were sold for £125,000.[389]
+
+In advance of the 2021 Copa América, Messi donated three signed shirts to the Chinese pharmaceutical firm Sinovac Biotech – whose directors spoke of their admiration for Messi – in order to secure 50,000 doses of Sinovac's COVID-19 vaccine, CoronaVac, in the hope of vaccinating all of South America's football players.[390] A deal brokered by Uruguay's president Luis Lacalle Pou, the plan to prioritise football players caused some controversy given widespread vaccine scarcity in the region, with the Mayor of Canelones Yamandú Orsi remarking that "Just as the president manifested cooperation with CONMEBOL to vaccinate for the Copa América, he could just as well have the same consideration for Canelones".[390]
+
+In January 2025, Messi was presented with the Presidential Medal of Freedom, the highest civilian award of the United States, by President Joe Biden for his contributions in supporting healthcare and education programs for children around the world.[391] He would be unable to attend the ceremony due to scheduling conflicts, but sent a letter expressing his appreciation for the honour and his hopes of meeting President Biden at a later date.[392]
+
+Public art
+
+One of many street art displays depicting Messi
+Street art and public murals depicting Messi are regularly painted around the world.[393][394] One prominent artwork that went viral is the Sistine Chapel of Football, a parody of Michelangelo's The Creation of Adam that features both Messi and Diego Maradona, along with several other prominent Argentine footballers. The work is exhibited at the Sportivo Pereyra club from Barracas in Buenos Aires.[395]
+
+Several public sculptures with Messi's likeness have been erected. Madame Tussauds unveiled their first wax sculpture of Messi at Wembley Stadium in 2012.[396] After the announcement of his first retirement from the international team in June 2016, a bronze statue of Messi was erected in Buenos Aires days later in an attempt to convince him to return.[397] A life-sized statue of Messi holding the World Cup trophy was unveiled outside the CONMEBOL headquarters in Luque, Paraguay in March 2023, a few months after Argentina's World Cup win. The statue would stand alongside those of Pelé and Maradona.[398]
+
+Media
+Messi, a documentary by filmmaker Álex de la Iglesia, premiered at the 71st Venice International Film Festival in August 2014.[399] Messi's World Cup: The Rise of a Legend, a biographical docuseries focusing on Messi's career, his highs and lows with the Argentina national football team, and their eventual success at the 2022 FIFA World Cup, aired on Apple TV+ on 21 February 2024.[400]
+
+Business ventures
+On 4 June 2024, Messi announced the release of Más+, an American brand of sports and energy drinks.[401] Messi created the drink because he couldn't find a flavourful and healthy hydration option that suited his needs.[402] The drink was teased to debut in Miami, Florida, on 13 June 2024. It was released in Publix and Walmart stores and made available for delivery on Gopuff in South Florida the following day.[401] Más+ is affiliated with White Claw Hard Seltzer founder Mark Anthony.[403]
+
+Later that year, on 19 September 2024, Messi announced that he would be launching a production company called 525 Rosario, named after his hometown. Headquartered in Miami and Los Angeles, the company was created to produce film, sporting events and branded commercials for athletes worldwide. It would be a joint venture with Smuggler Entertainment, who co-produced Messi's World Cup: The Rise of a Legend earlier in 2024.[404]
+
+In March 2025, Messi was invited by his Uruguayan colleague and friend Luis Suárez to take part in a new soccer project, Deportivo LSM.[405] The new team will focus on football training.[406]
+
+Personal life
+Family and relationships
+Since 2008, Messi has been in a relationship with Antonela Roccuzzo, who he eventually married on 30 June 2017 in their hometown of Rosario.[407][408] He has known Roccuzzo since he was five years old, as she is the cousin of his childhood best friend, Lucas Scaglia, who was also a football player.[409] After keeping their relationship private for a year, Messi first confirmed their romance in an interview in January 2009, before going public a month later during a carnival in Sitges after the Barcelona–Espanyol derby.[410]
+
+Messi and Roccuzzo have three sons. To celebrate his partner's first pregnancy, Messi placed the ball under his shirt after scoring in Argentina's 4–0 win against Ecuador on 2 June 2012, before confirming the pregnancy in an interview two weeks later.[411] Thiago was born in Barcelona on 2 November 2012.[412] In April 2015, Messi confirmed that they were expecting another child.[413] In October 2017, his wife announced they were expecting their third child.[414] Messi and his family are Catholic.[415]
+
+Messi enjoys a close relationship with his immediate family members, particularly his mother, Celia, whose face he has tattooed on his left shoulder. His professional affairs are largely run as a family business: his father, Jorge, has been his agent since he was 14, and his oldest brother, Rodrigo, handles his daily schedule and publicity. His mother and other brother, Matías, manage his charitable organisation, the Leo Messi Foundation, and take care of personal and professional matters in Rosario.[416]
+
+Since leaving for Spain aged 13, Messi has maintained close ties to his hometown of Rosario, even preserving his distinct Rosarino accent. He has kept ownership of his family's old house, although it has long stood empty; he maintains a penthouse apartment in an exclusive residential building for his mother, as well as a family compound just outside the city. Once when he was in training with the national team in Buenos Aires, he made a three-hour trip by car to Rosario immediately after practice to have dinner with his family, spent the night with them, and returned to Buenos Aires the next day in time for practice. Messi keeps in daily contact via phone and text with a small group of confidants in Rosario, most of whom were fellow members of "The Machine of '87" at Newell's Old Boys. He was on bad terms with the club after his transfer to Barcelona, but by 2012 their public feud had ended, with Newell's embracing their ties with Messi, even issuing a club membership card to his newborn son.[28][378][417] Messi has long planned to return to Rosario to end his playing career at Newell's.[418] Messi holds triple citizenship, as he is a citizen of Argentina, Italy, and Spain.[419]
+
+Tax fraud
+Messi's financial affairs came under investigation in 2013 for suspected tax evasion. Offshore companies in tax havens Uruguay and Belize were used to evade €4.1 million in taxes related to sponsorship earnings between 2007 and 2009. An unrelated shell company in Panama set up in 2012 was subsequently identified as belonging to the Messis in the Panama Papers data leak. Messi, who pleaded ignorance of the alleged scheme, voluntarily paid arrears of €5.1 million in August 2013. On 6 July 2016, Messi and his father were both found guilty of tax fraud and were handed suspended 21-month prison sentences and respectively ordered to pay €1.7 million and €1.4 million in fines.[420] Facing the judge, he said, "I just played football. I signed the contracts because I trusted my dad and the lawyers and we had decided that they would take charge of those things."[421]
+
+Career statistics
+Club
+As of match played 1 November 2025
+Appearances and goals by club, season and competition
+Club	Season	League	National cup[a]	Continental[b]	Other	Total
+Division	Apps	Goals	Apps	Goals	Apps	Goals	Apps	Goals	Apps	Goals
+Barcelona C	2003–04[422]	Tercera División	10	5	—	—	—	10	5
+Barcelona B	2003–04[423]	Segunda División B	5	0	—	—	—	5	0
+2004–05[424]	Segunda División B	17	6	—	—	—	17	6
+Total	22	6	0	0	0	0	0	0	22	6
+Barcelona	2004–05[424]	La Liga	7	1	1	0	1	0	—	9	1
+2005–06[425]	La Liga	17	6	2	1	6	1	0	0	25	8
+2006–07[426]	La Liga	26	14	2	2	5	1	3[c]	0	36	17
+2007–08[427]	La Liga	28	10	3	0	9	6	—	40	16
+2008–09[428]	La Liga	31	23	8	6	12	9	—	51	38
+2009–10[429]	La Liga	35	34	3	1	11	8	4[d]	4	53	47
+2010–11[430]	La Liga	33	31	7	7	13	12	2[e]	3	55	53
+2011–12[431]	La Liga	37	50	7	3	11	14	5[f]	6	60	73
+2012–13[432]	La Liga	32	46	5	4	11	8	2[e]	2	50	60
+2013–14[433]	La Liga	31	28	6	5	7	8	2[e]	0	46	41
+2014–15[434]	La Liga	38	43	6	5	13	10	—	57	58
+2015–16[435]	La Liga	33	26	5	5	7	6	4[g]	4	49	41
+2016–17[436]	La Liga	34	37	7	5	9	11	2[e]	1	52	54
+2017–18[437]	La Liga	36	34	6	4	10	6	2[e]	1	54	45
+2018–19[438]	La Liga	34	36	5	3	10	12	1[e]	0	50	51
+2019–20[439]	La Liga	33	25	2	2	8	3	1[e]	1	44	31
+2020–21[440]	La Liga	35	30	5	3	6	5	1[e]	0	47	38
+Total	520	474	80	56	149	120	29	22	778	672
+Paris Saint-Germain	2021–22[441]	Ligue 1	26	6	1	0	7	5	—	34	11
+2022–23[442]	Ligue 1	32	16	1	0	7	4	1[h]	1	41	21
+Total	58	22	2	0	14	9	1	1	75	32
+Inter Miami	2023	MLS	6	1	1	0	—	7[i]	10	14	11
+2024	MLS	19	20	—	3[j]	2	3[k]	1	25	23
+2025	MLS	28	29	—	7[j]	5	10[l]	6	45	40
+Total	53	50	1	0	10	7	19	15	84	74
+Career total	663	557	83	56	173	136	50	40	969	789
+ Includes Copa del Rey, Coupe de France, U.S. Open Cup
+ All appearances in UEFA Champions League, unless otherwise noted
+ One appearance in UEFA Super Cup, two appearances in Supercopa de España
+ One appearance in UEFA Super Cup, one appearance and two goals in Supercopa de España, two appearances and two goals in FIFA Club World Cup
+ Appearance(s) in Supercopa de España
+ One appearance and one goal in UEFA Super Cup, two appearances and three goals in Supercopa de España, two appearances and two goals in FIFA Club World Cup
+ One appearance and two goals in UEFA Super Cup, two appearances and one goal in Supercopa de España, one appearance and one goal in FIFA Club World Cup
+ Appearance in Trophée des Champions
+ Appearances in Leagues Cup
+ Appearances in CONCACAF Champions Cup
+ Appearances in MLS Cup playoffs
+ Four appearances and one goal in FIFA Club World Cup, four appearances and two goals in Leagues Cup, two appearances and three goals in MLS Cup playoffs
+International
+See also: List of international goals scored by Lionel Messi
+As of match played 14 October 2025
+Appearances and goals by national team, year and competition
+Team	Year	Competitive	Friendly	Total
+Apps	Goals	Apps	Goals	Apps	Goals
+Argentina U20[194][443]	2004	—	2	3	2	3
+2005	16[a]	11	—	16	11
+Total	16	11	2	3	18	14
+Argentina U23[444][445]	2008	5[b]	2	—	5[α]	2
+Total	5	2	0	0	5	2
+Argentina[449][450]	2005	3[c]	0	2	0	5	0
+2006	3[d]	1	4	1	7	2
+2007	10[e]	4	4	2	14	6
+2008	6[f]	1	2	1	8	2
+2009	8[f]	1	2	2	10	3
+2010	5[g]	0	5	2	10	2
+2011	8[h]	2	5	2	13	4
+2012	5[i]	5	4	7	9	12
+2013	5[i]	3	2	3	7	6
+2014	7[j]	4	7	4	14	8
+2015	6[k]	1	2	3	8	4
+2016	10[l]	8	1	0	11	8
+2017	5[m]	4	2	0	7	4
+2018	4[n]	1	1	3	5	4
+2019	6[o]	1	4	4	10	5
+2020	4[p]	1	—	4	1
+2021	16[q]	9	—	16	9
+2022	10[r]	8	4	10	14	18
+2023	5[s]	3	3	5	8	8
+2024	9[t]	4	2	2	11	6
+2025	3[s]	2	1	0	4	2
+Total	138	63	57	51	195	114
+Career total	159	74	59	54	218	130
+ Nine appearances and five goals in the 2005 South American U-20 Championship, seven appearances and six goals in the 2005 FIFA World Youth Championship.
+ Appearances in the 2008 Summer Olympics.
+ Appearances in 2006 FIFA World Cup qualification.
+ Appearances in 2006 FIFA World Cup.
+ Six appearances and two goals in 2007 Copa América, four appearances and two goals in 2010 FIFA World Cup qualification.
+ Appearances in 2010 FIFA World Cup qualification.
+ Appearances in 2010 FIFA World Cup.
+ Four appearances in 2011 Copa América, four appearances and two goals in 2014 FIFA World Cup qualification.
+ Appearances in 2014 FIFA World Cup qualification.
+ Appearances in 2014 FIFA World Cup.
+ Appearances in 2015 Copa América.
+ Five appearances and three goals in 2018 FIFA World Cup qualification, five appearances and five goals in Copa América Centenario.
+ Appearances in 2018 FIFA World Cup qualification.
+ Appearances in 2018 FIFA World Cup.
+ Appearances in 2019 Copa América.
+ Appearances in 2022 FIFA World Cup qualification.
+ Nine appearances and five goals in 2022 FIFA World Cup qualification, seven appearances and four goals in 2021 Copa América.
+ Two appearances and one goal in 2022 FIFA World Cup qualification, one appearance in 2022 Finalissima, seven appearances and seven goals in 2022 FIFA World Cup.
+ Appearances in 2026 FIFA World Cup qualification.
+ Five appearances and one goal in 2024 Copa América, four appearances and three goals in 2026 FIFA World Cup qualification.
+Honours
+For a comprehensive listing of Messi's achievements, see List of career achievements by Lionel Messi.
+
+Messi (Golden Ball winner) pictured with future teammate Neymar (Bronze Ball winner) at the conclusion of the 2011 FIFA Club World Cup final
+Barcelona[11][12][20]
+
+La Liga: 2004–05, 2005–06, 2008–09, 2009–10, 2010–11, 2012–13, 2014–15, 2015–16, 2017–18, 2018–19
+Copa del Rey: 2008–09, 2011–12, 2014–15, 2015–16, 2016–17, 2017–18, 2020–21
+Supercopa de España:[note 3] 2006, 2009, 2010, 2011, 2013, 2016, 2018
+UEFA Champions League: 2005–06, 2008–09, 2010–11, 2014–15
+UEFA Super Cup: 2009, 2011, 2015
+FIFA Club World Cup: 2009, 2011, 2015
+Paris Saint-Germain[12][20]
+
+Ligue 1: 2021–22, 2022–23
+Trophée des Champions: 2022
+Inter Miami[12][13][20]
+
+Supporters' Shield: 2024
+Leagues Cup: 2023
+Argentina U20[12][20]
+
+FIFA World Youth Championship: 2005
+Argentina U23[12][20]
+
+Olympic Games: 2008
+Argentina[12][20]
+
+FIFA World Cup: 2022
+Copa América: 2021, 2024
+Finalissima: 2022
+Individual
+
+Ballon d'Or: 2009, 2010, 2011, 2012, 2015, 2019, 2021, 2023[note 2]
+FIFA World Player of the Year/FIFA Ballon d'Or/The Best FIFA Men's Player: 2009, 2010, 2011, 2012, 2015, 2019, 2022, 2023[note 2]
+European Golden Shoe: 2009–10, 2011–12, 2012–13, 2016–17, 2017–18, 2018–19[143][451]
+FIFA World Cup Golden Ball: 2014, 2022[12][452]
+FIFA World Cup Silver Boot: 2022
+FIFA Club World Cup Golden Ball: 2009, 2011[12]
+FIFA U-20 World Cup Golden Ball: 2005[12]
+FIFA U-20 World Cup Golden Boot: 2005[12]
+UEFA Club Footballer of the Year: 2008–09
+UEFA Men's Player of the Year Award: 2010–11, 2014–15
+UEFA Champions League top scorer: 2008–09, 2009–10, 2010–11, 2011–12, 2014–15, 2018–19
+Copa América Golden Ball: 2015, 2021
+Copa América Golden Boot: 2021
+La Liga Best Player: 2008–09, 2009–10, 2010–11, 2011–12, 2012–13, 2014–15,[453][454][455] 2016–17,[456] 2017–18,[457] 2018–19[458][459]
+MLS Most Valuable Player: 2024[189]
+Pichichi Trophy: 2009−10, 2011–12, 2012−13, 2016–17, 2017−18, 2018–19, 2019–20, 2020–21
+MLS Golden Boot: 2025[191]
+Laureus World Sportsman of the Year: 2020,[452] 2023[460]
+TIME Athlete of the Year: 2023[461]
+IFFHS World's Best Player: 2022[462]
+Ballon d'Or Dream Team: 2020[463]
+FIFPRO World 11: 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023[464][465]
+Argentine Sportsperson of the Year: 2011, 2021, 2022, 2023[466]
+Argentine Footballer of the Year: 2005, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2015, 2016, 2017, 2019, 2020, 2021, 2022, 2023[453][452][467]
+Orders
+
+ Creu de Sant Jordi, Catalonia (30 April 2019)[468]
+ Presidential Medal of Freedom, United States (4 January 2025)[391][469]
+See also
+icon	portal portal
+icon	Association football portal
+flag	Argentina portal
+	Biography portal
+European Cup and UEFA Champions League records and statistics
+La Liga records and statistics
+List of Argentina international footballers
+List of association football rivalries
+List of FC Barcelona players
+List of FC Barcelona records and statistics
+List of Paris Saint-Germain FC players
+List of Inter Miami CF players
+List of FIFA World Cup winning players
+List of largest sports contracts
+List of men's footballers with 50 or more international goals
+List of men's footballers with 100 or more international caps
+List of men's footballers with 500 or more goals
+List of men's footballers with the most official appearances
+List of most-followed Instagram accounts
+List of most-liked Instagram posts
+List of players who have appeared in the most FIFA World Cups
+List of top international men's football goalscorers by country
+Notes
+ According to FCBarcelona.com, and his authorised biography, Messi by Guillem Balagué, his surname is the single "Messi", in accordance with Argentine customs.[2][3] Other sources, including a 2014 document by FIFA, give his surname as the double "Messi Cuccittini".[4] After winning a libel case in 2017, Messi's own management company stated: "The football player Lionel Andres Messi Cuccittini has donated a total of €72,783.20 to the organisation Doctors Without Borders."[5]
+ Messi received France Football's 2009 Ballon d'Or and FIFA's 2009 FIFA World Player of the Year award, prior to their six-year merger; he proceeded to win the newly formed award, the FIFA Ballon d'Or, four times: 2010, 2011, 2012, 2015. Both organisations credited him with five (FIFA) Ballon d'Or awards.[6][7][8] He then went on to win the Ballon d'Or three more times – 2019, 2021, 2023 – again solely assigned by France Football, and won the newly established The Best FIFA Men's Player three times as well – 2019, 2022, 2023. France Football recognises him as a record eight-time Ballon d'Or winner and FIFA recognises him as a record eight-time world's best player.[9][10]
+ According to FC Barcelona,[11] FIFA,[12] Major League Soccer,[13] the Royal Spanish Football Federation,[14] and multiple media outlets,[15][16][17] Messi also won the 2005 Supercopa de España, bringing his Barcelona trophy total to 35 and his career total to 46.[18] However, this particular trophy is not credited here since Messi was out of the squad and did not feature in any of the two games against Real Betis.[19][20]
+ Does not include an unofficial friendly match played on 24 May 2008 in Barcelona between Argentina U23 and the Catalonia national football team,[446][447] as Catalonia is not affiliated with either FIFA or UEFA as a national member association and is therefore not allowed to participate in official competitions.[448]
+References
+ "FIFA World Cup Qatar 2022™ – Squad List: Argentina (ARG)" (PDF). FIFA. 18 December 2022. p. 1. Archived (PDF) from the original on 18 December 2022. Retrieved 18 December 2022.
+ "Profile: Lionel Andrés Messi". FC Barcelona. Archived from the original on 18 October 2014. Retrieved 8 September 2015.
+ Balagué 2013, pp. 32–37.
+ "2014 FIFA World Cup Brazil: List of Players" (PDF). FIFA. 10 June 2014. p. 2. Archived from the original (PDF) on 25 June 2014. Retrieved 8 September 2015.
+ Marsden, Sam (2 November 2017). "Messi donates to charity after libel case win". ESPN. Archived from the original on 4 February 2021. Retrieved 3 November 2017.
+ Lacombe, Rémy (11 January 2016). "Messi, le Cinquième Élément" [Messi, the Fifth Element]. France Football (in French). Archived from the original on 21 January 2024. Retrieved 21 January 2024.
+ "Messi, Lloyd, Luis Enrique and Ellis Triumph at FIFA Ballon d'Or 2015". FIFA. 11 January 2016. Archived from the original on 2 February 2016. Retrieved 26 May 2016.
+ Straeten, Karine van der; Laslier, Jean-François; Daoust, Jean-François; Blais, André; Arrondel, Luc; Anderson, Christopher J. (2020). "Messi, Ronaldo, and the Politics of Celebrity Elections: Voting for the Best Soccer Player in the World". Perspectives on Politics. 18 (1): 91–110. doi:10.1017/S1537592719002391. ISSN 1537-5927.
+ "Ballon d'Or 2023 : Lionel Messi sacré pour la huitième fois" [Ballon d'Or 2023: Lionel Messi crowned for the eighth time] (in French). L'Equipe. 30 October 2023. Archived from the original on 21 January 2024. Retrieved 21 January 2024.
+ "Lionel Messi wins The Best FIFA Men's Player Award". FIFA. 15 January 2024. Archived from the original on 21 January 2024. Retrieved 21 January 2024. Lionel Messi has been crowned The Best FIFA Men's Player 2023, retaining the title he won in 2022 [...] Messi also won the 2019 Best FIFA Men's Player award and was recognised by FIFA as the leading player in the men's game on five occasions prior to that – 2009, 2010, 2011, 2012 and 2015 – making this his eighth individual award in total.
+ "Messi wins 35th trophy with Barça". FC Barcelona. 17 April 2021. Archived from the original on 1 September 2024. Retrieved 20 July 2024.
+ "The World Cup, The Best and all of Lionel Messi's trophy wins". FIFA. 19 January 2024. Archived from the original on 15 July 2024. Retrieved 16 July 2024.
+ "Lionel Messi extends world record: Inter Miami win Supporters' Shield". Major League Soccer. 3 October 2024. Archived from the original on 3 October 2024. Retrieved 3 October 2024.
+ "Conditions regarding the marketing of the "Spanish Super Cup" audiovisual rights in the international markets" (PDF). Royal Spanish Football Federation. 12 November 2019. Archived (PDF) from the original on 25 July 2024. Retrieved 25 July 2024. Lionel Messi is the competition's all-time leading scorer and most successful player with eight titles.
+ Aldunate, Ramiro (18 April 2021). "The legend of Messi". Marca. Archived from the original on 20 July 2024. Retrieved 20 July 2024.
+ Corrigan, Dermot (18 April 2021). "Messi's magic has just won him a 35th trophy with Barcelona – but will it be the last?". The New York Times. Archived from the original on 20 July 2024. Retrieved 20 July 2024.
+ Azzoni, Tales (1 July 2021). "Messi's future up in the air as Barcelona contract ends". Associated Press. Retrieved 20 July 2024.
+ "Lionel Messi wins 46th trophy as Inter Miami secures 2024 Supporters' Shield". Marca. 3 October 2024. Archived from the original on 6 October 2024. Retrieved 6 October 2024.
+ Romero Nuñez, Fernando (22 August 2023). "Messi wins first title at Miami, does he hold the all-time record?". Buenos Aires Herald. Archived from the original on 20 July 2024. Retrieved 20 July 2024.
+ Maverino, Silvio (15 July 2024). "Lionel Messi se convirtió en el jugador más ganador de la historia del fútbol" [Lionel Messi became the winningest player in football history]. El Gráfico (in Spanish). ISSN 0017-291X. Archived from the original on 16 July 2024. Retrieved 16 July 2024.
+ Mandela, Nelson (17 September 2025). "Messi vs Ronaldo: The eternal debate — who is the true GOAT?". PML Daily. Retrieved 17 September 2025.
+ "Messi | Ficha del jugador 20/21 | Delantero". FC Barcelona (in Spanish). Archived from the original on 11 August 2021. Retrieved 1 June 2021.
+ Caioli 2012, pp. 9–10.
+ Carlin, John (27 March 2010). "Lionel Messi: Magic in His Feet". The Independent. Archived from the original on 5 July 2015. Retrieved 18 July 2015.
+ Balagué 2013, pp. 44–45.
+ Maume, Chris (11 July 2014). "Lionel Messi: The World at His Feet". The Independent. Archived from the original on 14 June 2022. Retrieved 18 July 2015.
+ Caioli 2012, p. 38.
+ Thompson, Wright (22 October 2012). "Here and Gone: The Strange Relationship between Lionel Messi and His Hometown in Argentina". ESPN. Archived from the original on 14 October 2013. Retrieved 18 July 2015.
+ Fitzpatrick, Richard (23 June 2017). "The Machine of '87: Messi's Boyhood Teammates Recall Early Signs of Greatness". Bleacher Report. Archived from the original on 24 June 2017. Retrieved 25 June 2017.
+ Caioli 2012, pp. 31–35.
+ "Messi: Brazil striker Ronaldo my hero". FourFourTwo. Archived from the original on 12 May 2022. Retrieved 8 September 2018.
+ Mackie, Ed (14 December 2022). "What height is Lionel Messi? Explaining his growth deficiency as a child". New York Times.
+ Cazadieu, Jérôme; Juillard, Alexandre; Traïni, Frédéric (15 November 2008). "Leo Messi: La Légende d'El Enano" [Leo Messi: The Legend of El Enano]. L'Équipe via Irish Independent. Archived from the original on 26 September 2015. Retrieved 18 July 2015.
+ Hawkey, Ian (20 April 2008). "Lionel Messi on a Mission". The Times. Archived from the original on 19 August 2023. Retrieved 18 July 2015.
+ Wilson, Paul (16 July 2015). "Pablo Aimar: The Argentinian Wizard Admired by Maradona and Messi". The Guardian. Archived from the original on 18 August 2015. Retrieved 18 July 2015.
+ "Leo Messi reveló el motivo por el que no fichó por River Plate". Sports Illustrated (in Spanish). 2 June 2019. Archived from the original on 12 January 2024. Retrieved 12 January 2024.
+ Lowe, Sid (15 October 2014). "Lionel Messi: How Argentinian Teenager Signed for Barcelona on a Serviette". The Guardian. Archived from the original on 26 July 2015. Retrieved 18 July 2015.
+ Longman, Jeré (21 May 2011). "Lionel Messi: Boy Genius". The New York Times. Archived from the original on 1 July 2016. Retrieved 18 July 2015.
+ Caioli 2012, pp. 61–62.
+ Balagué 2013, pp. 149.
+ Jenson, Pete (27 March 2010). "Fàbregas, Messi, Piqué: Class of 2002". The Independent. Archived from the original on 14 June 2022. Retrieved 18 July 2015.
+ Hunter 2012, pp. 44–45.
+ "Lionel Messi Could Have Joined Arsenal as a Teenager, Says Arsène Wenger". The Guardian. 21 November 2014. Archived from the original on 7 July 2015. Retrieved 18 July 2015.
+ "The New Messiah". FIFA. 5 March 2006. Archived from the original on 21 October 2014. Retrieved 18 July 2015.
+ "All time stats for Messi in the Barça youth teams". FC Barcelona. Retrieved 23 September 2020.
+ Caioli 2012, pp. 68–71.
+ Bird, Liviu (5 June 2015). "Ex-Teammate, La Masia Coach Recall Lionel Messi's Early Days, Persona". Sports Illustrated. Retrieved 19 July 2015.
+ "Giuly remembers the first time he saw Messi 'kill' his team-mates". Sport. 14 September 2016.
+ Corrigan, Dermot (16 October 2014). "The best quotes about Lionel Messi's 10 years at Barcelona". ESPN FC.
+ Corrigan, Dermot (15 November 2013). "Messi Reflects on Debut 10 Years On". ESPN. Retrieved 19 July 2015.
+ Balagué 2013, pp. 191–193.
+ Balagué 2013, pp. 246–249.
+ Hunter 2012, p. 53.
+ Carbonell, Rafael (26 October 2004). "El Último Salto de la 'Pulga'" [The Last Jump of the 'Flea']. El País (in Spanish). Archived from the original on 8 December 2015. Retrieved 19 July 2015.
+ Balagué 2013, pp. 183–185.
+ Balagué 2013, pp. 262–263.
+ "Lionel Andrés Messi Cuccittini: Matches 2003–04". BDFutbol. Retrieved 19 July 2015.
+ Hunter 2012, pp. 35–36.
+ Williams, Richard (24 February 2006). "Messi Has All the Qualities to Take World by Storm". The Guardian. Archived from the original on 6 December 2008. Retrieved 19 July 2015.
+ Hunter, Graham (4 June 2015). "Messi, Iniesta and Xavi Driven to Join the Champions League Elite". ESPN. Archived from the original on 23 July 2015. Retrieved 19 July 2015.
+ "A history of Messi's nine deals at Barca". ESPN.com. 19 October 2016. Retrieved 6 May 2025.
+ "Starlet Messi Stays at Barça until 2014". ESPN. 17 September 2005. Retrieved 20 July 2015.
+ Hunter 2012, pp. 266–269.
+ "Lionel Messi has admitted he 'deeply regrets' missing Barcelona's Champions League final celebrations in 2006". Eurosport. Archived from the original on 22 January 2022. Retrieved 9 May 2023.
+ Lowe, Sid (12 March 2007). "There's Something about Messi". The Guardian. Archived from the original on 18 June 2015. Retrieved 21 July 2015.
+ Hawkey, Ian (20 April 2008). "Lionel Messi on a Mission". The Times. Retrieved 18 July 2015.
+ Mitten, Andy (10 June 2007). "Hand of Messi Saves Barcelona". The Times. Retrieved 19 June 2022.
+ Davies, Christopher (24 February 2006). "Maradona Hails His Successor". The Daily Telegraph. Archived from the original on 10 January 2022. Retrieved 21 July 2015. (subscription required)
+ "Ingla: Rijkaard to Blame for Barça Decline". ESPN. 19 May 2008. Archived from the original on 24 September 2015. Retrieved 21 July 2015.
+ "Messi Has Ronaldinho's Number". FIFA. 4 August 2008. Archived from the original on 28 March 2015. Retrieved 20 July 2015.
+ Balagué 2013, pp. 476–478.
+ "Lionel Andrés Messi Cuccittini: Matches 2008–09". BDFutbol. Archived from the original on 9 December 2021. Retrieved 24 July 2015.
+ Roden, Lee (20 April 2015). "Are Messi, Suarez and Neymar Barcelona's Best-Ever Front Three?". ESPN. Archived from the original on 15 June 2019. Retrieved 24 July 2015.
+ Balagué 2013, pp. 453–459.
+ "Real Madrid v Barcelona: Six of the Best 'El Clásicos'". The Daily Telegraph. 9 December 2011. Archived from the original on 10 January 2022. Retrieved 24 July 2015.
+ "Barcelona Defeat Athletic Bilbao to Win Copa del Rey". The Daily Telegraph. 14 May 2009. Archived from the original on 10 January 2022. Retrieved 24 July 2015.
+ McNulty, Phil (27 May 2009). "Barcelona 2–0 Man Utd". BBC Sport. Retrieved 26 July 2015.
+ Adams, Tom (21 May 2010). "The Treble Club". ESPN FC. Archived from the original on 23 October 2017. Retrieved 26 July 2015.
+ "Barcelona Beat Estudiantes to Win the Club World Cup". BBC Sport. 19 December 2009. Archived from the original on 23 March 2012. Retrieved 26 July 2015.
+ "Messi Sweeps up Goalscoring Honours". UEFA. 28 May 2009. Archived from the original on 10 May 2019. Retrieved 26 July 2015.
+ Balagué 2013, pp. 519–524.
+ "Lionel Andrés Messi Cuccittini: Matches 2009–10". BDFutbol. Archived from the original on 18 March 2022. Retrieved 27 July 2015.
+ Lowe, Sid (17 May 2010). "La Liga Title the Least Barcelona Deserve as Madrid Again Finish Empty Handed". The Guardian. Archived from the original on 18 August 2024. Retrieved 27 July 2015.
+ Haslam, Andrew (22 May 2010). "Messi Takes Scoring Plaudits". UEFA. UEFA. Archived from the original on 22 March 2019. Retrieved 27 July 2010.
+ Wilson, Joseph (30 September 2010). "Messi Receives Golden Boot for Top European Scorer". U-T San Diego. Archived from the original on 27 August 2016. Retrieved 27 July 2015.
+ "Magic Messi Wins Supercopa for Barça". ESPN FC. 21 August 2010. Archived from the original on 24 September 2015. Retrieved 27 July 2010.
+ McNulty, Phil (28 May 2011). "Barcelona 3–1 Man Utd". BBC Sport. Archived from the original on 28 January 2016. Retrieved 27 July 2015.
+ Lowe, Sid (11 January 2011). "Lionel Messi Is the World's Best Player but Xavi Deserved FIFA's Award". The Guardian. Retrieved 27 July 2015.
+ "Top Scorer Messi Matches Van Nistelrooy Mark". UEFA. UEFA. 28 May 2011. Archived from the original on 30 May 2011. Retrieved 27 July 2015.
+ "Lionel Andrés Messi Cuccittini: Matches 2010–11". BDFutbol. Archived from the original on 30 June 2015. Retrieved 27 July 2015.
+ "Spanish Primera División Statistics: Top Assists 2010–11". ESPN FC. Archived from the original on 9 July 2015. Retrieved 27 July 2015.
+ Cascarino, Tony; Barclay, Patrick (27 May 2011). "Is Sublime Lionel Messi the Greatest Footballer Ever?". The Times. Archived from the original on 17 May 2015. Retrieved 27 July 2015.
+ Hayward, Paul (7 January 2013). "FIFA Ballon d'Or 2012: Lionel Messi Rewarded for Displays No Rival Could Ever Match". The Daily Telegraph. Archived from the original on 10 January 2022. Retrieved 30 July 2015.
+ "Tempers Flare into Brawl as Barcelona Beats Real Madrid". USA Today. 17 August 2011. Archived from the original on 18 October 2020. Retrieved 30 July 2015.
+ Winter, Henry (26 August 2011). "Barcelona 2 Porto 0: Match Report". The Daily Telegraph. Archived from the original on 10 January 2022. Retrieved 30 July 2015.
+ "Barcelona Win FIFA Club World Cup". BBC Sport. 18 December 2011. Archived from the original on 22 December 2015. Retrieved 30 July 2015.
+ "Messi Crowned World's Best". ESPN FC. 9 January 2012. Archived from the original on 5 April 2019. Retrieved 30 July 2015.
+ "Messi Wins UEFA Best Player in Europe Award". UEFA. 25 August 2011. Archived from the original on 18 August 2021. Retrieved 30 July 2015.
+ "UEFA Champions League 2011–12: Statistics". UEFA. Archived from the original on 22 March 2019. Retrieved 30 July 2015.
+ "Record-Breaking Messi Takes Top Scorer Honour". UEFA. 19 May 2012. Archived from the original on 10 May 2019. Retrieved 30 July 2015.
+ "Lionel Messi as Dominant as Michael Jordan, Claims Barcelona's Pep Guardiola, After He Breaks Goal Record". The Daily Telegraph. 21 March 2012. Archived from the original on 10 January 2022. Retrieved 30 July 2015.
+ "Lionel Messi Receives Golden Boot Award as Europe's Top Scorer". Sports Illustrated. 29 October 2012. Archived from the original on 17 October 2021. Retrieved 30 July 2015.
+ "Messi Smashes Müller's 40-Year Record". ESPN FC. 9 December 2012. Archived from the original on 7 April 2019. Retrieved 30 July 2015.
+ Brassell, Andy (27 April 2012). "Pep Guardiola Leaves Lasting Legacy at Barcelona". BBC Sport. Archived from the original on 17 October 2013. Retrieved 30 July 2015.
+ Lowe, Sid (13 May 2013). "A Sense of Anticlimax but Barcelona Still Deserve Their La Liga Title". The Guardian. Retrieved 9 August 2015.
+ Rogers, Iain (10 December 2012). "Fatherhood Hasn't Slowed Record-Breaking Messi". Reuters. Archived from the original on 8 April 2019. Retrieved 9 August 2015.
+ Mohamed, Majid (8 January 2013). "Barcelona's Lionel Messi Becomes Most Decorated Player in History after Winning Unprecedented Fourth Straight Ballon d'Or". The Independent. Archived from the original on 14 June 2022. Retrieved 9 August 2015.
+ Chowdhury, Saj (9 January 2013). "Ballon d'Or Contenders Messi, Ronaldo and Iniesta in Profile". BBC Sport. Archived from the original on 7 January 2013. Retrieved 9 August 2015.
+ Balagué 2013, p. 556.
+ "Messi Signs New Barcelona Deal". CNN. 7 February 2013. Retrieved 9 August 2015.
+ Rogers, Iain (11 May 2013). "Captain Messi Inspires Another Barça League Triumph". Reuters. Retrieved 9 August 2015.
+ "Lionel Messi Awarded Golden Shoe for Third Time after 46 La Liga Goals for Barcelona". The Independent. 20 November 2013. Archived from the original on 22 May 2019. Retrieved 9 August 2015.
+ Caioli 2015, ch. 38.
+ Lowe, Sid (11 April 2013). "Messidependencia Brought into Focus as Barcelona Show Vulnerability". The Guardian. Retrieved 9 August 2015.
+ "Santos FC to face FC Barcelona in the Joan Gamper Trophy". FCBarcelona.com. 28 June 2013. Retrieved 29 June 2013.
+ "Barcelona win Super Cup against Atlético despite Messi's penalty miss". Guardian. 28 August 2013. Archived from the original on 21 January 2021. Retrieved 29 August 2013.
+ Lowe, Sid (12 March 2014). "One Flick of Lionel Messi's Left Foot Ends Talk of Crisis at Barcelona". The Guardian. Retrieved 10 August 2015.
+ "Barcelona's Lionel Messi: I Had a Lot of Problems during 2013–14 Season". ESPN FC. 19 February 2014. Retrieved 10 August 2015.
+ "Barcelona appoint Luis Enrique as first-team coach". BBC Sport. 19 May 2014. Archived from the original on 19 May 2014. Retrieved 19 May 2014.
+ "Suárez joins Barça". FCBarcelona.com. 11 July 2014. Archived from the original on 12 July 2014. Retrieved 30 July 2014.
+ Tighe, Sam (13 May 2015). "Complete analysis of the new-look Barcelona under Luis Enrique". Bleacher Report. Archived from the original on 19 June 2021. Retrieved 19 June 2021.
+ "Lionel Messi: Barcelona Forward Will Leave 'Unreachable' Record". BBC Sport. 23 November 2015. Retrieved 10 August 2015.
+ Jurejko, Jonathan (12 May 2015). "Bayern Mun 3–2 Barcelona". BBC Sport. Retrieved 11 August 2015.
+ Borden, Sam (6 June 2015). "Barcelona Overwhelms Juventus to Win Fifth Champions League Title". The New York Times. Retrieved 11 August 2015.
+ Lowe, Sid (6 June 2015). "Barcelona's Luis Suárez, Leo Messi and Neymar Too Good for Juventus". The Guardian. Retrieved 11 August 2015.
+ "Lionel Messi Says Free Kick Goals in UEFA Super Cup Were 'Lucky'". ESPN FC. 11 August 2015. Retrieved 4 September 2015.
+ Corrigan, Dermot (20 December 2015). "Lionel Messi: Club World Cup triumph proves Barcelona are 'best in the world'". ESPN FC. Retrieved 21 December 2015.
+ Corrigon, Dermot (12 January 2016). "Lionel Messi wins 2015 Ballon d'Or ahead of Cristiano Ronaldo, Neymar".
+ Bieler, Des (3 February 2016). "Lionel Messi's 500th goal shows off scintillating skill". The Washington Post. Retrieved 17 February 2016.
+ Güell, Robert (23 May 2016). "Messi, Suárez and Neymar Jr end season with 131 goals". FC Barcelona. Retrieved 24 May 2016.
+ Besa, Ramon (18 August 2016). "Messi levanta la Supercopa" [Messi lifts the Supercup]. El País (in Spanish). Retrieved 18 August 2016.
+ "Lionel Messi equals Ronald Koeman's Barcelona free-kick record". ESPN FC. 11 January 2017. Retrieved 16 January 2017.
+ "Messi receives fourth Golden Shoe Award: Each day I enjoy it more". Marca. Spain. 24 November 2017. Retrieved 24 November 2017.
+ Power, Patrick (2 August 2017). "The astonishing stats behind the best attacking trio in the world". BeSoccer.com. Archived from the original on 1 October 2024. Retrieved 27 August 2024.
+ "Luis Enrique, nine titles in three seasons with FC Barcelona". FCBarcelona.com. 28 May 2017. Archived from the original on 28 August 2024. Retrieved 28 August 2024.
+ "Lionel Messi signs new deal through 2020/21 season". FC Barcelona. 25 November 2017. Retrieved 25 November 2017.
+ "Sevilla 0–5 Barcelona". BBC Sport. 21 April 2018. Retrieved 21 April 2018.
+ "Messi Wins Fifth Golden Shoe After Winning Pichichi Trophy". Goal. 20 May 2018. Retrieved 20 May 2018.
+ "Lionel Messi will be Barcelona's next captain". Sport. 25 April 2018. Archived from the original on 31 March 2019. Retrieved 9 August 2018.
+ Wilson, Joseph (27 April 2019). "Messi helps Barcelona clinch Spanish league title". The Washington Post. Archived from the original on 27 April 2019. Retrieved 27 April 2019.
+ "The best individual season of all time? – A look at Lionel Messi's 2018/19 season". Overlyzer. Retrieved 19 March 2022.
+ Wilson, Joseph (19 May 2019). "Messi hits 50 goals for Barca, Madrid ends season to forget". Associated Press. Archived from the original on 6 February 2023. Retrieved 22 May 2019.
+ "Messi wins his sixth Golden Shoe award". FC Barcelona. 24 May 2019. Retrieved 25 May 2019.
+ Magee, Will (2 December 2019). "Ballon d'Or: live updates from the ceremony as Lionel Messi and Virgil van Dijk compete for top award". The Telegraph. ISSN 0307-1235. Archived from the original on 10 January 2022. Retrieved 2 December 2019.
+ "Messi tells Barca he wants to leave, signaling end of era". AP NEWS. 25 August 2020. Retrieved 26 August 2020.
+ "Messi breaks silence on Barcelona exit saga: 'The president did not keep his word'". Goal. Retrieved 4 September 2020.
+ "Leo Messi surpasses Xavi Hernández record". FC Barcelona. 21 March 2021.
+ "Lionel Messi sets an utterly ridiculous record as he leads Barcelona to Copa Del Rey glory". Caught Offside. 17 April 2021. Retrieved 18 April 2021.
+ "Lionel Messi nets two, Barcelona beats Athletic Bilbao to win Copa del Rey". TSN. 17 April 2021. Retrieved 17 April 2021.
+ Nesci, Gianluca (19 July 2020). "Messi stands alone after winning Pichichi award for 7th time". The Score. Retrieved 21 July 2020.
+ "Messi: The Pichichi of Pichichis". Marca. 22 May 2021. Retrieved 31 December 2022.
+ Uría, Rubén (1 July 2021). "Messi officially becomes a free agent as superstar's Barcelona contract expires". Goal. Retrieved 1 July 2021.
+ "Lionel Messi: Barcelona forward agrees contract extension with 50 per cent pay cut". Sky Sports. United Kingdom. 14 July 2021. Archived from the original on 14 July 2021. Retrieved 14 July 2021.
+ "Leo Messi not staying at FC Barcelona". FC Barcelona. Retrieved 13 July 2022.
+ Thomas, Lyall; Solhekol, Kaveh (8 August 2021). "Lionel Messi 'shocked' and 'surprised' at Barcelona contract collapse". Sky Sports. Archived from the original on 6 August 2021. Retrieved 6 August 2021.
+ "Lionel Messi Says Goodbye To FC Barelona At Tearful Press Conference". Forbes. Retrieved 4 December 2022.
+ "Lionel Messi signs two-year Paris St-Germain deal after leaving Barcelona". BBC. 10 August 2021. Retrieved 10 August 2021.
+ "Leo Messi signs for Paris Saint-Germain". PSG. 10 August 2021.
+ "Lionel Messi shirt number revealed by PSG". The Independent. 10 August 2021. Archived from the original on 14 June 2022. Retrieved 11 August 2021.
+ "Messi's PSG debut breaks Spain viewing records". ESPN. 30 August 2021. Retrieved 30 August 2021.
+ "Lionel Messi Makes First PSG Start But Club Brugge Hold On For A Draw". NDTVSports.com. Retrieved 19 September 2021.
+ "Icardi strikes late to give PSG win over Lyon on Messi's home debut". Reuters. 19 September 2021. Retrieved 19 September 2021.
+ Morse, Ben (29 September 2021). "Lionel Messi scores first PSG goal in Champions League win over Manchester City". CNN. Retrieved 30 September 2021.
+ "Ballon d'Or: Lionel Messi wins award as best player in world football for seventh time". BBC. 29 November 2021. Retrieved 29 November 2021.
+ "Worst season in Lionel Messi's career! How did the Argentine perform in the 2021–22 season for PSG?". Goal.com. Retrieved 12 June 2022.
+ "A final, lots of goals and a trophy: a great start to the season!". Paris Saint-Germain FC. 31 July 2022. Retrieved 31 July 2022.
+ Hayward, Ben (9 April 2023). "Lionel Messi overtakes Cristiano Ronaldo for goals scored in Europe with latest PSG strike". FourFourTwo. Retrieved 15 April 2023.
+ "Lionel Messi edges Cristiano Ronaldo once again, Argentinian is now the all-time club goal leader in Europe". Marca. 8 April 2023. Retrieved 15 April 2023.
+ "Ligue 1 Uber Eats Team of the Season". Ligue1 COM. Retrieved 4 June 2023.
+ Summerscales, Robert (3 June 2023). "Lionel Messi Ends Ligue 1 Season With More Assists Than Any Other Player". Futbol on FanNation. Retrieved 4 June 2023.
+ Ronald, Issy (28 May 2023). "Lionel Messi breaks Cristiano Ronaldo record as PSG wins historic Ligue 1 title". CNN. Retrieved 4 June 2023.
+ "Lionel Messi: PSG manager Christophe Galtier confirms forward's departure". BBC Sport. 1 June 2023. Retrieved 1 June 2023.
+ "Inter Miami CF Signs Seven-Time Ballon d'Or Winner, World Cup Champion, Lionel Messi | Inter Miami CF". Inter Miami CF. 15 July 2023. Retrieved 16 July 2023.
+ Sigal, Jonathan (15 July 2023). "Official! Lionel Messi signs with Inter Miami". Major League Soccer. Retrieved 15 July 2023.
+ "'He has changed everything' - Inter Miami chief hails Lionel Messi's impact on MLS as he compares eight-time Ballon d'Or winner to NBA legend Michael Jordan". Goal.com. 15 October 2024. Retrieved 12 March 2025.
+ Rodríguez, Eduardo Burgos; Brennan, Joe (23 October 2024). "Here's just how much of an impact Messi has had on MLS and Inter Miami". AS USA. Retrieved 12 March 2025.
+ Dominski, Michael (21 July 2023). "Lionel Messi's Inter Miami vs Cruz Azul live updates: Messi free-kick goal wins Leagues Cup match". The Athletic. Retrieved 21 July 2023.
+ mlssoccer. "Classy! Messi gives Yedlin armband for Leagues Cup celebrations | MLSSoccer.com". mlssoccer. Retrieved 6 May 2025.
+ Deen, Safid (19 August 2023). "Inter Miami vs. Nashville live updates: Messi wins Leagues Cup after penalty shootout". USA Today. Retrieved 20 August 2023.
+ Blum, Ronald (26 August 2023). "Messi scores dazzling goal in MLS debut, leads Miami over New York Red Bulls". Associated Press. Retrieved 26 August 2023.
+ Lewis, Aimee (22 October 2023). "Lionel Messi's final game of the season for Inter Miami ends in defeat". CNN. Retrieved 8 November 2023.
+ "Men's Ballon d'Or: Lionel Messi wins eighth award, beating Erling Haaland to trophy". BBC Sport. BBC. 30 October 2023. Retrieved 30 October 2023.
+ Summerscales, Robert (5 December 2023). "Lionel Messi Becomes First Men's Soccer Player To Be Named TIME Athlete Of The Year". Sport Illustrated. Retrieved 25 December 2023.
+ "SIX goal contributions! Lionel Messi sets two more MLS records vs. RBNY". Major League Soccer. 4 May 2024. Archived from the original on 5 May 2024. Retrieved 4 May 2024.
+ "Lionel Messi, Inter Miami win MLS Supporters Shield with 3-2 win at Crew. It's Messi's 46th trophy". Associated Press. 2 October 2024. Archived from the original on 10 October 2024. Retrieved 20 October 2024.
+ Reynolds, Tim (19 October 2024). "Messi and Inter Miami finish with best record in MLS history, roll past New England 6-2". Associated Press. Retrieved 19 October 2024.
+ Becherano, Lizzy (19 October 2024). "Lionel Messi hat trick helps Inter Miami break MLS points record". ESPN. Retrieved 19 October 2024.
+ Deen, Safid (9 November 2024). "Messi, Inter Miami see record-setting season end in stunning playoff collapse: Highlights". USA TODAY. Archived from the original on 10 November 2024. Retrieved 9 November 2024.
+ "Inter Miami star Lionel Messi wins MLS MVP". The Globe and Mail. 6 December 2024. Retrieved 6 December 2024.
+ Gordillo, George (12 April 2025). "Lionel Messi eyes Inter Miami extension as he refuses to leave before christening their new stadium". MARCA. Retrieved 6 May 2025.
+ "Inter Miami's Lionel Messi wins 2025 MLS Golden Boot presented by Audi". Major League Soccer. 18 October 2025. Retrieved 19 October 2025.
+ Spencer, Jamie (23 October 2025). "Inter Miami Announce Lionel Messi Long-Term Contract Renewal". Sports Illustrated. Retrieved 23 October 2025.
+ Himmelman, Jeff (5 June 2014). "The Burden of Being Messi". The New York Times. Retrieved 11 August 2015.
+ Balagué 2013, pp. 209–219.
+ "Messi passes Ali Daei". The Athletic. 10 July 2024. Archived from the original on 10 July 2024. Retrieved 10 July 2024.
+ Saaid, Hamdan (12 September 2008). "Games of the XXIX. Olympiad". Rec.Sport.Soccer Statistics Foundation. Archived from the original on 6 August 2024. Retrieved 6 August 2024.
+ "Magic Messi Sparks High Drama in the Lowlands". FIFA. July 2005. Archived from the original on 6 September 2015. Retrieved 12 August 2015.
+ Vickery, Tim (22 August 2005). "Messi Handles 'New Maradona' Tag". BBC Sport. Retrieved 12 August 2015.
+ "Messi Is a Jewel Says Argentina Coach". ESPN FC. 10 October 2005. Retrieved 12 August 2015.
+ Mamrud, Roberto. "Lionel Andrés Messi – Century of International Appearances". Rec.Sport.Soccer Statistics Foundation. Archived from the original on 23 January 2023. Retrieved 23 January 2023.
+ "Argentina 6–0 Serbia & Montenegro". BBC Sport. 16 June 2006. Archived from the original on 22 September 2015. Retrieved 12 August 2015.
+ "Missing Some Stars, Brazil Wins Copa América". The New York Times. 16 July 2007. Retrieved 12 August 2015.
+ "Report and Statistics: Men's and Women's Olympic Football Tournaments Beijing 2008" (PDF). FIFA. p. 21. Archived from the original (PDF) on 6 December 2008. Retrieved 12 August 2015.
+ Chadband, Ian (28 April 2009). "Lionel Messi Can Achieve More at Barcelona than Diego Maradona". The Daily Telegraph. Archived from the original on 10 January 2022. Retrieved 13 August 2015.
+ Smith, Rory (22 June 2010). "Greece 0 Argentina 2: Match Report". The Daily Telegraph. Archived from the original on 10 January 2022. Retrieved 13 August 2015.
+ "Adidas Golden Ball Nominees Announced". FIFA. 9 July 2010. Archived from the original on 11 April 2015. Retrieved 13 August 2015.
+ Cox, Michael (13 November 2014). "Lionel Messi Showing Some Promising Signs in a New Argentina Role". ESPN FC. Retrieved 13 August 2015.
+ Balagué 2013, pp. 414–420.
+ Hughes, Rob (10 July 2014). "If Messi Is Argentina's Star, Then Mascherano Is the Glue". The New York Times. Retrieved 13 August 2015.
+ Murray, Scott (13 July 2014). "World Cup Final 2014: Germany v Argentina – as It Happened". The Guardian. Retrieved 14 August 2015.
+ Bate, Adam (16 July 2014). "World Cup Final: Was Lionel Messi Really a Disappointment in Brazil or Have We Just Become Numb to His Genius?". Sky Sports. Retrieved 14 August 2015.
+ Garcia, Adriana (7 July 2015). "Argentina's Lionel Messi Grateful for Support after Copa América Defeat". ESPN FC. Retrieved 14 August 2015.
+ "Lionel Messi equals Argentina's all-time goal-scoring record". ESPN FC. 22 June 2016. Retrieved 22 June 2016.
+ "Lionel Messi retires from Argentina after Copa America final loss to Chile". ESPN FC. 27 June 2016.
+ "HTML Center". estadisticas.conmebol.com. Archived from the original on 10 June 2020. Retrieved 8 April 2020.
+ "Messi 'God's gift' to Argentina – president". AS. 28 June 2016. Archived from the original on 23 September 2020. Retrieved 28 June 2016.
+ "Lionel Messi hat-trick secures Argentina's passage to World Cup". The Guardian. 11 October 2017.
+ Begley, Emlyn (30 June 2018). "France 4–3 Argentina". BBC Sport. Retrieved 30 June 2018.
+ Vickery, Tim (6 July 2019). "Messi's red card overshadows Argentina's encouraging win and Chile's end of an era". ESPN. Retrieved 7 July 2019.
+ Bonn, Kyle; Savage, Will (16 November 2022). "Lionel Messi and Argentina 36-game unbeaten run ends at World Cup: How Saudi Arabia denied Albiceleste's world record bid". Sporting News. Retrieved 3 February 2025.
+ Das, Andrew (11 July 2021). "Messi and Argentina Beat Brazil to Win the Copa América". The New York Times. ISSN 0362-4331. Retrieved 11 July 2021.
+ Marsden, Sam (28 June 2021). "Messi sets Argentina appearances mark in Copa America match vs. Bolivia". ESPN. Retrieved 29 June 2021.
+ UEFA.com (1 June 2022). "Argentina's Lionel Messi named official Finalissima Player of the Match". UEFA. Retrieved 2 June 2022.
+ Nemer, Roy (19 December 2022). "Lionel Messi scores record 18 goals in 2022 with the Argentina national team". Mundo Albiceleste. Retrieved 19 June 2024.
+ "World Cup final: Lionel Messi named best player as Kylian Mbappe wins Golden Boot". BBC Sport. 18 December 2022. Retrieved 18 December 2022.
+ Anand, Anish (19 December 2022). "2022 World Cup stats: Messi joins Maradona, overtakes Ronaldo; Mbappe's record 4". ESPN. Retrieved 22 December 2022.
+ "Lionel Messi makes history with 100th goal for Argentina". FOX Sports. 28 March 2023. Retrieved 30 March 2023.
+ "Lionel Messi becomes Conmebol WC qualifiers all-time leading scorer". MARCA. 18 October 2023. Archived from the original on 1 October 2024. Retrieved 13 July 2024.
+ "Messi passes Ali Daei". The Athletic. 10 July 2024. Archived from the original on 10 July 2024. Retrieved 10 July 2024.
+ Thames, Alanis (14 July 2024). "Argentina wins record 16th Copa America title, beats Colombia 1-0 after Messi gets hurt". Associated Press. Retrieved 10 September 2024.
+ Bhawani, Vishal (5 September 2025). "Why Lionel Messi will miss Argentina's final World Cup qualifier vs. Ecuador". Yahoo! Sports. Retrieved 9 September 2025.
+ "Argentina's Lionel Messi becomes all-time international assists leader, surpassing Brazil's Neymar and USMNT's Landon Donovan | Goal.com UK". www.goal.com. 15 October 2025. Retrieved 15 October 2025.
+ Schnibben, Cordt (6 June 2012). "The Golden Yell: Ronaldo and Messi Battle to Define a Football Era". Der Spiegel. Archived from the original on 8 June 2012. Retrieved 17 August 2015.
+ Ritter, Karl (12 July 2014). "Five Reasons Why Messi Stands out in Soccer World". Boston Globe. Archived from the original on 25 September 2015. Retrieved 17 August 2015.
+ "Messi, goals for 2010". Mundo Deportivo (Spanish). 7 December 2009. Archived from the original on 6 February 2020. Retrieved 26 February 2016.
+ "Lionel Messi becomes the 'Atomic Flea'". Goal. 20 September 2012. Archived from the original on 14 September 2020. Retrieved 26 February 2016.
+ "Messi, The Atomic Flea who became the best in the world". AS (Spanish). 28 January 2016. Archived from the original on 3 March 2016. Retrieved 26 February 2016.
+ Garside, Kevin (29 March 2010). "Arsenal v Barcelona: Lionel Messi Making Case for World's Greatest Ever Player". The Daily Telegraph. Archived from the original on 10 January 2022. Retrieved 17 August 2015.
+ Brown, Lucas (30 September 2005). "Lionel Messi – the New Maradona?". UEFA. Archived from the original on 1 October 2017. Retrieved 17 August 2015.
+ Reng, Ronald (27 May 2011). "Lionel Messi". FT Magazine. Archived from the original on 30 June 2015. Retrieved 19 July 2015.
+ Balagué 2013, p. 553.
+ Monti, Fabio (8 April 2010). "Controllo, Corsa, Tocco di Palla: Perché nel Calcio Piccolo è Bello" [Control, Stroke and Touch on the Ball: Because in Football Small Is Beautiful]. Corriere della Sera (in Italian). Archived from the original on 21 February 2011. Retrieved 17 August 2015.
+ "Top 25 Greatest Playmakers Ever". The Sportster. 4 July 2015. Archived from the original on 29 November 2020. Retrieved 22 September 2020.
+ "Cristiano Ronaldo, Lionel Messi, goals, records, highlights, Juventus, hat trick, statistics, best stats, age, break down". Fox Sports. 7 January 2020. Archived from the original on 26 March 2021. Retrieved 10 August 2020.
+ "As Lionel Messi turns 32, a fan ruminates on the ambivalent legacy of the football wizard". Telegraph India. Archived from the original on 6 July 2021. Retrieved 10 August 2020.
+ "Lionel Messi steals the show for Barcelona at Dundee United". The Daily Telegraph. 27 July 2008. ISSN 0307-1235. Archived from the original on 10 January 2022. Retrieved 10 August 2020.
+ Tomas, Francesc (25 June 2015). "Six Reasons Why Lionel Messi Is the World's Best". ESPN FC. Archived from the original on 24 September 2015. Retrieved 17 August 2015.
+ "Most goals via free-kicks in football history". Sports Adda. 7 August 2023. Archived from the original on 3 August 2023. Retrieved 25 August 2023.
+ Copeland, Robbie (4 July 2021). "Lionel Messi becomes top free-kick scorer among active players". 90min.com. Archived from the original on 3 August 2021. Retrieved 3 August 2021.
+ del Río, Joel (22 February 2017). "The art of the chip: Falcao matches Totti, Messi and Raul". Marca. Archived from the original on 2 November 2022. Retrieved 11 April 2017.
+ Cohen, Roger (21 June 2010). "The Loose Vuvuzela". The New York Times. Archived from the original on 12 April 2020. Retrieved 12 April 2020.
+ Davis, Scott (6 June 2015). "Here's what makes Lionel Messi so impossible to defend". Business Insider. Archived from the original on 24 October 2015. Retrieved 8 November 2015.
+ Ronay, Barney (7 May 2015). "Lionel Messi: the genius who operates to a different set of physical rules". The Guardian. Archived from the original on 11 December 2015. Retrieved 8 November 2015.
+ "Top 25 Greatest Playmakers Ever". the Sportster. 4 July 2015. Archived from the original on 2 November 2022. Retrieved 22 September 2020.
+ Haugstad, Thore (28 July 2017). "FourFourTwo's 100 Greatest Footballers EVER: No.2, Lionel Messi". FourFourTwo. Archived from the original on 9 November 2020. Retrieved 30 April 2019.
+ Rangarajan, Aditya (6 December 2018). "Lionel Messi misses out on World's best Playmaker 2018 title, finishes second to Real Madrid star". Fox Sports Asia. Archived from the original on 8 December 2018. Retrieved 30 April 2019.
+ Hayward, Ben (23 October 2012). "How Messi went from injury-prone teenager to bionic man". Goal. Footballco. Archived from the original on 7 July 2019. Retrieved 7 July 2019.
+ Balagué 2013, pp. 155–156, 405–406.
+ West, Andy (19 March 2015). "Motivated Lionel Messi Transforms Barcelona's Hopes for Trophy Treble". BBC Sport. Archived from the original on 19 September 2015. Retrieved 11 August 2015.
+ Tweedale, Alistair (21 May 2016). "How Luis Suarez moved Lionel Messi onto Barcelona's wing and became the best centre-forward on the planet". The Telegraph. Archived from the original on 10 January 2022. Retrieved 30 June 2018.
+ Martin, Richard (19 April 2015). "In focus: Messi's changing role". UEFA. Archived from the original on 18 April 2016. Retrieved 8 November 2016.
+ Balagué, Guillem; Wright, Nick; Smith, Adam (30 October 2017). "Barcelona's improvement under Ernesto Valverde examined". Sky Sports. Archived from the original on 30 June 2018. Retrieved 30 June 2018.
+ Siregar, Cady (7 March 2018). "Barcelona top-scorer Lionel Messi explains how has role has developed under Valverde". Squawka. Archived from the original on 15 July 2018. Retrieved 13 August 2018.
+ Butt, Muhammad (12 August 2018). "Dembele is going nowhere: Five things learned from Barcelona's Super Cup win v Sevilla". Squawka. Archived from the original on 13 August 2018. Retrieved 13 August 2018.
+ "Valverde returns Messi to the False 9 role". Marca. 21 August 2017. Archived from the original on 14 August 2018. Retrieved 13 August 2018.
+ Sanz, Sergi (11 November 2017). "Valverde recycles Messi". Marca. Archived from the original on 13 August 2018. Retrieved 13 August 2018.
+ Chandler, Michael J. (6 January 2018). "3 ways Barcelona could line up with Coutinho". The Score. Archived from the original on 6 July 2021. Retrieved 30 June 2018.
+ Clarke, Tom (19 February 2018). "Dissected: How the new Barcelona play – and why there's hope for Chelsea". The Times. Archived from the original on 30 June 2018. Retrieved 30 June 2018.
+ Cox, Michael (13 November 2014). "Lionel Messi Showing Some Promising Signs in a New Argentina Role". ESPN FC. Archived from the original on 24 September 2015. Retrieved 13 August 2015.
+ Mazur, Martin (18 June 2016). "Argentina's great tactical dilemma: where should Lionel Messi play?". The Guardian. Archived from the original on 4 July 2018. Retrieved 4 July 2018.
+ Various sources:
+Macdonald, Paul. "A future without Messi and Ronaldo". Goal. Archived from the original on 29 October 2020. Retrieved 8 June 2018.
+Staunton, Peter. "Messi and Ronaldo: Changing the face of football". Goal. Archived from the original on 4 August 2019. Retrieved 8 June 2018.
+Haugstad, Thore (11 January 2016). "Whoever wins the Ballon d'Or, the Messi-Ronaldo duopoly is coming to an end". Eurosport. Archived from the original on 20 January 2021. Retrieved 8 June 2018.
+ Various sources:
+"Why Lionel Messi is the best male athlete of all time". BBC Sport. 13 December 2022. Archived from the original on 2 September 2024. Retrieved 26 February 2025.
+Lane, Barnaby (18 December 2022). "Lionel Messi cements status as soccer GOAT as Argentina wins thrilling World Cup final". Business Insider. Archived from the original on 24 February 2024. Retrieved 20 December 2022.
+McIntyre, Doug (18 December 2022). "Lionel Messi Cements His Goat Status With A Little Help From His Friends". Fox Sports. Archived from the original on 4 April 2023. Retrieved 20 January 2023.
+O'Hanlon, Ryan (16 December 2022). "Why Lionel Messi is the best male athlete of all time". ESPN. Archived from the original on 18 December 2022. Retrieved 26 February 2025.
+Robinson, Joshua; Clegg, Jonathan (19 December 2022). "Messi's Argentina Beats France to Win the World Cup". The Wall Street Journal. Archived from the original on 9 October 2024. Retrieved 26 February 2025.
+Robson, James (18 December 2022). "Messi wins World Cup to push claim to be soccer's GOAT". Associated Press. Archived from the original on 3 July 2024. Retrieved 7 October 2024.
+Smith, Rory (18 December 2022). "For Messi, and Argentina, the (Extra) Wait Is Worth It". The New York Times. Archived from the original on 22 November 2024. Retrieved 26 February 2025.
+ "IFFHS ALL TIME TOP 10". www.iffhs.com. Retrieved 31 July 2025.
+ "Messi: I'm Not the Best". FIFA. 31 May 2007. Archived from the original on 24 September 2015. Retrieved 21 July 2015.
+ Ball, Phil (23 February 2006). "Britain v Spain (Sort Of)". ESPN FC. Archived from the original on 24 September 2015. Retrieved 17 August 2015.
+ Minshull, Phil (30 March 2010). "Is Messi the Greatest Ever?". BBC Sport. Archived from the original on 9 November 2020. Retrieved 17 August 2015.
+ "Messi Es el Mejor Jugador que Veré Jamás" [Messi Is the Best Player I Have Ever Seen]. El Mundo (in Spanish). 29 August 2009. Archived from the original on 22 March 2019. Retrieved 17 August 2015.
+ "Lionel Messi: Is the Barcelona and Argentina Star the Greatest Player Ever?". The Daily Telegraph. 29 May 2011. Archived from the original on 10 January 2022. Retrieved 17 August 2015.
+ "Magical Messi Grabs Hat-trick in Copa America as Argentina Romp into Quarters". The Daily Telegraph. Agence France-Presse. 11 June 2016. Archived from the original on 10 January 2022. Retrieved 29 June 2016.
+ Jenson, Pete (30 May 2015). "Lionel Messi: Is the Barcelona Forward the Greatest of Them All?". The Independent. Archived from the original on 14 June 2022. Retrieved 17 August 2015.
+ Tilghman, John (4 November 2010). "Maradona vs. Messi: A Laughable Comparison". Bleacher Report. Archived from the original on 1 May 2019. Retrieved 1 May 2019.
+ Cairns, Dan (8 January 2013). "How Does Lionel Messi Stack up against Football Legends?". BBC Newsbeat. Archived from the original on 11 November 2020. Retrieved 17 August 2015.
+ Lea, Greg (22 June 2016). "Why the Messi vs Maradona debate is flawed (And always will be)". Archived from the original on 1 October 2024. Retrieved 1 October 2024.
+ "Barcelona's Lionel Messi Blames Media for Inventing Rivalry with Real Madrid's Cristiano Ronaldo". The Daily Telegraph. 15 August 2012. Archived from the original on 10 January 2022. Retrieved 17 August 2015.
+ Snowball, Ben (11 June 2015). "Lionel Messi: Cristiano Ronaldo Is Not My Rival". Eurosport. TNT Sports International. Archived from the original on 24 September 2015. Retrieved 17 August 2015.
+ West, Andy (22 March 2014). "Real Madrid v Barcelona: Has Ronaldo Overtaken Messi?". BBC Sport. Archived from the original on 24 August 2015. Retrieved 10 August 2015.
+ Various sources:
+Hunter, Graham (28 November 2010). "The game's best rivalry". ESPN. Archived from the original on 6 October 2014. Retrieved 30 September 2014.
+"Messi v Ronaldo". Sky Sports. Sky Group. 17 October 2011. Archived from the original on 6 October 2014.
+"The Special Two". The Times. 21 December 2012. Archived from the original on 26 June 2015. Retrieved 13 October 2014.
+ Mendes, Chris (24 June 2014). "World Cup 2014: Cristiano Ronaldo's Personal Duel with Lionel Messi Is Affecting His Performances for Portugal". The Daily Telegraph. Archived from the original on 10 January 2022. Retrieved 17 August 2015.
+ Smith, Ben (20 April 2012). "Barcelona's Messi v Real Madrid's Ronaldo". BBC Sport. BBC. Archived from the original on 5 September 2012. Retrieved 13 October 2014.
+ Rice, Simon (10 April 2013). "Lionel Messi v Cristiano Ronaldo – world's greatest players locked in new battle". The Independent. Archived from the original on 28 October 2014. Retrieved 13 October 2014.
+ Various sources:
+Hughes, Rob (13 September 2011). "Ronaldo May Look Like the Best, but There Is Someone Better". The New York Times. Archived from the original on 1 October 2017. Retrieved 17 August 2015.
+Pinto, Pedro; Montague, James (29 May 2012). "Cristiano Ronaldo: I'm Better than Messi". CNN. Archived from the original on 6 October 2014. Retrieved 17 August 2015.
+Lewis, Tim (24 November 2013). "Cristiano Ronaldo: He's Got a God-Given Talent – and He Knows It". The Guardian. Archived from the original on 6 October 2014. Retrieved 17 August 2015.
+ "Ballons d'Or winners list". The Telegraph. 2 April 2017. Archived from the original on 10 January 2022.
+ Arotaritei, Sorin; Di Maggio, Roberto; Stokkermans, Karel. "Golden Boot (Soulier d'Or) Awards". RSSSF. Archived from the original on 1 June 2023. Retrieved 17 August 2015.
+ Badenhausen, Kurt (16 May 2014). "Lionel Messi Reaches $50 Million-A-Year Deal With Barcelona". Forbes. Archived from the original on 6 October 2014. Retrieved 17 August 2015.
+ Rutledge, Lewis (29 April 2008). "Scholes seals final spot". Sky Sports. Archived from the original on 6 October 2014. Retrieved 30 September 2014.
+ Lowe, Sid (17 January 2023). "Messi and Ronaldo's most memorable clashes: From the Champions League to El Clasico". ESPN. Archived from the original on 28 October 2023. Retrieved 9 June 2023.
+ Taylor, Daniel; Jackson, Jamie (11 June 2009). "Manchester United accept £80m Cristiano Ronaldo bid from Real Madrid". The Guardian. Archived from the original on 23 November 2018. Retrieved 30 September 2014.
+ "Ronaldo brace, McKennie volley power Juventus past Messi's Barcelona". ESPN. 8 December 2020. Archived from the original on 2 March 2023. Retrieved 2 March 2023.
+ "Messi: I miss having Ronaldo in La Liga". The Sporting News. Sporting News Holdings. 29 March 2019. Archived from the original on 25 June 2024. Retrieved 25 June 2024.
+ Sharland, Pete (18 December 2022). "World Cup 2022 Final: Win Or Lose, Argentina Star Lionel Messi Has Settled The Goat Debate Forever". Eurosport. Archived from the original on 22 December 2022. Retrieved 19 January 2023.
+ Usry, Rob (18 December 2022). "Lionel Messi puts the GOAT debate to rest with storybook World Cup win". SBNation.com. Archived from the original on 21 December 2022. Retrieved 20 December 2022.
+ "Cristiano Ronaldo: Lionel Messi rivalry now 'gone' says Portuguese great". BBC Sport. 7 September 2023. Archived from the original on 13 September 2023. Retrieved 11 September 2023.
+ "Maradona Hails Messi as Successor". BBC Sport. 24 February 2006. Archived from the original on 1 October 2018. Retrieved 17 August 2015.
+ Longman, Jeré (12 July 2014). "Adept? Yes. Adored? Not Yet". The New York Times. Archived from the original on 15 July 2014. Retrieved 17 August 2015.
+ Murray, Andrew (26 September 2017). "FourFourTwo's 100 Greatest Footballers EVER: No.1, Diego Maradona". FourFourTwo. Archived from the original on 29 September 2017. Retrieved 29 September 2017.
+ "Maradona proclaims Messi as his successor". China Daily. Reuters. 25 February 2006. Archived from the original on 7 April 2019. Retrieved 28 December 2012. "I have seen the player who will inherit my place in Argentine football and his name is Messi," Argentina's 1986 World Cup-winning captain was quoted as saying on Friday.
+ Lisi 2011, pp. 533–539.
+ "Goal hero Messi spares a thought for Maradona". ESPN. Reuters. 19 April 2007. Archived from the original on 24 January 2013. Retrieved 28 December 2012. Barcelona-based daily Sport said 'Messi Superstar' on its front page while the Marca led with 'Messidona.'
+ Himmelman, Jeff (5 June 2014). "The Burden of Being Messi". The New York Times. Archived from the original on 3 April 2015. Retrieved 11 August 2015.
+ Mora y Araujo, Marcela (23 December 2009). "Lionel Messi Is Not the New Maradona – He Can Be Better than That". The Guardian. Archived from the original on 19 January 2021. Retrieved 17 August 2015.
+ West, Andy (22 November 2018). "Lionel Messi: Is Barcelona forward really cut out for captaincy?". BBC Sport. Archived from the original on 26 May 2019. Retrieved 1 May 2019.
+ "Diego Maradona: Lionel Messi lacks the leadership needed to carry a team". ESPN FC. 9 June 2016. Archived from the original on 1 May 2019. Retrieved 1 May 2019.
+ "Tim Vickery: Lionel Messi can now be recognised alongside Diego Maradona by Argentinians". Sky Sports. Archived from the original on 19 December 2022. Retrieved 20 December 2022.
+ "Lionel Messi Vomits Because of Nerves, Says Argentina's Alejandro Sabella". The Guardian. 10 June 2014. Archived from the original on 25 January 2021. Retrieved 17 August 2015.
+ Various sources:
+"Messi concludes his most influential year for Argentina". Marca. 19 November 2019. Archived from the original on 1 October 2024. Retrieved 28 September 2024.
+Vickery, Tim (3 July 2019). "Argentina exit the Copa America early but they've won something better: Messi is fired up again". ESPN. Archived from the original on 1 October 2024. Retrieved 28 September 2024.
+"The New Messi: A protester and a leader". LA Times. 7 July 2019. Archived from the original on 1 October 2024. Retrieved 1 October 2024.
+ Horncastle, James (19 July 2023). "Messi vs Argentina: How the 'Catalan Argentine' escaped the shadow of Maradona". The New York Times. Archived from the original on 19 June 2024. Retrieved 7 October 2024.
+ Morse, Ben (18 December 2022). "Lionel Messi cements his legacy as the greatest with World Cup win". CNN. Archived from the original on 1 October 2024. Retrieved 28 September 2024.
+ "Messi on World Cup win: After struggles in Argentina, fans love me". ESPN. 1 December 2023. Archived from the original on 18 July 2024. Retrieved 7 October 2024.
+ Henry, Thierry (21 April 2011). "The 2011 Time 100: Lionel Messi, God of the Field". Time. Archived from the original on 17 April 2019. Retrieved 22 August 2015.
+ Hamm, Mia (18 April 2012). "The World's 100 Most Influential People 2012: Lionel Messi". Time. Archived from the original on 2 February 2021. Retrieved 22 August 2015.
+ Federer, Roger (13 April 2023). "The 100 Most Influential People of 2023: Lionel Messi". Time. Archived from the original on 22 April 2023. Retrieved 22 April 2023.
+ Borg, Chris (2 December 2014). "Ballon D'Or: Lionel Messi vs. Cristiano Ronaldo – Battle of the Brands". CNN. Archived from the original on 29 January 2016. Retrieved 22 August 2015.
+ "Top 10 Most Marketable Footballers in the World" (PDF) (Press release). Repucom. 28 May 2014. Archived (PDF) from the original on 30 June 2014. Retrieved 22 August 2015.
+ "World Cup final photo of Lionel Messi eyeing trophy wins prize". ESPN. 12 February 2015. Archived from the original on 11 August 2021. Retrieved 11 August 2021.
+ "Gibson: Messi is a tourist attraction". Sky Sports. Archived from the original on 10 August 2021. Retrieved 10 August 2021.
+ "Messi Joins Facebook, Nets 7 m Followers". ESPN. 6 April 2011. Archived from the original on 24 September 2015. Retrieved 22 August 2015.
+ Giuliano, Karissa (9 June 2015). "The 10 Most Popular Celebrities on Facebook". CNBC. Archived from the original on 3 August 2020. Retrieved 22 August 2015.
+ "Lionel Messi Sets Instagram Record With World Cup Victory Post". Yahoo Sports. Archived from the original on 20 December 2022. Retrieved 20 December 2022.
+ Madhok, Diksha (21 December 2022). "Lionel Messi's World Cup photos are most-liked Instagram post ever". CNN. Archived from the original on 15 July 2024. Retrieved 23 December 2022.
+ Garcia, Adriana (21 March 2023). "Lionel Messi mobbed after adoring Argentina fans lay siege outside Buenos Aires restaurant". ESPN. Retrieved 15 October 2024.
+ PTI (1 May 2023). "Kerala's iconic Thrissur Pooram held in full grandeur featuring Lionel Messi during 'Kudamattam". The Hindu. ISSN 0971-751X. Archived from the original on 3 May 2023. Retrieved 3 May 2023.
+ "Lionel Messi steals the show at Kerala's Iconic Thrissur Pooram". TimesNow. 2 May 2023. Archived from the original on 3 May 2023. Retrieved 3 May 2023.
+ Roush, Ty (14 December 2023). "Lionel Messi's World Cup Jerseys Sell For $7.8 Million At Auction – Falling Short Of Two Most Valuable Jerseys Of All Time". Forbes. Retrieved 16 December 2023.
+ 鄭惟仁 (5 February 2024). "梅西香港友誼賽全程坐板凳 球迷噓聲高喊退票". 公視新聞網. Archived from the original on 5 February 2024. Retrieved 5 February 2024.
+ "美斯遭央視連環封殺 《天下足球》片頭及天氣預報廣告畫面被刪" [CCTV's sports programme removes Messi's scenes]. HK01 (in Chinese (Hong Kong)). 15 February 2024. Archived from the original on 15 February 2024. Retrieved 15 February 2024.
+ 許祺安 (10 February 2024). "美斯得罪了中國？2023年訪華旋風到今官媒狠批 14億市場凍過水？" [Messi no longer welcomed in China?]. HK01 (in Chinese (Hong Kong)). Archived from the original on 14 February 2024. Retrieved 14 February 2024.
+ "美斯風波︱內地掀抵制潮 官媒籲冷靜弄清楚合同細節" [Boycott Messi on Chinese trend; state-run media urge for calm]. Sing Tao Daily (in Chinese (Hong Kong)). 9 February 2024. Archived from the original on 14 February 2024. Retrieved 14 February 2024.
+ "當初高調找梅西代言…大陸這家快遞公司慘掃颱風尾 遭陸網遷怒抵制" [Chinese company boycotted over Messi ad]. UDN (in Chinese (Taiwan)). Archived from the original on 14 February 2024. Retrieved 14 February 2024.
+ "中国足协停止与阿根廷足协合作，梅西3月中国行面临泡汤". 羊城晚报. Archived from the original on 5 March 2024. Retrieved 14 November 2024.
+ Notarianni, Roberto (25 March 2015). "Messi, la (Très) Bonne Paie" [Messi, the (Very) Good Payroll]. France Football. Archived from the original on 25 October 2020. Retrieved 10 August 2015.
+ Rainbow, Jamie (18 March 2014). "Stat of the Day: Top 20 Best Paid Players and Coaches". World Soccer. Archived from the original on 2 February 2021. Retrieved 22 August 2015.
+ Reynolds, Ben (8 June 2016). "Cristiano Ronaldo first footballer to top Forbes rich list of highest-earning athletes". Sky Sports. Archived from the original on 10 June 2016. Retrieved 9 June 2016.
+ ""Lionel Messi devance largement Cristiano Ronaldo au classement des joueurs les mieux payés au monde"". Archived from the original on 20 November 2020. Retrieved 3 June 2018.
+ "Lionel Messi edges out Cristiano Ronaldo to head Forbes top 100 highest paid athletes". BBC Sport. Archived from the original on 8 November 2020. Retrieved 12 June 2019.
+ Balagué 2013, p. 472.
+ Heydari, Keyvan Antonio (26 May 2009). "Messi: Amazing Talent in a Reluctant Star". The New York Times. Archived from the original on 23 December 2017. Retrieved 24 July 2015.
+ ""Lionel Messi Signs New Barcelona Contract, Set To Become World's Highest-Paid Footballer"". Forbes. Archived from the original on 31 January 2021. Retrieved 17 December 2017.
+ "World's Highest-Paid Soccer Players: Messi Wins, Mbappe Rises". Forbes. Archived from the original on 27 September 2020. Retrieved 22 September 2020.
+ Tannenwald, Jonathan (18 October 2023). "The latest salaries unveiled by the MLS Players Association finds Lionel Messi in a class by himself". The Philadelphia Inquirer. Retrieved 19 October 2023.
+ "Lionel Messi's Argentina jerseys are sold out worldwide". CNN. 19 December 2022. Archived from the original on 15 July 2024. Retrieved 6 May 2023.
+ Long, Michael (20 May 2015). "The World's 50 Most Marketable 2015". SportsPro. Archived from the original on 10 June 2016. Retrieved 22 August 2015.
+ Caioli 2012, pp. 94–97.
+ "Retrospect: Adidas F50 Messi Collection". Soccer Bible. 18 March 2015. Archived from the original on 16 October 2020. Retrieved 11 December 2015.
+ "Backed by Messi" (Press release). Adidas. 25 September 2015. Archived from the original on 22 December 2015. Retrieved 11 December 2015.
+ "adidas Football Launches Nemeziz 17+ 360 Agility". Soccer Bible. Archived from the original on 16 January 2021. Retrieved 12 July 2019.
+ "Leo Messi's Barcelona Shirt Is the Most Sold Worldwide, Cristiano Ronaldo 2nd". Bleacher Report. Archived from the original on 6 June 2019. Retrieved 4 January 2019.
+ Matchett, Karl (25 April 2017). "The Story Behind Lionel Messi's 5 Most Iconic Barcelona Celebrations". Bleacher Report. Archived from the original on 8 February 2021. Retrieved 18 December 2017.
+ "The World's Fourth Most Marketable Athlete – Lionel Messi". SportsPro. 27 May 2011. Archived from the original on 17 May 2016. Retrieved 22 August 2015.
+ Badenhausen, Kurt (10 January 2011). "Lionel Messi Voted Soccer's Best, But Sponsors Stay Away". Forbes. Archived from the original on 30 January 2021. Retrieved 11 December 2015.
+ "Lionel Messi and Dolce & Gabbana: An Assist in Style" (PDF) (Press release). Dolce & Gabbana. Archived from the original (PDF) on 27 August 2017. Retrieved 22 August 2015.
+ Millerchip, Oliver (3 February 2014). "Messi to Front New Gillette Campaign". SportsPro. Archived from the original on 10 February 2021. Retrieved 22 August 2015.
+ "Argentine Soccer Star Leo Messi Named Global Brand Ambassador for Turkish Airlines". Reuters (Press release). 6 December 2012. Archived from the original on 24 September 2015. Retrieved 22 August 2015.
+ McPherson, Ian (28 February 2013). "Messi Cashes in with Qatari Contract". SportsPro. Archived from the original on 24 September 2015. Retrieved 22 August 2015.
+ "Lionel Messi Is Global Brand Ambassador for Tata Motors". Firstpost. 3 November 2015. Archived from the original on 15 October 2015. Retrieved 18 November 2015.
+ "Lionel Messi: Which goalkeepers got the 644 bottles of Budweiser beer?". GiveMeSport. 27 December 2020. Retrieved 28 December 2020.
+ Guinness World Records 2014, p. 102.
+ "Lionel Messi to Star on Cover of EA Sports FIFA for Fourth Straight Year". Sports Illustrated. 15 June 2015. Archived from the original on 30 December 2020. Retrieved 22 August 2015.
+ Krasselt, Kaitlyn (21 June 2014). "Cannes to Cannes: YouTube's Most Viewed Ads". USA Today. Archived from the original on 29 January 2021. Retrieved 22 August 2015.
+ Lorenzetti, Laura (3 June 2015). "YouTube Users Say This Is the 'Ad of the Decade'". Time. Archived from the original on 20 July 2015. Retrieved 22 August 2015.
+ "Hard Rock International Begins Year-Long 50th Anniversary Celebration By Announcing Partnership With Lionel Messi" Archived 21 May 2023 at the Wayback Machine. PR Newswire. Retrieved 11 June 2021
+ Zidan, Karim (12 May 2022). "Lionel Messi earned $122m last year. He still felt the need to take Saudi money". The Guardian. Archived from the original on 12 May 2022. Retrieved 12 May 2022.
+ Farukh, Rimal (20 June 2022). "Messi Is Accused of Being the Face of a Blood-Soaked Regime". VICE. Archived from the original on 20 June 2022. Retrieved 20 June 2022.
+ "Leo Messi: Goodwill Ambassador". UNICEF. 25 May 2012. Archived from the original on 4 March 2016. Retrieved 25 August 2015.
+ Rogers, Iain; Palmer, Justin (12 November 2013). "Barcelona Extend UNICEF Shirt Deal to 2016". Reuters. Archived from the original on 24 November 2015. Retrieved 25 August 2015.
+ "Leo Messi Activity Highlights". UNICEF. 14 May 2015. Archived from the original on 7 September 2018. Retrieved 30 July 2021.
+ "Leo Messi's Son Turns One and Celebrates with UNICEF" (Press release). UNICEF. 28 October 2013. Archived from the original on 10 August 2014. Retrieved 30 July 2021.
+ "Lionel Messi Fast Facts". CNN. 25 June 2015. Archived from the original on 9 January 2021. Retrieved 25 August 2015.
+ Balagué 2013, pp. 576–577.
+ "Ooredoo, Messi Foundation Continue Expansion: Three New Mobile Health Clinics Launched in Algeria". Arab Times. 3 August 2015. Archived from the original on 23 September 2015. Retrieved 25 August 2015.
+ "'Lionel Messi and Friends' Soccer Tour Is One of Many Causes Argentine Superstar Supports". New England Sports Network. 22 June 2012. Archived from the original on 11 January 2021. Retrieved 22 August 2015.
+ "Partners". Leo Messi Foundation. Archived from the original on 18 March 2018. Retrieved 25 August 2015.
+ "Messi's Left Foot – Yours for $5.25 Million". CNN. 6 March 2013. Archived from the original on 15 September 2018. Retrieved 22 August 2015.
+ "Argentina's Lionel Messi wins libel case, donates damages to charity". ESPN. 7 June 2016. Archived from the original on 18 August 2016. Retrieved 1 September 2016.
+ "Messi, Guardiola donate $1.08 million each to coronavirus battle". Reuters. 25 March 2020. Archived from the original on 7 January 2021. Retrieved 25 March 2020.
+ Grez, Matias. "Cristiano Ronaldo and Lionel Messi donate to hospitals in fight against coronavirus". WFSB. Archived from the original on 8 April 2020. Retrieved 8 April 2020.
+ Settimi, Christina. "Lionel Messi's Coronavirus Wage Cut Could Cost Him $50 Million". Forbes. Archived from the original on 20 June 2020. Retrieved 8 April 2020.
+ "Argentina federation to have affairs managed by emergency FIFA panel". ESPN. 24 June 2016. Archived from the original on 19 November 2016. Retrieved 19 November 2016.
+ "Messi paid the salaries of Argentina's security team". Marca. Spain. 18 November 2016. Archived from the original on 9 January 2021. Retrieved 19 November 2016.
+ Sport (12 February 2021). "Adidas and Messi donate boots to Art Museum to be auctioned in April". Sport. Archived from the original on 12 February 2021. Retrieved 13 February 2021.
+ Uki, Goni (14 April 2021). "Lionel Messi helps obtain 50,000 Covid vaccines for South American players". The Guardian. Retrieved 16 April 2021.
+ "President Biden Announces Recipients of the Presidential Medal of Freedom". The White House. 4 January 2025. Retrieved 4 January 2025.
+ Deen, Safid (4 January 2025). "Lionel Messi unable to attend Presidential Medal of Freedom ceremony. Here's why". USA Today. Archived from the original on 6 January 2025. Retrieved 7 January 2025.
+ "The massive Messi mural and other artworks around the world". BBC. 29 June 2016. Retrieved 5 October 2024.
+ Cardenas, Felipe (14 February 2024). "Meeting Messi: How the Argentine superstar changed the lives of a restaurateur, barber and muralist". The Athletic. Retrieved 21 July 2023.
+ "Argentina tiene una réplica futbolera de la Capilla Sixtina". Voy de Viaje. Córdoba, Argentina. 3 May 2018. Archived from the original on 13 December 2021. Retrieved 6 July 2020.
+ "Lionel Messi's Madame Tussauds Waxwork Unveiled At Wembley". Huffington Post. Archived from the original on 12 July 2023. Retrieved 12 July 2023.
+ "Messi statue unveiled in Argentina amid pleas for his return". BBC. 15 December 2021. Retrieved 13 October 2024.
+ "Messi statue to stand next to Maradona, Pele at CONMEBOL museum". Reuters. 31 March 2023. Retrieved 5 October 2024.
+ Barker, Andrew (27 August 2014). "Venice Film Review: 'Messi'". Variety. Archived from the original on 14 December 2020. Retrieved 22 August 2015.
+ "Apple TV+ scores with documentary series featuring legendary football champion Lionel Messi and his FIFA World Cup career, culminating in his dramatic Qatar 2022 win". Apple.com. 6 June 2023. Archived from the original on 21 February 2024. Retrieved 21 February 2024.
+ Deen, Safid (4 June 2024). "Lionel Messi debuts new drink Mas+: How to get Messi's new drink online and in stores". USA Today. Retrieved 16 July 2024.
+ "The World's Greatest Soccer Star Lionel Messi Unveils His Next-Generation Hydration Drink to Canadians – Más+ by Messi – Created to Inspire Everyone to Feel Like a Champion in Every Part of Life". Yahoo! Finance. CNW Group. 17 July 2024. Retrieved 17 July 2024.
+ Broadbent, Jessica (14 June 2024). "Will Mas+ by Messi stand the test of time?". JustDrinks.com. Retrieved 16 July 2024.
+ Becherano, Lizzy (19 September 2024). "Lionel Messi launches production company named 525 Rosario". ESPN.
+ "Lionel Messi se sumó al proyecto deportivo de Luis Suárez y el club competirá en el fútbol uruguayo a nivel oficial". ESPN (in Spanish). 27 May 2025. Retrieved 30 May 2025.
+ "Deportivo LSM: las impactantes cifras en Instagram del equipo de Luis Suárez y Lionel Messi y el comunicado en el que destacaron el foco en la formación de futbolistas". El Observador (in Spanish). 28 May 2025. Retrieved 30 May 2025.
+ "Lionel Messi's wife explains her absence at World Cup opener that left him broken hearted". USAHint. 21 June 2018. Archived from the original on 1 July 2018. Retrieved 21 June 2018.
+ "Lionel Messi marries stunning childhood sweetheart Antonella Roccuzzo in Argentine home town". Irish Independent. July 2017. Archived from the original on 1 July 2017. Retrieved 1 July 2017.
+ "Argentina hosts Lionel Messi's 'wedding of the century'". BBC News. Archived from the original on 30 June 2017. Retrieved 1 July 2017.
+ Francombe, Amy (19 December 2022). "Antonela Roccuzzo – the first lady of Argentinean football". Evening Standard. Archived from the original on 19 December 2022. Retrieved 19 January 2022.
+ "Messi Shares Baby Joy". beIN Sports. 17 June 2012.[dead link]
+ "Messi Junior Named Thiago". ESPN FC. 2 November 2012. Archived from the original on 24 September 2015. Retrieved 25 August 2015.
+ "Lionel Messi's Wife Expecting Second Child, Barcelona Star Says". ESPN FC. 30 April 2015. Archived from the original on 24 September 2015. Retrieved 25 August 2015.
+ "Lionel Messi and wife Antonella Roccuzzo expecting their third child". ESPN FC. 15 October 2017. Archived from the original on 27 March 2019. Retrieved 16 October 2017.
+ Lisi, Clemente (16 September 2020). "A Messi situation: Examining the faith of the world's greatest soccer player". Religion Unplugged. Archived from the original on 18 December 2022. Retrieved 18 December 2022.
+ Balagué 2013, pp. 31, 143, 570.
+ Wright, Chris (5 November 2012). "After Just 72 Hours on the Planet, Thiago Messi Signs for Newell's Old Boys". ESPN FC. Archived from the original on 26 January 2016. Retrieved 25 August 2015.
+ "Lionel Messi reaffirms desire to return to Newell's Old Boys before retirement". ESPN FC. 5 September 2016. Archived from the original on 20 May 2022. Retrieved 20 May 2022.
+ Montes, Silvia (4 May 2019). "Leo Messi, llamado a votar en las próximas elecciones italianas". Diario AS (in Spanish). Archived from the original on 20 August 2022. Retrieved 20 August 2022.
+ "Messi, father guilty of tax fraud, given suspended 21-month sentences". Sports Illustrated. 6 July 2016. Archived from the original on 7 July 2016. Retrieved 6 July 2016.
+ "Barcelona's Lionel Messi in tax court: I played football and trusted my father". ESPN FC. 2 June 2016. Archived from the original on 27 March 2019. Retrieved 18 December 2022.
+ Caioli 2012, pp. 69–71.
+ "Lionel Andrés Messi Cuccittini: Matches 2003–04". BDFutbol. Archived from the original on 30 June 2015. Retrieved 19 July 2015.
+ "Lionel Andrés Messi Cuccittini: Matches 2004–05". BDFutbol. Archived from the original on 30 June 2015. Retrieved 19 July 2015.
+ "Lionel Andrés Messi Cuccittini: Matches 2005–06". BDFutbol. Archived from the original on 30 June 2015. Retrieved 20 July 2015.
+ "Lionel Andrés Messi Cuccittini: Matches 2006–07". BDFutbol. Archived from the original on 30 June 2015. Retrieved 21 July 2015.
+ "Lionel Andrés Messi Cuccittini: Matches 2007–08". BDFutbol. Archived from the original on 30 June 2015. Retrieved 21 July 2015.
+ "Lionel Andrés Messi Cuccittini: Matches 2008–09". BDFutbol. Archived from the original on 9 December 2021. Retrieved 24 July 2015.
+ "Lionel Andrés Messi Cuccittini: Matches 2009–10". BDFutbol. Archived from the original on 18 March 2022. Retrieved 27 July 2015.
+ "Lionel Andrés Messi Cuccittini: Matches 2010–11". BDFutbol. Archived from the original on 30 June 2015. Retrieved 27 July 2015.
+ "Lionel Andrés Messi Cuccittini: Matches 2011–12". BDFutbol. Archived from the original on 18 March 2022. Retrieved 30 July 2015.
+ "Lionel Andrés Messi Cuccittini: Matches 2012–13". BDFutbol. Archived from the original on 18 March 2022. Retrieved 9 August 2015.
+ "Lionel Andrés Messi Cuccittini: Matches 2013–14". BDFutbol. Archived from the original on 10 August 2021. Retrieved 10 August 2015.
+ "Lionel Andrés Messi Cuccittini: Matches 2014–15". BDFutbol. Archived from the original on 15 September 2018. Retrieved 11 August 2015.
+ "Lionel Andrés Messi Cuccittini: Matches 2015–16". BDFutbol. Archived from the original on 15 September 2018. Retrieved 6 September 2015.
+ "Lionel Andrés Messi Cuccittini: Matches 2016–17". BDFutbol. Archived from the original on 21 August 2023. Retrieved 27 October 2016.
+ "Lionel Andrés Messi Cuccittini: Matches 2017–18". BDFutbol. Archived from the original on 22 August 2023. Retrieved 27 August 2017.
+ "Lionel Andrés Messi Cuccittini: Matches 2018–19". BDFutbol. Archived from the original on 21 August 2023. Retrieved 27 August 2018.
+ "Lionel Andrés Messi Cuccittini: Matches 2019–20". BDFutbol. Archived from the original on 6 July 2021. Retrieved 17 September 2019.
+ "Lionel Andrés Messi Cuccittini: Matches 2020–21". BDFutbol. Archived from the original on 22 August 2023. Retrieved 9 October 2020.
+ "Lionel Andrés Messi Cuccittini: Matches 2021–22". BDFutbol. Archived from the original on 30 November 2021. Retrieved 18 August 2021.
+ "Lionel Andrés Messi Cuccittini: Matches 2022–23". BDFutbol. Archived from the original on 21 August 2023. Retrieved 31 July 2022.
+ Balagué 2013, pp. 220–240.
+ Balagué 2013, pp. 436–437.
+ Saaid, Hamdan (12 September 2008). "Games of the XXIX. Olympiad". Rec.Sport.Soccer Statistics Foundation. Retrieved 6 August 2024.
+ "La selección catalana pierde ante Argentina (0–1) en un partido marcado por la política". El Mundo (in Spanish). 24 May 2008. Archived from the original on 27 May 2008.
+ "Fiesta y equilibrio". Mundo Deportivo (in Spanish). 25 May 2008. p. 18. Archived from the original on 25 December 2022.
+ Hawkey, Ian (30 December 2013). "Catalonia and Basque Country reignite call for independent national football identities". The Daily Telegraph. Archived from the original on 28 December 2022. Retrieved 28 December 2022.
+ Mamrud, Roberto (28 August 2025). "Lionel Andrés Messi – Century of International Appearances". Rec.Sport.Soccer Statistics Foundation. Archived from the original on 24 September 2025. Retrieved 24 September 2025.
+ "Lionel Messi: Player Profile". ESPN FC. Archived from the original on 11 October 2018. Retrieved 9 September 2015.
+ Pettigrove, Jason (16 October 2019). "A Sixth Golden Shoe Sees Lionel Messi Stand Alone". Forbes. ISSN 0015-6914. Archived from the original on 19 October 2019. Retrieved 10 June 2024.
+ Toby Davis; Ed Osmond, eds. (18 December 2022). "Argentina's Lionel Messi: World Cup goals, stats and career highlights". Reuters. Archived from the original on 5 February 2023. Retrieved 5 February 2023.
+ Otero, Paul M. (12 November 2013). "Palmarés de un Genio: El Coleccionista de Trofeos" [Honours of a Genius: The Collector of Trophies]. Marca (in Spanish). Spain. Archived from the original on 28 March 2019. Retrieved 13 September 2015.
+ "Messi, Mejor Delantero y Mejor Jugador" [Messi, Best Forward and Best Player] (in Spanish). Liga de Fútbol Profesional. 2 December 2013. Archived from the original on 8 December 2015. Retrieved 13 September 2015.
+ "Lionel Messi, 2014–15 Liga BBVA Best Player". Liga de Fútbol Profesional. 30 November 2015. Archived from the original on 22 March 2019. Retrieved 8 January 2016.
+ "Lionel Messi Beats Cristiano Ronaldo To La Liga Best Player Award". soccerladuma. 19 December 2017. Archived from the original on 23 September 2023. Retrieved 19 December 2017.
+ "Leo Messi reçoit le Pichichi et MVP de la Liga 2017–18". FC Barcelona. 12 November 2018. Archived from the original on 23 September 2023. Retrieved 12 November 2018.
+ "Lionel Messi wins La Liga best player award for 2018–19 season". barcablaugranes.com. 17 December 2019. Archived from the original on 23 September 2023. Retrieved 17 December 2019.
+ Pla Diaz, Emilio (17 January 2024). "Spain - Footballer of the Year". Rec.Sport.Soccer Statistics Foundation. Archived from the original on 12 November 2024. Retrieved 7 December 2024.
+ "Laureus Sport Awards: Lionel Messi & Argentina World Cup team win Laureus awards". BBC Sport. 8 May 2023. Archived from the original on 9 May 2023. Retrieved 9 May 2023.
+ "Lionel Messi: Athlete of the Year 2023". TIME. 5 December 2023. Archived from the original on 7 December 2023. Retrieved 21 September 2025.
+ "IFFHS AWARDS 2022 - MEN'S WORLD BEST PLAYER". IFFHS. Archived from the original on 25 November 2021. Retrieved 21 September 2025.
+ Crépin, Timothé (14 December 2020). "Ballon d'Or Dream Team : Découvrez les révélations de ce onze de légende !" (in French). France Football. Archived from the original on 14 December 2020. Retrieved 14 December 2020.
+ "Lionel Messi: World 11 through the years". FIFPRO. 15 January 2024. Archived from the original on 15 January 2024. Retrieved 10 March 2024.
+ "In focus: All Messi's FIFA FIFPRO World 11 inclusions". FIFA. 15 January 2024. Archived from the original on 17 June 2024. Retrieved 17 June 2024.
+ "Por segunda vez en la historia, el Olimpia de Oro fue compartido: Lionel Messi y Belén Casetta fueron galardonados por su 2023". Clarín (in Spanish). 20 December 2023. Archived from the original on 8 January 2024. Retrieved 8 January 2024.
+ "Belén Casetta compartió el Olimpia de Oro con Lionel Messi" (in Spanish). ESPN Deportes. 20 December 2023. Archived from the original on 20 December 2023. Retrieved 21 December 2023.
+ Tort, Àlex (30 April 2019). "La Generalitat otorga la Creu de Sant Jordi a Messi" (in Spanish). La Vanguardia. Retrieved 5 January 2025.
+ "Magic Johnson, Lionel Messi get Presidential Medal of Freedom". ESPN. 4 January 2025. Retrieved 4 January 2025.
+Bibliography
+
+Balagué, Guillem (2013). Messi. Orion Books. ISBN 978-1-4091-4659-9.
+Caioli, Luca (2012). Messi: The Inside Story of the Boy Who Became a Legend. Corinthian Books. ISBN 978-1-906850-40-1.
+Caioli, Luca (2015). Messi: More than a Superstar. Icon Books. ISBN 978-1-906850-91-3.
+Guinness World Records 2015. Guinness World Records. 2014. ISBN 978-1-908843-65-4.
+Hunter, Graham (2012). Barça: The Making of the Greatest Team in the World. BackPage Press. ISBN 978-0-9564971-8-5.
+Lisi, Clemente Angelo (2011). A History of the World Cup: 1930–2010. Scarecrow Press. ISBN 978-0-8108-7754-2.
+Tomkins, Paul (2007). Above Us Only Sky: Liverpool FC's Global Revolution. Anchor Print Group. ISBN 978-0-9556367-0-7.
+External links
+Lionel Messi
+at Wikipedia's sister projects
+Media from Commons
+News from Wikinews
+Quotations from Wikiquote
+Data from Wikidata
+Official website Edit this at Wikidata
+Profile at Inter Miami
+Profile at PSG
+Profile at FC Barcelona
+Profile at La Liga
+Profile at Ligue 1
+Profile at MLS
+Lionel Messi at BDFutbol Edit this at Wikidata
+Lionel Messi at Soccerbase Edit this at Wikidata
+Lionel Messi at Soccerway Edit this at Wikidata
+Lionel Messi at National-Football-Teams.com Edit this at Wikidata
+Lionel Messi – FIFA competition record (archived) Edit this at Wikidata
+Lionel Messi – UEFA competition record (archive) Edit this at Wikidata
+Sporting positions
+Preceded by
+Andrés Iniesta
+FC Barcelona captain
+2018–2021	Succeeded by
+Sergio Busquets
+vte
+Inter Miami CF – current squad
+Argentina squads
+Awards
+vte
+Notable people from Rosario
+Authority control databases Edit this at Wikidata
+Categories: Lionel Messi1987 birthsLiving people20th-century Roman Catholics21st-century Argentine sportsmen21st-century Roman Catholics2006 FIFA World Cup players2007 Copa América players2010 FIFA World Cup players2011 Copa América players2014 FIFA World Cup players2015 Copa América playersCopa América Centenario players2018 FIFA World Cup players2019 Copa América players2021 Copa América players2022 FIFA World Cup players2024 Copa América playersArgentina men's international footballersArgentina men's under-20 international footballersArgentina men's youth international footballersArgentine emigrants to SpainArgentine expatriate men's footballersArgentine expatriate sportspeople in FranceArgentine expatriate sportspeople in SpainArgentine expatriate sportspeople in the United StatesArgentine fraudstersArgentine men's footballersArgentine people of Catalan descentArgentine sportspeople convicted of crimesArgentine people of Italian descentSportspeople of Italian descentArgentine people of Spanish descentSportspeople of Spanish descentPeople of Marchesan descentArgentine philanthropistsArgentine Roman CatholicsBallon d'Or winnersCopa América–winning playersDesignated Players (MLS)Expatriate men's footballers in FranceExpatriate men's footballers in SpainExpatriate men's soccer players in the United StatesFC Barcelona playersFC Barcelona Atlètic playersFC Barcelona C playersFIFA Men's Century ClubFIFA World Cup–winning playersFIFA World Player of the Year winnersFootballers at the 2008 Summer OlympicsFootballers from BarcelonaFootballers from Rosario, Santa FeGolden Boy winnersInter Miami CF playersLaureus World Sports Awards winnersLa Liga playersLigue 1 playersMajor League Soccer playersMedalists at the 2008 Summer OlympicsMen's association football forwardsNaturalised citizens of SpainOlympic footballers for ArgentinaOlympic gold medalists for ArgentinaOlympic medalists in footballParis Saint-Germain FC playersPeople convicted of fraudPeople convicted of tax crimesPeople named in the Panama PapersPichichi Trophy winnersPresidential Medal of Freedom recipientsSegunda División B playersTercera División playersThe Best FIFA Men's Player winnersUEFA Champions League–winning playersUEFA Champions League top scorersUEFA Men's Player of the Year Award winnersUNICEF goodwill ambassadorsWorld record holders
+This page was last edited on 2 November 2025, at 07:44 (UTC).
+Text is available under the Creative Commons Attribution-ShareAlike 4.0 License; additional terms may apply. By using this site, you agree to the Terms of Use and Privacy Policy. Wikipedia® is a registered trademark of the Wikimedia Foundation, Inc., a non-profit organization.
+Privacy policyAbout WikipediaDisclaimersContact WikipediaCode of ConductDevelopersStatisticsCookie statementMobile view
+Wikimedia Foundation
+Powered by MediaWiki
+
+
+WikipediaThe Free Encyclopedia
+Search Wikipedia
+Search
+Donate
+Create account
+Log in
+Contents hide
+(Top)
+Early life
+Club career
+
+International career
+Player profile
+
+In popular culture
+
+Personal life
+
+Career statistics
+
+Honours
+See also
+Notes
+References
+
+Further reading
+External links
+Cristiano Ronaldo
+
+Article
+Talk
+Read
+View source
+View history
+
+Tools
+Appearance hide
+Text
+
+Small
+
+Standard
+
+Large
+Width
+
+Standard
+
+Wide
+Color (beta)
+
+Automatic
+
+Light
+
+Dark
+Page extended-confirmed-protected
+From Wikipedia, the free encyclopedia
+"CR7" redirects here. For other uses, see Cristiano Ronaldo (disambiguation) and CR7 (disambiguation).
+In this Portuguese name, the first or maternal family name is dos Santos and the second or paternal family name is Aveiro.
+Cristiano Ronaldo
+GOIH ComM
+
+Ronaldo with Al-Nassr in 2023
+Personal information
+Full name	Cristiano Ronaldo dos Santos Aveiro[1]
+Date of birth	5 February 1985 (age 40)[2]
+Place of birth	Funchal, Madeira, Portugal
+Height	1.87 m (6 ft 2 in)[note 1]
+Position	Forward
+Team information
+Current team	Al-Nassr
+Number	7
+Youth career
+1992–1995	Andorinha
+1995–1997	Nacional
+1997–2002	Sporting CP
+Senior career*
+Years	Team	Apps	(Gls)
+2002–2003	Sporting CP B	2	(0)
+2002–2003	Sporting CP	25	(3)
+2003–2009	Manchester United	196	(84)
+2009–2018	Real Madrid	292	(311)
+2018–2021	Juventus	98	(81)
+2021–2022	Manchester United	40	(19)
+2023–	Al-Nassr	84	(82)
+International career‡
+2001	Portugal U15	9	(7)
+2001–2002	Portugal U17	7	(5)
+2003	Portugal U20	5	(1)
+2002–2003	Portugal U21	10	(3)
+2004	Portugal U23	3	(2)
+2003–	Portugal	225	(143)
+Medal record
+Website	cristianoronaldo.com
+Signature
+Cristiano Ronaldo signature
+* Club domestic league appearances and goals as of 20:40, 1 November 2025 (UTC)
+‡ National team caps and goals as of 22:40, 14 October 2025 (UTC)
+	
+This article is part of
+a series about
+Cristiano Ronaldo
+Portuguese professional footballer
+CareerInternational goalsAchievementsRivalry with Lionel Messi
+Eponyms and public art
+Cristiano Ronaldo International AirportEstádio da MadeiraMuseu CR7
+Media
+The World at His Feet (2014)Ronaldo (2015)
+Family
+Kátia AveiroGeorgina Rodríguez
+Related
+Galaxy CR7Pestana GroupUFL (video game)
+vte
+Cristiano Ronaldo dos Santos Aveiro (Portuguese pronunciation: [kɾiʃˈtjɐnu ʁɔˈnaldu] ⓘ; born 5 February 1985) is a Portuguese professional footballer who plays as a forward for, and captains, both Saudi Pro League club Al-Nassr and the Portugal national team. Nicknamed CR7, he is widely regarded as one of the greatest players in history, and has won numerous individual accolades throughout his career, including five Ballon d'Ors, a record three UEFA Men's Player of the Year Awards, four European Golden Shoes, and was named five times the world's best player by FIFA.[note 3] He has won 34 trophies in his career, including five UEFA Champions Leagues and the UEFA European Championship. He holds the records for most goals (140) and assists (42) in the Champions League, goals (14) and assists (8) in the European Championship, and most international appearances (225) and international goals (143). He is the only player to have scored 100 goals with four different clubs. He has made over 1,200 professional career appearances, the most by an outfield player, and has scored over 950 official senior career goals for club and country, making him the top goalscorer of all time.
+
+Born in Funchal, Madeira, Ronaldo began his career with Sporting CP before signing with Manchester United in 2003. He became a star player at United, where he won three consecutive Premier League titles, the Champions League, and the FIFA Club World Cup. His 2007–08 season earned him his first Ballon d'Or at age 23. In 2009, Ronaldo became the subject of the then-most expensive transfer in history when he joined Real Madrid in a deal worth €94 million (£80 million). At Madrid, he was at the forefront of the club's resurgence as a dominant European force, helping them win four Champions Leagues between 2014 and 2018, including the long-awaited La Décima. He also won two La Liga titles, including the record-breaking 2011–12 season in which Madrid reached 100 points, and became the club's all-time top goalscorer. He won Ballon d'Ors in 2013, 2014, 2016 and 2017, and was runner-up three times to Lionel Messi, his perceived career rival. Following issues with the club hierarchy, Ronaldo signed for Juventus in 2018 in a transfer worth an initial €100 million, where he was pivotal in winning two Serie A titles. In 2021, he returned to United before joining Al-Nassr in 2023.
+
+Ronaldo made his international debut for Portugal in 2003 at the age of 18 and has earned more than 200 caps, making him history's most-capped male player.[7] He has played in eleven major tournaments. He scored his first international goal in Euro 2004, where he helped Portugal reach the final and subsequently made the team of the tournament. He assumed captaincy of the national team ahead of Euro 2008; and at Euro 2012, he was named in the team of the tournament. Ronaldo led Portugal to their first major tournament title at Euro 2016, being named in the team of the tournament for the third time. In the 2018 World Cup, he had his most prolific World Cup campaign with four goals. He received the Golden Boot as the top scorer of Euro 2020 before playing in his fifth World Cup at the 2022 World Cup. He has won two UEFA Nations Leagues, in 2019 and 2025. Ahead of the 2026 World Cup, he became the all-time top scorer in World Cup qualification, with 41 goals.
+
+One of the world's most marketable and famous athletes, Ronaldo was ranked the world's highest-paid athlete by Forbes on five occasions, and the world's most famous athlete by ESPN from 2016 to 2019. Time included him on their list of the 100 most influential people in the world in 2014. He is the most popular sportsperson on social media: he counts over 1 billion total followers across Facebook, Twitter, YouTube and Instagram, making him the first person to achieve that feat. Ronaldo was named in the UEFA Ultimate Team of the Year in 2015, the All-time UEFA Euro XI in 2016, and the Ballon d'Or Dream Team in 2020. In recognition of his record-breaking goalscoring success, he received special awards for Outstanding Career Achievement by FIFA in 2021 and Champions League All-Time Top Scorer by UEFA in 2024.
+
+Early life
+Cristiano Ronaldo dos Santos Aveiro was born on 5 February 1985 in the São Pedro parish of Funchal, the capital of the Portuguese island of Madeira, and grew up in the nearby parish of Santo António.[8][9] He is the fourth and youngest child of Maria Dolores dos Santos Viveiros Aveiro, who worked as a cook in the hospitality industry and a cleaning woman,[10][11] and José Dinis Aveiro, a municipal gardener at the Junta de Freguesia of Santo António and part-time kit man for football club Andorinha.[12][13][14] His great-grandmother on his father's side, Isabel da Piedade, an African woman, was born in the island of São Vicente, in what was then Portuguese Cape Verde, and moved to Madeira Island at 16.[15][16] He has one older brother, Hugo, and two older sisters, Elma and Liliana Cátia "Kátia".[2] He was named after actor and U.S. President Ronald Reagan, whom his father was a fan of.[17] His mother revealed that she wanted to abort him due to poverty, his father's alcoholism, and having too many children already, but her doctor refused to perform the procedure.[18][19] Ronaldo grew up in an impoverished Catholic home, sharing a room with all his siblings.[20]
+
+As a child, Ronaldo played for Andorinha from 1992 to 1995,[21] where his father was the kit man,[12] and later spent two years with Nacional. In 1997, aged 12, he went on a three-day trial with Sporting CP, who signed him for a fee of £1,500.[22] He subsequently moved from Madeira to Lisbon to join Sporting CP's youth system.[22] By age 14, while struggling with his school duties and responsibilities in Escola EB2 de Telheiras, his school in the Telheiras area of Lisbon, Ronaldo believed he had the ability to play semi-professionally and agreed with his mother and his tutor at Sporting CP, Leonel Pontes,[23] to cease his education to focus entirely on football.[24][25]
+
+With a troubled life as a student,[26] and although living in Lisbon area away from his Madeiran family,[27][28] he did not complete schooling beyond the 6th grade.[29][30] While popular with other students at school, he had been expelled after throwing a chair at his teacher, who he said had "disrespected" him.[24] One year later, he was diagnosed with tachycardia, a condition that could have forced him to give up playing football.[31] Ronaldo underwent heart surgery where a laser was used to cauterise multiple cardiac pathways into one, altering his resting heart rate.[32] He was discharged from the hospital hours after the procedure and resumed training a few days later.[33] In 2021, Cristiano Ronaldo's mother, Dolores Aveiro, stated in an interview for Sporting CP's official television channel (Sporting TV) that her son would be a bricklayer if he had not become a professional football player.[34]
+
+Growing up, Ronaldo idolised the Brazilian footballers Ronaldinho and Ronaldo, and has described them as leaving "a beautiful history in football".[35]
+
+Club career
+Main article: Career of Cristiano Ronaldo § Club career
+Sporting CP
+After impressing in Sporting's youth teams, he was promoted to the main team by first-team manager László Bölöni. At age 17, on 14 August 2002, he played his first official match for the first team, in a UEFA Champions League qualifying round at José Alvalade Stadium against Inter Milan,[36] and his Primeira Liga debut, took place a month later against Braga, and on 7 October, he scored two goals against Moreirense in their 3–0 win.[37] Over the course of the 2002–03 season, his representatives suggested the player to Liverpool manager Gérard Houllier and Barcelona president Joan Laporta.[38] Manager Arsène Wenger, who was interested in signing Ronaldo, met with him at Arsenal's stadium in November to discuss a possible transfer.[39]
+
+Manchester United manager Alex Ferguson was determined to acquire Ronaldo on a permanent move urgently, after Sporting defeated United 3–1 at the inauguration of the Estádio José Alvalade on 6 August 2003. Initially, United had planned to sign Ronaldo and loan him back to Sporting for a year.[40] Having been impressed by him, the United players urged Ferguson to sign him. After the game, Ferguson said Ronaldo was "one of the most exciting young players" he had ever seen.[40][41]
+
+Manchester United
+2003–2007: Development and breakthrough
+"There have been a few players described as 'the new George Best' over the years, but this is the first time it's been a compliment to me."
+
+—Former Manchester United player George Best hails the 18-year-old Cristiano Ronaldo in 2003.[42]
+On 12 August 2003, less than a week after the friendly that impressed Ferguson, Manchester United signed Ronaldo for £12 million,[43] an England record for a teenager.[44] This also made him the first Portuguese player to sign for the club.[45]
+
+Although he requested the number 28, his number at Sporting, he received the squad number 7 shirt, which had previously been worn by such United players as George Best, Eric Cantona and David Beckham.[46] Wearing the number 7 became an extra source of motivation for Ronaldo.[47] A key element in his development during his time in England proved to be Ferguson, of whom he later said: "He's been my father in sport, one of the most important and influential factors in my career."[48]
+
+
+Ronaldo playing for Manchester United against Chelsea during the 2005–06 Premier League season
+Ronaldo made his debut as a substitute in a 4–0 home win over Bolton Wanderers in the Premier League on 16 August 2003.[49] His performance earned praise from Best, who hailed it as "undoubtedly the most exciting debut" he had ever seen.[42] Ronaldo scored his first goal for Manchester United with a free-kick in a 3–0 win over Portsmouth on 1 November.[50] On 15 May 2004, in a victory against Aston Villa, Ronaldo scored the opening goal and later received the first red card of his career.[51][52] Ronaldo ended his first season in English football with a trophy, scoring the opening goal in United's 3–0 win over Millwall in the 2004 FA Cup Final.[53] BBC pundit Alan Hansen described him as the star of the final.[54] The British press had been critical of Ronaldo during the season for his "elaborate" step-overs in trying to beat opponents,[55] but teammate Gary Neville said he was "not a show pony, but the real thing", and predicted he would become a world-class player.[56]
+
+"He has got the tricks and party pieces, we know that, but they're not much good unless there is something at the end of it all. We still have to remember, of course, that the lad is only 19 years of age. Considering that, you have to say he has got massive talent. His feet are mesmerising at times, and if he can couple that with some consistently good crossing, the future looks frightening."
+
+—Former BBC pundit Alan Hansen commenting on Ronaldo after his first season.[54]
+At the start of 2005, Ronaldo played two of his best matches of the 2004–05 season, producing a goal and an assist against Aston Villa and scoring twice against rivals Arsenal.[57][58] Ronaldo won his second trophy in English football, the Football League Cup, after scoring the third goal in United's 4–0 final win over Wigan Athletic.[59]
+
+During his third season in England, Ronaldo was involved in several incidents. Ronaldo clashed with a teammate, striker Ruud van Nistelrooy, who took offence at the winger's showboating style of play.[60] Following the 2006 FIFA World Cup, in which he was involved in an incident where club teammate Wayne Rooney was sent off,[61] Ronaldo publicly asked for a transfer, lamenting the lack of support he felt he had received from the club over the incident.[62] United denied the possibility of him leaving the club.[63] Although his World Cup altercation with Rooney resulted in Ronaldo being booed throughout the 2006–07 season,[64] it proved to be his break-out year, as he broke the 20-goal barrier for the first time and won his first Premier League title.[65]
+
+2007–2009: Collective and individual success and Ballon d'Or
+
+Ronaldo (pictured during 2007-08) evolved into the best player in the world in this season, according to many pundits and fellow players.[66]
+In the 2006–07 season, he amassed a host of personal awards for the season, winning the Professional Footballers' Association's Player's Player, Fans' Player, Young Player of the Year awards, and the Football Writers' Association's Footballer of the Year award,[67][68] becoming the first player to win all four main PFA and FWA honours.[69] Ronaldo was named runner-up to Kaká for the 2007 Ballon d'Or,[70] and came third, behind Kaká and Lionel Messi, in the running for the 2007 FIFA World Player of the Year award.[71]
+
+Ronaldo scored his first hat-trick for United in a 6–0 win against Newcastle United on 12 January 2008.[72] His 31 league goals earned him the Premier League Golden Boot,[73] as well as the European Golden Shoe, which made him the first winger to win the latter award.[74] He additionally received the PFA Players' Player of the Year and FWA Footballer of the Year awards for the second consecutive season.[75][76] United reached the final against Chelsea in Moscow on 21 May, where, despite his opening goal being negated by an equaliser and his penalty kick being saved in the shoot-out,[77] United emerged victorious, winning 6–5 on penalties after a 1–1 draw at the end of 120 minutes.[78][79] As the Champions League top scorer, Ronaldo was named the UEFA Club Footballer of the Year.[80] With his 2008 Ballon d'Or and 2008 FIFA World Player of the Year, Ronaldo became United's first Ballon d'Or winner since Best in 1968,[81] and the first Premier League player to be named the FIFA World Player of the Year.[82]
+
+Shortly after, Ronaldo was linked to a move to Real Madrid, United filed a tampering complaint with governing body FIFA over Madrid's alleged pursuit of their player, but they declined to take action.[83] and he remained at United for another year.[84] His match-winning goal in the second leg against Porto, a 40-yard strike, earned him the inaugural FIFA Puskás Award, presented by FIFA in recognition of the best goal of the year;[85] he later called it the best goal he had ever scored.[86] United advanced to the final in Rome,[87] where he made little impact in United's 2–0 defeat to Barcelona.[88]
+
+Real Madrid
+2009–2015: World record transfer and consecutive Ballon d'Or wins
+
+Ronaldo adapted tremendously to Spanish football, scoring 33 goals in just 35 games in his debut season.
+In 2009, Ronaldo transferred to Real Madrid for a then world record £80 million.[89] At least 80,000 fans attended his presentation at the Santiago Bernabéu, surpassing the 25-year record of 75,000 fans who had welcomed Diego Maradona at Napoli.[90] Ronaldo said, "This is the completion of my boyhood dream, to be a Real Madrid player."[91]
+
+Ronaldo made his La Liga debut against Deportivo La Coruña on 29 August, scoring a penalty in a 3–2 home win.[92] He scored in each of his first four league games, the first Madrid player to do so.[93] His first Champions League goals for the club followed with two free kicks in the first group match against Zürich.[94] His strong start to the season was interrupted when he suffered an ankle injury in October while on international duty, which kept him sidelined for seven weeks.[95][96] Despite scoring 33 goals in all competitions and contributing to Real Madrid's 96 points in La Liga, his first season with Madrid ended trophyless.[97]
+
+
+Ronaldo scored 46 league goals during the La Liga championship success in his third season in Spain.
+Following Raúl's departure, Ronaldo was given No. 7 for the 2010–11 season and scored 53 goals, helping Madrid win the Copa del Rey, scoring the winning goal against rivals Barcelona in the El Clásico, his first trophy with Madrid.[98] He also became the first player in La Liga to score 40 goals.[99] In addition to the Pichichi Trophy, Ronaldo won the European Golden Shoe for a second time, becoming the first player to win the award in different leagues.[100]
+
+The following season saw Ronaldo score 60 goals across all competitions,[101] leading Madrid to their first league title in four years with a record 100 points and his runner-up finish to Lionel Messi in the 2011 FIFA Ballon d'Or.[102] He scored his 100th league goal for Madrid in a 5–1 win over Real Sociedad on 24 March 2012, breaking the previous club record held by Ferenc Puskás.[103] In the 2012–13 season, he scored his first hat-trick in the Champions League in a 4–1 win over Ajax.[104] Four days later, he became the first player to score in six successive Clásicos when he hit a brace in a 2–2 draw at Camp Nou.[105] His performances again saw Ronaldo voted second in the running for the 2012 FIFA Ballon d'Or, behind four-time winner Messi.[106]
+
+Following the 2012–13 winter break, Ronaldo captained Madrid for the first time in an official match, scoring twice to lift 10-man Madrid to a 4–3 win over Sociedad on 6 January.[107] He subsequently became the first non-Spanish player in 60 years to captain Madrid in El Clásico on 30 January, a match which also marked his 500th club appearance.[108]
+
+
+Ronaldo scored a record 17 UEFA Champions League goals during the 2013–14 season en route to La Décima.
+In 2013–14 season, Ronaldo was joined at the club by winger Gareth Bale and together with striker Karim Benzema, they formed an attacking trio popularly dubbed "BBC", an acronym of Bale, Benzema and Cristiano, and a play on the name of the British public service broadcaster, the British Broadcasting Corporation (BBC).[109] He continued prolific scoring, with 69 goals in 2013, winning the 2013 FIFA Ballon d'Or,[110] and the FIFA World Player of the Year award, for the first time in his career.[111]
+
+Concurrently with his individual achievements, Ronaldo enjoyed his greatest team success in Spain to date, as he helped Madrid win La Décima, their tenth European Cup, scoring a penalty in the 120th minute of the 4–1 final win over city rivals Atlético Madrid, becoming the first player to score in two European Cup finals for two different winning teams.[112] As the competition's top goalscorer for the third time, with a record 17 goals,[113] he was named the UEFA Best Player in Europe.[114] Ronaldo scored 31 goals in 30 league games, which earned him the Pichichi and the European Golden Shoe, along with Liverpool's Luis Suárez.[115] On 4 May, Ronaldo scored a back-heeled volley in the closing moments of the match against Valencia, voted goal of the season by the Liga Nacional de Fútbol Profesional (LFP),[116] giving him the Best Player in La Liga award.[117]
+
+During the 2014–15 season, Ronaldo set a new personal best of 61 goals, and after winning the 2014 FIFA Club World Cup,[118] Ronaldo received the 2014 Ballon d'Or,[119] joining Johan Cruyff, Michel Platini and Marco van Basten as a three-time recipient.[120] Madrid finished in second place in La Liga and exited at the semi-final stage in the Champions League.[121] With 10 goals, he finished as top scorer for a third consecutive season, alongside Messi and Neymar.[122] On 5 April, he scored five goals in a game for the first time in his career, including an eight-minute hat-trick, in a 9–1 rout of Granada.[123] His 300th goal for his club followed three days later in a 2–0 win against Rayo Vallecano.[124] He finished the season with 48 goals, winning a second consecutive Pichichi and the European Golden Shoe for a record fourth time.[125]
+
+2015–2018: All-time Madrid top scorer and fifth Ballon d'Or
+Cristiano Ronaldo became Real Madrid's all-time top scorer on 12 September 2015 against Espanyol, netting 230 goals in 203 matches, surpassing the previous record holder, Raúl.[126] Ronaldo also became the all-time top scorer in the Champions League with a hat-trick in the first group match against Shakhtar Donetsk, having finished the previous season level with Messi on 77 goals.[127] Two goals against Malmö FF in a 2–0 away win on 30 September saw him reach the milestone of 500 career goals for club and country.[128] He won the 2016 Ballon d'Or, his fourth, and the inaugural 2016 The Best FIFA Men's Player, a revival of the former FIFA World Player of the Year, largely owing to his success with Portugal in winning Euro 2016.[129]
+
+
+Ronaldo in the 2018 UEFA Champions League Final, his final game for Real Madrid
+In the 2016–17 UEFA Champions League quarter-finals against Bayern in April, Ronaldo scored both goals in a 2–1 away win which saw him make history by becoming the first player to reach 100 goals in UEFA club competition.[130] On 17 May, Ronaldo overtook Jimmy Greaves as the all-time top scorer in the top five European leagues, scoring twice against Celta de Vigo.[131] He finished the season with 42 goals in all competitions as he helped Madrid to win their first La Liga title since 2012.[132]
+
+In the Champions League Final, Ronaldo scored two goals in a 4–1 victory over Juventus to take him to 12 goals for the season, making him the competition's top goalscorer for the fifth straight season (sixth overall), as well as the first player to score in three finals in the Champions League era; the second goal was the 600th of his senior career.[133] Madrid also became the first team to win back-to-back finals in the Champions League era.[134]
+
+On 23 October, his performances throughout 2017 saw him awarded The Best FIFA Men's Player award for the second consecutive year.[135] A day later, Ronaldo won the 2017 Ballon d'Or, receiving his fifth-time award on the Eiffel Tower in Paris.[136] On 3 April 2018, Ronaldo scored the first two goals in a 3–0 away win against Juventus in the quarter-finals of the 2017–18 UEFA Champions League, with his second goal being an acrobatic bicycle kick. Described as a "PlayStation goal" by Juventus defender Andrea Barzagli, with Ronaldo's foot approximately 7 ft 7 in (2.31 m) off the ground, it garnered him a standing ovation from the opposing fans in the stadium as well as a plethora of plaudits from peers, pundits and coaches.[137]
+
+In the final on 26 May, Madrid defeated Liverpool 3–1, winning Ronaldo his fifth Champions League title, the first player to do so.[138] He finished as the top scorer of the tournament for the sixth consecutive season with 15 goals.[139] After the final, Ronaldo referred to his time with Madrid in the past tense, sparking speculation that he could leave the club.[140]
+
+Juventus
+Ronaldo joined Juventus in 2018 for €100 million, the transfer was the highest ever for a player over 30 years old and the highest paid by an Italian club.[141] Upon signing, Ronaldo cited his need for a new challenge as his rationale for departing Madrid,[142] but later attributed the transfer to the lack of support he felt was shown by club president Florentino Pérez.[143]
+
+2018–2020: Consecutive Serie A titles
+
+Ronaldo playing for Juventus against Torino in November 2019
+On 18 August, Ronaldo made his debut in a 3–2 away win against Chievo Verona.[144] On 19 September, in his first Champions League match for Juve, he was sent off against Valencia, his first red card in 154 Champions League appearances.[145] In the reverse (home) leg against Valencia, Cristiano won 100 Champions League matches, becoming the first ever player to do so.[146]
+
+Ronaldo won his first trophy with the club on 16 January 2019, the 2018 Supercoppa Italiana, after he scored the only goal from a header against AC Milan.[147] On 10 February, Ronaldo scored in a 3–0 win over Sassuolo, the ninth consecutive away game in which he had scored in the league, equalling Giuseppe Signori's single season Serie A record of most consecutive away games with at least one goal.[148] On 12 March, Ronaldo scored a hat-trick in a 3–0 home win against Atlético in the second leg of the Champions League round of 16, helping Juventus overcome a two-goal deficit to reach the quarter-finals.[149] On 20 April, Ronaldo played in the scudetto clinching game against Fiorentina, as Juventus won their eighth successive title after a 2–1 home win, thereby becoming the first player to win league titles in England, Spain and Italy.[150] With 21 goals and eight assists, Ronaldo won the league award for Most Valuable Player.[151]
+
+On 1 October, he reached several milestones in Juventus's 3–0 Champions League group stage win over Bayer Leverkusen including breaking Iker Casillas' record for most Champions League wins of all time.[152] On 18 December, Ronaldo leapt to a height of 8 ft 5 in (2.57 m), higher than the crossbar, to head the winning goal in a 2–1 away win against Sampdoria.[153] He scored his first Serie A hat-trick on 6 January 2020, in a 4–0 home win against Cagliari and became only the second player to score hat-tricks in the Premier League, La Liga and Serie A.[154] On 22 February, Ronaldo scored for a record-equalling 11th consecutive league game, alongside Gabriel Batistuta and Fabio Quagliarella, in what was his 1,000th senior professional game, a 2–1 away win against SPAL.[155] On 22 June, he scored a penalty in a 2–0 away win over Bologna, overtaking Rui Costa to become the highest scoring Portuguese player in Serie A history.[156] On 20 July, Ronaldo scored twice in a 2–1 home win over Lazio; his first goal was his 50th in Serie A. He became the first player in history to reach 50 goals in the Premier League, La Liga and Serie A, and becoming the second player after Edin Džeko to score 50 goals in three of Europe's top five major leagues.[157] Moreover, he became the oldest player, at the age of 35 years and 166 days, to score over 30 goals in one of the five top European leagues since Ronnie Rooke with Arsenal in 1948.[158] On 26 July, Ronaldo scored the opening goal in a 2–0 home win over Sampdoria as Juventus were crowned Serie A champions for a ninth consecutive time.[159] On 7 August, Ronaldo scored a brace in a 2–1 home win against Lyon in the second leg of the Champions League round of 16, which saw him finish the season with 37 goals in all competitions; the tally allowed him to break Borel's club record of 36 goals in a single season.[160]
+
+2020–2021: 100 Juve goals, Capocannoniere, and departure
+Ronaldo played his 100th match in all competitions for Juventus on 13 December, scoring two penalties in a 3–1 away win over Genoa in the league to bring his goal tally to 79.[161] On 2 March 2021, he scored a goal in a 3–0 win over Spezia in his 600th league match, to become the first player to score at least 20 goals in 12 consecutive seasons in the top five leagues of Europe.[162] On 12 May, Ronaldo scored a goal in a 3–1 away win over Sassuolo to reach his 100th goal for Juventus in all competitions on his 131st appearance, becoming the fastest Juventus player to achieve the feat.[163] With Juventus's victory in the 2021 Coppa Italia Final on 19 May, Ronaldo became the first player in history to win every major domestic trophy in England, Spain and Italy.[164] Ronaldo ended the season with 29 league goals, winning the Capocannoniere award for highest goalscorer and becoming the first footballer to finish as top scorer in the English, Spanish and Italian leagues.[165]
+
+The start of the following season came amid reports Ronaldo would depart the club before the closure of the transfer window,[166] despite Ronaldo and his agent Jorge Mendes reaching a verbal agreement with Manchester City over personal terms,[167] but the club pulled out of the deal,[168] and later it was confirmed that City's rivals Manchester United, Ronaldo's former club, were in advanced talks to sign him,[169][170] while former manager Alex Ferguson and several ex-teammates had been in contact to persuade him to re-sign for United.[171][172]
+
+Return to Manchester United
+
+Ronaldo in a Premier League match against Newcastle in September 2021, his first game back at Manchester United
+On 27 August 2021, Manchester United announced they had reached an agreement with Juventus to re-sign Ronaldo, subject to agreement of personal terms, visa and medical.[173][174] Ronaldo was given the number 7 shirt after Edinson Cavani agreed to switch to 21.[175] The first 24 hours of Ronaldo's shirt sales was reported to have broken the all-time record following a transfer, overtaking Messi after his move to Paris Saint-Germain.[176]
+
+On 11 September, Ronaldo made his second debut at Old Trafford, scoring the opening two goals in a 4–1 league victory against Newcastle United.[177] On 29 September, he scored a last-minute winner in United's 2–1 victory at home to Villarreal in the Champions League, and overtook Iker Casillas as the player with the most appearances in the competition.[178] Ronaldo proved to be crucial in the next Champions League fixtures, scoring various last minute goals to help United qualify for the round of 16 as group winners.[179] On 2 December, Ronaldo netted two goals in a 3–2 home league win against Arsenal, which saw him surpass 800 career goals.[180] Struggles ensued, with a fractured relationship with his teammates and interim manager, continuing for two months,[181] until he scored in United's 2–0 win at home versus Brighton & Hove Albion on 15 February 2022, his first in the new year.[182] He finished the season with 24 goals in all competitions being named in the Premier League Team of the Year and the winner of United's Sir Matt Busby Player of the Year award,[183][184] but United finished in a disappointing sixth place and qualified for the UEFA Europa League; as a result, Ronaldo went trophyless for the first time since 2010.[185]
+
+After growing dissatisfaction with the direction of United on and off the field, Ronaldo desired to leave to join a club competing in the Champions League, but a move failed to materialise, with various European clubs refusing a transfer, due to his age, overall cost of a transfer and high wage demands.[186][187] Shortly after, he fell out with manager Erik ten Hag who used him as a substitute, leading United to terminate his contract on 22 November, following an interview with Piers Morgan, where Ronaldo said that he felt "betrayed" by Ten Hag and criticised the management of the club.[188]
+
+Al-Nassr
+
+Ronaldo with Al-Nassr in September 2023
+On 30 December 2022, Saudi Arabian club Al-Nassr reached an agreement for Ronaldo to join the club, signing a contract until 2025.[189] Ronaldo received the highest football salary ever, at €200 million per year,[190][191] including a guaranteed football salary of €90 million, with commercial and sponsorship deals bringing his total annual salary to €200 million.
+
+He made his debut for Al-Nassr on 22 January 2023, as club captain, playing the full 90 minutes of a 1–0 win over Al-Ettifaq,[192] and scored his first goal in a 2–2 draw against Al-Fateh by converting a last-minute penalty.[193] On 9 February, Ronaldo scored all four goals in a 4–0 win over Al-Wehda, his first goal of the match being his 500th career league goal.[194] According to the BBC, Ronaldo's transfer to Al-Nassr led a "revolution" in Asian football, with many players from other leagues, particularly those in Europe, transferring to Saudi Pro League clubs for the 2023–24 season.[195][196][197]
+
+In the final of the Arab Club Champions Cup on 12 August, Ronaldo scored both goals as they defeated rivals Al-Hilal 2–1 after extra time. Ronaldo scored six goals in the competition.[198] At the close of the year, Ronaldo scored 54 goals in all competitions for Al-Nassr and Portugal, making him the outright top scorer in 2023, reaching the same goalscoring record as in 2016.[199][200] On 27 May 2024, in Al-Nassr's home fixture against Al-Ittihad, Ronaldo scored his 34th and 35th league goals of the campaign, surpassing Abderrazak Hamdallah's record for the most goals scored in a single Saudi Pro League season. He also became the first footballer to finish as top scorer in four different leagues, the English, Spanish, Italian and Saudi leagues.[201] On 31 May, in a 5–4 penalty shoot-out defeat to Al-Hilal in the 2024 King Cup final following a 1–1 draw after extra-time (in which he scored his side's second spot kick), he equalled Rogério Ceni's record for most top-level matches by a male professional footballer (1,225).[202]
+
+Ronaldo finished the 2024–25 season with 25 league goals, becoming the league's top scorer for a second consecutive time.[203]
+
+International career
+Main article: Career of Cristiano Ronaldo § International career
+
+Ronaldo (bottom left) playing for Portugal during their semi-final match against the Netherlands at Euro 2004
+At the age of 18, Ronaldo made his debut for Portugal as a substitute against Kazakhstan on 20 August 2003.[204] At UEFA Euro 2004, he scored his first international goal in a 2–1 group stage loss to Greece in his eighth international appearance.[205][206] Despite Portugal losing to Greece again in the final, Ronaldo made the team of the tournament, with two assists and two goals.[207] In the 2006 FIFA World Cup, at the age of 21 years and 132 days, Ronaldo became the youngest ever goalscorer for Portugal at a World Cup finals.[208] Portugal reached the semi-finals, where Portugal lost to France, with Ronaldo being booed during their defeat, due to an incident that occurred in the quarter-finals against England.[209] FIFA's Technical Study Group overlooked him for the tournament's Best Young Player award and handed it to Germany's Lukas Podolski, citing his behaviour as a factor in the decision.[210][211]
+
+
+Ronaldo, pictured playing against Germany at Euro 2012, was made captain for Portugal in 2008.
+On 6 February 2007, Cristiano captained Portugal for the first time in a friendly against Brazil.[212] He wore the number 7 shirt ahead of UEFA Euro 2008.[213] Despite scoring eight goals in qualifications,[214] the second-highest tally, he scored just one goal in the finals, netting the second goal of Portugal's 3–1 win in the group stage game against the Czech Republic. Portugal were eliminated in the quarter-finals after a 3–2 loss to Germany.[215]
+
+Ronaldo failed to score in 2010 World Cup qualifying.[210] He scored only one goal in the 2010 World Cup finals; despite this, he was named man of the match in all three group stage matches, against Ivory Coast, North Korea and Brazil.[216][217][218] His only goal of the tournament came in their 7–0 demolishing of North Korea, which was his first international goal in 16 months.[219] Two years later, in UEFA Euro 2012, Ronaldo was joint top scorer with three goals, enough for him to be included in the team of the tournament.[6] During qualification for the 2014 FIFA World Cup, Ronaldo scored eight goals. Despite this, Portugal did not qualify directly; Ronaldo scored all four goals against Sweden in the play-off to qualify.[220] At the tournament in Brazil, Ronaldo assisted a last-minute 2–2 equaliser against the United States,[221] and scored an 80th-minute winner in a 2–1 win over Ghana.[222]
+
+
+Ronaldo leaps in the air in Portugal's Euro 2016 quarter-final match against Poland.
+In 2016, Ronaldo led Portugal to their first-ever trophy at the UEFA Euro 2016, although he was subbed off in the 25th minute in the final against hosts France.[223] He received the Silver Boot as the second-highest goalscorer, which gave him his fourth Ballon d'Or later that year. With the win, Portugal qualified and made its only appearance in the FIFA Confederations Cup held in Russia, where they finished in third place, with Ronaldo being named man of the match in all three of Portugal's group stage matches.[224][225]
+
+In the 2018 World Cup, Ronaldo became the oldest player to score a hat-trick in a World Cup match, in a 3–3 draw against Spain.[226] The following match, Ronaldo scored the only goal in a 1–0 win against Morocco, breaking Puskás' record as the highest European goalscorer of all time, with 85 international goals.[227] For his performances in the tournament, Ronaldo was named in the World Cup Dream Team.[228]
+
+Ronaldo led Portugal to victory in the inaugural UEFA Nations League in 2019, receiving the top scorer award in the finals,[229] and received the Golden Boot as top scorer of Euro 2020. Ronaldo also became the first player to score at five European Championships.[230] On 23 June 2021, Ronaldo scored two goals in the Euro 2020 match against France, breaking the men's goalscoring record previously held by Ali Daei.[231]
+
+
+Ronaldo during a group stage game against Uruguay at the 2022 World Cup
+On 9 October, he scored the opening goal in a 3–0 friendly win over Qatar at the Estádio Algarve; with his 181st international appearance, he also overtook Sergio Ramos's record for the most international caps received by a European player.[232][233] In the following match against Luxembourg on 12 October, also played at the Estádio Algarve, Ronaldo scored a hat-trick in a 5–0 win for Portugal, thus becoming the first player to score 10 hat-tricks in men's international football.[234]
+
+In the 2022 World Cup, on 24 November, Ronaldo became the first player to score at five World Cups, netting a penalty against Ghana.[235] Following a dispute with manager Fernando Santos, after their last group game against South Korea, he was dropped from the starting line-up for Portugal's last 16 match, marking the first time since Euro 2008 that he had not started a game for Portugal in a major international tournament,[236] and the first time Portugal had started a knockout game without Ronaldo in the starting line-up at an international tournament since Euro 2000.[237]
+
+
+Ronaldo during an interview at the UEFA Euro 2024
+On 23 March 2023, Ronaldo scored a brace against Liechtenstein as he earned his 197th overall cap to become the most capped male footballer of all time.[238] On 20 June, Ronaldo made his 200th appearance for his national team, scoring the only goal of an away win over Iceland, in the Euro qualifiers, as he became the first player in the history of men's international football to make 200 appearances for his country.[239] On 16 October, Portugal secured first place in their qualifying group, following a 5–0 away victory over Bosnia and Herzegovina, with Ronaldo scoring twice.[240] The landmark goals meant he had scored more than 100 goals in each of the last three decades (2000s, 2010s, 2020s).[241][242]
+
+With his start in Portugal's UEFA Euro 2024 opener against the Czech Republic, Ronaldo became the first player to feature in six European Championships, having previously been the first player to appear in five.[243] Later that year, on 5 September, he scored his 900th career goal in a 2–1 victory over Croatia in the UEFA Nations League.[244] On 8 June 2025, Ronaldo won his second UEFA Nations League title, helping Portugal defeat Spain in the final, scoring 8 goals in 9 games in the tournament.[245] On 14 October, Ronaldo scored twice in a 2–2 draw against Hungary in the 2026 World Cup qualifiers, reaching a record 41 goals in World Cup qualifying.[246]
+
+Player profile
+Style of play
+
+At his peak, Ronaldo was known for his exceptional speed, explosive shooting, flair and athleticism.[247]
+A versatile attacker, Ronaldo is capable of playing on either wing as well as through the centre of the pitch,[248] and, while ostensibly right-footed, is very strong with both feet.[249] Tactically, Ronaldo has undergone several evolutions throughout his career. While at Sporting and during his first season at Manchester United, he was typically deployed as a traditional winger on the right side of midfield, where he regularly looked to deliver crosses into the penalty area. In this position, he was able to use his pace and acceleration, agility and technical skills to take on opponents in one-on-one situations. Ronaldo became noted for his dribbling and flair, often displaying an array of tricks and feints,[250][251] such as the step overs and so-called 'chops' that became his trademark;[252] he has also been known to use the flip-flap.[253]
+
+His strength and jumping ability, combined with his elevation, heading accuracy and height of 1.87 m (6 ft 1+1⁄2 in), give him an edge in winning aerial duels. These attributes allow him to function as a target-man and make him an aerial goal threat in the penalty area; consequently, many of his goals have been headers.[254][255][256] Ronaldo holds the record for the highest recorded jump in football history, measuring 2.93 metres (9 ft 7 in), which he achieved during a match against Manchester United while playing for Real Madrid in the round of 16 of the UEFA Champions League in 2013.[257] Allied with his increased stamina and work-rate, his goalscoring ability improved drastically on the left wing where he was given the positional freedom to move into the centre to finish attacks. He has also increasingly played a creative role for his team, often dropping deep to pick up the ball, participate in the build-up of plays and create chances for his teammates, courtesy of his vision and passing ability.[250][254]
+
+In his final seasons at United, Ronaldo played an even more attacking and central role, functioning both as a striker and as a supporting forward, or even as an attacking midfielder on occasion.[254] He developed into a prolific goalscorer, capable of finishing well both inside the penalty area and from distance with an accurate and powerful shot, courtesy of his striking ability.[254] An accurate penalty kick taker,[258] he also became a set piece specialist, renowned for his powerful, bending free kicks.[259] When taking free kicks, Ronaldo is known for using the knuckleball technique, which was developed by Juninho Pernambucano.[260] He also adopts a trademark stance before striking the ball, which involves him standing with his legs far apart.[261] Regarding Ronaldo's unique style of taking free kicks, former United assistant manager Mike Phelan commented: "People used to put the ball down, walk away, run up and hit it. He brought in a more dynamic showmanship. He places the ball down, the concentration level is high, he takes his certain amount of steps back so that his standing foot is in the perfect place to hit the ball in the sweet spot. He is the ultimate showman. He has that slight arrogance. When he pulls those shorts up and shows his thighs, he is saying 'All eyes on me' and this is going in. He understands the marketing side of it. The way he struts up and places it; the world is watching him."[262]
+
+
+As Ronaldo entered his thirties he dribbled less frequently,[263] instead transitioning into a "deadly poacher".[264]
+At Real Madrid, Ronaldo continued to play a more offensive role, while his creative and defensive duties became more limited, although not entirely diminished.[265] Initially deployed as a centre forward by managers Manuel Pellegrini and José Mourinho, he was later moved back onto the left wing, though in a free tactical role; this position allowed him to drift into the centre at will to get onto the end of crosses and score, or draw out defenders with his movement off the ball and leave space for teammates to exploit.[265][266][267] Madrid's counter-attacking style of play also allowed him to become a more efficient and consistent player, as evidenced by his record-breaking goalscoring feats. While he mainly drew praise in the media for his prolific goalscoring, Ronaldo also demonstrated his ability as an effective creator in this role.[268][269][270] This unique role has been described by pundits as that of a "false", "attacking", or "goalscoring winger", as Ronaldo effectively almost functioned as a striker at times with his central runs into the penalty area, despite actually playing on the left flank.[266][271] From 2013 onwards, under manager Carlo Ancelotti, he effectively adapted his style to the physical effects of ageing with increasingly reduced off-the-ball movement and general involvement, completing fewer dribbles and passes per game, and instead focusing on short-distance creating and goalscoring.[265][272][273] Since 2017, Ronaldo adapted his style of play yet again to become more of a free-roaming centre forward under manager Zinedine Zidane, a role in which he continued to excel and maintain a prolific goalscoring record; in this position, he earned praise in the media for his intelligent movement both on and off the ball, positional sense, link-up play and finishing, as well as his ability to lose or anticipate his markers, find space in the box and score from few touches or opportunities.[274][275][276]
+
+In his first season at Juventus, Ronaldo continued to play in a variety of different attacking roles under manager Massimiliano Allegri, depending on whom he was partnered with. While he had occupied an increasingly offensive role in his final years at Real Madrid, at times he functioned in a free role at Juventus, either as a lone striker or in his trademark role on the left wing, in a 4–2–3–1 or 4–3–3 formation, in which he often switched positions with Mario Mandžukić. In this role, he was also given licence to drop deep or even out wide onto the right flank to receive the ball, and be more involved in the build-up of plays; as such, aside from scoring goals himself, he began to take on opponents and create chances for other players with greater frequency than he had in his final seasons with Real Madrid. Off the ball, he was also capable of creating space for teammates with his movement and attacking runs into the box, or finishing off chances with his head or feet by getting onto the end of his teammates' crosses.[277][278] On occasion he also played in an attacking partnership alongside Mandžukić in a 4–3–1–2, 4–4–2, or 3–5–2 formation.[279][280][281] He continued to play a similar role in his second season with the club under manager Maurizio Sarri.[278]
+
+Reception and image
+
+A Portugal fan at the 2010 FIFA World Cup in South Africa holding a banner dedicated to Ronaldo
+Ronaldo is widely regarded as one of the two best players of his generation, alongside Argentina forward Lionel Messi.[282] Winning his first Ballon d'Or in 2008 by a record-high vote count at age 23, over the next decade Ronaldo has often featured in debates concerning who is the greatest player in history.[283] Acclaimed for his prolific and consistent goal-scoring,[284] he is considered a decisive player who is also a game changer,[285] especially in important and high-pressured situations.[286] In a 2018 article for Bleacher Report, former NBA star Steve Nash compared Ronaldo to Michael Jordan: "On the pitch, [Ronaldo's] learned how to make his play—less explosive in individual movements—more successful for the team, and in that, I see the greatness of Jordan." In the same article, Ronaldo was ranked first in the ranking of the 50 most influential people in sports culture for 2018.[287]
+
+"In the six years we had him, you just saw his game grow all the time, and he was a fantastic player. Now you see the complete player. His decision-making, his maturity, his experience, plus all the great skills he has got, they all make him the complete player."
+
+—Former manager Alex Ferguson, January 2013[288]
+Ronaldo is noted for his work ethic, elite body conditioning and dedication to improvement on the training pitch, as well being regarded as a natural leader.[289][290] On his longevity and "extraordinary commitment to physical preparation", Adam Bate of Sky Sports said: "Dedication is a huge part of staying at the top and Ronaldo's focus is perhaps unparalleled within the game."[263] While stating they were stylistically different players who shared an equal desire to score goals, former Brazil international Ronaldo praised Cristiano's approach to training, arguing that "there are so few players who take care of their body like he does. I trained because I had to, he does it because he loves it."[291] His drive and determination to succeed are fuelled by a desire to be talked about alongside other greats such as Pelé and Diego Maradona once retiring.[292] He is credited, along with his compatriot, coach José Mourinho, with inspiring changing fortunes of Portuguese football in 2010s and 2020s.[293] At times, he has been criticised for simulating when tackled.[294] He was also occasionally criticised early in his career by manager Alex Ferguson, teammates and the media for being a selfish or overly flamboyant player.[295] Jonathan Wilson of The Guardian opined that Ronaldo had made Juventus, who he joined aged 33 in 2018, weaker, due to "his relative immobility" in his mid-30s, even if his personal goal-scoring output remained high.[296]
+
+During his career, Ronaldo has also been described as having an "arrogant image" on the pitch,[297] with Ronaldo stating that he had become a "victim" because of how he was portrayed in the media.[298] He is often seen moaning, gesticulating and scowling while trying to inspire his team to victory,[297] with Ronaldo insisting that his competitive nature should not be mistaken for arrogance.[298] His managers, teammates and various journalists have said that this reputation has caused an unfair image of him.[299][300][301]
+
+Goal celebrations
+
+Ronaldo's "siu" celebration
+Ronaldo has adopted several goal celebrations throughout his career, including one particular celebration which gained widespread coverage in the media, when he squatted and stared directly into a camera on the sidelines of the pitch with his hand on his chin.[302][303][304] After scoring a goal, he usually celebrates with a "storming jump" and "turn", before "landing in spread-eagled fashion"[303] into his "signature power stance",[304] while usually simultaneously exclaiming "Sí" (Spanish and Italian for "yes").[302][305] This trademark celebration has been dubbed the "Siu" or siuuu in the media.[302][303][306] It has also been known as "suiii", "siiuuu", "siii" or "Right Here Right Now", formally the Cristiano Ronaldo celebration. Since Ronaldo first performed the gesture in 2013,[307] it has been widely imitated by athletes and personalities both in and outside of football when celebrating scoring in respective sports or a significant achievement, and is widely regarded as the most iconic association football celebration of all time.[308]
+
+The gesture was first performed by Ronaldo on 7 August, during the 2013 International Champions Cup Final between Real Madrid and Chelsea. Ronaldo gave Madrid a 2–1 lead with a free kick when he headed in a cross from Isco, helping Madrid beat Chelsea 3–1 to claim the International Champions Cup and celebrating with his first "Siuuu". During an interview after the match against Chelsea when he first performed the gesture, Ronaldo explained he scored the goal and "it just felt natural" and "didn't know where it came from". He started doing it more often and when the supporters see it they are reminded of him.[309]
+
+The phrase "siu" is derived from Portuguese sim, meaning "yes". This was confirmed by Ronaldo in an interview in 2023, almost a decade since he first performed it. Ronaldo explained that the phrase "Siuuu" simply means yes, but "meaning it very strongly".[310]
+
+Rivalry with Lionel Messi
+Main article: Messi–Ronaldo rivalry
+
+Ronaldo with Lionel Messi before an international friendly between Portugal and Argentina in 2011
+Both Ronaldo and Lionel Messi have scored in multiple UEFA Champions League finals, have regularly broken the 50-goal barrier in a single season, and are the two leading goal scorers in history. Sports journalists and pundits regularly weigh the individual merits of both players in an attempt to argue who they believe is the best player in modern football or in the history of the game.[311] It has been compared to several sports rivalries, among them the Muhammad Ali–Joe Frazier rivalry in boxing, the Borg–McEnroe rivalry in tennis and the Senna–Prost rivalry from Formula One motor racing.[312][313] Some commentators choose to analyse the differing physiques and playing styles of the two.[314] Part of the debate revolves around the contrasting personalities of the two players, as Ronaldo is sometimes depicted as an arrogant and theatrical showoff, while Messi is portrayed as a shy, humble character.[315][316][317]
+
+"It's part of my life now. People are bound to compare us. He tries to do his best for his club and for his national team, as I do, and there is a degree of rivalry with both of us trying to do the best for the teams we represent."
+
+—Ronaldo commenting on his rivalry with Messi.[318]
+In a 2012 interview, Ronaldo commented on the rivalry, saying: "I think we push each other sometimes in the competition, this is why the competition is so high."[319] Alex Ferguson, Ronaldo's manager during his time at Manchester United, opined: "I don't think the rivalry against each other bothers them. I think they have their own personal pride in terms of wanting to be the best."[320] Messi himself denied any rivalry, saying that it was "only the media, the press, who wants us to be at loggerheads but I've never fought with Cristiano."[321] Responding to the claims that he and Messi do not get on well on a personal level, Ronaldo commented: "We don't have a relationship outside the world of football, just as we don't with a lot of other players." Ronaldo added that in years to come he hopes they can laugh about it together, stating: "We have to look on this rivalry with a positive spirit, because it's a good thing."[318] Representing archrivals Barcelona and Real Madrid, the two players faced each other at least twice every season in the world's biggest club game, El Clásico, which is among the world's most viewed annual sporting events.[322]
+
+In a debate at Oxford Union in October 2013, when asked whether FIFA president Sepp Blatter preferred Messi or Ronaldo, Blatter paid tribute to the work ethic of the Argentine before taking a swipe at Ronaldo, claiming "one of them has more expenses for the hairdresser than the other." Real Madrid demanded and promptly received a full apology. In response to Blatter's "commander" on the pitch comment, Ronaldo issued his own riposte with a mock-salute celebration after scoring a penalty against Sevilla.[323] In August 2019, Ronaldo and Messi were interviewed while sat next to each other prior to the announcement of the UEFA Men's Player of the Year, with Ronaldo stating: "I pushed him and he pushed me as well. So it's good to be part of the history of football."[324]
+
+In September 2023, Ronaldo declared that his rivalry with Messi was over and "gone", after 36 official fixtures and 15 years of "sharing the stage".[325]
+
+In popular culture
+Popularity and online following
+UR · Cristiano
+YouTube information
+Channel	
+UR · Cristiano
+Years active	2024–present
+Genres	
+SportsEntertainment
+Subscribers	76.7 million
+Views	903 million
+Last updated: 30 September 2025
+Ronaldo was named in the 2014 Time 100, Time's annual list of the most influential people in the world.[326] ESPN named Ronaldo the world's most famous athlete in 2016, 2017, 2018 and 2019.[327][328][329][330] Demand for a replica Ronaldo shirt has been high throughout his career. In 2008, Ronaldo's number 7 Manchester United shirt was the best-selling Premier League sports product.[331] In 2015, Ronaldo's number 7 Real Madrid shirt was the second best-selling worldwide, after Messi's number 10 Barcelona shirt.[332] In 2018, within 24 hours of his number 7 Juventus shirt being released, over 520,000 had been sold, with $62.4 million generated in one day.[333]
+
+
+Fans of Real Madrid (left; Ronaldo's then current club) and Manchester United (right; Ronaldo's then former club) wearing Ronaldo's 7 shirt at the 2017 UEFA Super Cup
+Ronaldo has established a strong online presence. The most popular sportsperson on social media, he counted over 500 million total followers across Facebook, Twitter and Instagram by February 2021, making him the first person to pass half a billion followers.[334] The most-followed person on Facebook (171 million), most-followed on Instagram (650 million) and most-followed sportsperson on Twitter (115 million), his sponsors earned $936 million in media value across his accounts between June 2016 and June 2017.[335]
+
+After announcing the creation of his YouTube channel, UR · Cristiano on 21 August 2024, it became the fastest to reach the 1 million subscribers milestone,[336] doing so in 90 minutes.[336][337][338][339] The channel also became the fastest to reach 5,[340] 10,[341] 20,[342] 30 and 50 million subscribers.[343] It also became the most subscribed channel in Portugal, surpassing the Portuguese Nick Jr.[344] Computer security company McAfee produced a 2012 report ranking footballers by the probability of an internet search for their name leading to an unsafe website, with Ronaldo's name first on the list.[345]
+
+Wealth and sponsorships
+With earnings of €720 million (£615 million) from 2010 to 2019, Ronaldo was ranked second in Forbes list of the decade's highest-paid athletes, behind boxer Floyd Mayweather Jr.[346] Forbes ranked Ronaldo as the highest-paid ahtlete in the world in 2016 ($88 million), 2017 ($93 million) and from 2023 to 2025 ($136 million, $260 million and $275 million respectively), and he has entered every top 10 since the ranking's inception in 2012.[347][348][349][350][335] He has also been included in every annual ranking of the highest-paid athletes by Sportico: he was named the third highest-paid athlete of 2021 ($120 million) and 2022 ($115 million) and the highest-paid athlete of 2023 ($275 million) and 2024 ($260 million).[351][352][353] He is the first footballer and only the third sportsman to earn $1 billion in their career.[354]
+
+Ronaldo is one of the world's most marketable sportsmen: SportsPro rated him the fifth most marketable athlete in 2012[355] and eighth most marketable athlete in 2013.[355][356] Sports market research company Repucom named Ronaldo the most marketable and most recognised football player in the world in May 2014.[357] Since his reputation grew at Manchester United, Ronaldo has signed many sponsorship deals for consumer products, including sportswear, football boots; since November 2012, Ronaldo has worn the Nike Mercurial Vapor personalised CR7 edition,[358] soft drinks, clothing, automotive lubricants, financial services, electronics, and video games.[359][360][361][362] Ronaldo featured as the cover star of FIFA video game FIFA 18 and was heavily involved in the game's promotion.[363] His "Sii" goal celebration features in the FIFA series, accompanied with his own voiceover.[302] He was also the face of Pro Evolution Soccer, appearing on the covers of the 2008, 2012 and 2013 editions of the game.[364]
+
+Philanthropy
+
+Ronaldo in 2010
+Ronaldo has made contributions to various charitable causes throughout his career. Television footage of the 2004 Indian Ocean earthquake and tsunami showed an eight-year-old boy survivor named Martunis wearing a Portuguese football shirt who was stranded for 19 days after his family was killed. Following this, Ronaldo visited Aceh, Indonesia, to raise funds for rehabilitation and reconstruction.[365][366] After accepting undisclosed damages from a libel case against The Sun newspaper in 2008, Ronaldo donated the damages to a charity in Madeira.[367]
+
+In 2009, Ronaldo donated £100,000 to the hospital that saved his mother's life in Madeira following her battle with cancer, so that they could build a cancer centre on the island.[368] In support of the victims of the 2010 Madeira flood, Ronaldo pledged to play in a charity match in Madeira between Primeira Liga club Porto and players from Madeiran-based clubs Marítimo and Nacional.[369]
+
+In 2012, Ronaldo and his agent paid for specialist treatment for a nine-year-old Canarian boy with apparently terminal cancer.[370] In December 2012, Ronaldo joined FIFA's "11 for Health" programme to raise awareness among kids of how to steer clear of conditions including drug addiction, HIV, malaria, and obesity.[371] In January 2013, Ronaldo became Save the Children's new Global Artist Ambassador, in which he hopes to help fight child hunger and obesity.[372] In March 2013, Ronaldo agreed to be the ambassador for the Mangrove Care Forum Bali in Indonesia, an organisation aiming to raise awareness of mangrove conservation.[373]
+
+Ronaldo was named the world's most charitable sportsperson in 2015 after donating £5 million to the relief effort after the earthquake in Nepal which killed over 8,000 people.[374] In June 2016, Ronaldo donated the entirety of his €600,000 Champions League bonus after Real Madrid won the competition.[374] In August of the same year, Ronaldo launched CR7Selfie, a selfie app for charity to help Save the Children that lets participants take a selfie with him in one of several different outfits and poses.[375]
+
+Eponyms and honours
+See also: Cristiano Ronaldo International Airport, Museu CR7, and Galaxy CR7
+
+The Cristiano Ronaldo Museum, Museu CR7, in Funchal, Madeira, opened in December 2013.
+In 2007, C.D. Nacional renamed its youth campus Cristiano Ronaldo Campus Futebol (Cristiano Ronaldo Football Campus).[376] In December 2013, Ronaldo opened a museum, Museu CR7, in his hometown of Funchal, Madeira, to house trophies and memorabilia;[377] the museum is an official sponsor of the local football team União da Madeira.[378][379] At a ceremony held at the Belém Palace in January 2014, President of Portugal Aníbal Cavaco Silva raised Ronaldo to the rank of Grand Officer of the Order of Prince Henry "to distinguish an athlete of world renown who has been a symbol of Portugal globally, contributing to the international projection of the country and setting an example of tenacity for future generations."[380] In June 2015, astronomers led by David Sobral from Lisbon and Leiden discovered a galaxy which they named Cosmos Redshift 7 (CR7) in tribute to Ronaldo.[381]
+
+On 23 July 2016, following Portugal's triumph at Euro 2016, Madeira Airport in Funchal was renamed as Cristiano Ronaldo International Airport.[382] The name change was subject to much debate locally by some politicians and citizens, who even started a petition against the move, an action criticised by President of Madeira Miguel Albuquerque.[383][384] On 21 September 2020, the Sporting CP's football academy in Alcochete, until then called Academia Sporting, was renamed Academia Cristiano Ronaldo.[385][386] In 2023, the Lisbon City Council approved awarding him, at the proposal of its president, Carlos Moedas, the Medal of Honor of the City, because he is "a great Lisboner, in the sense of the passion he has for the city".[387]
+
+Public art
+
+
+Public artwork of Ronaldo include a waxwork likeness in Madame Tussauds, London (left) and a bronze statue in Madeira (right), resembling the pose he strikes before taking free kicks.
+In June 2010, during the build-up to the World Cup, Ronaldo became the fourth footballer, after Steven Gerrard, Pelé, and David Beckham, to be represented as a waxwork at Madame Tussauds London.[388] Another waxwork of him was presented at the Madrid Wax Museum in December 2013.[389] A bronze statue of Ronaldo, designed by artist Ricardo Madeira Veloso, was unveiled in Funchal in December 2014.[390][391]
+
+The unveiling of the rebranded Cristiano Ronaldo International Airport took place on 29 March 2017, which included a bust of his head being presented.[384] The bust and the name change were controversial, with the lack of the bust's likeness to Ronaldo being ridiculed by comedians, including Saturday Night Live,[392][384] A year later, sports website Bleacher Report commissioned sculptor Emanuel Santos to create another bust;[393] however, this bust was never used and a new one was made by a Spanish sculptor, shown to the public on 15 June 2018.[394]
+
+Business ventures
+Ronaldo opened a fashion boutique under the name CR7 (his initials and shirt number) on the island of Madeira in 2006 and opened a second in Lisbon in 2008.[395] In partnership with Scandinavian manufacturer JBS Textile Group and the New York fashion designer Richard Chai, Ronaldo co-designed a range of underwear and sock line, released in November 2013.[396] He expanded his CR7 fashion brand by launching a line of premium shirts and shoes in July 2014.[397][398]
+
+In September 2015, Ronaldo released his own fragrance, "Legacy", in a partnership with Eden Parfums.[399] Since 26 October 2023, the new owners of Medialivre (Correio da Manhã, Record and Jornal de Negócios publisher) are a group of investors that include Cristiano Ronaldo through Portuguese company Expressão Livre.[400] In December 2011, he launched an iPhone game called Heads Up with Cristiano, created by developer RockLive,[401] and in December 2013, he launched Viva Ronaldo, a dedicated social networking website and app.[402]
+
+Media
+Ronaldo's autobiography, titled Moments, was published in 2007.[403] His sponsor Castrol produced the television film Ronaldo: Tested to the Limit, in which he was physically and mentally tested in several areas; his physical performance was subject to scrutiny by world media upon the film's release in September 2011.[314] Cristiano Ronaldo: The World at His Feet, a documentary narrated by actor Benedict Cumberbatch, was released via Vimeo in June 2014.[404] A documentary film directed by Anthony Wonke about his life and career, titled Ronaldo, was released on 9 November 2015.[405][406] He appears as a playable character in the 2025 fighting game Fatal Fury: City of the Wolves.[407]
+
+Personal life
+Family, children, and relationships
+Ronaldo is a Catholic.[408] Within his ancestry, he is of (one-eighth) Cape Verdean descent through his great-grandmother.[409] His father, José, died of an alcoholism-related liver condition at age 52 in September 2005 when Ronaldo was 20.[410] After her son achieved legendary status in world football, Cristiano Ronaldo's mother, Dolores Aveiro, became a popular personality in Portugal to such an extent that advertising campaigns for well-known brands in the country, such as Maggi, MultiOpticas and Pingo Doce, have featured her in commercials.[411][412]
+
+Ronaldo has five living children. He first became a father to a son, Cristiano Ronaldo Jr., who was born on 17 June 2010 in the United States.[413] He has full custody of the child and has not publicly revealed the identity of the mother per an agreement with her.[414][415] Ronaldo Jr. is a youth footballer who plays for Portugal Under-15s.[416] In January 2015, Ronaldo's five-year relationship with Russian model Irina Shayk ended.[417] Then, in 2017, Ronaldo became a father to twins,[418] born on 8 June 2017 in the United States via surrogacy.
+
+Ronaldo is currently in a relationship with Argentine-born Spanish model Georgina Rodríguez,[419] who gave birth to a daughter on 12 November 2017.[420] The couple expected another set of twins in 2022. The male twin died during childbirth while the female twin survived.[421] On 11 August 2025, Rodríguez announced their engagement via Instagram.[422]
+
+Health
+Ronaldo has said that he does not drink alcohol,[367] and he received libel damages over a Daily Mirror article that reported him drinking heavily in a nightclub while recovering from an injury in July 2008.[423] He also does not have any tattoos as he regularly donates blood and bone marrow.[424]
+
+Legal issues
+In July 2017, Ronaldo was charged with fraudulently evading almost €15 million in tax between 2011 and 2014, a claim he denied at the time.[425] In June 2018, Ronaldo was given a two-year suspended jail sentence and fined €18.8 million, later reduced to €16.8 million after reaching a deal with Spanish authorities. The sentence can be served under probation, without any jail time, so long as he does not re-offend.[426]
+
+Ronaldo and another man were investigated by the British Crown Prosecution Service after a 2005 rape allegation was brought forward by two women. Within days, the two women withdrew their allegation and Scotland Yard later issued a statement declaring there was not enough evidence for a prosecution.[427]
+
+In April 2017, it was reported that Ronaldo was being investigated by the Las Vegas Police Department for an allegation by a woman that he had raped her in 2009.[428][429] Documents, confirmed by Ronaldo's lawyers, state that Ronaldo paid a woman US$375,000 in a non-disclosure settlement.[428][430] Ronaldo and his lawyers issued a lengthy statement denying all accusations, describing them as an "intentional defamation campaign" with parts significantly "altered and/or completely fabricated",[431][432] a claim which Der Spiegel categorically denied.[433]
+
+In July 2019, Las Vegas prosecutors said they would not charge Ronaldo over allegations of rape; the statement added: "Based upon a review of information at this time, the allegations of sexual assault against Cristiano Ronaldo cannot be proven beyond a reasonable doubt."[434] The same woman, in September 2018, filed a civil lawsuit in Nevada accusing Ronaldo of rape.[435] The Daily Mirror, citing court documents, reported in 2021 that the woman sought £56 million in damages from Ronaldo.[436]
+
+In October 2021, federal magistrate judge Daniel Albregts recommended that the lawsuit be dismissed, citing that the woman's lawyer, Leslie Stovall, "acted in bad faith by asking for, receiving, and using Football Leaks documents to prosecute" the case, despite the documents containing "privileged communications" between Ronaldo and his lawyers. Additionally, Albregts stated that no evidence was found of Ronaldo's lawyers having "intimidated [the woman] or impeded law enforcement" during the 2010 settlement with her.[437] In June 2022, the woman's rape lawsuit was dismissed with prejudice in the United States District Court for the District of Nevada, as district judge Jennifer A. Dorsey ruled that Stovall's repeated use of "cyber-hacked attorney–client privileged documents" were actions representing "abuses and flagrant circumvention of the proper litigation process".[435][438]
+
+Career statistics
+Club
+As of match played 1 November 2025[439][206]
+Appearances and goals by club, season and competition
+Club	Season	League	National cup[a]	League cup[b]	Continental	Other	Total
+Division	Apps	Goals	Apps	Goals	Apps	Goals	Apps	Goals	Apps	Goals	Apps	Goals
+Sporting CP B[440][441]	2002–03	Segunda Divisão B	2	0	—	—	—	—	2	0
+Sporting CP	2002–03	Primeira Liga	25	3	3	2	—	3[c]	0	0	0	31	5
+Manchester United	2003–04	Premier League	29	4	5	2	1	0	5[d]	0	0	0	40	6
+2004–05	Premier League	33	5	7	4	2	0	8[d]	0	0	0	50	9
+2005–06	Premier League	33	9	2	0	4	2	8[d]	1	—	47	12
+2006–07	Premier League	34	17	7	3	1	0	11[d]	3	—	53	23
+2007–08	Premier League	34	31	3	3	0	0	11[d]	8	1[e]	0	49	42
+2008–09	Premier League	33	18	2	1	4	2	12[d]	4	2[f]	1	53	26
+Total	196	84	26	13	12	4	55	16	3	1	292	118
+Real Madrid	2009–10	La Liga	29	26	0	0	—	6[d]	7	—	35	33
+2010–11	La Liga	34	40[g]	8	7	—	12[d]	6	—	54	53
+2011–12	La Liga	38	46	5	3	—	10[d]	10	2[h]	1	55	60
+2012–13	La Liga	34	34	7	7	—	12[d]	12	2[h]	2	55	55
+2013–14	La Liga	30	31	6	3	—	11[d]	17	—	47	51
+2014–15	La Liga	35	48	2	1	—	12[d]	10	5[i]	2	54	61
+2015–16	La Liga	36	35	0	0	—	12[d]	16	—	48	51
+2016–17	La Liga	29	25	2	1	—	13[d]	12	2[f]	4	46	42
+2017–18	La Liga	27	26	0	0	—	13[d]	15	4[j]	3	44	44
+Total	292	311	30	22	0	0	101	105	15	12	438	450
+Juventus	2018–19	Serie A	31	21	2	0	—	9[d]	6	1[k]	1	43	28
+2019–20	Serie A	33	31	4	2	—	8[d]	4	1[k]	0	46	37
+2020–21	Serie A	33	29	4	2	—	6[d]	4	1[k]	1	44	36
+2021–22	Serie A	1	0	—	—	—	—	1	0
+Total	98	81	10	4	0	0	23	14	3	2	134	101
+Manchester United	2021–22	Premier League	30	18	1	0	0	0	7[d]	6	—	38	24
+2022–23	Premier League	10	1	0	0	0	0	6[l]	2	—	16	3
+Total	40	19	1	0	0	0	13	8	0	0	54	27
+Al-Nassr	2022–23	Saudi Pro League	16	14	2	0	—	—	1[m]	0	19	14
+2023–24	Saudi Pro League	31	35	4	3	—	9[n]	6	7[o]	6	51	50
+2024–25	Saudi Pro League	30	25	1	0	—	8[n]	8	2[m]	2	41	35
+2025–26	Saudi Pro League	7	8	1	0	—	0	0	2[m]	1	10	9
+Total	84	82	8	3	0	0	17	14	12	9	121	108
+Career total	737	580	78	44	12	4	212	157	33	24	1072	809
+ Includes Taça de Portugal, FA Cup, Copa del Rey, Coppa Italia, King's Cup
+ Includes Football League Cup
+ One appearance in UEFA Champions League, two appearances in UEFA Cup
+ Appearances in UEFA Champions League
+ Appearance in FA Community Shield
+ Appearances in FIFA Club World Cup
+ Does not include one goal scored on 18 September 2010 against Real Sociedad. Marca, which awards the Pichichi Trophy, attribute it to Ronaldo, while La Liga and UEFA attribute it to Pepe.[442]
+ Appearances in Supercopa de España
+ One appearance and two goals in UEFA Super Cup, two appearances in Supercopa de España, two appearances in FIFA Club World Cup
+ One appearance in UEFA Super Cup, one appearance and one goal in Supercopa de España, two appearances and two goals in FIFA Club World Cup
+ Appearance in Supercoppa Italiana
+ Appearances in UEFA Europa League
+ Appearance(s) in Saudi Super Cup
+ Appearances in AFC Champions League
+ Six appearances and six goals in Arab Club Champions Cup, one appearance in Saudi Super Cup
+International
+For a comprehensive listing of international goals scored by Cristiano Ronaldo, see List of international goals scored by Cristiano Ronaldo.
+As of match played 14 October 2025[5][443]
+Appearances and goals by national team, year and competition
+Team	Year	Competitive	Friendly	Total
+Apps	Goals	Apps	Goals	Apps	Goals
+Portugal U15	2001	2[a]	1	7	6	9	7
+Portugal U17	2001	—	3	2	3	2
+2002	4[b]	3	—	4	3
+Total	4	3	3	2	7	5
+Portugal U20	2003	—	5[c]	1	5	1
+Portugal U21	2002	0	0	1	1	1	1
+2003	7[d]	2	2	0	9	2
+Total	7	2	3	1	10	3
+Portugal U23	2004	2[e]	1	1	1	3	2
+Portugal	2003	—	2	0	2	0
+2004	11[f]	7	5	0	16	7
+2005	7[g]	2	4	0	11	2
+2006	10[h]	4	4	2	14	6
+2007	9[i]	5	1	0	10	5
+2008	5[j]	1	3	0	8	1
+2009	5[k]	0	2	1	7	1
+2010	6[l]	3	5	0	11	3
+2011	6[m]	5	2	2	8	7
+2012	9[n]	4	4	1	13	5
+2013	6[o]	7	3	3	9	10
+2014	5[p]	3	4	2	9	5
+2015	4[q]	3	1	0	5	3
+2016	10[r]	10	3	3	13	13
+2017	10[s]	10	1	1	11	11
+2018	4[t]	4	3	2	7	6
+2019	10[u]	14	—	10	14
+2020	4[v]	2	2	1	6	3
+2021	11[w]	11	3	2	14	13
+2022	12[x]	3	—	12	3
+2023	9[y]	10	—	9	10
+2024	10[z]	5	2	2	12	7
+2025	8[aa]	8	0	0	8	8
+Total	171	121	54	22	225	143
+Career total	186	128	73	33	259	161
+Notes
+
+ Appearances in the 2001 European Youth Summer Olympic Festival.
+ Two appearances and three goals in the 2002 UEFA European Under-17 Championship qualification, two appearances in the 2002 UEFA European Under-17 Championship.
+ Appearances in the 2003 Toulon Tournament.
+ Appearances in the 2004 UEFA European Under-21 Championship qualification.
+ Appearances in the 2004 Summer Olympics.
+ Six appearances and two goals in UEFA Euro 2004, five appearances and five goals in the 2006 FIFA World Cup qualification.
+ Appearances in the 2006 FIFA World Cup qualification.
+ Six appearances and one goal in the 2006 FIFA World Cup, four appearances and three goals in the UEFA Euro 2008 qualifying.
+ Appearances in the UEFA Euro 2008 qualifying.
+ Three appearances and one goal in UEFA Euro 2008, two appearances in the 2010 FIFA World Cup qualification.
+ Appearances in the 2010 FIFA World Cup qualification.
+ Four appearances and one goal in the 2010 FIFA World Cup, two appearances and two goals in the UEFA Euro 2012 qualifying.
+ Appearances in the UEFA Euro 2012 qualifying.
+ Five appearances and three goals in UEFA Euro 2012, four appearances and one goal in the 2014 FIFA World Cup qualification.
+ Appearances in the 2014 FIFA World Cup qualification.
+ Three appearances and one goal in the 2014 FIFA World Cup, two appearances and two goals in the UEFA Euro 2016 qualifying.
+ Appearances in the UEFA Euro 2016 qualifying.
+ Seven appearances and three goals in UEFA Euro 2016, three appearances and seven goals in the 2018 FIFA World Cup qualification.
+ Six appearances and eight goals in the 2018 FIFA World Cup qualification, four appearances and two goals in the 2017 FIFA Confederations Cup.
+ Appearances in the 2018 FIFA World Cup.
+ Eight appearances and eleven goals in the UEFA Euro 2020 qualifying, two appearances and three goals in the 2019 UEFA Nations League Finals.
+ Appearances in the 2020–21 UEFA Nations League.
+ Seven appearances and six goals in the 2022 FIFA World Cup qualification, four appearances and five goals in UEFA Euro 2020.
+ Two appearances in the 2022 FIFA World Cup qualification, five appearances and two goals in the 2022–23 UEFA Nations League, five appearances and one goal in the 2022 FIFA World Cup.
+ Appearances in the UEFA Euro 2024 qualifying.
+ Five appearances in the UEFA Euro 2024, five appearances and five goals in the 2024–25 UEFA Nations League.
+ Four appearances and three goals in the 2024–25 UEFA Nations League, four appearances and five goals in the 2026 FIFA World Cup qualification.
+Honours
+For a comprehensive listing of Ronaldo's achievements, see List of career achievements by Cristiano Ronaldo.
+
+Ronaldo, with his third Ballon d'Or, at the Santiago Bernabéu in January 2015
+Sporting CP[444]
+
+Supertaça Cândido de Oliveira: 2002
+Manchester United[445][446]
+
+Premier League: 2006–07, 2007–08, 2008–09
+FA Cup: 2003–04
+Football League Cup: 2005–06, 2008–09
+FA Community Shield: 2007
+UEFA Champions League: 2007–08
+FIFA Club World Cup: 2008
+Real Madrid[446]
+
+La Liga: 2011–12, 2016–17
+Copa del Rey: 2010–11, 2013–14
+Supercopa de España: 2012, 2017
+UEFA Champions League: 2013–14, 2015–16, 2016–17, 2017–18
+UEFA Super Cup: 2014, 2017
+FIFA Club World Cup: 2014, 2016, 2017
+Juventus[206]
+
+Serie A: 2018–19, 2019–20
+Coppa Italia: 2020–21
+Supercoppa Italiana: 2018, 2020
+Al-Nassr
+
+Arab Club Champions Cup: 2023[198]
+Portugal
+
+UEFA European Championship: 2016[447]
+UEFA Nations League: 2018–19,[229] 2024–25[448]
+Individual
+
+Ballon d'Or/FIFA Ballon d'Or: 2008, 2013, 2014, 2016, 2017[449][446]
+FIFA World Player of the Year: 2008[449]
+The Best FIFA Men's Player: 2016, 2017[449]
+The Best FIFA Special Award for Outstanding Career Achievement: 2021[450]
+UEFA Club Footballer of the Year: 2007–08
+UEFA Men's Player of the Year Award: 2013–14, 2015–16, 2016–17
+The Best Special Award of UEFA Champions League All-Time Top Scorer: 2024[451]
+European Golden Shoe: 2007–08, 2010–11, 2013–14, 2014–15[449][446]
+FIFA Puskás Award: 2009[452]
+FIFA Club World Cup Golden Ball: 2016
+UEFA European Championship Golden Boot: 2020
+UEFA Nations League Finals Top Scorer: 2019, 2025 (shared)
+UEFA Champions League top scorer: 2007–08, 2012–13, 2013–14, 2014–15, 2015–16, 2016–17, 2017–18[453]
+Premier League Player of the Season: 2006–07, 2007–08[445]
+La Liga Best Player: 2013–14[117]
+Serie A Footballer of the Year: 2019,[454] 2020[455]
+Primeira Liga Best Player of All Time Award: 2025
+Premier League Golden Boot: 2007–08[445]
+Pichichi Trophy: 2010–11, 2013–14, 2014–15
+Capocannoniere: 2020–21[456]
+Saudi Pro League Golden Boot: 2023–24, 2024–25
+Golden Foot: 2020[457]
+Ballon d'Or Dream Team: 2020[458]
+FIFA FIFPRO World 11: 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021[459]
+Portuguese Sportsman of the Year: 2011, 2012, 2014, 2015, 2016, 2017, 2018, 2019[460]
+FPF Portuguese Player of the Year: 2015, 2016,[461] 2017, 2018, 2019[462]
+Orders
+
+ Medal of Merit, Order of the Immaculate Conception of Vila Viçosa (Portuguese Royal Family)[463]
+ Grand officer of the Order of Prince Henry[449]
+ Commander of the Order of Merit[464]
+ Cordão da Insígnia autonómica de distinção (Collar of the Autonomic Insignia of Distinction, Autonomous Region of Madeira)[465]
+See also
+List of footballers with 100 or more UEFA Champions League appearances
+List of top international men's football goal scorers by country
+List of men's footballers with 100 or more international caps
+List of men's footballers with 50 or more international goals
+List of men's footballers with the most official appearances
+List of footballers with 500 or more goals
+Notes
+ Varies between 1.85 and 1.89 metres by source. FIFA gives 1.85,[3] Real Madrid 1.87,[4] and the Portuguese Football Federation 1.89.[5]
+ Although there was no third-place playoff, both losing semi-finalists (Germany and Portugal) were awarded bronze medals by UEFA.[6]
+ The terminology for the award has varied. Ronaldo received three Ballons d'Or as awarded by France Football magazine (2008, 2016, 2017) and two FIFA Ballons d'Or (2013, 2014) as well as the 2008 FIFA World Player of the Year and 2016 and 2017 Best FIFA Men's Player awards.
+References
+Citations
+ "FIFA Club World Cup UAE 2017: List of players: Real Madrid CF" (PDF). FIFA. 16 December 2017. p. 5. Archived from the original (PDF) on 23 December 2017. Retrieved 23 December 2017.
+ Lewis, Tim (8 June 2008). "He's got the world at his feet". The Guardian. London. Archived from the original on 27 September 2013. Retrieved 5 November 2008.
+ "FIFA World Cup Qatar 2022™: List of Players: Portugal" (PDF). FIFA. 18 December 2022. p. 22. Archived (PDF) from the original on 18 December 2022. Retrieved 20 October 2024.
+ "Cristiano Ronaldo (CR7) | Official Website". realmadrid.com. Real Madrid CF. 2018. Archived from the original on 29 January 2019. Retrieved 29 January 2019.
+ "Cristiano Ronaldo" (in Portuguese). Portuguese Football Federation. Retrieved 16 November 2024.
+ "Regulations for UEFA Euro 2012" (PDF). UEFA. September 2009. Archived from the original (PDF) on 15 February 2010. Retrieved 29 December 2020.
+ "Cristiano Ronaldo becomes all-time international cap leader". Guinness World Records. 10 December 2022. Archived from the original on 10 August 2023. Retrieved 9 August 2023.
+ "Desporto – Pelos caminhos de Ronaldo". Diário de Notícias. 6 July 2009. Archived from the original on 8 August 2017. Retrieved 22 July 2017.
+ Jimenez, Ruben (5 February 2017). "Cristiano turns 32". Marca. Spain. Archived from the original on 15 July 2017. Retrieved 22 July 2017.
+ "Família de Cristiano Ronaldo inaugura restaurante em Gramado: 'Me apaixonei pela cidade', diz irmã". G1 (in Brazilian Portuguese). 6 July 2018. Archived from the original on 20 November 2023. Retrieved 20 November 2023.
+ "Cristiano Ronaldo, do início humilde à grandeza no futebol". BOM DIA Suíça (in Portuguese). 26 April 2023. Archived from the original on 20 November 2023. Retrieved 20 November 2023.
+ Hayward, Ben (23 June 2017). "The 'little bee' who always cried – the story of young Ronaldo's path to greatness in Madeira". Goal. Archived from the original on 30 August 2017. Retrieved 23 August 2017.
+ "José Dinis: "O meu filho é uma força da natureza"". www.record.pt (in European Portuguese). Archived from the original on 20 November 2023. Retrieved 20 November 2023.
+ "Deixou a Madeira em lágrimas e chegou ao topo do Mundo". www.dn.pt (in European Portuguese). 18 June 2011. Archived from the original on 20 November 2023. Retrieved 20 November 2023.
+ Miguel Neves, Pedro. "Cristiano Ronaldo tem 'costela' cabo-verdiana". Sapo Expresso (in Portuguese). Archived from the original on 13 July 2017. Retrieved 23 July 2017.
+ Sousa, Hugo Daniel (12 January 2015). "O que mais distingue Cristiano Ronaldo dos outros? A potência". PÚBLICO (in Portuguese). Archived from the original on 16 January 2024. Retrieved 16 January 2024.
+ Payne, Marissa (19 January 2016). "Cristiano Ronaldo was named after Ronald Reagan. No, really". Washington Post. Archived from the original on 6 March 2023. Retrieved 23 June 2023 – via GQ. My parents named me after [Ronald Reagan] because they both liked this name and thought it sounded strong. [...] I know that my father admired him.
+ "Cristiano Ronaldo's mother: I wanted an abortion, but God said no". Eurosport. 5 November 2015. Retrieved 26 January 2021.
+ "Ronaldo's mother reveals she tried to abort her son". Irish independent. 18 July 2014. Archived from the original on 30 June 2022. Retrieved 30 June 2022.
+ "Cristiano Ronaldo spills all to his 'close friend' Jasmine about women, football, cars... and money". Daily Mirror. 3 July 2011. Archived from the original on 19 August 2013. Retrieved 21 August 2013.
+ "Bola de Ouro – Ronaldo conquistou primeiro prémio aos oito anos no Andorinha". Diário de Notícias (in Portuguese). 2 December 2008. Archived from the original on 23 August 2017. Retrieved 23 August 2017.
+ "Clash of the Titans". Manchester Evening News. 18 April 2010. Archived from the original on 3 September 2014. Retrieved 30 August 2014.
+ Roseiro, Bruno. "Leonel, o homem que faz a Ponte(s): tutor de Ronaldo, aluno de 17,5 valores, uma década com Bento e o (extinto?) Jumilla". Observador (in European Portuguese). Archived from the original on 7 December 2023. Retrieved 7 December 2023.
+ "Cristiano Ronaldo: I was expelled from school for throwing a chair at the teacher". Now Magazine. 6 July 2011. Archived from the original on 29 April 2015. Retrieved 22 August 2017.
+ Castello Branco, Igor (14 August 2012). "Uma década de CR7: atacante vira profissional e logo se torna 'diabólico'". globoesporte.com. Archived from the original on 16 August 2012. Retrieved 7 December 2023.
+ "Cristiano Ronaldo tinha medo de ir à escola". www.cmjornal.pt (in Portuguese). 17 May 2014. Archived from the original on 18 December 2022. Retrieved 18 December 2022.
+ "Katia Aveiro afirma que "guerra e ditadura" levaram ao alcoolismo do pai". Jornal de Notícias. 25 April 2023. Archived from the original on 24 May 2024. Retrieved 12 April 2024.
+ "Cristiano Ronaldo A história por detrás do alcoolismo do pai de CR7". Impala (in European Portuguese). 29 April 2023. Archived from the original on 29 April 2023. Retrieved 12 April 2024.
+ "Ronaldo tells judge: "I never had this problem in England, that's why I want to go back there"". Diario AS. EFE. 4 August 2017. Archived from the original on 18 December 2022. Retrieved 18 December 2022.
+ "Ronaldo em tribunal: "Só tenho o sexto ano de escolaridade"". www.dn.pt (in Portuguese). 4 August 2017. Archived from the original on 18 December 2022. Retrieved 18 December 2022.
+ "Cristiano Ronaldo". Encyclopedia Britannica. Archived from the original on 12 August 2018. Retrieved 11 August 2018.
+ Conte, Peter (8 May 2018). "What you didn't know about Cristiano Ronaldo". NewsComAu. Archived from the original on 12 August 2018. Retrieved 11 August 2018.
+ "Manchester United winger Cristiano Ronaldo needed heart operation to save career". The Telegraph. 29 January 2009. Archived from the original on 23 August 2017. Retrieved 22 August 2017.
+ ADN de Leão | Episódio 37: Dolores Aveiro, 21 September 2021, archived from the original on 28 September 2023, retrieved 28 September 2023
+ ""Left a beautiful history in football" – Ronaldo reveals his 2 idols in the game | All Football". m.allfootballapp.com.
+ "History: Sporting CP vs Inter". UEFA Champions League 2002/03. Archived from the original on 24 December 2023. Retrieved 11 June 2024.
+ "Famous players featured in U17 c'ships". UEFAu17.com. Archived from the original on 2 June 2009.
+ "Liverpool 'turned down Ronaldo'". Eurosport. 6 December 2011. Archived from the original on 8 December 2010. Retrieved 30 August 2014.
+ Conn, David (19 January 2011). "The brightest star in Europe and £1m to a mysterious agent". The Guardian. London. Archived from the original on 5 October 2013. Retrieved 11 November 2011.
+ Pilger, Sam (6 October 2017). "'He Was There to Put on a Show': Ronaldo's Legendary Manchester United Audition". Bleacher Report. Archived from the original on 28 May 2018. Retrieved 27 May 2018.
+ Marshall, Adam (12 August 2003). "United confirm Ronaldo capture". Sky Sports. Retrieved 4 December 2024.
+ Barnes, Justin (12 June 2014). "George Best on Ronaldo's Debut For Man Utd". Sabotage Times. Archived from the original on 3 September 2014. Retrieved 27 August 2014.
+ "Man Utd sign Ronaldo". BBC Sport. 12 August 2003. Archived from the original on 31 July 2017. Retrieved 11 June 2024.
+ "United fork out record £12m fee to land teenager". The Daily Telegraph. 12 August 2003. Archived from the original on 10 January 2022. Retrieved 11 June 2024.
+ "Man Utd sign Ronaldo". BBC Sport. 12 August 2003. Archived from the original on 31 July 2017. Retrieved 27 August 2014.
+ Taylor, Daniel (13 August 2003). "Teenager takes Beckham No7 shirt". The Guardian. London. Archived from the original on 3 September 2014. Retrieved 27 August 2014.
+ McDonnell, David (29 September 2007). "Cristiano Ronaldo exclusive". Daily Mirror. London. Archived from the original on 3 September 2014. Retrieved 27 August 2014.
+ "Ronaldo vows to justify price tag". BBC Sport. 4 July 2009. Archived from the original on 21 July 2017. Retrieved 4 July 2009.
+ Wilson, Paul (17 August 2003). "Only one Ronaldo as United find new idol". The Guardian. London. Archived from the original on 3 September 2014. Retrieved 27 August 2014.
+ "Man Utd see off Pompey". BBC Sport. 1 November 2003. Archived from the original on 9 August 2017. Retrieved 27 August 2014.
+ Ridley, Ian (15 May 2004). "Ronaldo's good and bad day". The Guardian. London. Archived from the original on 3 September 2014. Retrieved 27 August 2014.
+ "Man United 2–0 Aston Villa". ESPN. 15 May 2004. Retrieved 5 December 2024.
+ "Man Utd win FA Cup". BBC Sport. 22 May 2004. Archived from the original on 25 February 2009. Retrieved 26 January 2011.
+ Hansen, Alan (22 May 2004). "Wing wizard lights up final". BBC Sport. Archived from the original on 23 August 2006. Retrieved 11 January 2021.
+ "Ones to Watch: Cristiano Ronaldo". BBC Sport. 25 May 2004. Archived from the original on 30 January 2022. Retrieved 11 January 2021.
+ McNulty, Phil (23 June 2004). "Neville wary of Ronaldo". BBC Sport. Archived from the original on 24 October 2022. Retrieved 11 January 2021.
+ "Man Utd 3–1 Aston Villa". BBC Sport. 22 January 2005. Archived from the original on 14 August 2017. Retrieved 27 August 2014.
+ "Arsenal 2–4 Man Utd". BBC Sport. 1 February 2005. Archived from the original on 14 August 2017. Retrieved 27 August 2014.
+ "Man Utd ease to Carling Cup glory". BBC Sport. 26 February 2006. Archived from the original on 28 August 2007. Retrieved 26 January 2011.
+ Brennan, Stuart (17 January 2006). "Ruud and Ron in training bust-up". Manchester Evening News. Archived from the original on 3 September 2014. Retrieved 28 August 2014.
+ Taylor, Daniel (3 July 2006). "Rooney must look at himself rather than blame Ronaldo". The Guardian. Archived from the original on 3 September 2014. Retrieved 28 August 2014.
+ Stirling, James (9 July 2006). "Ronaldo: I can't stay in Manchester". The Guardian. London. Archived from the original on 3 September 2014. Retrieved 28 August 2014.
+ Buckingham, Mark (12 July 2006). "United: Ronaldo not for sale". Sky Sports. Archived from the original on 19 June 2022. Retrieved 19 June 2022.
+ Tyldesley, Clive (25 September 2006). "Ronaldo has last laugh on Reading fans". The Daily Telegraph. London. Archived from the original on 3 September 2014. Retrieved 28 August 2014.
+ Winter, Henry (29 August 2013). "The secrets behind the development of Real Madrid's Cristiano Ronaldo, revealed by Rene Meulensteen". The Daily Telegraph. London. Archived from the original on 10 August 2014. Retrieved 28 August 2014.
+ "Why Ronaldo made the difference". 12 May 2008. Archived from the original on 9 February 2020. Retrieved 7 March 2025.
+ "Ronaldo wins PFA double". World Soccer. 23 April 2007. Archived from the original on 3 September 2014. Retrieved 28 August 2014.
+ Buckingham, Mark (4 May 2007). "Writers award for Ronaldo". Sky Sports. Retrieved 19 June 2022.
+ "Ronaldo secures PFA awards double". BBC Sport. 22 April 2007. Archived from the original on 14 April 2008. Retrieved 18 April 2018.
+ "Kaká's year capped by Ballon d'Or". UEFA. 2 December 2007. Archived from the original on 5 December 2012. Retrieved 3 July 2012.
+ "Ronaldo:Going the right way". FIFA. 17 December 2007. Archived from the original on 18 December 2007. Retrieved 18 December 2007.
+ "Man Utd 6–0 Newcastle". BBC Sport. 12 January 2008. Archived from the original on 15 January 2008. Retrieved 12 January 2008.
+ "Ronaldo & Ferguson win top awards". BBC Sport. 14 May 2008. Archived from the original on 18 May 2008. Retrieved 16 January 2014.
+ "Ronaldo scoops ESM Golden Shoe". UEFA. 17 June 2008. Retrieved 19 June 2022.
+ "Ronaldo named player of the year". BBC Sport. 27 April 2008. Archived from the original on 1 May 2008. Retrieved 18 April 2018.
+ "Ronaldo wins writers' award again". BBC Sport. 2 May 2008. Archived from the original on 15 August 2017. Retrieved 29 August 2014.
+ Hodges, Vicki (22 May 2008). "Cristiano Ronaldo's penalty technique 'unacceptable'". The Daily Telegraph. London. Archived from the original on 3 September 2014. Retrieved 27 August 2014.
+ "Champions League (Sky Sports)". Sky Sports. Archived from the original on 19 January 2023. Retrieved 19 January 2023.
+ McNulty, Phil (22 May 2008). "Man Utd earn dramatic Euro glory". BBC. Archived from the original on 26 May 2008. Retrieved 27 August 2014.
+ "Cristiano Ronaldo". UEFA. Archived from the original on 29 May 2016. Retrieved 24 May 2016.
+ Roughley, Gregg (2 December 2008). "Ronaldo beats off Messi and Torres to scoop Ballon d'Or". The Guardian. London. Archived from the original on 6 October 2014. Retrieved 29 August 2014.
+ "Ronaldo named Fifa player of 2008". BBC Sport. 12 January 2009. Archived from the original on 18 January 2009. Retrieved 2 January 2010.
+ Gardner, Alan (16 June 2008). "Fifa decline to take action against Real". The Guardian. London. Archived from the original on 3 September 2014. Retrieved 27 August 2014.
+ "Ronaldo sticks with United". ESPN. 7 August 2008. Archived from the original on 3 September 2014. Retrieved 29 August 2014.
+ "Ronaldo's 'incredible, fantastic' goal". FIFA. 21 December 2009. Archived from the original on 24 December 2009. Retrieved 15 January 2011.
+ "Ronaldo stunner thrills Ferguson". BBC Sport. 15 April 2009. Archived from the original on 17 April 2009. Retrieved 15 April 2009.
+ "United cruise into final". Sky Sports. 5 May 2009. Retrieved 19 June 2022.
+ Williams, Richard (27 May 2009). "Cristiano Ronaldo in a mess as Lionel Messi takes lead role on grand stage". The Guardian. London. Archived from the original on 9 October 2014. Retrieved 27 August 2014.
+ "Cristiano Ronaldo transfer: Real Madrid agree £80 million fee with Manchester United". The Daily Telegraph. 11 June 2009. Archived from the original on 21 August 2010. Retrieved 11 June 2024.
+ "Cristiano Ronaldo welcomed by 80,000 fans at Real Madrid unveiling". The Guardian. London. 6 July 2009. Archived from the original on 16 December 2013. Retrieved 6 July 2009.
+ "On This Day in 2009: Cristiano Ronaldo Was Officially Unveiled as a Real Madrid Player". SI. 6 July 2018. Retrieved 14 February 2025.
+ "Ronaldo in winning start for Real". BBC Sport. 29 August 2009. Retrieved 29 August 2009.
+ "Cristiano Ronaldo makes Real Madrid history". The Daily Telegraph. London. 23 September 2009. Archived from the original on 27 December 2014. Retrieved 25 August 2010.
+ "Tuesday's Champions League review". BBC Sport. 15 September 2009. Retrieved 15 September 2009.
+ Glendenning, Barry (3 November 2009). "Champions League: Milan v Real Madrid – as it happened". The Guardian. London. Archived from the original on 15 July 2014. Retrieved 22 April 2014.
+ "Ronaldo forced out of Milan meetings". UEFA. 11 October 2009. Archived from the original on 19 June 2022. Retrieved 19 June 2022.
+ "92 Points Not Good Enough for Real Madrid to Win La Liga". Bleacher Report. Archived from the original on 19 July 2022. Retrieved 11 June 2024.
+ "Madrid clinch Copa del Rey". Sky Sports. 21 April 2011. Archived from the original on 27 November 2022. Retrieved 11 June 2024.
+ "Cristiano Ronaldo sets new Primera Liga scoring record". BBC. 21 May 2011. Archived from the original on 7 January 2016. Retrieved 30 August 2014.
+ "Record-breaking Ronaldo wins 2010/11 Golden Shoe". UEFA. 23 May 2011. Archived from the original on 5 August 2014. Retrieved 30 August 2014.
+ Jones, Harry (21 January 2021). "Cristiano Ronaldo becomes all-time leading goalscorer: His whole record-breaking career so far". FourFourTwo. Future plc.
+ "Hat tricks for Lionel Messi and Cristiano Ronaldo". ESPN. Associated Press. 24 September 2011. Archived from the original on 4 September 2014. Retrieved 11 June 2024.
+ "Madrid and Barca victorious". ESPN. 24 March 2011. Archived from the original on 3 September 2014. Retrieved 30 August 2014.
+ Tynan, Gordon (4 October 2012). "Cristiano Ronaldo grabs another Real Madrid hat-trick". The Independent. London. Archived from the original on 3 September 2014. Retrieved 30 August 2014.
+ Jenson, Pete (8 October 2012). "Lionel Messi and Cristiano Ronaldo: a class apart in el Clasico". The Independent. London. Archived from the original on 3 September 2014. Retrieved 30 August 2014.
+ "Messi crowned world's best for record fourth time". CNN. 8 January 2013. Archived from the original on 3 April 2013. Retrieved 10 May 2013.
+ "Iker Casillas turns down Ronaldo's mid-game offer of the captain's armband". Yahoo Sports. Retrieved 6 December 2021.
+ Lowe, Sid (30 January 2013). "Real Madrid 1–1 Barcelona Copa del Rey semi-final first leg match report". The Guardian. London. Archived from the original on 31 December 2013. Retrieved 21 February 2013.
+ "200 goals for the BBC". Real Madrid CF. 24 October 2015. Archived from the original on 18 November 2018. Retrieved 6 January 2019.
+ "Cristiano Ronaldo's goal-den 2013, month by month". Marca. Spain. 31 December 2013. Archived from the original on 16 November 2018. Retrieved 11 June 2024.
+ Homewood, Brian (14 January 2014). "Emotional Ronaldo ends Messi run". Reuters. Archived from the original on 17 February 2014. Retrieved 13 January 2015.
+ "Ronaldo first to score for two different European Cup winners". Eurosport. Reuters. 24 May 2014. Retrieved 19 June 2022.
+ "Record-breaking Ronaldo takes scoring honours". UEFA. 24 May 2014. Archived from the original on 19 June 2022. Retrieved 19 June 2022.
+ "Ronaldo named UEFA Best Player in Europe". UEFA. 28 August 2014. Archived from the original on 9 October 2022. Retrieved 19 June 2022.
+ "Suarez claims top billing with Ronaldo". ESPN. 19 May 2014. Archived from the original on 20 May 2014. Retrieved 21 May 2014.
+ "Cristiano Ronaldo, winner of the 'Best Goal in the 2013–14 Liga BBVA'". LFP. 27 October 2014. Archived from the original on 29 October 2014. Retrieved 11 June 2024.
+ Rigg, Nicholas (28 October 2014). "Atlético Madrid snubbed at La Liga awards despite winning league ahead of Spanish giants Real Madrid and Barcelona". The Independent. Archived from the original on 9 March 2016. Retrieved 18 November 2018.
+ "Real Madrid claim FIFA Club World Cup". UEFA. 20 December 2014. Archived from the original on 25 December 2014. Retrieved 21 December 2014.
+ "Ronaldo, Kessler, Low and Kellermann triumph at FIFA Ballon d'Or 2014" Archived 2 June 2016 at the Wayback Machine. FIFA. Retrieved 13 January 2015
+ Simon, Thomas (12 January 2015). "Cristiano Ronaldo dans la troisième dimension". France Football. Archived from the original on 10 October 2015. Retrieved 12 April 2016.
+ Rigg, Nicholas (27 May 2015). "Cristiano Ronaldo eclipses his best in an up-and-down Real Madrid campaign". ESPN. Archived from the original on 19 June 2022. Retrieved 19 June 2022.
+ "Neymar, Messi and Ronaldo top scoring charts". UEFA. 6 June 2015. Archived from the original on 8 June 2015. Retrieved 7 June 2015.
+ "Real Madrid 9–1 Granada". BBC. 5 April 2015. Archived from the original on 6 April 2015. Retrieved 5 April 2015.
+ "Rayo Vallecano 0–2 Real Madrid". BBC Sport. 8 April 2015. Archived from the original on 7 January 2016. Retrieved 6 January 2019.
+ "Ronaldo beats his personal best for a single season". AS. 24 May 2015. Archived from the original on 24 May 2015. Retrieved 24 May 2015.
+ "Un histórico Ronaldo lidera la goleada al Espanyol" [A historic Ronaldo leads the thrashing at Espanyol]. laliga.es. 12 September 2015. Archived from the original on 14 September 2015. Retrieved 11 June 2024.
+ "Cristiano Ronaldo scores a hat-trick as Real Madrid beat Shakhtar". Sky Sports. 16 September 2015. Archived from the original on 17 September 2015. Retrieved 16 September 2015.
+ "Real Madrid forward Cristiano Ronaldo scores 500th career goal". ESPN. 30 September 2015. Archived from the original on 19 June 2022. Retrieved 19 June 2022.
+ "The world at Cristiano Ronaldo's feet". FIFA. 10 January 2017. Archived from the original on 3 June 2017. Retrieved 14 May 2017.
+ "Ronaldo makes history with 100th European goal". UEFA. 12 April 2017. Archived from the original on 14 April 2017. Retrieved 13 April 2017.
+ "Cristiano Ronaldo smashes Jimmy Greaves' all-time goal record". Sky Sports. 17 May 2017. Archived from the original on 18 May 2017. Retrieved 18 May 2017.
+ "Real Madrid win La Liga title with victory at Malaga". BBC. 21 May 2017. Archived from the original on 26 December 2018. Retrieved 6 January 2019.
+ "Real Madrid's Cristiano Ronaldo nets 600th goal, boasts 'I was very good'". ESPN. 3 June 2017. Archived from the original on 19 June 2022. Retrieved 19 June 2022.
+ Das, Andrew; Smith, Rory (3 June 2017). "Champions League Final: Real Madrid Confirms Its Spot as World's Best". The New York Times. Archived from the original on 3 June 2017. Retrieved 3 June 2017.
+ "The Best FIFA Men's Player". FIFA. Archived from the original on 24 November 2017. Retrieved 23 October 2017.
+ "Ballon d'Or 2017: Cristiano Ronaldo beats Lionel Messi to win fifth award". BBC. 8 December 2017. Archived from the original on 28 November 2018. Retrieved 6 January 2019.
+ Nevin, Pat (3 April 2018). "Cristiano Ronaldo bicycle kick: Night Juventus Stadium rose to applaud Real Madrid forward". BBC Sport. Archived from the original on 3 April 2018. Retrieved 4 April 2018.
+ "Ronaldo first to win five Champions League titles". UEFA. 26 May 2018. Archived from the original on 16 September 2018. Retrieved 6 January 2019.
+ "Madrid beat Liverpool to complete hat-trick". UEFA. 26 May 2018. Archived from the original on 15 June 2020. Retrieved 19 June 2022.
+ Corrian, Dermot (26 May 2018). "Cristiano Ronaldo puts future in doubt: 'It's been very nice playing for Real Madrid'". ESPN. Archived from the original on 19 June 2022. Retrieved 19 June 2022.
+ "Cristiano Ronaldo to Juventus: Is £99m signing a good deal for Italian champions?". BBC. 10 July 2018. Archived from the original on 11 July 2018. Retrieved 10 July 2018.
+ "Cristiano Ronaldo: Juventus sign Real Madrid forward for £99.2m". BBC. 10 July 2018. Archived from the original on 10 July 2018. Retrieved 10 July 2018.
+ Fifield, Dominic (29 October 2018). "Cristiano Ronaldo: I left Real Madrid because of president Florentino Pérez". The Guardian. Archived from the original on 30 October 2018. Retrieved 30 October 2018.
+ Gamba, Emanuele (18 August 2018). "Buona la prima di Ronaldo in Italia: gioca bene e la Juventus batte il Chievo 3–2". La Repubblica (in Italian). Retrieved 14 July 2021.
+ "Valencia 0–2 Juventus: Cristiano Ronaldo sent off but Italians still win". BBC Sport. 19 September 2018. Archived from the original on 19 September 2018. Retrieved 11 June 2024.
+ "Juve, Ronaldo e Mandukic: che simbiosi. Tra capolavori, assist e gol". La Gazzetta dello Sport (in Italian). 28 November 2018. Archived from the original on 28 November 2018. Retrieved 11 June 2024.
+ Burnton, Simon (16 January 2019). "Juventus 1–0 Milan: Supercoppa Italiana – as it happened". The Guardian. Archived from the original on 28 April 2021. Retrieved 16 January 2019.
+ "Juve, CR7 da record: 9 trasferte di fila con gol in Serie A. E nel mirino c'è Messi". La Gazzetta dello Sport (in Italian). 11 February 2019. Retrieved 11 February 2019.
+ "Cristiano Ronaldo hat-trick against Atlético fires Juventus into last eight". The Guardian. 12 March 2019. Retrieved 12 March 2019.
+ Dampf, Andrew; Smith, Adam (22 April 2019). "Ronaldo Becomes first player to win Europe's top 3 leagues". AP News. Archived from the original on 22 October 2019. Retrieved 22 October 2019.
+ "Ronaldo MVP in Serie A Awards". Football Italia. 18 May 2019. Archived from the original on 13 August 2019. Retrieved 11 June 2024.
+ Jacot, Sam (2 October 2019). "Cristiano Ronaldo breaks series of records after scoring 128th Champions League goal in Juventus win over Bayer Leverkusen". 90 Min. Retrieved 5 November 2019.
+ "Cristiano Ronaldo: Juventus forward defies gravity with jump". BBC. 18 December 2019. Retrieved 20 December 2019.
+ "Juventus 4–0 Cagliari: Cristiano Ronaldo scores first Serie A hat-trick". BBC Sport. 6 January 2019. Retrieved 6 January 2019.
+ "Cristiano Ronaldo scores in win to equal Serie A record in 1,000th game". BBC Sport. 22 February 2020. Retrieved 22 February 2020.
+ "Cristiano Ronaldo overtakes Rui Costa to become Serie A's top Portuguese scorer". Yahoo Sports. 22 June 2020. Retrieved 23 June 2020.
+ Bhargav (24 September 2020). "Top 5 players who have succeeded in 3 top-5 leagues". www.sportskeeda.com. Archived from the original on 25 January 2024. Retrieved 25 January 2024.
+ "Cristiano Ronaldo equals a record from 1948". Marca. 21 July 2020. Archived from the original on 22 July 2020. Retrieved 22 July 2020.
+ "Juventus 2–0 Sampdoria: Maurizio Sarri's side claim ninth straight Serie A title". BBC Sport. 27 July 2020. Retrieved 6 August 2020.
+ "Ronaldo breaks all-time Juventus scoring record with Lyon double". Goal. 7 August 2020. Archived from the original on 9 August 2020. Retrieved 7 August 2020.
+ "Serie A, Genoa-Juventus 1–3: Dybala e CR7 stendono i rossoblù". Sport Mediaset. 13 December 2020. Archived from the original on 14 December 2020. Retrieved 13 December 2020.
+ "Cristiano Ronaldo breaks another record during his 600th league game". CNN. 3 March 2021. Retrieved 15 July 2021.
+ "Ronaldo becomes fastest player to reach 100 Juventus goals". Goal. 12 May 2021. Archived from the original on 13 May 2021. Retrieved 12 May 2021.
+ "Cristiano Ronaldo cements domestic dominance as Juventus wins Coppa Italia". CNN. 20 May 2021. Archived from the original on 15 December 2022. Retrieved 21 May 2021.
+ "Cristiano Ronaldo first player to finish as top scorer in Serie A, Premier League, La Liga". ESPN. 23 May 2021. Archived from the original on 24 May 2021. Retrieved 23 May 2021.
+ "Cristiano Ronaldo: Juventus boss says he decided to use Portuguese star from the bench on Sunday". Sky Sports. 23 August 2021. Archived from the original on 23 August 2021. Retrieved 27 August 2021.
+ Delaney, Miguel (26 August 2021). "Cristiano Ronaldo: Man City agree personal terms with Juventus star ahead of possible transfer". The Independent. Archived from the original on 26 August 2021. Retrieved 27 August 2021.
+ Dawson, Rob (27 August 2021). "Cristiano Ronaldo to Manchester City off: Manchester United now front-runners". ESPN. Archived from the original on 27 August 2021. Retrieved 27 August 2021.
+ Stone, Simon (27 August 2021). "Cristiano Ronaldo: Man Utd in advanced talks to sign Juventus forward". BBC Sport. Archived from the original on 27 August 2021. Retrieved 27 August 2021.
+ "Cristiano Ronaldo: Manchester United in advanced talks to sign forward after Manchester City pull out of deal". Sky Sports. 27 August 2021. Archived from the original on 27 August 2021. Retrieved 27 August 2021.
+ Delaney, Miguel (27 August 2021). "Cristiano Ronaldo: How Manchester United sealed a transfer 12 years in the making in a matter of hours". The Independent. Archived from the original on 27 August 2021. Retrieved 27 August 2021.
+ Ogden, Mark (27 August 2021). "Cristiano Ronaldo's Man Utd return: ex-teammates' Whatsapp messages helped end Man City move". ESPN. Archived from the original on 27 August 2021. Retrieved 27 August 2021.
+ "United confirm Ronaldo agreement". Manchester United F.C. 27 August 2021. Archived from the original on 31 August 2021.
+ Aarons, Ed; Romano, Fabrizio (27 August 2021). "'Welcome back': Manchester United agree €20m deal for Cristiano Ronaldo". The Guardian. Archived from the original on 28 August 2021. Retrieved 27 August 2021.
+ Ostlere, Lawrence (2 September 2021). "Cristiano Ronaldo shirt number: New Manchester United forward takes No7 from Edinson Cavani". The Independent. Archived from the original on 3 September 2021. Retrieved 2 September 2021.
+ Fiore, Tommaso (6 September 2021). "Cristiano Ronaldo: New Manchester United No 7 smashes shirt sale record and causes media frenzy". Sky Sports. Retrieved 7 September 2021.
+ Stone, Simon (11 September 2021). "Cristiano Ronaldo twice scores as Manchester United beat Newcastle". BBC Sport. Archived from the original on 15 September 2021. Retrieved 11 September 2021.
+ Marsh, Charlotte (29 September 2021). "Man Utd 2–1 Villarreal: Cristiano Ronaldo snatches dramatic late Champions League victory for United". Sky Sports. Archived from the original on 5 October 2021. Retrieved 30 September 2021.
+ "Villarreal 0–2 Man Utd: Cristiano Ronaldo and Jadon Sancho score as United reach Champions League last 16". Sky Sports. Archived from the original on 23 February 2023. Retrieved 13 November 2022.
+ "Cristiano Ronaldo: Man Utd & Portugal forward becomes first player to score 800 top-level goals". BBC Sport. 3 December 2021. Retrieved 4 December 2021.
+ "Ronaldo at 37: Is time finally catching up with Man Utd superstar?". Goal.com. 8 February 2022. Archived from the original on 20 February 2023. Retrieved 11 June 2024.
+ "Manchester United 2–0 Brighton & Hove Albion: Ronaldo scores as Man Utd beat Brighton". BBC Sport. 15 February 2022. Archived from the original on 12 November 2022. Retrieved 11 June 2024.
+ Garrick, Omar (9 June 2022). "PFA Premier League Team of the Year: Ronaldo, De Bruyne, Salah included". The Athletic. Archived from the original on 9 June 2022. Retrieved 19 June 2022.
+ Nelson, Joe (4 June 2022). "Ronaldo named United's Player of the Year". Manchester United. Archived from the original on 26 November 2022. Retrieved 4 June 2022.
+ "Comparing Messi's PSG record with Ronaldo's at Man Utd in 2021–22". Planet Football. 23 May 2022. Archived from the original on 13 February 2022. Retrieved 12 June 2022.
+ "Cristiano Ronaldo reiterates desire to leave Manchester United during Carrington meeting". The Athletic. 28 July 2022. Archived from the original on 19 February 2023. Retrieved 11 November 2022.
+ Aarons, Ed (14 July 2022). "Chelsea decide against signing Cristiano Ronaldo after talks with representatives". The Guardian. Archived from the original on 27 November 2022. Retrieved 27 November 2022.
+ "Cristiano Ronaldo to leave Manchester United with immediate effect". The Guardian. 22 November 2022. Archived from the original on 20 February 2023. Retrieved 22 November 2022.
+ "Cristiano Ronaldo: Former Manchester United forward signs for Saudi Arabian club Al-Nassr". Sky Sports. 30 December 2022. Archived from the original on 12 January 2023. Retrieved 30 December 2022.
+ Romano, Fabrizio (30 December 2022). "Cristiano Ronaldo completes deal to join Saudi Arabian club Al Nassr". The Guardian. Archived from the original on 5 January 2023. Retrieved 30 December 2022.
+ "Cristiano Ronaldo joins Saudi Arabian side Al Nassr until 2025". BBC Sport. 30 December 2022. Archived from the original on 12 February 2023. Retrieved 30 December 2022.
+ "Cristiano Ronaldo: Portugal forward makes competitive debut in Al Nassr win". BBC Sport. 22 January 2023. Retrieved 23 January 2023.
+ "Cristiano Ronaldo scores late penalty for first Al Nassr goal in Saudi Arabia". BBC Sport. 3 February 2023. Archived from the original on 7 February 2023. Retrieved 3 February 2023.
+ "Ronaldo scores four goals to pass 500 in club career". Reuters. 9 February 2023. Archived from the original on 10 February 2023. Retrieved 10 February 2023.
+ "Saudi wealth shaping football's new reality". BBC Sport. Archived from the original on 26 October 2023. Retrieved 17 August 2023.
+ "Neymar credits Ronaldo for Saudi Pro League transformation". Reuters. 16 August 2023. Retrieved 17 August 2023.
+ "Neymar, the latest star of the Saudi Pro League, the new order of soccer". MARCA. 15 August 2023. Retrieved 17 August 2023.
+ "Cristiano Ronaldo Wins First Trophy Since 2021 After Scoring Two Goals For 10-Man Al-Nassr In Arab Club Champions Cup Final". Sports Illustrated. 12 August 2023. Archived from the original on 28 August 2023. Retrieved 12 August 2023.
+ "Cristiano Ronaldo to end 2023 as world's top goal scorer". ESPN. 30 December 2023. Archived from the original on 7 April 2024. Retrieved 29 August 2024.
+ "Cristiano Ronaldo Ends 2023 Two Goals Clear Of Harry Kane And Kylian Mbappe As Top Scorer In World Soccer". Sports Illustrated. 30 December 2023. Archived from the original on 4 April 2024. Retrieved 29 August 2024.
+ Banerjee, Ritabrata (27 May 2024). "Cristiano Ronaldo makes history again! Al-Nassr hero breaks Saudi Pro League record for most goals in a season as Portugal hero downs Al-Ittihad". Goal.com. Archived from the original on 27 May 2024. Retrieved 12 June 2024.
+ "NEW WORLD RECORD". www.iffhs.com. 4 June 2024. Retrieved 12 June 2024.
+ "Cristiano Ronaldo clinches second successive Saudi Pro League Golden Boot ahead of Ivan Toney as Al-Nassr superstar lands consolation prize after latest title failure | Goal.com". www.goal.com. 27 May 2025.
+ "Cristiano Ronaldo: Young lion". Australian Broadcasting Corporation. 26 April 2006. Archived from the original on 4 September 2021. Retrieved 16 June 2021.
+ Emons, Michael (5 June 2024). "Cristiano Ronaldo: Portugal's Euros record breaker and record chaser". BBC Sport. Archived from the original on 11 June 2024. Retrieved 12 June 2024.
+ Cristiano Ronaldo at Soccerway. Retrieved 23 November 2024.
+ "UEFA EURO 2004 Statistics: Assists". Archived from the original on 2 December 2013. Retrieved 9 September 2013.
+ "Portugal 2–0 Iran". BBC Sport. 17 June 2006. Archived from the original on 16 August 2007. Retrieved 16 June 2021.
+ Chick, Alex (6 July 2006). "Scolari's fortunes take a dive". ESPN FC. Archived from the original on 4 September 2014. Retrieved 3 October 2023.
+ Flanagan, Chris (8 September 2020). "Long read: Cristiano Ronaldo's incredible journey to 100 Portugal goals – and the all-time international record still to come". FourFourTwo. Archived from the original on 12 February 2023. Retrieved 11 June 2024.
+ "Podolski beats Ronaldo to award". BBC Sport. 7 July 2006. Archived from the original on 10 July 2006. Retrieved 10 July 2006.
+ "Scolari delighted with Portugal victory over Brazil". Rediff. 7 February 2007. Archived from the original on 29 June 2010. Retrieved 11 June 2024.
+ "Portugal". UEFA. Archived from the original on 16 January 2014. Retrieved 11 June 2024.
+ "Top scorers for Euro 2008 European Qualifying campaign". ESPN. Archived from the original on 7 October 2010. Retrieved 11 June 2024.
+ "Euro 2008: German power leaves Portugal in despair". The Daily Telegraph. 20 June 2008. Archived from the original on 30 August 2010. Retrieved 11 June 2024.
+ "Full-time report Côte d'Ivoire-Portugal". FIFA. 15 June 2010. Archived from the original on 13 May 2012. Retrieved 11 June 2024.
+ "Full-time report North Korea-Portugal". FIFA. 21 June 2010. Archived from the original on 18 June 2012. Retrieved 11 June 2024.
+ "Full-time report Brazil-Portugal". FIFA. 25 June 2010. Archived from the original on 13 May 2012. Retrieved 11 June 2024.
+ "Portugal Beats North Korea in 7–0 Rout". The Wall Street Journal. 21 June 2010. Archived from the original on 25 August 2020. Retrieved 11 June 2024.
+ "Cristiano Ronaldo showed 'I am here' after stunning hat-trick for Portugal in World Cup play-off against Sweden". The Independent. 20 November 2013. Archived from the original on 29 August 2014. Retrieved 11 June 2024.
+ Ogden, Mark (23 June 2014). "Cristiano Ronaldo produces last gasp moment of magic to keep hopes alive". The Daily Telegraph. Archived from the original on 24 February 2024. Retrieved 11 June 2024.
+ "Portugal 2–1 Ghana" . BBC Sport. Retrieved 11 June 2024
+ "Cristiano Ronaldo's incredible journey to 100 Portugal goals – and the all-time international record still to come". FourFourTwo. 30 August 2021. Archived from the original on 12 February 2023. Retrieved 11 June 2024.
+ "FIFA Confederations Cup Russia 2017 – Awards – Man of the Match". FIFA. Archived from the original on 21 June 2017. Retrieved 26 June 2017.
+ "Portugal come from behind to finish third". FIFA. 2 July 2017. Archived from the original on 2 July 2017. Retrieved 2 July 2017.
+ "Spain vs. Portugal final score: Crazy draw as Cristiano Ronaldo becomes oldest to score World Cup hat trick". cbssports.com. Archived from the original on 16 June 2018. Retrieved 11 June 2024.
+ Brown, Luke (20 June 2018). "Cristiano Ronaldo goal, Portugal vs Morocco World Cup 2018: Real Madrid forward breaks record with header". The Independent. Archived from the original on 20 June 2018. Retrieved 20 June 2018.
+ "Fan Dream Team and prize winners revealed!". FIFA. 23 July 2018. Archived from the original on 28 August 2018. Retrieved 18 August 2018.
+ Taylor, Daniel (9 June 2019). "Portugal win Nations League as Gonçalo Guedes does for the Netherlands". The Guardian. Estádio do Dragão. Retrieved 2 February 2020.
+ "Cristiano Ronaldo becomes top scorer in European Championship history". The Athletic. 15 June 2021. Archived from the original on 15 June 2021. Retrieved 11 June 2024.
+ "Cristiano Ronaldo breaks men's international scoring record with 108th and 109th goals". BBC Sport. September 2021. Archived from the original on 8 October 2021. Retrieved 11 June 2024.
+ Smith, Joshua (9 October 2021). "Cristiano Ronaldo breaks another international record while scoring 112th goal". Manchester Evening News. Retrieved 10 October 2021.
+ "Cristiano Ronaldo bate recorde europeu de internacionalizações". Maisfutebol (in Portuguese). Retrieved 3 January 2024.
+ "Cristiano Ronaldo scores a record-breaking 10th international hat-trick for Portugal". Sporting Life. 13 October 2021. Retrieved 6 December 2022.
+ "Portugal's Cristiano Ronaldo becomes first male player to score in 5 World Cups". ESPN. 24 November 2022. Archived from the original on 26 November 2022. Retrieved 11 June 2024.
+ McNulty, Phil (6 December 2022). "World Cup 2022: 'Cristiano Ronaldo reduced to role of superstar nobody wants'". BBC Sport. Archived from the original on 6 December 2022. Retrieved 7 December 2022.
+ Humayun, Ali (6 December 2022). "Cristiano Ronaldo dropped for Portugal's World Cup clash with Switzerland". The Athletic. Archived from the original on 6 December 2022. Retrieved 6 December 2022.
+ "Ronaldo at the double as Portugal beat Liechtenstein 4–0 in the Euro 2024 qualifiers". PortuGOAL.net. Archived from the original on 2 June 2023. Retrieved 11 June 2024.
+ Marshall, Matthew (20 June 2023). "Cristiano Ronaldo celebrates his 200th cap in style by firing Portugal to a 1–0 win in Iceland". PortuGOAL. Archived from the original on 21 June 2023. Retrieved 20 June 2023.
+ "João Neves é o segundo estreante da "era" Roberto Martínez" [João Neves is the second debutant of the Roberto Martínez "era"] (in European Portuguese). RTP. 16 October 2023. Archived from the original on 4 July 2023. Retrieved 16 October 2023.
+ "Cristiano Ronaldo scored a brace in Portugal's win over Bosnia". KhelNow. Retrieved 21 February 2024.
+ ""38 and still shining," "Messi did this ages ago" – Fans react as incredible new Cristiano Ronaldo stat comes to light". Sportskeeda. 18 October 2023. Retrieved 21 February 2024.
+ "Most EURO final tournaments: Ronaldo breaks new ground". UEFA. 18 June 2024. Archived from the original on 18 June 2024. Retrieved 19 June 2024.
+ "Ronaldo reaches 900 career goals – the numbers behind the landmark". BBC Sport. 5 September 2024. Archived from the original on 10 September 2024. Retrieved 6 September 2024.
+ "Portugal Beat Spain in Munich to Win 2nd Uefa Nations LeagueTitle". Forbes.
+ "Portugal 2-2 Hungary: Cristiano Ronaldo sets scoring record as Portugal held to draw". BBC Sport. Retrieved 15 October 2025.
+ "Real Madrid's Cristiano Ronaldo: The Fastest In Football – German Study". Goal. Archived from the original on 16 July 2018. Retrieved 14 June 2019.
+ "Why Cristiano Ronaldo is better than Lionel Messi!". Zeenews.india.com. 26 August 2012. Archived from the original on 4 August 2013. Retrieved 30 July 2013.
+ Wilson, Jonathan (24 March 2010). "Why are so many wingers playing on the 'wrong' wings?". The Guardian. Archived from the original on 26 August 2016. Retrieved 16 July 2016.
+ "E' Ronaldo il Bolt del calcio" (in Italian). Sport mediaset. Archived from the original on 24 September 2015. Retrieved 14 December 2014.
+ "Cristiano Ronaldo – Portogallo". Archived from the original on 28 April 2014. Retrieved 14 December 2014.
+ Goodman, Mike L. (22 September 2015). "The Evolution of Cristiano Ronaldo". Grantland. Archived from the original on 12 May 2016. Retrieved 25 April 2016.
+ "WATCH: Ronaldo's elastico nutmeg!". Sky Sports. 20 February 2017. Archived from the original on 14 June 2020. Retrieved 8 April 2020.
+ Molinaro, John. "Ronaldo Vs. Messi: The Case For Ronaldo As World's Best Player". Sportsnet. Archived from the original on 27 June 2018. Retrieved 26 June 2018.
+ Marcotti, Gabriele (6 July 2016). "Ronaldo, Portugal accept manager's challenge to reach Euro 2016 final". ESPN FC. Archived from the original on 27 June 2018. Retrieved 26 June 2018.
+ "How did Cristiano Ronaldo score his incredible header against Manchester United?". The Daily Telegraph. London. 14 February 2013. Archived from the original on 30 May 2013. Retrieved 1 June 2013.
+ "Cristiano Ronaldo's highest jumps – when Air CR7 defied gravity". Olympics.com. Archived from the original on 23 March 2023. Retrieved 5 October 2024.
+ "Eden Hazard the new penalty taker king; Julio Cesar the best stopper". ESPN FC. 7 October 2014. Archived from the original on 14 November 2016. Retrieved 18 July 2016.
+ "From Messi to Ronaldo – the world's best free kick takers". The Belfast Telegraph. Retrieved 4 November 2012.
+ Anka, Carl (12 December 2018). "Noughty Boys: No one hit a free-kick quite like Juninho Pernambucano". BBC. Archived from the original on 12 December 2018. Retrieved 13 December 2018.
+ Scott, Chris (16 June 2018). "Cristiano Ronaldo: Portuguese commentator goes wild over CR7". CNN. Archived from the original on 15 December 2018. Retrieved 13 December 2018.
+ Sharma, Sarthak (4 November 2018). "Former Manchester United coach reveals why Cristiano Ronaldo takes free-kicks in his iconic style". FOX Sports Asia. Archived from the original on 15 December 2018. Retrieved 13 December 2018.
+ Bate, Adam (15 November 2016). "Cristiano Ronaldo's evolution: Could he really play beyond the age of 40?". Sky Sports. Archived from the original on 1 October 2018. Retrieved 1 October 2018.
+ Sutherland, Nick (21 February 2022). "Cristiano Ronaldo's 'hand trick' skill still needs explaining". GiveMeSport. Retrieved 10 February 2025.
+ Rigg, Nicholas (25 September 2014). "The argument for playing Cristiano Ronaldo centrally at Real Madrid". ESPN FC. Archived from the original on 5 August 2017. Retrieved 14 December 2014.
+ Driscoll, Jon (2 August 2018). "Cristiano Ronaldo's rise at Real Madrid". Football Italia. Archived from the original on 10 September 2021. Retrieved 18 April 2020.
+ "How Liverpool can stop Cristiano Ronaldo". FourFourTwo. 21 October 2014. Archived from the original on 14 December 2014. Retrieved 14 December 2014.
+ "Real Madrid's Cristiano Ronaldo: The Most Underrated Man in Football?". Bleacher Report. Archived from the original on 9 April 2018. Retrieved 8 April 2018.
+ "Did Jose Mourinho's Tactics Help Cristiano Ronaldo Flourish at Real Madrid?". Bleacher Report. Archived from the original on 19 June 2015. Retrieved 14 December 2014.
+ Marcotti, Gabriele (25 May 2018). "Real Madrid v Liverpool: The five phases of Cristiano Ronaldo". The Times. Retrieved 28 June 2018.
+ Dunne, Robbie (14 March 2018). "Cristiano Ronaldo evolving into an effective striker for Real Madrid". ESPN FC. Archived from the original on 25 August 2021. Retrieved 18 April 2020.
+ Bate, Adam (15 November 2016). "Cristiano Ronaldo's evolution: Could he really play beyond the age of 40?". Sky Sports. Archived from the original on 29 June 2018. Retrieved 28 June 2018.
+ Hunter, Graham (23 October 2014). "Real Madrid vs. Barcelona: Clasico promises goals aplenty". ESPN FC. Archived from the original on 6 January 2019. Retrieved 28 June 2018.
+ Haugstad, Thore (13 February 2018). "Why Cristiano Ronaldo has been Real Madrid's major problem this season... but he can also be their solution". FourFourTwo. Archived from the original on 27 June 2018. Retrieved 26 June 2018.
+ "Cristiano Ronaldo can become great centre-forward, says Gary Neville". Sky Sports. 20 April 2017. Archived from the original on 29 May 2018. Retrieved 28 May 2018.
+ "Cristiano Ronaldo joins illustrious list of players who reinvented themselves in a new position". The Daily Telegraph. 10 May 2017. Archived from the original on 29 May 2018. Retrieved 28 May 2018.
+ Cox, Michael (19 February 2019). "Juventus' twin towers of Ronaldo, Mandzukic to provide a unique test for Atletico's stingy defence". ESPN FC. Archived from the original on 22 March 2019. Retrieved 30 April 2019.
+ Robson, Stewart (5 October 2019). "Ronaldo's free role with Juventus is a headache for Sarri. How can he work around his star?". ESPN FC. Archived from the original on 6 October 2019. Retrieved 12 October 2019.
+ Marcotti, Gabriele (22 August 2018). "Cristiano Ronaldo conundrum: How should Max Allegri use Juventus' star?". ESPN FC. Archived from the original on 30 April 2019. Retrieved 30 April 2019.
+ McKay, Gaby (3 October 2018). "Dybala gives Allegri a headache". Football Italia. Archived from the original on 30 April 2019. Retrieved 30 April 2019.
+ Walker-Roberts, James (6 December 2018). "Is Cristiano Ronaldo undergoing another evolution at Juventus?". Sky Sports. Archived from the original on 1 May 2019. Retrieved 30 April 2019.
+ Various sources:
+Macdonald, Paul. "A future without Messi and Ronaldo". Goal. Archived from the original on 29 October 2020. Retrieved 8 June 2018.
+Staunton, Peter. "Messi and Ronaldo: Changing the face of football". Goal. Archived from the original on 4 August 2019. Retrieved 8 June 2018.
+Haugstad, Thore (11 January 2016). "Whoever wins the Ballon d'Or, the Messi-Ronaldo duopoly is coming to an end". Eurosport. Archived from the original on 20 January 2021. Retrieved 8 June 2018.
+Brewin, John (16 July 2018). "Will Cristiano Ronaldo's Madrid departure hasten the end of the 'Greatest' era?". Tifo Football. Archived from the original on 11 August 2018. Retrieved 11 August 2018.
+ Kilpeläinen, Juuso (2 September 2018). "Ronaldo, Messi, Pele: The GOAT debate is unending, and shouldn't matter". Football Paradise. Archived from the original on 2 September 2018. Retrieved 15 December 2020.
+ Ruthven, Graham (7 June 2017). "Cristiano Ronaldo is the greatest goalscorer of all time". Marca. Archived from the original on 22 January 2018. Retrieved 21 January 2018.
+ Purnell, Gareth (21 August 2009). "Manchester United will miss Ronaldo says Lampard". The Independent. London. Archived from the original on 12 February 2013. Retrieved 22 December 2012.
+ Various sources:
+Dawson, Alan (13 April 2018). "We analysed who the better big-game player is, Cristiano Ronaldo or Lionel Messi – and the stats show the winner is clear". Business Insider. Retrieved 8 June 2018.
+Weiner, David (7 March 2018). "Scary proof Ronaldo is the ultimate big game player". The Queensland Times. Archived from the original on 12 June 2018. Retrieved 8 June 2018.
+Jones, Robert (5 April 2018). "Ronaldo has become king of the big-game occasion for Real Madrid". The Belfast Telegraph. Archived from the original on 12 June 2018. Retrieved 8 June 2018.
+ NASH, STEVE. "Steve Nash: Why Cristiano Ronaldo Is the Michael Jordan of World Football". Bleacher Report. Retrieved 14 February 2025.
+ "Cristiano Ronaldo is the 'complete player', admits Sir Alex Ferguson". The Guardian. London. 9 January 2013. Archived from the original on 3 September 2014. Retrieved 25 January 2013.
+ Mitten, Andy (5 March 2013). "How Ronaldo became the world's best: the inside story". Eurosport. Archived from the original on 8 December 2017. Retrieved 26 November 2022.
+ "Cristiano Ronaldo: Is Euro 2016 triumph his greatest achievement?". CNN. 11 July 2016. Archived from the original on 28 March 2018. Retrieved 28 March 2018.
+ "Ronaldo: I trained because I had to, Cristiano Ronaldo does it because he loves it". Marca. 7 December 2018. Retrieved 12 May 2021.
+ "Cristiano Ronaldo says he has no idea how much money he has". Archived 12 June 2018 at the Wayback Machine. London. Daily Mirror. Retrieved 5 September 2014
+ Brassell, Andy (9 June 2021). "How Portugal became a European super power in football". The Guardian. Archived from the original on 11 June 2021. Retrieved 17 June 2021.
+ Various sources:
+Sunderland, Tom (11 November 2013). "10 Biggest Divers in World Football § 6. Cristiano Ronaldo". Bleacher Report. Archived from the original on 30 December 2017. Retrieved 8 June 2018.
+Pickup, Oliver (30 June 2014). "Arjen Robben joins list of top 9 football divers of all time, but where does he rank compared to the others?". The Telegraph. Archived from the original on 10 January 2022. Retrieved 30 December 2017.
+"Sir Alex Ferguson admits Cristiano Ronaldo was a diver". Sport English. 2015. Archived from the original on 12 June 2018. Retrieved 8 June 2018.
+ Daly, Jim (16 September 2014). "Rio Ferdinand claims Cristiano Ronaldo was once blasted by Sir Alex Ferguson for playing selfishly". Daily Mirror. London. Archived from the original on 19 December 2014. Retrieved 14 December 2014.
+ Wilson, Jonathan (28 August 2021). "Cristiano Ronaldo held Juventus back: just what do Manchester United see in him?". The Guardian. Archived from the original on 28 August 2021. Retrieved 29 August 2021.
+ Kilpeläinen, Juuso (8 June 2018). "Blood, sweat and toil: The foundations for the legacy of Cristiano Ronaldo". Football Paradise. Archived from the original on 12 June 2018. Retrieved 15 December 2020.
+ "Ronaldo admits perceived arrogance has cost him". CNN. 8 November 2012. Archived from the original on 22 November 2012. Retrieved 23 November 2012.
+ "Jose Mourinho claims Cristiano Ronaldo deserved to win Ballon d'Or". ESPN. 20 March 2013. Archived from the original on 19 June 2022. Retrieved 19 June 2022.
+ "Pepe: 'Cristiano is a symbol'". Marca. Spain. 10 September 2013. Archived from the original on 13 September 2013. Retrieved 10 September 2013.
+ Balague, Guillem (14 January 2014). "Ballon d'Or: Cristiano Ronaldo's improved image helped win, says Guillem Balague". Sky Sports. Retrieved 19 June 2022.
+ Russell, Bradley (6 October 2017). "How to do the 12 new FIFA 18 celebrations – plus more of our favourites". FourFourTwo. Retrieved 26 November 2022.
+ Matchett, Karl (3 May 2017). "Chronology of Cristiano Ronaldo Told Through His Goal Celebrations". Bleacher Report. Archived from the original on 15 December 2018. Retrieved 13 December 2018.
+ Murray, Caitlin (9 December 2016). "Everyone mocks Cristiano Ronaldo's new goal celebration, including his own son". Fox Sports. Archived from the original on 15 December 2018. Retrieved 13 December 2018.
+ Lloyd, Simon (March 2018). "What does Cristiano Ronaldo's goal celebration mean?". joe.co.uk. Archived from the original on 15 December 2018. Retrieved 13 December 2018.
+ Wright, Chris (27 September 2017). "Little fan absolutely nails Cristiano Ronaldo goal celebration". ESPN. Archived from the original on 19 June 2022. Retrieved 19 June 2022.
+ "Siuuuu! Cristiano Ronaldo's most iconic celebration turns a decade old". MARCA. 9 August 2023. Archived from the original on 4 February 2024. Retrieved 4 February 2024.
+ Spencer, Phil (23 November 2023). "What is Cristiano Ronaldo's 'Siuuu' celebration? Portugal superstar sets trend with iconic move copied around the globe". talkSPORT. Archived from the original on 4 February 2024. Retrieved 4 February 2024.
+ Conor Pope (19 January 2022). "What is Cristiano Ronaldo's "Siuuuu" celebration about?". FourFourTwo. Retrieved 4 February 2024.
+ Dabbs, Ryan (13 June 2023). "Cristiano Ronaldo finally explains the meaning behind his iconic 'Siu' goal celebration". Yahoo Life. FourFourTwo. Archived from the original on 4 February 2024. Retrieved 4 February 2024.
+ Mendes, Chris (24 June 2014). "Cristiano Ronaldo's personal duel with Lionel Messi is affecting his performances for Portugal". The Daily Telegraph. London. Archived from the original on 7 October 2014. Retrieved 30 September 2014.
+ Hunter, Graham (28 November 2010). "The game's best rivalry". ESPN. Archived from the original on 6 October 2014. Retrieved 30 September 2014.
+ "Messi v Ronaldo". Sky Sports. 17 October 2011. Archived from the original on 6 October 2014.
+ Hughes, Rob (13 September 2011). "Ronaldo May Look Like the Best, but There Is Someone Better". The New York Times. Archived from the original on 1 July 2015. Retrieved 30 September 2014.
+ Hayward, Paul (26 May 2009). "Cristiano Ronaldo versus Lionel Messi pits showman against shy man". The Guardian. London. Archived from the original on 9 October 2014. Retrieved 30 September 2014.
+ Lewis, Tim (24 November 2013). "Cristiano Ronaldo: he's got a god-given talent – and he knows it". The Guardian. London. Archived from the original on 6 October 2014. Retrieved 30 September 2014.
+ Calvin, Michael (15 June 2014). "Crunch time for Lionel Messi and Cristiano Ronaldo". The Independent. Archived from the original on 6 October 2014. Retrieved 30 September 2014.
+ "Messi and I are colleagues, work friends". Archived 25 November 2014 at the Wayback Machine. Marca (Spain). 28 August 2014. Retrieved 21 November 2014.
+ Montague, James; Pinto, Pedro (29 May 2012). "Cristiano Ronaldo: I'm better than Messi". CNN. Archived from the original on 6 October 2014. Retrieved 30 September 2014.
+ Palmer, Kevin (20 December 2012). "Fergie: Ronaldo and Messi are equals". ESPN. Retrieved 19 June 2022.
+ "Barcelona's Lionel Messi blames media for inventing rivalry with Real Madrid's Cristiano Ronaldo". The Daily Telegraph. London. 15 August 2012. Archived from the original on 7 October 2014. Retrieved 30 September 2014.
+ "Lionel Messi Reaches $50 Million-A-Year Deal With Barcelona". Archived 6 October 2014 at the Wayback Machine. Forbes. 16 May 2014. Retrieved 1 October 2014
+ "Cristiano Ronaldo: Sepp Blatter's apology to Real Madrid". BBC Sport. 29 October 2013. Archived from the original on 25 January 2016. Retrieved 6 January 2019.
+ "Cristiano Ronaldo, Lionel Messi & Eric Cantona light up Uefa awards". BBC. 29 August 2019. Retrieved 30 August 2019.
+ "Cristiano Ronaldo: Lionel Messi rivalry now 'gone' says Portuguese great". BBC Sport. 7 September 2023. Retrieved 11 September 2023.
+ Pelé (23 April 2014). "Cristiano Ronaldo by Pelé: Time 100". Time. Archived from the original on 2 June 2014. Retrieved 3 June 2014.
+ "ESPN World Fame 100". ESPN. 3 June 2016. Archived from the original on 13 July 2016. Retrieved 6 January 2019.
+ "ESPN World Fame 100". ESPN. 30 May 2017. Archived from the original on 31 May 2017. Retrieved 1 June 2017.
+ "ESPN ranks the 100 most famous athletes". USA Today. 31 May 2018.
+ "World Fame 100 – 2019". ESPN. Retrieved 14 September 2019.
+ "Manchester United's Wayne Rooney is king of the replica kit". The Guardian. London. 22 July 2011. Archived from the original on 30 June 2018. Retrieved 13 October 2018.
+ "Leo Messi's Barcelona Shirt Is the Most Sold Worldwide, Cristiano Ronaldo 2nd". Bleacher Report. Retrieved 4 January 2019.
+ "Juventus Have Sold $60 Million Of Ronaldo Jerseys In 24 Hours". Forbes. Archived from the original on 13 October 2018. Retrieved 13 October 2018.
+ "Ronaldo Is The First Person To Pass Half A Billion Followers On Social Media". SportBible. Retrieved 13 February 2021.
+ "Cristiano Ronaldo Produced Nearly $1 Billion in Value for Sponsors on Social Media". Archived 13 October 2018 at the Wayback Machine. Forbes. 15 June 2016. Retrieved 30 August 2017.
+ "🎥 Cristiano Ronaldo unveils his official YouTube channel". OneFootball (in Brazilian Portuguese). 21 August 2024. Retrieved 22 August 2024.
+ "Ronaldo creates YouTube history, smashes new one million subscribers record". Al Jazeera. Retrieved 22 August 2024.
+ "Cristiano Ronaldo launches YouTube channel, gains over a million followers after posting first video". Sportstar. 21 August 2024. Retrieved 22 August 2024.
+ "Cristiano Ronaldo lança canal no Youtube e consegue mais de 1 milhão de inscritos em menos de uma hora". ESPN.com (in Portuguese). 21 August 2024. Retrieved 22 August 2024.
+ Shepherd, Ian. "Cristiano Ronaldo Smashes Records With Massive YouTube Channel Launch". Forbes. Retrieved 22 August 2024.
+ "Cristiano Ronaldo's YouTube channel gets over 10 million subscribers within one day of launch – CNBC TV18". CNBCTV18. 22 August 2024. Retrieved 22 August 2024.
+ Ayamga, Emmanuel (22 August 2024). "Ronaldo shatters more records, surpasses 20m YouTube subscribers under 24 hours". Pulse Ghana. Retrieved 22 August 2024.
+ Ritman, Alex (23 August 2024). "Cristiano Ronaldo Launches YouTube Channel, Hits 30 Million Subscribers in Two Days". Variety. Retrieved 23 August 2024.
+ "Portugal: YouTube channels by number of subscribers 2024". Statista. Retrieved 22 August 2024.
+ "McAfee Names Most Dangerous Football Team in Europe". Infosecurity. 28 June 2012. Archived from the original on 30 June 2012. Retrieved 15 May 2012.
+ Badenhausen, Kurt. "The Highest-Paid Athletes Of The Decade: Mayweather, Ronaldo And LeBron Dominate". Forbes. Retrieved 13 January 2020.
+ Settimi, Christina (7 May 2014). "The world's highest paid football players". Forbes. Archived from the original on 10 May 2014. Retrieved 8 May 2014.
+ "The world's highest paid football players 2015". Forbes. Archived from the original on 26 November 2015. Retrieved 26 November 2015.
+ "The World's Highest-Paid Athletes". Forbes. Archived from the original on 18 January 2015. Retrieved 14 January 2015.
+ Reynolds, Ben (8 June 2016). "Cristiano Ronaldo first footballer to top Forbes rich list of highest-earning athletes". Sky Sports. Archived from the original on 10 June 2016. Retrieved 9 June 2016.
+ "Cristiano Ronaldo was the highest paid athlete in 2024 on a list which featured no women in the top 100". CNN. 13 February 2025. Archived from the original on 1 May 2025. Retrieved 1 May 2025.
+ "Cristiano Ronaldo tops list of highest-paid athletes, Ben Simmons the only Australian, no women in top 100". NBC News. 13 February 2025. Retrieved 3 June 2025.
+ "Highest-paid athletes in the world named". The Independent. 13 February 2025. Retrieved 3 June 2025.
+ Settimi, Christina. "Ronaldo's $105 Million Year Tops Messi And Crowns Him Soccer's First Billion-Dollar Man". Forbes. Retrieved 9 June 2020.
+ "MS Dhoni, Mary Kom world's 16th, 38th most marketable athletes". The Times of India. 26 June 2012. Archived from the original on 18 June 2013.
+ "50 Most Marketable 2013 – Cristiano Ronaldo". SportsProMedia. 8 May 2013. Archived from the original on 15 May 2014. Retrieved 15 May 2014.
+ "Top 10 Most Marketable Footballers in the World" (PDF). Repucom (press release). 28 May 2014. Archived from the original (PDF) on 4 March 2016. Retrieved 22 August 2015.
+ "Nike's CR7 Collection Reflects Attitude And Irreverence Of A Global Icon". Nike. 7 November 2012. Archived from the original on 7 July 2018. Retrieved 6 July 2018.
+ "Cristiano Ronaldo expands his brand with the launch of Legacy fragrance". Forbes. 26 November 2015. Archived from the original on 22 September 2018. Retrieved 6 January 2019.
+ Booth, Robert (11 June 2009). "From £175 to £80m in 14 years – but can Cristiano Ronaldo earn it like Beckham?". The Guardian. London. Archived from the original on 17 December 2013. Retrieved 8 July 2013.
+ Badenhausen, Kurt (7 November 2012). "Is Cristiano Ronaldo The World's Most Marketable Athlete?". Forbes. Archived from the original on 2 June 2013. Retrieved 8 July 2013.
+ Badenhausen, Kurt (2 December 2016). "Why Cristiano Ronaldo's $1 Billion Nike Deal May Be A Bargain For Sportswear Giant". Forbes. Archived from the original on 5 July 2018. Retrieved 6 July 2018.
+ "EA Unveil new FIFA 18 trailer and official cover art". Goal. 22 August 2017. Archived from the original on 8 November 2017. Retrieved 8 November 2017.
+ "Fifa 18 release date confirmed with Cristiano Ronaldo as cover star". London Evening Standard. 6 June 2017. Archived from the original on 6 July 2018. Retrieved 5 July 2018.
+ "Ronaldo raises funds for tsunami-hit Aceh". People's Daily. 13 June 2005. Archived from the original on 9 March 2011. Retrieved 2 April 2011.
+ "Tsunami Survivors: New Life For A Decimated Football Club". FIFA. 9 January 2008. Archived from the original on 11 March 2013. Retrieved 3 July 2012.
+ "Cristiano Ronaldo accepts Daily Telegraph libel payout". BBC News. 8 November 2010. Archived from the original on 15 September 2018. Retrieved 14 October 2018.
+ "Ronaldo donates to Cancer-stricken mums saviors". Now. 25 June 2012. Archived from the original on 12 February 2013. Retrieved 25 June 2012.
+ "Ronaldo to play in charity match for Madeira". Reuters. 22 February 2010. Retrieved 26 November 2022.
+ s. l., Diarioas AS (19 June 2012). "Cristiano Ronaldo funds cancer treatment for 9-year-old boy". AS.com. Archived from the original on 17 May 2014. Retrieved 15 May 2014.
+ "Messi and Ronaldo join forces for FIFA's '11 for Health'". Marca. Spain. 31 December 2012. Archived from the original on 6 February 2013. Retrieved 21 February 2013.
+ "Cristiano Ronaldo Kicks Off the New Year as Save the Children's New Global Artist Ambassador for Child Hunger and Nutrition". Save the Children. 27 March 2013. Archived from the original on 27 September 2017. Retrieved 6 January 2019.
+ "Ronaldo ambassador for mangrove". The Jakarta Post. 17 March 2013. Archived from the original on 21 March 2013. Retrieved 15 May 2014.
+ "Cristiano Ronaldo: Real Madrid forward donates €600,000 Champions League win bonus to charity". The Independent. 3 June 2016. Archived from the original on 5 June 2016. Retrieved 3 June 2016.
+ Griner, David (9 August 2016). "Cristiano Ronaldo's New Charity App Lets You Post Selfies With Him, Topless or Otherwise". Adweek. Archived from the original on 11 August 2016. Retrieved 11 August 2016.
+ "Cristiano Ronaldo Football Campus". CD Nacional. Archived from the original on 22 December 2017. Retrieved 21 December 2017.
+ Jones, Alice (25 February 2014). "Inside Cristiano Ronaldo's museum: 'I have room for more trophies'". The Independent. Archived from the original on 1 July 2014. Retrieved 15 May 2014.
+ "Cristiano Ronaldo associa-se ao União da Madeira". Maisfutebol.iol.pt. Archived from the original on 25 August 2017. Retrieved 24 December 2017.
+ "Cristiano Ronaldo associa-se ao União da Madeira". Tvi24.iol.pt. 20 November 2014. Archived from the original on 25 August 2017. Retrieved 24 December 2017.
+ "Cristiano Ronaldo made Grand Officer of the Order of Prince Henry". El País. 21 January 2014. Archived from the original on 17 May 2014. Retrieved 15 May 2014.
+ "Cristiano Ronaldo: CR7 name given to discovered galaxy". BBC Sport. 18 June 2015. Archived from the original on 24 September 2015. Retrieved 21 October 2015.
+ "Madeira airport renamed after Cristiano Ronaldo". The World Game. Special Broadcasting Service. Archived from the original on 24 July 2016. Retrieved 23 July 2016.
+ "Madeira airport preparing to be renamed after Cristiano Ronaldo". Espn.com. 28 March 2017. Retrieved 19 June 2022.
+ Corrigan, Dermot (10 March 2017). "Cristiano Ronaldo airport rename critics slammed by Madeira president". ESPN. Retrieved 19 June 2022.
+ "Academia Cristiano Ronaldo". sporting.pt.
+ "Nacional "estupefacto e desagradado" com Sporting por dar nome de Ronaldo a Academia". www.sabado.pt (in European Portuguese). Retrieved 27 September 2023.
+ "Lisbon awards Cristiano Ronaldo with City Medal of Honour". www.theportugalnews.com. Retrieved 9 March 2024.
+ "World Cup 2010: Cristiano Ronaldo gets Madam Tussauds waxwork". The Daily Telegraph. London. 10 June 2010. Archived from the original on 6 February 2015. Retrieved 15 May 2014.
+ "Cristiano Ronaldo sends stylist to museum to brush waxwork's hair". BBC Sport. 5 March 2015. Archived from the original on 23 June 2018. Retrieved 4 November 2017.
+ "Cristiano Ronaldo immortalized in bronze statue outside his personal museum". CNN. 22 December 2014. Archived from the original on 23 December 2014. Retrieved 24 December 2014.
+ "Huge statue of Cristiano Ronaldo erected – and there's something slightly stiff about it". Eurosport. 21 December 2014. Retrieved 23 January 2019.
+ Weekend Update: Cecilia Gimenez on Cristiano Ronaldo Bust – SNL. Saturday Night Live. 9 April 2017. Archived from the original on 24 October 2022. Retrieved 20 December 2022 – via YouTube.
+ "Ronaldo statue: Sculptor Emanuel Santos takes another shot at bust". BBC News. 30 March 2018. Archived from the original on 25 May 2018. Retrieved 30 May 2018.
+ "Aeroporto da Madeira tem novo busto de Cristiano Ronaldo". SAPO. 17 June 2018. Retrieved 26 November 2022.
+ "New CR7 store in London". Football Shirt Culture. 10 October 2008. Archived from the original on 16 June 2018. Retrieved 6 January 2019.
+ Tilley, Jonathan (1 November 2013). "M&C Saatchi launches underwear range with giant image of Ronaldo in pants". PR Week. Archived from the original on 17 May 2014. Retrieved 15 May 2014.
+ "Cristiano Ronaldo Is Working With Richard Chai to Add Shirts to His CR7 Underwear Line". Complex. 15 July 2014. Archived from the original on 19 July 2014. Retrieved 23 July 2014.
+ "Cristiano Ronaldo launches SHOE range as he branches out into fashion". Irish Mirror. 17 July 2014. Archived from the original on 28 July 2014. Retrieved 23 July 2014.
+ Badenhausen, Kurt (16 September 2015). "Cristiano Ronaldo Expands His Brand With Launch Of New Fragrance". Forbes. Retrieved 27 November 2022.
+ "What is the media company owned by Cristiano Ronaldo?". Portugal Business News. 27 October 2023. Retrieved 1 November 2023.
+ "How Mobile Games Are Sports Stars' Newest Marketing Channel". Mashable. 29 December 2011. Archived from the original on 12 June 2018. Retrieved 6 January 2019.
+ "'Viva Ronaldo' – Cristiano creates his own online community". AS. 13 December 2013. Archived from the original on 26 December 2013. Retrieved 15 May 2014.
+ "Moments". Chapters. 27 March 2009. Archived from the original on 23 May 2009.
+ Brown, Brigid (June 2014). "WATCH: Benedict Cumberbatch Narrates Cristiano Ronaldo Documentary". BBC America. Archived from the original on 10 May 2015. Retrieved 10 May 2015.
+ "Footballer Cristiano Ronaldo awarded with Guinness World Records certificates at London film premiere", Archived 15 September 2018 at the Wayback Machine. Guinness World Records. Retrieved 10 November 2015.
+ Denham, Jess (10 June 2015). "Cristiano Ronaldo confirms film being made about his life with Amy and Senna director on board". Independent. Archived from the original on 14 June 2015. Retrieved 2 August 2015.
+ Romano, Sal (26 March 2025). "Fatal Fury: City of the Wolves adds Cristiano Ronaldo as playable fighter". Gematsu. Retrieved 26 March 2025.
+ Rhodes, Charlie (17 December 2018). "Cristiano Ronaldo: "Juventus? As a group, it is better than Real Madrid"". Sportslens.com. Retrieved 4 August 2023.
+ Doyle, Paul (12 January 2013). "Cape Verde are minnows no more on eve of Africa Cup of Nations debut". The Guardian. ISSN 0261-3077. Retrieved 18 July 2023.
+ Davies, Hunter (16 January 2014). "The Fan: Cristiano Ronaldo the tarnished icon". New Statesman. Archived from the original on 26 July 2014. Retrieved 18 July 2014.
+ "Dolores Aveiro é a nova embaixadora Maggi". Grande Consumo (in European Portuguese). 22 June 2018. Retrieved 30 April 2024.
+ "Dolores Aveiro dá a cara pela MultiOpticas". Meios e Publicidade (in Portuguese). 14 January 2020. Retrieved 30 April 2024.
+ "Cristiano Ronaldo announces he is the father of a baby boy on Twitter". The Daily Telegraph. 4 July 2010. Archived from the original on 21 August 2010. Retrieved 5 July 2010.
+ "Baby 'joy' for Cristiano Ronaldo". BBC Sport. 4 July 2010. Archived from the original on 22 July 2017. Retrieved 4 July 2010.
+ "Cristiano Ronaldo names son Cristiano Ronaldo". The Daily Telegraph. London. 8 July 2010. Archived from the original on 1 May 2013. Retrieved 8 July 2010.
+ "Cristiano Ronaldo Jr. nets 1st Portugal U15s goals". ESPN.com. 18 May 2025. Retrieved 20 May 2025.
+ "Cristiano Ronaldo breaks up with girlfriend Irina Shayk". USA Today. 20 January 2015. Archived from the original on 22 January 2015. Retrieved 21 January 2015.
+ Sharland, Pete (29 June 2017). "Cristiano Ronaldo confirms he is a father of twins". Eurosport. Archived from the original on 1 July 2017. Retrieved 29 June 2017.
+ Leyra, Paloma (25 February 2022). "La argentina Georgina Rodríguez con Forbes: "Me encanta ser la mujer de Cristiano Ronaldo, pero lo que tengo en el banco lo gané yo"". Forbes Argentina (in Spanish).
+ "Cristiano Ronaldo, Georgina Rodriguez confirm birth of baby girl". ESPN. 12 November 2017. Retrieved 19 June 2022.
+ Jackson, Jamie (18 April 2022). "Cristiano Ronaldo and Georgina Rodríguez announce death of baby son". The Guardian. Retrieved 18 April 2022.
+ Blanchet, Brenton; Clack, Erin (11 August 2025). "Cristiano Ronaldo and Georgina Rodríguez Are Engaged After 8 Years of Dating — and She Has a Massive Ring to Prove It". People. Retrieved 11 August 2025.
+ "Ronaldo receives libel damages over drink story". USA Today. 9 November 2009. Archived from the original on 13 November 2009. Retrieved 12 April 2010.
+ "Does Cristiano Ronaldo have tattoos? Juventus star's position on body ink explained". Goal. 3 November 2019.
+ "Cristiano Ronaldo gets right up your nose". The Guardian. 31 July 2017. Archived from the original on 12 September 2017. Retrieved 11 September 2017.
+ De Menezes, Jack (15 June 2018). "Cristiano Ronaldo 'agrees' two-year suspended jail sentence and €18.8m fine over tax evasion case". The Independent. Archived from the original on 15 June 2018. Retrieved 6 January 2019.
+ "Ronaldo will not face rape charge". BBC. 24 November 2005. Archived from the original on 8 October 2018. Retrieved 8 October 2018.
+ "Cristiano Ronaldo's Secret". Der Spiegel. 19 April 2017. Archived from the original on 10 September 2017. Retrieved 11 September 2017.
+ MacInnes, Paul (10 October 2018). "Cristiano Ronaldo's lawyers claim rape allegation documents have been altered". The Guardian. Archived from the original on 15 October 2018. Retrieved 16 October 2018.
+ Her Name Is Kathryn The Woman Who Accuses Ronaldo of Rape. Archived 17 November 2018 at the Wayback Machine Der Spiegel, 29 September 2018.
+ "Cristiano Ronaldo: 'Allegations of rape based on completely fabricated documents'". BBC Sport. 10 October 2018. Archived from the original on 10 October 2018. Retrieved 10 October 2018.
+ "Cristiano Ronaldo rape allegation: Las Vegas police reopen case". BBC. 2 October 2018. Archived from the original on 16 October 2018. Retrieved 11 October 2018.
+ "Cristiano Ronaldo: 'German Magazine stands by reporting'". BBC Sport. Archived from the original on 12 October 2018. Retrieved 10 October 2018.
+ "Ronaldo will not face charges over alleged rape". BBC. 22 July 2019.
+ "US judge dismisses rape suit against football star Ronaldo". France 24. Agence France-Presse. 11 June 2022. Retrieved 12 June 2022.
+ "Cristiano Ronaldo: Kathryn Mayorga demands £56m in damages over rape allegation". The Independent. 29 April 2021. Retrieved 23 September 2021.
+ Ritter, Ken (8 October 2021). "Court says Ronaldo rape lawsuit in Vegas should be dismissed". Associated Press. Retrieved 12 June 2022.
+ "Cristiano Ronaldo: US judge dismisses Las Vegas rape lawsuit". Deutsche Welle. 11 June 2022. Retrieved 12 June 2022.
+ "Cristiano Ronaldo » Club matches". WorldFootball.net. 11 September 2024. Retrieved 23 November 2024.
+ "Sporting Lisboa B (02/03)". National Football Teams. Archived from the original on 5 December 2020. Retrieved 5 December 2020.
+ "Cristiano Ronaldo: Juventus forward scores on 1,000th senior appearance". BBC Sport. 22 February 2020. Archived from the original on 23 February 2020. Retrieved 7 May 2022.
+ "Pepe's goal is awarded to Cristiano Ronaldo". Marca (in Spanish). 18 September 2010. Archived from the original on 12 November 2010. Retrieved 4 December 2010.
+ "Cristiano Ronaldo". eu-football.info. Retrieved 16 November 2024.
+ "Cristiano Ronaldo". Juventus. Archived from the original on 4 June 2019.
+ "Cristiano Ronaldo: Overview". Premier League. Archived from the original on 17 April 2018. Retrieved 28 September 2018.
+ "Cristiano Ronaldo (CR7)". Real Madrid C.F. - Web Oficial. Real Madrid C.F. Retrieved 21 February 2017.
+ "Portugal striker Cristiano Ronaldo forced off injured in Euro 2016 final". ESPN. 10 July 2016. Archived from the original on 11 July 2016. Retrieved 10 July 2016.
+ "Portugal vs Spain - UEFA Nations League Final 2025". UEFA.com. Retrieved 8 June 2025.
+ "Cristiano Ronaldo Fast Facts". CNN. 20 January 2021. Retrieved 16 June 2021.
+ "Ronaldo FIFA Special The Best Award". FIFA. 17 January 2022. Retrieved 17 January 2022.
+ "Cristiano Ronaldo honoured as UEFA Champions League All-Time Top Scorer". UEFA Champions League. 29 August 2024. Retrieved 27 October 2024.
+ "Ronaldo's 'best goal' for Man United was so good he got a DVD and created Puskas award". talkSPORT. 27 August 2021. Retrieved 23 May 2023.
+ "Champions League all-time top scorers: Cristiano Ronaldo, Lionel Messi, Robert Lewandowski, Karim Benzema | UEFA Champions League". UEFA. 10 June 2023. Retrieved 26 August 2023.
+ "Ronaldo crowned Serie A best player". Football Italia. 2 December 2019. Archived from the original on 2 December 2019. Retrieved 2 December 2019.
+ "Cristiano Ronaldo giocatore dell'anno per il 2020: la premiazione al Galà del Calcio 2021" [Cristiano Ronaldo player of the year for 2020: the award ceremony at the Gala del Calcio 2021]. Sky Sport. 19 March 2021. Retrieved 26 November 2022.
+ "Cristiano Ronaldo first player to finish as top scorer in Serie A, Premier League, La Liga". ESPN. 23 May 2021. Archived from the original on 24 May 2021. Retrieved 23 May 2021.
+ Football Italia staff (1 December 2020). "Ronaldo wins Golden Foot Award". Football Italia. Retrieved 18 December 2020.
+ Crépin, Timothé (14 December 2020). "Ballon d'Or Dream Team : Découvrez les révélations de ce onze de légende !" (in French). France Football. Archived from the original on 14 December 2020. Retrieved 14 December 2020.
+ "Lionel Messi: World 11 through the years". FIFPRO. 15 January 2024. Archived from the original on 15 January 2024. Retrieved 10 March 2024.
+ "Cristiano Ronaldo premiado na XXII Gala dos Globos de Ouro". Caras. Retrieved 24 May 2017.
+ "Ronaldo named Portugal's player of the year; Sanches best young player". ESPN. 21 March 2017. Retrieved 19 June 2022.
+ "Ronaldo named Portugal's player of the year; Sanches best young player". 21 March 2017. Archived from the original on 15 December 2018. Retrieved 6 January 2019.
+ "D. Duarte condecora selecção nacional". Correio da Manhã (in Portuguese). 31 August 2006. Archived from the original on 27 August 2017. Retrieved 27 August 2017.
+ "Presidente da República condecora jogadores com grau de comendador da Ordem do Mérito". Record.pt. Archived from the original on 12 July 2016. Retrieved 10 July 2016.
+ "Ronaldo vai ser condecorado na Madeira". ojogo.pt (in Portuguese). 6 February 2014. Archived from the original on 10 August 2019. Retrieved 10 August 2019.
+Works cited
+Caioli, Luca (2016) [2012]. Ronaldo: The Obsession for Perfection (2017 updated ed.). New York: Icon Books. ISBN 978-1-78578-140-7.
+Further reading
+Balagué, Guillem (2015). Cristiano Ronaldo: The Biography (hardcover ed.). London: Orion Publishing Group. ISBN 978-1-4091-5504-1.
+External links
+Cristiano Ronaldo
+at Wikipedia's sister projects
+Media from Commons
+News from Wikinews
+Quotations from Wikiquote
+Data from Wikidata
+Official website Edit this at Wikidata
+Profile at Real Madrid CF
+Profile at Manchester United F.C.
+Cristiano Ronaldo national team profile at the Portuguese Football Federation (in Portuguese) Edit this at Wikidata
+Cristiano Ronaldo – FIFA competition record (archived) Edit this at Wikidata
+Cristiano Ronaldo – UEFA competition record (archive) Edit this at Wikidata
+Cristiano Ronaldo at Premier League (archived former page)
+vte
+Al Nassr FC – current squad
+Portugal squads
+Awards
+Portals:
+icon Association football
+ Biography
+flag Portugal
+ Sports
+Authority control databases Edit this at Wikidata
+Categories: Cristiano Ronaldo1985 birthsLiving people20th-century Roman Catholics21st-century Portuguese sportsmen21st-century Roman Catholics2006 FIFA World Cup players2010 FIFA World Cup players2014 FIFA World Cup players2017 FIFA Confederations Cup players2018 FIFA World Cup players2022 FIFA World Cup playersMen's association football forwardsMen's association football wingersBallon d'Or winnersBBC Sports Personality World Sport Star of the Year winnersCommanders of the Order of Merit (Portugal)FIFA Men's Century ClubFIFA World Player of the Year winnersFirst Division/Premier League top scorersFootballers at the 2004 Summer OlympicsGolden Globes (Portugal) winnersGrand Officers of the Order of Prince HenryOlympic footballers for PortugalPichichi Trophy winnersPortugal men's international footballersPortugal men's under-21 international footballersPortugal men's youth international footballersPortuguese expatriate men's footballersExpatriate men's footballers in EnglandExpatriate men's footballers in ItalyExpatriate men's footballers in Saudi ArabiaExpatriate men's footballers in SpainPortuguese expatriate sportspeople in EnglandPortuguese expatriate sportspeople in ItalyPortuguese expatriate sportspeople in Saudi ArabiaPortuguese expatriate sportspeople in SpainPortuguese men's footballersPortuguese people of Cape Verdean descentSportspeople of Cape Verdean descentPortuguese Roman CatholicsFootballers from FunchalPortuguese philanthropistsSegunda Divisão playersPrimeira Liga playersPremier League playersLa Liga playersSerie A playersSaudi Pro League playersSporting CP B playersSporting CP footballersManchester United F.C. playersReal Madrid CF playersJuventus FC playersAl-Nassr FC playersThe Best FIFA Men's Player winnersUEFA Champions League–winning playersUEFA Champions League top scorersUEFA Euro 2004 playersUEFA Euro 2008 playersUEFA Euro 2012 playersUEFA Euro 2016 playersUEFA Euro 2020 playersUEFA Euro 2024 playersUEFA European Championship–winning playersUEFA Men's Player of the Year Award winnersUEFA Nations League–winning playersWorld Soccer Magazine World Player of the Year winnersWorld record holders
+This page was last edited on 2 November 2025, at 02:33 (UTC).
+Text is available under the Creative Commons Attribution-ShareAlike 4.0 License; additional terms may apply. By using this site, you agree to the Terms of Use and Privacy Policy. Wikipedia® is a registered trademark of the Wikimedia Foundation, Inc., a non-profit organization.
+Privacy policyAbout WikipediaDisclaimersContact WikipediaCode of ConductDevelopersStatisticsCookie statementMobile view
+Wikimedia Foundation
+Powered by MediaWiki
+
+
+WikipediaThe Free Encyclopedia
+Search Wikipedia
+Search
+Donate
+Create account
+Log in
+
+Contents hide
+(Top)
+Plot
+
+Style and allusions
+
+Themes
+Development history
+
+Reception
+
+Legacy
+
+Awards, honours, and recognition
+Adaptations
+
+Attractions
+Supplementary works
+See also
+References
+Sources
+Further reading
+External links
+Harry Potter
+
+Article
+Talk
+Read
+View source
+View history
+
+Tools
+Appearance hide
+Text
+
+Small
+
+Standard
+
+Large
+Width
+
+Standard
+
+Wide
+Color (beta)
+
+Automatic
+
+Light
+
+Dark
+This is a good article. Click here for more information.
+Page semi-protected
+Listen to this article
+From Wikipedia, the free encyclopedia
+(Redirected from Harry potter)
+This article is about the novel series. For the character, see Harry Potter (character). For the film series, see Harry Potter (film series). For the franchise, see Wizarding World. For the universe, see Fictional universe of Harry Potter. For other uses, see Harry Potter (disambiguation).
+Harry Potter
+
+Philosopher's Stone (1997)
+Chamber of Secrets (1998)
+Prisoner of Azkaban (1999)
+Goblet of Fire (2000)
+Order of the Phoenix (2003)
+Half-Blood Prince (2005)
+Deathly Hallows (2007)
+Author	J. K. Rowling
+Cover artist	Thomas Taylor, Cliff Wright, Giles Greenfield, Jason Cockcroft
+Country	United Kingdom
+Language	English
+Genre	Fantasy
+Publisher	Bloomsbury
+Published	26 June 1997 – 21 July 2007
+Media type	
+Print (hardback and paperback)
+Audiobook
+E-book
+No. of books	7
+Website	harrypotter.com
+Harry Potter is a series of seven fantasy novels written by British author J. K. Rowling. The novels chronicle the lives of a young wizard, Harry Potter, and his friends, Ron Weasley and Hermione Granger, all of whom are students at Hogwarts School of Witchcraft and Wizardry. The main story arc concerns Harry's conflict with Lord Voldemort, a dark wizard who intends to become immortal, overthrow the wizard governing body known as the Ministry of Magic, and subjugate all wizards and Muggles (non-magical people).
+
+The series was originally published in English by Bloomsbury in the United Kingdom and Scholastic Press in the United States. A series of many genres, including fantasy, drama, coming-of-age fiction, and the British school story (which includes elements of mystery, thriller, adventure, horror, and romance), the world of Harry Potter explores numerous themes and includes many cultural meanings and references.[1] Major themes in the series include prejudice, corruption, madness, love, and death.[2]
+
+Since the release of the first novel, Harry Potter and the Philosopher's Stone, on 26 June 1997, the books have found immense popularity and commercial success worldwide. They have attracted a wide adult audience as well as younger readers and are widely considered cornerstones of modern literature,[3][4] though the books have received mixed reviews from critics and literary scholars. As of February 2023, the books have sold more than 600 million copies worldwide, making them the best-selling book series in history, available in dozens of languages. The last four books all set records as the fastest-selling books in history, with the final instalment selling roughly 2.7 million copies in the United Kingdom and 8.3 million copies in the United States within twenty-four hours of its release. It holds the Guinness World Record for "Best-selling book series for children."[5]
+
+Warner Bros. Pictures adapted the original seven books into an eight-part namesake film series. In 2016, the total value of the Harry Potter franchise was estimated at $25 billion,[6] making it one of the highest-grossing media franchises of all time. Harry Potter and the Cursed Child is a play based on a story co-written by Rowling. A television series based on the books is in production at HBO.
+
+The success of the books and films has allowed the Harry Potter franchise to expand with numerous derivative works, a travelling exhibition that premiered in Chicago in 2009, a studio tour in London that opened in 2012, a digital platform on which J. K. Rowling updates the series with new information and insight, and a trilogy of spin-off films premiering in November 2016 with Fantastic Beasts and Where to Find Them, among many other developments. Themed attractions, collectively known as The Wizarding World of Harry Potter, have been built at several Universal Destinations & Experiences amusement parks around the world.
+
+Plot
+Further information: Fictional universe of Harry Potter
+Early years
+"The Elephant House", a small, painted red café where Rowling wrote a few chapters of Harry Potter and the Philosopher's Stone
+The Elephant House was one of the cafés in Edinburgh where Rowling wrote the first part of Harry Potter.
+The series follows the life of a boy named Harry Potter. In the first book, Harry Potter and the Philosopher's Stone (Harry Potter and the Sorcerer's Stone in the US), Harry lives in a cupboard under the stairs in the house of the Dursleys, his aunt, uncle and cousin, who all treat him poorly. At the age of 11, Harry discovers that he is a wizard. He meets a half-giant named Hagrid who gives him a letter of acceptance to attend the Hogwarts School of Witchcraft and Wizardry. Harry learns that his parents, Lily and James Potter, also had magical powers and were murdered by the dark wizard Lord Voldemort when Harry was a baby. When Voldemort attempted to kill Harry, his curse rebounded, seemingly killing Voldemort, and Harry survived with a lightning-shaped scar on his forehead. The event made Harry famous among the community of wizards and witches.
+
+Harry becomes a student at Hogwarts and is sorted into Gryffindor House. He gains the friendship of Ron Weasley, a member of a large but poor wizarding family, and Hermione Granger, a witch of non-magical, or Muggle, parentage. The trio develop an enmity with the rich pure-blood student Draco Malfoy. Harry encounters the school's headmaster, Albus Dumbledore; the potions professor, Severus Snape, who displays a dislike for him; and the Defence Against the Dark Arts teacher, Quirinus Quirrell. Quirrell turns out to be allied with Voldemort, who is still alive as a weak spirit. The first book concludes with Harry's confrontation with Voldemort, who, in his quest to regain a body, yearns to possess the Philosopher's Stone, a substance that bestows everlasting life.
+
+Harry Potter and the Chamber of Secrets describes Harry's second year at Hogwarts. Students are attacked and petrified by an unknown creature; wizards of Muggle parentage are the primary targets. The attacks appear related to the mythical Chamber of Secrets and resemble attacks fifty years earlier. Harry discovers an ability to speak the snake language Parseltongue, which he learns is rare and associated with the Dark Arts. When Hermione is attacked and Ron's younger sister Ginny Weasley is abducted, Harry and Ron uncover the chamber's secrets and enter it. Harry discovers that Ginny was possessed by an old diary, inside which the memory of Tom Marvolo Riddle, Voldemort's younger self, resides. On Voldemort's behalf, Ginny opened the chamber and unleashed the basilisk, an ancient monster that kills or petrifies those who make direct or indirect eye contact, respectively. With the help of Dumbledore's phoenix, Fawkes, and the Sword of Gryffindor, Harry slays the basilisk and destroys the diary.
+
+In the third novel, Harry Potter and the Prisoner of Azkaban, Harry learns that he is targeted by Sirius Black, an escaped convict who allegedly assisted in his parents' murder. Dementors, creatures that feed on happiness, search for Sirius and guard the school. As Harry struggles with his reaction to the dementors, he reaches out to Remus Lupin, a new professor who teaches him the Patronus charm. On a windy night, Ron is dragged by a black dog into the Shrieking Shack, a haunted house, and Harry and Hermione follow. The dog is revealed to be Sirius Black. Lupin enters the shack and explains that Sirius was James Potter's best friend; he was framed by another friend of James, Peter Pettigrew, who hides as Ron's pet rat, Scabbers. As the full moon rises, Lupin transforms into a werewolf and bounds away, and the group chase after him. They are surrounded by dementors, but are saved by a figure resembling James who casts a stag Patronus. This is later revealed to be a future version of Harry, who travelled back in time with Hermione using a device called a Time Turner. The duo help Sirius escape on a Hippogriff, while Pettigrew escapes.
+
+Voldemort returns
+
+The former 1st floor Nicholson's Cafe now renamed Spoon in Edinburgh where J. K. Rowling wrote the first few chapters of Harry Potter and the Philosopher's Stone
+In Harry's fourth year of school (detailed in Harry Potter and the Goblet of Fire), Hogwarts hosts the Triwizard Tournament, a contest between Hogwarts and the schools Beauxbatons and Durmstrang. Harry is unwillingly entered into the contest, becoming Hogwarts' second participant after Cedric Diggory, an unusual occurrence that causes his friends to distance themselves from him. Harry claims the Triwizard Cup with Cedric, but he is teleported to a graveyard where Pettigrew kills Cedric, then resurrects Voldemort using Harry's blood. Voldemort convenes his supporters, the Death Eaters, and Harry manages to escape after a duel with Voldemort. Upon returning to Hogwarts, it is revealed that a Death Eater, Barty Crouch, Jr, in disguise as the new Defence Against the Dark Arts professor, Alastor "Mad-Eye" Moody, engineered Harry's entry into the tournament, secretly helped him, and had him teleported to Voldemort.
+
+In the fifth book, Harry Potter and the Order of the Phoenix, the Ministry of Magic refuses to believe that Voldemort has returned. Dumbledore re-activates the Order of the Phoenix, a secret society to counter Voldemort; meanwhile, the Ministry tightens control of Hogwarts by appointing Dolores Umbridge as High Inquisitor of Hogwarts, and she gradually increases her powers. When Umbridge bans practical teaching of Defence Against the Dark Arts, Harry, Ron and Hermione form "Dumbledore's Army", a secret group to continue the teachings. Harry has recurring dreams of a dark corridor in the Ministry of Magic, eventually dreaming that Sirius is being tortured there. He races to the Ministry with his friends, but it is a trap, planted in his head by Voldemort. The group are attacked by Death Eaters and saved by the Order of the Phoenix, but Sirius is killed in the battle. A duel between Dumbledore and Voldemort convinces the ministry of Voldemort's return. A prophecy concerning Harry and Voldemort is revealed: one must die at the hands of the other.
+
+In the sixth book, Harry Potter and the Half-Blood Prince, Snape teaches Defence Against the Dark Arts while Horace Slughorn becomes the Potions master. Harry finds an old textbook with annotations by the Half-Blood Prince, due to which he achieves success in Potions class. Harry also takes private sessions with Dumbledore, viewing memories about the early life of Voldemort in a device called a Pensieve. Harry learns from a drunken Slughorn that he used to teach Tom Riddle, and that Voldemort divided his soul into pieces, creating a series of Horcruxes. Harry and Dumbledore travel to a distant lake to destroy a Horcrux; they succeed, but Dumbledore weakens. On their return, they find Draco Malfoy and Death Eaters attacking the school. The book ends with the killing of Dumbledore by Professor Snape, the titular Half-Blood Prince.
+
+In Harry Potter and the Deathly Hallows, the seventh and final novel in the series, Lord Voldemort gains control of the Ministry of Magic. Harry, Ron and Hermione learn about the Deathly Hallows, legendary items that lead to mastery over death. The group infiltrates the ministry, where they steal a locket Horcrux, and visit Godric's Hollow, where they are attacked by Nagini, Voldemort's snake. A silver doe Patronus leads them to the Sword of Gryffindor, with which they destroy the locket. They steal a Horcrux from Gringotts and travel to Hogwarts, culminating in a battle with the Death Eaters. Snape is killed by Voldemort out of paranoia, but he lends Harry his memories before he dies. Harry learns that Snape was always loyal to Dumbledore, and that Harry is himself a Horcrux. Harry surrenders to Voldemort and is hit with the killing curse; however he is not killed as the protection Lily gave him lives on within Voldemort since he used Harry's blood to resurrect himself . The defenders of Hogwarts continue to fight on; Harry comes back from limbo, faces Voldemort and kills him.
+
+An epilogue titled "Nineteen Years Later" describes the lives of the surviving characters and the impact of Voldemort's death. Harry and Ginny are married with three children, and Ron and Hermione are married with two children.
+
+Style and allusions
+Genre and style
+The novels fall into the genre of fantasy literature, and qualify as a type of fantasy called "urban fantasy", "contemporary fantasy", or "low fantasy". They are mainly dramas, and maintain a fairly serious and dark tone throughout, though they do contain some notable instances of tragicomedy and black humour. In many respects, they are also examples of the bildungsroman, or coming of age novel,[7] and contain elements of mystery, adventure, horror, thriller, and romance. The books are also, in the words of Stephen King, "shrewd mystery tales",[8] and each book is constructed in the manner of a Sherlock Holmes-style mystery adventure. The stories are told from a third person limited point of view with very few exceptions (such as the opening chapters of Philosopher's Stone, Goblet of Fire and Deathly Hallows and the first two chapters of Half-Blood Prince).
+
+The series can be considered part of the British children's boarding school genre, which includes Rudyard Kipling's Stalky & Co., Enid Blyton's Malory Towers, St. Clare's and the Naughtiest Girl series, and Frank Richards's Billy Bunter novels: the Harry Potter books are predominantly set in Hogwarts, a fictional British boarding school for wizards, where the curriculum includes the use of magic.[9] In this sense they are "in a direct line of descent from Thomas Hughes's Tom Brown's School Days and other Victorian and Edwardian novels of British public school life", though they are, as many note, more contemporary, grittier, darker, and more mature than the typical boarding school novel, addressing serious themes of death, love, loss, prejudice, coming-of-age, and the loss of innocence in a 1990s British setting.[10][11][failed verification]
+
+In Harry Potter, Rowling juxtaposes the extraordinary against the ordinary.[12] Her narrative features two worlds: a contemporary world inhabited by non-magical people called Muggles, and another featuring wizards. It differs from typical portal fantasy in that its magical elements stay grounded in the mundane.[13] Paintings move and talk; books bite readers; letters shout messages; and maps show live journeys, making the wizarding world both exotic and familiar.[12][14] This blend of realistic and romantic elements extends to Rowling's characters. Their names are often onomatopoeic[clarification needed]: Malfoy is difficult, Filch is unpleasant, and Lupin is a werewolf.[15][16] Harry is ordinary and relatable, with down-to-earth features such as wearing broken glasses;[17] the scholar Roni Natov terms him an "everychild".[18] These elements serve to highlight Harry when he is heroic, making him both an everyman and a fairytale hero.[17][19]
+
+Each of the seven books is set over the course of one school year. Harry struggles with the problems he encounters, and dealing with them often involves the need to violate some school rules. If students are caught breaking rules, they are often disciplined by Hogwarts professors. The stories reach their climax in the summer term, near or just after final exams, when events escalate far beyond in-school squabbles and struggles, and Harry must confront either Voldemort or one of his followers, the Death Eaters, with the stakes a matter of life and death—a point underlined, as the series progresses, by characters being killed in each of the final four books.[20][21] In the aftermath, he learns important lessons through exposition and discussions with head teacher and mentor Albus Dumbledore. The only exception to this school-centred setting is the final novel, Harry Potter and the Deathly Hallows, in which Harry and his friends spend most of their time away from Hogwarts, and only return there to face Voldemort at the dénouement.[20]
+
+Allusions
+The Harry Potter stories feature imagery and motifs drawn from Arthurian myth and fairytales. Harry's ability to draw the Sword of Gryffindor from the Sorting Hat resembles the Arthurian sword in the stone legend.[22] His life with the Dursleys has been compared to Cinderella.[23] Hogwarts resembles a medieval university-cum-castle with several professors who belong to an Order of Merlin; Old Professor Binns still lectures about the International Warlock Convention of 1289; and a real historical person, a 14th-century scribe, Sir Nicolas Flamel, is described as a holder of the Philosopher's Stone.[24] Other medieval elements in Hogwarts include coats-of-arms and medieval weapons on the walls, letters written on parchment and sealed with wax, the Great Hall of Hogwarts, which is similar to the Great Hall of Camelot, the use of Latin phrases, the tents put up for Quidditch tournaments, which are similar to the "marvellous tents" put up for knightly tournaments, imaginary animals like dragons and unicorns that exist around Hogwarts, and the banners with heraldic animals for the four Houses of Hogwarts.[24]
+
+Many of the motifs of the Potter stories, such as the hero's quest invoking objects that confer invisibility, magical animals and trees, a forest full of danger and the recognition of a character based upon scars, are drawn from medieval French Arthurian romances.[24] Other aspects borrowed from French Arthurian romances include the use of owls as messengers, werewolves as characters, and white deer.[24] The American scholars Heather Arden and Kathrn Lorenz in particular argue that many aspects of the Potter stories are inspired by a 14th-century French Arthurian romance, Claris et Laris, writing of the "startling" similarities between the adventures of Potter and the knight Claris.[24] Arden and Lorenz noted that Rowling graduated from the University of Exeter in 1986 with a degree in French literature and spent a year living in France afterwards.[24]
+
+Like C. S. Lewis's The Chronicles of Narnia, Harry Potter also contains Christian symbolism and allegory. The series has been viewed as a Christian moral fable in the psychomachia tradition, in which stand-ins for good and evil fight for supremacy over a person's soul.[25] Children's literature critic Joy Farmer sees parallels between Harry and Jesus Christ.[26] Comparing Rowling with Lewis, she argues that "magic is both authors' way of talking about spiritual reality".[27] According to Maria Nikolajeva, Christian imagery is particularly strong in the final scenes of the series: Harry dies in self-sacrifice and Voldemort delivers an "ecce homo" speech, after which Harry is resurrected and defeats his enemy.[28]
+
+Rowling stated that she did not reveal Harry Potter's religious parallels in the beginning because doing so would have "give[n] too much away to fans who might then see the parallels".[29] In the final book of the series, Harry Potter and the Deathly Hallows, Rowling makes the book's Christian imagery more explicit, quoting both Matthew 6:21 and 1 Corinthians 15:26 (King James Version) when Harry visits his parents' graves.[29] Hermione Granger teaches Harry Potter that the meaning of these verses from the Christian Bible are "living beyond death. Living after death", which Rowling states "epitomize the whole series".[29][30][31] Rowling also exhibits Christian values in developing Albus Dumbledore as a God-like character, the divine, trusted leader of the series, guiding the long-suffering hero along his quest. In the seventh novel, Harry speaks with and questions the deceased Dumbledore much like a person of faith would talk to and question God.[32][full citation needed]
+
+Themes
+J.K. Rowling, a blond, blue-eyed woman, who is the author of the series
+The novelist, J. K. Rowling
+Harry Potter's overarching theme is death.[33][34] In the first book, when Harry looks into the Mirror of Erised, he feels both joy and "a terrible sadness" at seeing his desire: his parents, alive and with him.[35] Confronting their loss is central to Harry's character arc and manifests in different ways through the series, such as in his struggles with Dementors.[35][36] Other characters in Harry's life die; he even faces his own death in Harry Potter and the Deathly Hallows.[37] The series has an existential perspective—Harry must grow mature enough to accept death.[38] In Harry's world, death is not binary but mutable, a state that exists in degrees.[39] Unlike Voldemort, who evades death by separating and hiding his soul in seven parts, Harry's soul is whole, nourished by friendship and love.[38]
+
+Love distinguishes Harry and Voldemort. Harry is a hero because he loves others, even willing to accept death to save them; Voldemort is a villain because he does not.[40] Harry carries the protection of his mother's sacrifice in his blood; Voldemort, who wants Harry's blood and the protection it carries, does not understand that love vanquishes death.[26]
+
+Rowling has spoken about thematising death and loss in the series. Soon after she started writing Philosopher's Stone, her mother died; she said that "I really think from that moment on, death became a central, if not the central theme of the seven books".[41] Rowling has described Harry as "the prism through which I view death", and further stated that "all of my characters are defined by their attitude to death and the possibility of death".[42]
+
+While Harry Potter can be viewed as a story about good vs. evil, its moral divisions are not absolute.[43][44] First impressions of characters are often misleading. Harry assumes in the first book that Quirrell is on the side of good because he opposes Snape, who appears to be malicious; in reality, Quirrell is an agent of Voldemort, while Snape is loyal to Dumbledore. This pattern later recurs with Moody and Snape.[43] In Rowling's world, good and evil are choices rather than inherent attributes: second chances and the possibility of redemption are key themes of the series.[45][46] This is reflected in Harry's self-doubts after learning his connections to Voldemort, such as Parseltongue;[45] and prominently in Snape's characterisation, which has been described as complex and multifaceted.[47] In some scholars' view, while Rowling's narrative appears on the surface to be about Harry, her focus may actually be on Snape's morality and character arc.[48][49]
+
+Rowling said that, to her, the moral significance of the tales seems "blindingly obvious". In the fourth book, Dumbledore speaks of a "choice between what is right and what is easy"; Rowling views this as a key theme, "because that ... is how tyranny is started, with people being apathetic and taking the easy route and suddenly finding themselves in deep trouble".[50]
+
+Academics and journalists have developed many other interpretations of themes in the books, some more complex than others, and some including political subtexts. Themes such as normality, oppression, survival, and overcoming imposing odds have all been considered as prevalent throughout the series.[51] Similarly, the theme of making one's way through adolescence and "going over one's most harrowing ordeals—and thus coming to terms with them" has also been considered.[52] Rowling has stated that the books comprise "a prolonged argument for tolerance, a prolonged plea for an end to bigotry" and that they also pass on a message to "question authority and... not assume that the establishment or the press tells you all of the truth".[53]
+
+Development history
+Main article: Harry Potter influences and analogues
+In 1990, Rowling was on a crowded train from Manchester to London when the idea for Harry suddenly "fell into" her head. Rowling gives an account of the experience on her website saying:[54]
+
+I had been writing almost continuously since the age of six but I had never been so excited about an idea before. I simply sat and thought, for four (delayed train) hours, and all the details bubbled up in my brain, and this scrawny, black-haired, bespectacled boy who did not know he was a wizard became more and more real to me.
+
+Rowling completed Harry Potter and the Philosopher's Stone in 1995 and the manuscript was sent off to several prospective agents.[55] The second agent she tried, Christopher Little, offered to represent her and sent the manuscript to several publishers.[56]
+
+Publishing history
+
+The logo used in British, Australian, and Canadian editions before 2010, which uses the typeface Cochin Bold[57]
+After twelve other publishers had rejected Philosopher's Stone, Bloomsbury agreed to publish the book.[58] Despite Rowling's statement that she did not have any particular age group in mind when beginning to write the Harry Potter books, the publishers initially targeted children aged nine to eleven.[59] On the eve of publishing, Rowling was asked by her publishers to adopt a more gender-neutral pen name in order to appeal to the male members of this age group, fearing that they would not be interested in reading a novel they knew to be written by a woman. She elected to use J. K. Rowling (Joanne Kathleen Rowling), using her grandmother's name as her second name because she has no middle name.[60][61]
+
+Harry Potter and the Philosopher's Stone was published by Bloomsbury, the publisher of all Harry Potter books in the United Kingdom, on 26 June 1997.[62] It was published in the United States on 1 September 1998 by Scholastic—the American publisher of the books—as Harry Potter and the Sorcerer's Stone,[63] after the American rights sold for US$105,000—a record amount for a children's book by an unknown author.[64] Scholastic feared that American readers would not associate the word "philosopher" with magic, and Rowling suggested the title Harry Potter and the Sorcerer's Stone for the American market.[65] Rowling has later said that she regrets the change.[66]
+
+The second book, Harry Potter and the Chamber of Secrets, was originally published in the UK on 2 July 1998 and in the US on 2 June 1999. Harry Potter and the Prisoner of Azkaban was published a year later in the UK on 8 July 1999 and in the US on 8 September 1999.[67] Harry Potter and the Goblet of Fire was published on 8 July 2000 at the same time by Bloomsbury and Scholastic.[68] Harry Potter and the Order of the Phoenix is the longest book in the series, at 766 pages in the UK version and 870 pages in the US version.[69] It was published worldwide in English on 21 June 2003.[70] Harry Potter and the Half-Blood Prince was published on 16 July 2005.[71][72] The seventh and final novel, Harry Potter and the Deathly Hallows, was published on 21 July 2007.[73] Rowling herself has stated that the last chapter of the final book (in fact, the epilogue) was completed "in something like 1990".[74]
+
+Rowling retained rights to digital editions and released them on the Pottermore website in 2012. Vendors such as Amazon displayed the ebooks in the form of links to Pottermore, which controlled pricing.[75] All seven Harry Potter novels have been released in unabridged audiobook versions, with Stephen Fry reading the British editions and Jim Dale voicing the series for the American editions.[76][77] On Audible, the series has been listened to, as of November 2022, for over a billion hours.[78]
+
+Translations
+Main article: Harry Potter in translation
+
+The Russian translation of The Deathly Hallows goes on sale in Moscow, 2007
+The series has been translated into more than 80 languages,[79] placing Rowling among the most translated authors in history. The books have seen translations to diverse languages such as Korean, Armenian, Ukrainian, Arabic, Urdu, Hindi, Bengali, Bulgarian, Welsh, Afrikaans, Albanian, Latvian, Vietnamese and Hawaiian. The first volume has been translated into Latin and even Ancient Greek,[80] making it the longest published work in Ancient Greek since the novels of Heliodorus of Emesa in the 3rd century AD.[81] The second volume has also been translated into Latin.[82]
+
+Some of the translators hired to work on the books were well-known authors before their work on Harry Potter, such as Viktor Golyshev, who oversaw the Russian translation of the series' fifth book. The Turkish translation of books two to seven was undertaken by Sevin Okyay, a popular literary critic and cultural commentator.[83] For reasons of secrecy, translation on a given book could only start after it had been released in English, leading to a lag of several months before the translations were available. This led to more and more copies of the English editions being sold to impatient fans in non-English speaking countries; for example, such was the clamour to read Harry Potter and the Order of the Phoenix that its English language edition became the first English-language book ever to top the best-seller list in France.[84]
+
+The United States editions were adapted into American English to make them more understandable to a young American audience.[85]
+
+Cover art
+For cover art, Bloomsbury chose painted art in a classic style of design, with the first cover a watercolour and pencil drawing by illustrator Thomas Taylor showing Harry boarding the Hogwarts Express, and a title in the font Cochin Bold.[86] The first releases of the successive books in the series followed in the same style but somewhat more realistic, illustrating scenes from the books. These covers were created by first Cliff Wright and then Jason Cockroft.[87]
+
+Due to the appeal of the books among an adult audience, Bloomsbury commissioned a second line of editions in an 'adult' style. These initially used black-and-white photographic art for the covers showing objects from the books (including a very American Hogwarts Express) without depicting people, but later shifted to partial colourisation with a picture of Slytherin's locket on the cover of the final book.[citation needed]
+
+International and later editions have been created by a range of designers, including Mary GrandPré for US audiences and Mika Launis in Finland.[88][89] For a later American release, Kazu Kibuishi created covers in a somewhat anime-influenced style.[90][91]
+
+Reception
+Commercial success
+See also: List of best-selling books
+A large crowd of fans wait outside of a Borders store in Delaware, waiting for the release of Harry Potter and the Half-Blood Prince
+Crowd outside a book store for the midnight release of Harry Potter and the Half-Blood Prince
+The popularity of the Harry Potter series has translated into substantial financial success for Rowling, her publishers, and other Harry Potter related licence holders. This success has made Rowling the first and thus far only billionaire author.[92] The books have sold more than 600 million copies worldwide and have also given rise to the popular film adaptations produced by Warner Bros. Pictures, all of which have been highly successful in their own right.[93][79] The total revenue from the book sales is estimated, as of November 2018, to be around $7.7 billion.[94] The first novel in the series, Harry Potter and the Philosopher's Stone, has sold in excess of 120 million copies, making it one of the bestselling books in history.[95][96] The films have in turn spawned eight video games and have led to the licensing of more than 400 additional Harry Potter products. The Harry Potter brand has been estimated to be worth as much as $25 billion.[6]
+
+The great demand for Harry Potter novels motivated The New York Times to create a separate best-seller list for children's literature in 2000, just before the release of Harry Potter and the Goblet of Fire. By 24 June 2000, Rowling's novels had been on the list for 79 straight weeks; the first three novels were each on the hardcover best-seller list.[97] On 12 April 2007, Barnes & Noble declared that Deathly Hallows had broken its pre-order record, with more than 500,000 copies pre-ordered through its site.[98] For the release of Goblet of Fire, 9,000 FedEx trucks were used with no other purpose than to deliver the book.[99] Together, Amazon.com and Barnes & Noble pre-sold more than 700,000 copies of the book.[99] In the United States, the book's initial printing run was 3.8 million copies.[99] This record statistic was broken by Harry Potter and the Order of the Phoenix, with 8.5 million, which was then shattered by Half-Blood Prince with 10.8 million copies.[100] Within the first 24 hours of its release, 6.9 million copies of Prince were sold in the US; in the UK more than two million copies were sold on the first day.[101] The initial US print run for Deathly Hallows was 12 million copies, and more than a million were pre-ordered through Amazon and Barnes & Noble.[102]
+
+Fans of the series were so eager for the latest instalment that bookstores around the world began holding events to coincide with the midnight release of the books, beginning with the 2000 publication of Harry Potter and the Goblet of Fire. The events, commonly featuring mock sorting, games, face painting, and other live entertainment have achieved popularity with Potter fans and have been highly successful in attracting fans and selling books with nearly nine million of the 10.8 million initial print copies of Harry Potter and the Half-Blood Prince sold in the first 24 hours.[103][104] The final book in the series, Harry Potter and the Deathly Hallows became the fastest selling book in history, moving 11 million units in the first twenty-four hours of release.[105] The book sold 2.7 million copies in the UK and 8.3 million in the US.[72] The series has also gathered adult fans, leading to the release of two editions of each Harry Potter book, identical in text but with one edition's cover artwork aimed at children and the other aimed at adults.[106]
+
+Book	Sales[107]
+Harry Potter and the Philosopher's Stone	120 million
+Harry Potter and the Chamber of Secrets	77 million
+Harry Potter and the Prisoner of Azkaban	65 million
+Harry Potter and the Goblet of Fire	65 million
+Harry Potter and the Order of the Phoenix	65 million
+Harry Potter and the Half-Blood Prince	65 million
+Harry Potter and the Deathly Hallows	65 million
+Literary criticism
+Early in its history, Harry Potter received positive reviews. On publication, the first book, Harry Potter and the Philosopher's Stone, attracted attention from the Scottish newspapers, such as The Scotsman, which said it had "all the makings of a classic",[108] and The Glasgow Herald, which called it "Magic stuff".[108] Soon the English newspapers joined in, with The Sunday Times comparing it to Roald Dahl's work ("comparisons to Dahl are, this time, justified"),[108] while The Guardian called it "a richly textured novel given lift-off by an inventive wit".[108]
+
+By the time of the release of the fifth book, Harry Potter and the Order of the Phoenix, the books began to receive strong criticism from literary scholars. Yale professor, literary scholar, and critic Harold Bloom raised criticisms of the books' literary merits, saying, "Rowling's mind is so governed by clichés and dead metaphors that she has no other style of writing."[109] A. S. Byatt authored an op-ed article in The New York Times calling Rowling's universe a "secondary secondary world, made up of intelligently patchworked derivative motifs from all sorts of children's literature ... written for people whose imaginative lives are confined to TV cartoons, and the exaggerated (more exciting, not threatening) mirror-worlds of soaps, reality TV and celebrity gossip."[110]
+
+Michael Rosen, a novelist and poet, held the opinion that the books were not suited for children, as they would be unable to grasp the complex themes. Rosen also stated that "J. K. Rowling is more of an adult writer."[111] The critic Anthony Holden wrote in The Observer on his experience of judging Harry Potter and the Prisoner of Azkaban for the 1999 Whitbread Awards. His overall view of the series was negative—"the Potter saga was essentially patronising, conservative, highly derivative, dispiritingly nostalgic for a bygone Britain", and he speaks of "a pedestrian, ungrammatical prose style".[112] Ursula K. Le Guin said, "I have no great opinion of it [...] it seemed a lively kid's fantasy crossed with a 'school novel,' good fare for its age group, but stylistically ordinary, imaginatively derivative, and ethically rather mean-spirited."[113] By contrast, author Fay Weldon, while admitting that the series is "not what the poets hoped for", nevertheless goes on to say, "but this is not poetry, it is readable, saleable, everyday, useful prose".[114]
+
+The literary critic A. N. Wilson praised the Harry Potter series in The Times, stating, "There are not many writers who have JK's Dickensian ability to make us turn the pages, to weep—openly, with tears splashing—and a few pages later to laugh, at invariably good jokes ... We have lived through a decade in which we have followed the publication of the liveliest, funniest, scariest and most moving children's stories ever written."[115] Charles Taylor of Salon.com, who is primarily a movie critic,[116] took issue with Byatt's criticisms in particular. While he conceded that she may have "a valid cultural point—a teeny one—about the impulses that drive us to reassuring pop trash and away from the troubling complexities of art",[117] he rejected her claims that the series is lacking in serious literary merit and that it owes its success merely to the childhood reassurances it offers.[117] Stephen King called the series "a feat of which only a superior imagination is capable", and declared "Rowling's punning, one-eyebrow-cocked sense of humor" to be "remarkable". However, he wrote that he is "a little tired of discovering Harry at home with his horrible aunt and uncle", the formulaic beginning of all seven books.[8][118]
+
+Sameer Rahim of The Daily Telegraph disagreed, saying "It depresses me to see 16- and 17-year-olds reading the series when they could be reading the great novels of childhood such as Oliver Twist or A House for Mr Biswas."[119] The Washington Post book critic Ron Charles opined in July 2007 that "through no fault of Rowling's", the cultural and marketing "hysteria" marked by the publication of the later books "trains children and adults to expect the roar of the coliseum, a mass-media experience that no other novel can possibly provide".[120] Jenny Sawyer wrote in The Christian Science Monitor on 25 July 2007 that Harry Potter neither faces a "moral struggle" nor undergoes any ethical growth and is thus "no guide in circumstances in which right and wrong are anything less than black and white".[121] In contrast Emily Griesinger described Harry's first passage through to Platform 9+3⁄4 as an application of faith and hope, and his encounter with the Sorting Hat as the first of many in which Harry is shaped by the choices he makes.[122]
+
+In an 8 November 2002, Slate article, Chris Suellentrop likened Potter to a "trust-fund kid whose success at school is largely attributable to the gifts his friends and relatives lavish upon him".[123] In a 12 August 2007 review of Deathly Hallows in The New York Times, however, Christopher Hitchens praised Rowling for "unmooring" her "English school story" from literary precedents "bound up with dreams of wealth and class and snobbery", arguing that she had instead created "a world of youthful democracy and diversity".[124] In 2016, an article written by Diana C. Mutz compared the politics of Harry Potter to the 2016 Donald Trump presidential campaign. She suggests that these themes are also present in the presidential election and it may play a significant role in how Americans have responded to the campaign.[125]
+
+There is ongoing discussion regarding the extent to which the series was inspired by Tolkien's Lord of the Rings books.[126]
+
+Thematic critique
+The portrayal of women in Harry Potter has been described as complex and varied, but nonetheless conforming to stereotypical and patriarchal depictions of gender.[127] Gender divides are ostensibly absent in the books: Hogwarts is coeducational and women hold positions of power in wizarding society. However, this setting obscures the typecasting of female characters and the general depiction of conventional gender roles.[128] According to scholars Elizabeth Heilman and Trevor Donaldson, the subordination of female characters goes further early in the series. The final three books "showcase richer roles and more powerful females": for instance, the series' "most matriarchal character", Molly Weasley, engages substantially in the final battle of Deathly Hallows, while other women are shown as leaders.[129] Hermione Granger, in particular, becomes an active and independent character essential to the protagonists' battle against evil.[130] Yet, even particularly capable female characters such as Hermione and Minerva McGonagall are placed in supporting roles,[131] and Hermione's status as a feminist model is debated.[132] Girls and women are more frequently shown as emotional, more often defined by their appearance, and less often given agency in family settings.[128][133]
+
+The social hierarchy of wizards in Rowling's world has drawn debate among critics. "Purebloods" have two wizard parents; "half-bloods" have one; and "Muggle-born" wizards have magical abilities, although neither of their parents is a wizard.[134] Lord Voldemort and his followers believe that blood purity is paramount and that Muggles are subhuman.[135] According to the literary scholar Andrew Blake, Harry Potter rejects blood purity as a basis for social division;[136] Suman Gupta agrees that Voldemort's philosophy represents "absolute evil";[137] and Nel and Eccleshare agree that advocates of racial or blood-based hierarchies are antagonists.[138][139] Gupta, following Blake,[140] suggests that the essential superiority of wizards over Muggles—wizards can use magic and Muggles cannot—means that the books cannot coherently reject anti-Muggle prejudice by appealing to equality between wizards and Muggles. Rather, according to Gupta, Harry Potter models a form of tolerance based on the "charity and altruism of those belonging to superior races" towards lesser races.[141]
+
+Harry Potter's's depiction of race, specifically the slavery of house-elves, has received varied responses. Scholars such as Brycchan Carey have praised the books' abolitionist sentiments, viewing Hermione's Society for the Promotion of Elfish Welfare as a model for younger readers' political engagement.[142][143] Other critics including Farah Mendlesohn find the portrayal of house-elves "most difficult to accept": the elves are denied the right to free themselves and rely on the benevolence of others like Hermione.[144][145] Pharr terms the house-elves a disharmonious element in the series, writing that Rowling leaves their fate hanging;[146] at the end of Deathly Hallows, the elves remain enslaved and cheerful.[147] The goblins of the world of Harry Potter have also received criticism for following antisemitic caricatures – particularly for their grotesque "hook-nosed" portrayal in the films, an appearance associated with Jewish stereotypes.[148][149][150]
+
+Controversies
+Main articles: Legal disputes over the Harry Potter series, Religious debates over the Harry Potter series, Politics of Harry Potter, and Tanya Grotter
+The books have been the subject of legal proceedings, stemming from various conflicts over copyright and trademark infringements. The popularity and high market value of the series has led Rowling, her publishers, and film distributor Warner Bros. to take legal measures to protect their copyright, which have included banning the sale of Harry Potter imitations, targeting the owners of websites over the "Harry Potter" domain name, and suing author Nancy Stouffer to counter her accusations that Rowling had plagiarised her work.[151][152][153]
+
+Various religious fundamentalists have claimed that the books promote witchcraft and religions such as Wicca and are therefore unsuitable for children,[154][155][156] while critics have criticised the books for promoting various political agendas.[157][158] The series has landed the American Library Associations' Top 10 Banned Book List in 2001, 2002, 2003, and 2019 with claims it was anti-family, discussed magic and witchcraft, contained actual spells and curses, referenced the occult/Satanism, violence, and had characters who used "nefarious means" to attain goals, as well as conflicts with religious viewpoints.[159]
+
+The books also aroused controversies in the literary and publishing worlds. From 1997 to 1998, Harry Potter and the Philosopher's Stone won almost all the United Kingdom awards judged by children, but none of the children's book awards judged by adults,[160] and Sandra Beckett suggested the reason was intellectual snobbery towards books that were popular among children.[161] In 1999, the winner of the Whitbread Book of the Year award children's division was entered for the first time on the shortlist for the main award, and one judge threatened to resign if Harry Potter and the Prisoner of Azkaban was declared the overall winner; it finished second, very close behind the winner of the poetry prize, Seamus Heaney's translation of the Anglo-Saxon epic Beowulf.[161]
+
+In 2000, shortly before the publication of Harry Potter and the Goblet of Fire, the previous three Harry Potter books topped The New York Times fiction best-seller list and a third of the entries were children's books. The newspaper created a new children's section covering children's books, including both fiction and non-fiction, and initially counting only hardback sales. The move was supported by publishers and booksellers.[97] In 2004, The New York Times further split the children's list, which was still dominated by Harry Potter books, into sections for series and individual books and removed the Harry Potter books from the section for individual books.[162] The split in 2000 attracted condemnation, praise and some comments that presented both benefits and disadvantages of the move.[163] Time suggested that, on the same principle, Billboard should have created a separate "mop-tops" list in 1964 when The Beatles held the top five places in its list, and Nielsen should have created a separate game-show list when Who Wants to Be a Millionaire? dominated the ratings.[164]
+
+Legacy
+Influence on literature
+Sculpture of Harry Potter in Leicester Square, London, 2020
+Sculpture of Harry Potter in Leicester Square, London
+Harry Potter transformed children's literature.[165][166] In the 1970s, children's books were generally realistic as opposed to fantastic,[167] while adult fantasy became popular because of the influence of The Lord of the Rings.[168] The next decade saw an increasing interest in grim, realist themes, with an outflow of fantasy readers and writers to adult works.[169][170]
+
+The commercial success of Harry Potter reversed this trend.[171] The scale of its growth had no precedent in the children's market: within four years of the series' inception, it occupied 28% of that field by revenue.[172] Children's literature rose in cultural status,[173] and fantasy became a dominant genre.[174] Older works in the genre, including Diana Wynne Jones's Chrestomanci series and Diane Duane's Young Wizards, were reprinted and rose in popularity; some authors re-established their careers.[175] In the following decades, many Harry Potter imitators and subversive responses grew popular.[176][177]
+
+Rowling has been compared to Enid Blyton, who also wrote in simple language about groups of children and long held sway over the British children's market.[178][179] She has also been described as an heir to Roald Dahl.[180] Some critics view Harry Potter's rise, along with the concurrent success of Philip Pullman's His Dark Materials, as part of a broader shift in reading tastes: a rejection of literary fiction in favour of plot and adventure.[181] This is reflected in the BBC's 2003 "Big Read" survey of the UK's favourite books, where Pullman and Rowling ranked at numbers 3 and 5, respectively, with very few British literary classics in the top 10.[182]
+
+Cultural impact
+Further information: Harry Potter fandom
+
+"Platform 9+3⁄4" sign on London King's Cross railway station
+Harry Potter has been described as a cultural phenomenon.[183][184] The word "Muggle" has spread beyond its origins in the books, entering the Oxford English Dictionary in 2003.[185] A real-life version of the sport Quidditch was created in 2005 and featured as an exhibition tournament in the 2012 London Olympics.[186] Characters and elements from the series have inspired scientific names of several organisms, including the dinosaur Dracorex hogwartsia, the spider Eriovixia gryffindori, the wasp Ampulex dementor, and the crab Harryplax severus.[187]
+
+Librarian Nancy Knapp pointed out the books' potential to improve literacy by motivating children to read much more than they otherwise would.[188] The seven-book series has a word count of 1,083,594 (US edition). Agreeing about the motivating effects, Diane Penrod also praised the books' blending of simple entertainment with "the qualities of highbrow literary fiction", but expressed concern about the distracting effect of the prolific merchandise that accompanies the book launches.[189] However, the assumption that Harry Potter books have increased literacy among young people is "largely a folk legend".[190]
+
+Research by the National Endowment for the Arts (NEA) has found no increase in reading among children coinciding with the Harry Potter publishing phenomenon, nor has the broader downward trend in reading among Americans been arrested during the rise in the popularity of the Harry Potter books.[190][191] The research also found that children who read Harry Potter books were not more likely to go on to read outside the fantasy and mystery genres.[190] NEA chairman Dana Gioia said the series, "got millions of kids to read a long and reasonably complex series of books. The trouble is that one Harry Potter novel every few years is not enough to reverse the decline in reading."[192]
+
+Many fan fiction and fan art works about Harry Potter have been made. In March 2007, "Harry Potter" was the most commonly searched fan fiction subject on the internet.[193] Jennifer Conn used Snape's and Quidditch coach Madam Hooch's teaching methods as examples of what to avoid and what to emulate in clinical teaching,[194] and Joyce Fields wrote that the books illustrate four of the five main topics in a typical first-year sociology class: "sociological concepts including culture, society, and socialisation; stratification and social inequality; social institutions; and social theory".[195]
+
+From the early 2000s onwards, several news reports appeared in the UK of the Harry Potter book and movie series driving demand for pet owls,[196] and even reports that after the end of the movie series these same pet owls were now being abandoned by their owners.[197] This led J. K. Rowling to issue several statements urging Harry Potter fans to refrain from purchasing pet owls.[198] Despite the media flurry, research into the popularity of Harry Potter and sales of owls in the UK failed to find any evidence that the Harry Potter franchise had influenced the buying of owls in the country or the number of owls reaching animal shelters and sanctuaries.[199]
+
+By 2003, a sign marking Platform 9 3/4 was put up at the London King's Cross railway station,[200][201][202] with a trolley fixed to the wall added by the year 2005.[203][204] The location of the trolley moved after renovations, and a Harry Potter-themed shop opened nearby in 2012.[205][206][207] Prince Charles visited the location in 2013.[208]
+
+1 September, the day Harry Potter generally started school at Hogwarts, became known to fans as "Back to Hogwarts Day",[209][210] gaining more prominence starting in 2015 when J.K. Rowling suggested on social media that it was the year Harry Potter would be starting to send off his own children to Hogwarts, though in 2016 she later acknowledged that she was wrong by a year regarding the King's Cross events in the epilogue.[211][212][213] On the date in 2024, fans showed up at King's Cross Station even though no event was held and fans were discouraged from attending, reportedly due to crowding issues the year before, and booed when no Hogwarts Express announcement was made at 11 a.m. as in previous years.[214][215] Organisers had encouraged fans to participate in virtual events, while in-person events were held at other locations like Grand Central Terminal in New York City and Hamburg, Germany.[216][217][218]
+
+British book publisher Bloomsbury announced the launch of "Harry Potter Book Night" and associated promotional events in 2014, first held in February 2015.[219][220][221] In 2023, the event was rebranded to "Harry Potter Book Day" and moved to October.[222][223]
+
+Awards, honours, and recognition
+Further information: List of awards and nominations received by J. K. Rowling
+The Harry Potter series has been recognised by a host of awards since the initial publication of Philosopher's Stone, including a platinum award from the Whitaker Gold and Platinum Book Awards (2001),[224][225] three Nestlé Smarties Book Prizes (1997–1999),[226] two Scottish Arts Council Book Awards (1999 and 2001),[227] the inaugural Whitbread children's book of the year award (1999),[228] and the WHSmith book of the year (2006),[229] among others. In 2000, Harry Potter and the Prisoner of Azkaban was nominated for a Hugo Award for Best Novel, and in 2001, Harry Potter and the Goblet of Fire won said award.[230] Honours include a commendation for the Carnegie Medal (1997),[231] a short listing for the Guardian Children's Award (1998), and numerous listings on the notable books, editors' choices, and best books lists of the American Library Association, The New York Times, Chicago Public Library, and Publishers Weekly.[232]
+
+In 2002, sociologist Andrew Blake named Harry Potter a British pop culture icon along with the likes of James Bond and Sherlock Holmes.[233] In 2003, four of the books were named in the top 24 of the BBC's The Big Read survey of the best loved novels in the UK.[234] A 2004 study found that books in the series were commonly read aloud in elementary schools in San Diego County, California.[235] Based on a 2007 online poll, the US National Education Association listed the series in its "Teachers' Top 100 Books for Children".[236] Time magazine named Rowling as a runner-up for its 2007 Person of the Year award, noting the social, moral, and political inspiration she has given her fandom.[237] Three of the books placed among the "Top 100 Chapter Books" of all time, or children's novels, in a 2012 survey published by School Library Journal: Sorcerer's Stone ranked number three, Prisoner of Azkaban 12th, and Goblet of Fire 98th.[238]
+
+In 2007, the seven Harry Potter book covers were depicted on a series of UK postage stamps issued by Royal Mail.[239] In 2012, the opening ceremony of the 2012 Summer Olympics in London featured a 100-foot tall rendition of Lord Voldemort in a segment designed to showcase the UK's cultural icons.[240] In November 2019, the BBC listed the Harry Potter series on its list of the 100 most influential novels.[241]
+
+Adaptations
+Further information: Wizarding World
+Films
+Main article: Harry Potter (film series)
+The red locomotive train used as the "Hogwarts Express" in the film series. In the front it has the numbers "5912" inscripted on it
+The locomotive that features as the "Hogwarts Express" in the film series
+In 1999, Rowling sold the film rights for Harry Potter to Warner Bros. for a reported £1 million (US$2,000,000).[242][243] Rowling had creative control on the film series, observing the filmmaking process of Philosopher's Stone and serving as producer on the two-part Deathly Hallows, alongside David Heyman and David Barron.[244] Rowling demanded the principal cast be kept strictly British and Irish, nonetheless allowing for the inclusion or French and Eastern European actors where characters from the book are specified as such.[245]
+
+Chris Columbus was selected as the director for Harry Potter and the Philosopher's Stone (titled "Harry Potter and the Sorcerer's Stone" in the United States).[246] Philosopher's Stone was released on 14 November 2001. Just three days after the film's release, production for Harry Potter and the Chamber of Secrets, also directed by Columbus, began and the film was released on 15 November 2002.[247] Columbus declined to direct Harry Potter and the Prisoner of Azkaban, only acting as producer. Mexican director Alfonso Cuarón took over the job, and after shooting in 2003, the film was released on 4 June 2004. Due to the fourth film beginning its production before the third's release, Mike Newell was chosen as the director for Harry Potter and the Goblet of Fire, released on 18 November 2005.[248] Newell became the first British director of the series, with television director David Yates following suit after he was chosen to helm Harry Potter and the Order of the Phoenix. Production began in January 2006 and the film was released the following year in July 2007.[249] Yates was selected to direct Harry Potter and the Half-Blood Prince, which was released on 15 July 2009.[250][251] The final instalment in the series, Harry Potter and the Deathly Hallows was released in two cinematic parts: Part 1 on 19 November 2010 and Part 2 on 15 July 2011.[252][253]
+
+Spin-off prequels
+Main article: Fantastic Beasts (film series)
+A prequel series is planned to consist of five films, taking place before the main series.[254] The first film Fantastic Beasts and Where to Find Them was released in November 2016, followed by the second Fantastic Beasts: The Crimes of Grindelwald in November 2018 and Fantastic Beasts: The Secrets of Dumbledore in April 2022. Rowling wrote the screenplays for all three films,[255] marking her foray into screenwriting.
+
+Games
+See also: Harry Potter video games
+Several non-interactive media games and board games have been released such as Cluedo Harry Potter Edition, Scene It? Harry Potter and Lego Harry Potter models, which are influenced by the themes of both the novels and films.
+
+There are fourteen Harry Potter video games, eight corresponding with the films and books and six spin-offs. The film/book-based games are produced by Electronic Arts (EA), as was Harry Potter: Quidditch World Cup, with the game version of the first entry in the series, Philosopher's Stone, being released in November 2001. Harry Potter and the Philosopher's Stone went on to become one of the best-selling PlayStation games ever.[256] The video games were released to coincide with the films. Objectives usually occur in and around Hogwarts. The story and design of the games follow the selected film's characterisation and plot; EA worked closely with Warner Bros. to include scenes from the films. The last game in the series, Deathly Hallows, was split, with Part 1 released in November 2010 and Part 2 debuting on consoles in July 2011.[257][258]
+
+The spin-off games Lego Harry Potter: Years 1–4 and Lego Harry Potter: Years 5–7 were developed by Traveller's Tales and published by Warner Bros. Interactive Entertainment. The spin-off games Book of Spells and Book of Potions were developed by London Studio and use the Wonderbook, an augmented reality book designed to be used in conjunction with the PlayStation Move and PlayStation Eye.[259] The Harry Potter universe, the Wizarding World, is also featured in Lego Dimensions, with the settings and side characters featured in the Harry Potter Adventure World, and Harry, Voldemort, and Hermione as playable characters. In 2017, Warner Bros. Interactive Entertainment opened its own Harry Potter-themed game design studio, by the name of Portkey Games, before releasing Hogwarts Mystery, developed by Jam City, in 2018 and Hogwarts Legacy, developed by Avalanche Software, in 2023.[260][261]
+
+Stage production
+Main article: Harry Potter and the Cursed Child
+
+Harry Potter and the Cursed Child playing at the West End's Palace Theatre
+Harry Potter and the Cursed Child: Parts I and II is a play which serves as a sequel to the books, beginning nineteen years after the events of Harry Potter and the Deathly Hallows. It was written by Jack Thorne based on an original new story by Thorne, Rowling and John Tiffany.[262] It has run at the Palace Theatre in London's West End since previews began on 7 June 2016 with an official premiere on 30 June 2016.[263] The first four months of tickets for the June–September performances were sold out within several hours upon release.[264] Forthcoming productions are planned for Broadway[265] and Melbourne.[266]
+
+The script was released as a book at the time of the premiere, with a revised version following the next year.
+
+Television
+Main article: Harry Potter (TV series)
+On 25 January 2021, it was reported that a live-action television series has been in early development at HBO Max. Though it was noted that the series has "complicated rights issues", due to a seven-year rights deal with Warner Bros. Domestic TV Distribution that included US broadcast, cable and streaming rights to the franchise, which ended in April 2025.[267] On 12 April 2023, the series was confirmed to be in development, and will be streamed on the new streaming service Max (formerly known as HBO Max).[268][269][270] On 23 February 2024, Warner Bros. Discovery CEO David Zaslav announced that the series would debut on Max in 2026. On 25 June 2024, it was announced the series was moved from Max to HBO.[271] The series is planned to adapt one book per season, with seven seasons planned.[272]
+
+An open casting call for the three leading young actors in the UK and Ireland was announced in September 2024, with Variety reporting that 32,000 children auditioned for the roles, with filming to start in summer 2025.[273][274][275] In November 2024, it was reported that Mark Rylance was the front runner to play Dumbledore in the series.[276] On 25 February 2025, American actor John Lithgow confirmed reports that he had been cast as Dumbledore in the series.[277][278] He acknowledged there would be controversy over him playing the role as an American, when the film series only cast British or Irish cast members at Rowling's request, and that he would work with a dialect coach. He also suggested filming would start in August after he finished portraying Roald Dahl on stage in London.[279] He said "I don't know the Harry Potter canon by heart as 98% of the world's population seems to," but said that in talks with the producers he was intrigued by how "as the kids grew older [in the books], you learn more and more about Dumbledore, and he became a much more surprising, complicated character."[280] He also said he had started reading the books in preparation.[281]
+
+News reports also speculated in March 2025 that a casting notice seeking children as extras near Warner Bros. Studios Leavesden was for the new series.[282][283] On 7 March 2025, it was reported that English actor Paapa Essiedu and English actress Janet McTeer were in negotiations to portray Severus Snape and Minerva McGonagall respectively in the series.[284] On 27 May 2025, it was announced that Dominic McLaughlin, Alastair Stout and Arabella Stanton were cast as Harry Potter, Ron Weasley and Hermione Granger respectively.[285] On 9 June 2025, it was revealed that Bel Powley would play Petunia Dursley and Daniel Rigby would play Vernon Dursley.[286] It was also revealed that Lox Pratt would play Draco Malfoy, Johnny Flynn would play Lucius Malfoy, Katherine Parkinson would play Molly Weasley, Leo Earley would play Seamus Finnigan, Alessia Leoni would play Parvati Patil, Sienna Moosah would play Lavender Brown, and Bertie Carvel would play Cornelius Fudge.[287]
+
+Full-cast audiobook
+In 2024, it was announced that the novels would be adapted into full-cast audio productions with a voice cast of over 100 voice actors to be released in late 2025.[288] In August 2025, it was announced that the audio dramas would be released monthly, starting on 4 November 2025.[289]
+
+Cast[289][290][291]
+
+Cush Jumbo as the narrator
+Frankie Treadaway (1–3) and Jaxson Knopf (4–7) as Harry Potter
+Arabella Stanton (1–3) and Nina Barker-Francis (4–7) as Hermione Granger
+Max Lester (1–3) and Rhys Mulligan (4–7) as Ron Weasley
+Hugh Laurie as Albus Dumbledore
+Riz Ahmed as Severus Snape
+Matthew Macfadyen as Lord Voldemort
+Michelle Gomez as Minerva McGonagall
+Ruth Wilson as Bellatrix Lestrange
+Keira Knightley as Dolores Umbridge
+Kit Harington as Gilderoy Lockhart
+Iwan Rheon as Remus Lupin
+Ambika Mod as Nymphadora Tonks
+Leo Woodall as Bill Weasley
+Simon Pegg as Arthur Weasley
+James McAvoy as Mad-Eye Moody
+Gemma Whelan as Pomona Sprout
+Matt Berry as Sir Cadogan
+Mark Addy as Rubeus Hagrid
+Daniel Mays as Dobby
+Alex Hassell as Lucius Malfoy
+Sara Deshmukh as Padma Patil
+Avni Deshmukh as Parvati Patil
+Bill Nighy as Horace Slughorn
+David Holmes as Stan Shunpike
+Saoirse-Monica Jackson as Professor Trelawney
+Sope Dirisu as Sirius Black
+Mackenzie Crook as Kreacher
+Anna Maxwell Martin as Rita Skeeter
+Stephen Mangan as Nearly Headless Nick
+Tracy-Ann Oberman as Madam Hooch
+Millie Gubby as Luna Lovegood
+Jude Farrant (1–3) and Maximus Evans (4–7) as Draco Malfoy
+Jake Sigsworth (1–3) and Archie Mountain (4–7) as Neville Longbottom
+Attractions
+Main articles: The Wizarding World of Harry Potter and Warner Bros. Studio Tour London – The Making of Harry Potter
+
+Hogwarts Castle as depicted in the Wizarding World of Harry Potter, located in Universal Orlando Resort's Island of Adventure
+Universal and Warner Bros. created The Wizarding World of Harry Potter, a Harry Potter-themed expansion to the Islands of Adventure theme park at Universal Orlando Resort in Florida. It opened to the public on 18 June 2010.[292] It includes a recreation of Hogsmeade and several rides; its flagship attraction is Harry Potter and the Forbidden Journey, which exists within a recreation of Hogwarts School of Witchcraft and Wizardry.[293]
+
+In 2014 Universal opened a Harry Potter-themed area at the Universal Studios Florida theme park. It includes a recreation of Diagon Alley.[294] The flagship attraction is the Harry Potter and the Escape from Gringotts roller coaster ride.[295] A completely functioning full-scale replica of the Hogwarts Express was created for the Diagon Alley expansion, connecting King's Cross Station at Universal Studios to the Hogsmeade station at Islands of Adventure.[296][297] The Wizarding World of Harry Potter opened at the Universal Studios Hollywood theme park near Los Angeles, California in 2016,[298][299] and in Universal Studios Japan theme park in Osaka, Japan in 2014. The Osaka venue includes the village of Hogsmeade, Harry Potter and the Forbidden Journey ride, and Flight of the Hippogriff roller coaster.[300][301] Other Harry Potter roller coasters are the Dragon Challenge which closed to make way for Hagrid's Magical Creatures Motorbike Adventure, at Universal Islands of Adventure.
+
+Warner Bros. Studio Tour London – The Making of Harry Potter is a behind-the-scenes walking tour in London featuring authentic sets, costumes and props from the film series. The attraction is located at Warner Bros. Studios, Leavesden, where all eight of the Harry Potter films were made. Warner Bros. constructed two new sound stages to house and showcase the sets from each of the British-made productions, following a £100 million investment.[302] It opened to the public in March 2012.[303] A Japan based version of the studio tour was announced in August 2020 and opened on 16 June 2023.[304]
+
+Supplementary works
+See also: J. K. Rowling § Philanthropy
+Rowling expanded the Harry Potter universe with short books produced for charities.[305][306] In 2001, she released Fantastic Beasts and Where to Find Them (a purported Hogwarts textbook) and Quidditch Through the Ages (a book Harry reads for fun). Proceeds from the sale of these two books benefited the charity Comic Relief.[307] In 2007, Rowling composed seven handwritten copies of The Tales of Beedle the Bard, a collection of fairy tales that is featured in the final novel, one of which was auctioned to raise money for the Children's High Level Group, a fund for mentally disabled children in poor countries. The book was published internationally on 4 December 2008.[308][309] Rowling also wrote an 800-word prequel in 2008 as part of a fundraiser organised by the bookseller Waterstones.[310] All three of these books contain extra information about the wizarding world not included in the original novels.
+
+In 2016, she released three new e-books: Hogwarts: An Incomplete and Unreliable Guide, Short Stories from Hogwarts of Power, Politics and Pesky Poltergeists and Short Stories from Hogwarts of Heroism, Hardship and Dangerous Hobbies.[311]
+
+Rowling's website Pottermore was launched in 2012.[312] Pottermore allows users to be sorted, be chosen by their wand and play various minigames. The main purpose of the website was to allow the user to journey through the story with access to content not revealed by JK Rowling previously, with over 18,000 words of additional content.[313] The site was redesigned in 2015 as WizardingWorld and it mainly focuses on the information already available, rather than exploration.[314]
+
+See also
+The Worst Witch
+Mary Poppins
+References
+ Sources that refer to the many genres, cultural meanings and references of the series include:
+Fry, Stephen (10 December 2005). "Living with Harry Potter". BBC Radio 4. Archived from the original on 21 October 2014. Retrieved 10 December 2005.
+Jensen, Jeff (7 September 2000). "Why J.K. Rowling waited to read Harry Potter to her daughter". Entertainment Weekly. Archived from the original on 5 September 2015. Retrieved 19 August 2015.
+Nancy Carpentier Brown (2007). "The Last Chapter" (PDF). Our Sunday Visitor. Archived from the original (PDF) on 13 October 2007. Retrieved 28 April 2009.
+J. K. Rowling. "J. K. Rowling at the Edinburgh Book Festival". Archived from the original on 20 August 2006. Retrieved 10 October 2006.
+ Greig, Geordie (11 January 2006). "There would be so much to tell her..." The Telegraph. London. Archived from the original on 11 March 2007. Retrieved 4 April 2007.
+ Allsobrook, 'Marian (18 June 2003). "Potter's place in the literary canon". BBC News. Archived from the original on 9 January 2008. Retrieved 15 October 2007.
+ Bartlett, Kellie (6 January 2005). "Harry Potter's place in literature". The Chronicle of Higher Education. Archived from the original on 13 March 2023. Retrieved 18 January 2023.
+ "Best-selling book series for children". Guinness World Records. Retrieved 22 January 2025.
+ Meyer, Katie (6 April 2016). "Harry Potter's $25 Billion Magic Spell". Money. Archived from the original on 14 May 2021. Retrieved 4 November 2016.
+ Anne Le Lievre, Kerrie (2003). "Wizards and wainscots: generic structures and genre themes in the Harry Potter series". CNET Networks. Archived from the original on 6 December 2008. Retrieved 1 September 2008.
+ King, Stephen (23 July 2000). "Wild About Harry". The New York Times. Archived from the original on 17 April 2009. Retrieved 9 August 2010. ...the Harry Potter books are, at heart, satisfyingly shrewd mystery tales.
+ "Harry Potter makes boarding fashionable". BBC News. 13 December 1999. Archived from the original on 28 December 2008. Retrieved 1 September 2008.
+ Ellen Jones, Leslie (2003). JRR Tolkien: A Biography. Greenwood Press. p. 16. ISBN 978-0-313-32340-9.
+ A Whited, Lana (2004). The Ivory Tower and Harry Potter: Perspectives on a Literary Phenomenon. University of Missouri Press. p. 28. ISBN 978-0-8262-1549-9.
+ Natov 2002, p. 129.
+ Butler 2012, pp. 233–34.
+ Butler 2012, p. 234.
+ Park 2003, p. 183.
+ Natov 2002, p. 130.
+ Nikolajeva 2008, p. 233.
+ Ostry 2003, p. 97.
+ Ostry 2003, pp. 90, 97–98.
+ Grossman, Lev (28 June 2007). "Harry Potter's Last Adventure". Time. Archived from the original on 27 August 2008. Retrieved 1 September 2008.
+ "Two characters to die in last 'Harry Potter' book: J.K. Rowling". CBC. 26 June 2006. Archived from the original on 30 June 2006. Retrieved 1 September 2008.
+ Alton 2008, p. 216.
+ Gallardo & Smith 2003, p. 195.
+ Arden, Heather; Lorenz, Kathryn (June 2003). "The Harry Potter Stories and French Arthurian Romance". Arthuriana. 13 (12): 54–68. doi:10.1353/art.2003.0005. ISSN 1078-6279. JSTOR 27870516. S2CID 161603742.
+ Singer 2016, pp. 26–27.
+ Farmer 2001, p. 58.
+ Farmer 2001, p. 55.
+ Nikolajeva 2008, pp. 238–39.
+ Adler, Shawn (17 October 2007). "'Harry Potter' Author J.K. Rowling Opens Up About Books' Christian Imagery". MTV. Archived from the original on 14 October 2017. Retrieved 3 April 2018.
+ Sedlmayr, Gerold; Waller, Nicole (28 October 2014). Politics in Fantasy Media: Essays on Ideology and Gender in Fiction, Film, Television and Games. McFarland & Company. p. 132. ISBN 978-1-4766-1755-8. During this press conference, Rowling stated that the Bible quotations in that novel "almost epitomize the whole series. I think they sum up all the themes in the whole series" (reported in Adler).
+ Falconer, Rachel (21 October 2008). The Crossover Novel: Contemporary Children's Fiction and Its Adult Readership. Routledge. p. 69. ISBN 978-1-135-86501-6. These New Testament verses (Matthew 6:19 and 1 Corinthians 15:26) together denote the promise of resurrection through the Son of God's consent to die.52 In interview, Rowling has stressed that these two quotations 'sum up – they almost epitomize the whole series'.
+ Cooke, Rachel. "ProQuest Ebook Central". The Charleston Advisor. doi:10.5260/cca.199425 (inactive 1 July 2025). (subscription required)
+ Ciaccio 2008, pp. 39–40.
+ Groves 2017, pp. xxi–xxii, 135–136.
+ Natov 2002, pp. 134–36.
+ Taub & Servaty-Seib 2008, pp. 23–27.
+ Pharr 2016, pp. 20–21.
+ Los 2008, pp. 32–33.
+ Stojilkov 2015, p. 135.
+ Pharr 2016, pp. 14–15, 20–21.
+ Groves 2017, p. 138.
+ Groves 2017, p. 135.
+ Shanoes 2003, pp. 131–32.
+ McEvoy 2016, p. 207.
+ Doughty 2002, pp. 247–49.
+ Berberich 2016, p. 153.
+ Birch 2008, pp. 110–13.
+ Nikolajeva 2016, p. 204.
+ Applebaum 2008, pp. 84–85.
+ Max, Wyman (26 October 2000). ""You can lead a fool to a book but you cannot make them think": Author has frank words for the religious right". The Vancouver Sun. p. A3. ProQuest 242655908.
+ Greenwald, Janey; Greenwald, J (Fall 2005). "Understanding Harry Potter: Parallels to the Deaf World". The Journal of Deaf Studies and Deaf Education. 10 (4): 442–450. doi:10.1093/deafed/eni041. PMID 16000691.
+ Duffy, Edward (2002). "Sentences in Harry Potter, Students in Future Writing Classes". Rhetoric Review. 21 (2): 177. doi:10.1207/S15327981RR2102_03. S2CID 144654506.
+ "JK Rowling outs Dumbledore as gay". BBC News. 21 October 2007. Archived from the original on 22 October 2007. Retrieved 21 October 2007.
+ Rowling, JK (2006). "Biography". JKRowling.com. Archived from the original on 21 April 2006. Retrieved 21 May 2006.
+ Kirk 2003, p. 73.
+ Smith 2002, pp. 156, 159–161.
+ "Harry Potter Books (UK Editions) Terms and Conditions for Use of Images for Book Promotion" (PDF). Bloomsbury Publishing Plc. 10 July 2007. Archived from the original (PDF) on 10 July 2007. Retrieved 7 September 2012.
+ Smith 2002, pp. 159–160.
+ Huler, Scott. "The magic years". The News & Observer. Archived from the original on 18 December 2008. Retrieved 28 September 2008.
+ Kirk 2003, p. 76.
+ Savill, Richard (21 June 2001). "Harry Potter and the mystery of J K's lost initial". The Daily Telegraph. London. Archived from the original on 20 December 2008. Retrieved 27 September 2008.
+ "Harry Potter and the Philosopher's Stone". Bloomsbury Publishing. Archived from the original on 26 June 2015. Retrieved 27 November 2016.
+ "Wild about Harry". 2 July 2007. Archived from the original on 21 August 2009. Retrieved 27 September 2008.
+ Rozhon, Tracie (21 April 2007). "A Brief Walk Through Time at Scholastic". The New York Times. p. C3. Archived from the original on 16 April 2009. Retrieved 21 April 2007.
+ Errington 2017, p. 145.
+ Whited 2015, pp. 75.
+ "A Potter timeline for muggles". Toronto Star. 14 July 2007. Archived from the original on 20 December 2008. Retrieved 27 September 2008.
+ "Speed-reading after lights out". The Guardian. London. 19 July 2000. Archived from the original on 31 December 2013. Retrieved 27 September 2008.
+ Harmon, Amy (14 July 2003). "Harry Potter and the Internet Pirates". The New York Times. Archived from the original on 3 April 2009. Retrieved 21 August 2008.
+ Cassy, John (16 January 2003). "Harry Potter and the hottest day of summer". The Guardian. London. Archived from the original on 31 December 2013. Retrieved 27 September 2008.
+ "July date for Harry Potter book". BBC News. 21 December 2004. Archived from the original on 29 December 2008. Retrieved 27 September 2008.
+ "Harry Potter finale sales hit 11 m". BBC News. 23 July 2007. Archived from the original on 25 December 2008. Retrieved 21 August 2008.
+ "Rowling unveils last Potter date". BBC News. 1 February 2007. Archived from the original on 28 December 2008. Retrieved 27 September 2008.
+ "Rowling to kill two in final book". BBC News. 27 June 2006. Archived from the original on 3 August 2009. Retrieved 25 July 2007.
+ Clark & Phillips 2019, p. 47.
+ Rich, Mokoto (17 July 2007). "The Voice of Harry Potter Can Keep a Secret". The New York Times. Archived from the original on 6 September 2019. Retrieved 6 September 2019.
+ "Harry Potter Audiobooks and E-Books". Mugglenet. Dose Media. Archived from the original on 6 September 2019. Retrieved 6 September 2019.
+ "Harry Potter: Fans have listened to books for one billion hours". BBC Newsround. 30 November 2022. Archived from the original on 6 February 2023. Retrieved 8 February 2023.
+ "Scholastic Marks 25 Year Anniversary of The Publication of J.K. Rowling's Harry Potter and the Sorcerer's Stone" (Press release). New York, New York: Scholastic. 6 February 2023. Archived from the original on 13 March 2023. Retrieved 6 February 2023.
+ Wilson, Andrew (2006). "Harry Potter in Greek". Andrew Wilson. Archived from the original on 21 June 2008. Retrieved 28 July 2008.
+ Castle, Tim (2 December 2004). "Harry Potter? It's All Greek to Me". Reuters. Archived from the original on 19 January 2008. Retrieved 28 July 2008.
+ LTD, Skyron. "Harry Potter and the Chamber of Secrets (Latin)". Bloomsbury Publishing. Archived from the original on 5 September 2015. Retrieved 13 August 2015.
+ Güler, Emrah (2005). "Not lost in translation: Harry Potter in Turkish". The Turkish Daily News. Archived from the original on 30 September 2007. Retrieved 9 May 2007.
+ "OOTP is best seller in France—in English!". BBC News. 1 July 2003. Archived from the original on 13 June 2017. Retrieved 28 July 2008.
+ "Differences in the UK and US Versions of Four Harry Potter Books". FAST US-1. 21 January 2008. Archived from the original on 19 March 2015. Retrieved 17 August 2008.
+ Taylor, Thomas (26 July 2012). "Me and Harry Potter". Thomas Taylor (author site). Archived from the original on 23 September 2015. Retrieved 23 September 2015.
+ Thorpe, Vanessa (20 January 2002). "Harry Potter beats Austen in sale rooms". The Observer. Archived from the original on 13 June 2014. Retrieved 21 November 2010.
+ Rowling, J.K. Harry Potter and the Deathly Hallows; American edition; Scholastic Corporation; 2007; Final credits page
+ "Illustrator puts a bit of herself on Potter cover: GrandPré feels pressure to create something special with each book". Today.com. Associated Press. 8 March 2005. Archived from the original on 7 April 2020. Retrieved 12 February 2007.
+ Liu, Jonathan H. (13 February 2013). "New Harry Potter Covers by Kazu Kibuishi". Wired. Archived from the original on 12 July 2015. Retrieved 6 July 2015.
+ Hall, April (15 August 2014). "5 Questions With... Kazu Kibuishi (Amulet series)". www.reading.org. Archived from the original on 18 April 2015. Retrieved 6 July 2015.
+ Watson, Julie (26 February 2004). "J. K. Rowling and the Billion-Dollar Empire". Forbes. Archived from the original on 11 December 2007. Retrieved 3 December 2007.
+ "All Time Worldwide Box Office Grosses". Box Office Mojo. 1998–2008. Archived from the original on 3 November 2010. Retrieved 29 July 2008.
+ "The Billion Dollar Business Behind 'Harry Potter' Franchise". entrepreneur. 18 November 2018. Archived from the original on 28 October 2020. Retrieved 22 December 2020.
+ Chalton, Nicola; Macardle, Meredith (15 March 2017). 20th Century in Bite-Sized Chunks. Book Sales. ISBN 978-0-7858-3510-3.
+ "Burbank Public Library offering digital copies of first 'Harry Potter' novel to recognize the book's 20th anniversary". Burbank Leader. 5 September 2018. Archived from the original on 9 October 2020. Retrieved 3 September 2020.
+ Smith, Dinitia (24 June 2000). "The Times Plans a Children's Best-Seller List". The New York Times. Archived from the original on 21 June 2009. Retrieved 30 September 2008.
+ "New Harry Potter breaks pre-order record". RTÉ.ie Entertainment. 13 April 2007. Archived from the original on 18 April 2007. Retrieved 23 April 2007.
+ Fierman, Daniel (21 July 2000). "Wild About Harry". Entertainment Weekly. Archived from the original on 31 March 2007. Retrieved 26 October 2019. When I buy the books for my grandchildren, I have them all gift wrapped but one...that's for me. And I have not been 12 for over 50 years.
+ "Harry Potter hits midnight frenzy". CNN. 15 July 2005. Archived from the original on 21 December 2006. Retrieved 15 January 2007.
+ "Worksheet: Half-Blood Prince sets UK record". BBC News. 20 July 2005. Archived from the original on 4 February 2007. Retrieved 19 January 2007.
+ "Record print run for final Potter". BBC News. 15 March 2007. Archived from the original on 25 March 2007. Retrieved 22 May 2007.
+ Freeman, Simon (18 July 2005). "Harry Potter casts spell at checkouts". The Times. London. Archived from the original on 15 June 2011. Retrieved 29 July 2008.
+ "Potter book smashes sales records". BBC News. 18 July 2005. Archived from the original on 27 December 2008. Retrieved 29 July 2008.
+ "'Harry Potter' tale is fastest-selling book in history". The New York Times. 23 July 2007. Archived from the original on 8 December 2011. Retrieved 30 March 2010.
+ "Harry Potter at Bloomsbury Publishing – Adult and Children Covers". Bloomsbury Publishing. Archived from the original on 28 August 2008. Retrieved 18 August 2008.
+ "Harry Potter books stats and facts". WordsRated. 19 October 2021. Archived from the original on 15 May 2023. Retrieved 11 June 2023.
+ Eccleshare 2002, p. 10
+ Bloom, Harold (24 September 2003). "Dumbing down American readers". The Boston Globe. Archived from the original on 17 June 2006. Retrieved 20 June 2006.
+ Byatt, A. S. (7 July 2003). "Harry Potter and the Childish Adult". The New York Times. Archived from the original on 17 April 2009. Retrieved 1 August 2008.
+ Sweeney, Charlene (19 May 2008). "Harry Potter 'is too boring and grown-up for young readers'". The Times. London. Archived from the original on 15 June 2011. Retrieved 15 January 2011.
+ Holden, Anthony (25 June 2000). "Why Harry Potter does not cast a spell over me". The Observer. London. Archived from the original on 24 August 2013. Retrieved 1 August 2008.
+ "Chronicles of Earthsea". The Guardian. London. 9 February 2004. Archived from the original on 2 October 2013. Retrieved 2 October 2009.
+ Allison, Rebecca (11 July 2003). "Rowling books 'for people with stunted imaginations'". The Guardian. London. Archived from the original on 18 May 2014. Retrieved 1 August 2008.
+ Wilson, A. N. (29 July 2007). "Harry Potter and the Deathly Hallows by JK Rowling". The Times. London. Archived from the original on 6 July 2008. Retrieved 28 September 2008.
+ "Salon Columnist". Salon.com. 2000. Archived from the original on 16 June 2008. Retrieved 3 August 2008.
+ Taylor, Charles (8 July 2003). "A. S. Byatt and the goblet of bile". Salon.com. Archived from the original on 16 June 2008. Retrieved 3 August 2008.
+ Fox, Killian (31 December 2006). "JK Rowling: The mistress of all she surveys". The Guardian. London. Archived from the original on 28 September 2014. Retrieved 10 February 2007.
+ Rahim, Sameer (13 April 2012). "The Casual Vacancy: why I'm dreading JK Rowling's adult novel". The Telegraph. London. Archived from the original on 2 January 2018. Retrieved 28 March 2017.
+ Charles, Ron (15 July 2007). "Harry Potter and the Death of Reading". The Washington Post. Archived from the original on 25 July 2008. Retrieved 16 April 2008.
+ Sawyer, Jenny (25 July 2007). "Missing from 'Harry Potter" – a real moral struggle". The Christian Science Monitor. Archived from the original on 27 September 2007. Retrieved 16 April 2008.
+ Griesinger, E. (2002). "Harry Potter and the "deeper magic": narrating hope in children's literature". Christianity and Literature. 51 (3): 455–480. doi:10.1177/014833310205100308.
+ Suellentrop, Chris (8 November 2002). "Harry Potter: Fraud". Slate. Archived from the original on 27 March 2008. Retrieved 16 April 2008.
+ Hitchens, Christopher (12 August 2007). "The Boy Who Lived". The New York Times. Archived from the original on 16 April 2009. Retrieved 1 April 2008.
+ C. Mutz, Diana (2016). "Harry Potter and the Deathly Donald". Elections in Focus. 49. Archived from the original on 21 September 2018. Retrieved 29 September 2018.
+ Wetherill, Louise. "Harry Potter: Merely Frodo Baggins with a Wand?", in Ampthill Literary Festival Yearbook 2015. Ampthill: Literary Festival Committee, 2015. ISBN 978-1-5175506-8-4, pp. 85–92.
+ Heilman & Donaldson 2008, pp. 139–41; Pugh & Wallace 2006; Eberhardt 2017.
+ Pugh & Wallace 2006.
+ Heilman & Donaldson 2008, pp. 139–41.
+ Berents 2012, pp. 144–49.
+ Heilman & Donaldson 2008, pp. 142–47.
+ Bell & Alexander 2012, pp. 1–8.
+ Heilman & Donaldson 2008, pp. 149–55.
+ Barratt 2012, p. 64.
+ Barratt 2012, pp. 63, 67.
+ Blake 2002, p. 103.
+ Gupta 2009, p. 104.
+ Nel 2001, p. 44.
+ Eccleshare 2002, p. 78.
+ Gupta 2009, p. 105.
+ Gupta 2009, pp. 108–10.
+ Carey 2003, pp. 105–107, 114.
+ Horne 2010, p. 76.
+ Mendlesohn 2002, pp. 178–181.
+ Horne 2010, p. 81.
+ Pharr 2016, pp. 12–13.
+ Barratt 2012, p. 52.
+ Levy, Marianne (8 April 2019). "Is this picture of Harry Potter's goblin bankers offensive?". The Jewish Chronicle. Archived from the original on 30 September 2022. Retrieved 30 September 2022.
+ Richer, Stephen (14 July 2011). "Debunking the Harry Potter Antisemitism Myth". Moment Magazine. Archived from the original on 27 November 2022. Retrieved 30 September 2022.
+ Berlatsky, Noah (6 January 2022). "Opinion | Why most people still miss these antisemitic tropes in "Harry Potter"". NBC News. Archived from the original on 28 March 2022. Retrieved 30 September 2022.
+ "Scholastic Inc, J.K. Rowling and Time Warner Entertainment Company, L.P, Plaintiffs/Counterclaim Defendants, -against- Nancy Stouffer: United States District Court for the Southern District of New York". ICQ. 17 September 2002. Archived from the original on 7 June 2007. Retrieved 12 June 2007.
+ McCarthy, Kieren (2000). "Warner Brothers bullying ruins Field family Xmas". The Register. Archived from the original on 3 November 2015. Retrieved 3 May 2007.
+ "Fake Harry Potter novel hits China". BBC News. 4 July 2002. Archived from the original on 1 September 2007. Retrieved 11 March 2007.
+ O'Kane, Caitlin. Nashville school bans "Harry Potter" series, citing risk of "conjuring evil spirits". CBS News. Retrieved on 3 September 2019. "Rev. Reehil believes, 'The curses and spells used in the books are actual curses and spells; which when read by a human being risk conjuring evil spirits into the presence of the person reading the text.' It is unclear if the movies have been banned, since they don't require children to read spells." Archived from the original
+ Anatol, Giselle Liza (2003). Reading Harry Potter: Critical Essays. p. 54.
+ Espinoza, Javier (16 December 2015). "Religious parents want Harry Potter banned from the classroom because it 'glorifies witchcraft'". Archived from the original on 10 January 2022 – via The Telegraph.
+ Bonta, Steve (28 January 2002). "Tolkien's Timeless Tale". The New American. Vol. 18, no. 2.
+ Liddle, Rod (21 July 2007). "Hogwarts is a winner because boys will be sexist neocon boys". The Times. London. Archived from the original on 4 June 2010. Retrieved 17 August 2008.
+ American Library Association (26 March 2013). "Top 10 Most Challenged Books Lists". Advocacy, Legislation & Issues. Archived from the original on 24 July 2017. Retrieved 5 March 2021.
+ Eccleshare 2002, pp. 7–14.
+ Beckett, S.L. (2008). "Child-to-Adult Crossover Fiction". Crossover Fiction. Taylor & Francis. pp. 112–115. ISBN 978-0-415-98033-3. Archived from the original on 16 March 2023. Retrieved 16 May 2009.
+ Garner, D. (1 May 2008). "Ten Years Later, Harry Potter Vanishes From the Best-Seller List". The New York Times. Archived from the original on 10 February 2009. Retrieved 16 May 2009.
+ Bolonik, K. (16 August 2000). "A list of their own". Salon.com. Archived from the original on 4 May 2009. Retrieved 16 May 2009.
+ Corliss, R. (21 July 2000). "Why 'Harry Potter' Did a Harry Houdini". Time. Archived from the original on 10 March 2010. Retrieved 16 May 2009.
+ Levy & Mendlesohn 2016, pp. 8, 164–65.
+ Butler 2012, p. 232.
+ Eccleshare 2002, pp. 106–8.
+ Stableford 2009, pp. xli, lx–lxi, 72.
+ Levy & Mendlesohn 2016, p. 161–62.
+ Stableford 2009, pp. 72–73.
+ Stableford 2009, p. 73.
+ Eccleshare 2002, pp. 108–9.
+ Eccleshare 2002, pp. 105–6.
+ Levy & Mendlesohn 2016, pp. 164–65.
+ Levy & Mendlesohn 2016, p. 167.
+ Levy & Mendlesohn 2016, p. 168–70.
+ Striphas 2009, pp. 158–59, 166–67.
+ Mendlesohn & James 2012, p. 167.
+ Eccleshare 2002, pp. 33–35.
+ Eccleshare 2002, pp. 10–12.
+ Mendlesohn & James 2012, pp. 165, 171.
+ Mendlesohn & James 2012, p. 165.
+ Gunelius 2008, p. 99.
+ Taub & Servaty-Seib 2008, p. 13.
+ Gunelius 2008, p. 121.
+ Popple 2015, pp. 194–95.
+ Kean, Danuta (27 January 2017). "Harry Potter character provides name for new species of crab". The Guardian. Archived from the original on 23 February 2017.
+ Knapp, N.F. (2003). "In Defense of Harry Potter: An Apologia" (PDF). School Libraries Worldwide. 9 (1). International Association of School Librarianship: 78–91. Archived from the original (PDF) on 9 March 2011. Retrieved 14 May 2009.
+ Penrod, D (December 2001). "The Trouble with Harry: A Reason for Teaching Media Literacy to Young Adults". The Writing Instructor. Professional Writing Program at Purdue University. Archived from the original on 16 December 2008. Retrieved 16 May 2009.
+ Heilman 2008, p. 2
+ "To Read or Not to Read; A question of national consequence" (PDF). National Endowment for the Arts. November 2007. Archived (PDF) from the original on 15 November 2015.
+ Rich, Motoko (11 July 2007). "Harry Potter has limited effect on reading habits". The New York Times. Archived from the original on 23 February 2017.
+ Hurd, Gordon (20 March 2007). "Fantastic Fiction". Yahoo!. Archived from the original on 22 December 2007. Retrieved 7 April 2007.
+ Conn, J.J. (2002). "What can clinical teachers learn from Harry Potter and the Philosopher's Stone?". Medical Education. 36 (12): 1176–1181. CiteSeerX 10.1.1.463.8854. doi:10.1046/j.1365-2923.2002.01376.x. PMID 12472752. S2CID 22560995.
+ Fields, J.W. (2007). "Harry Potter, Benjamin Bloom, and the Sociological Imagination" (PDF). International Journal of Teaching and Learning in Higher Education. 19 (2). Archived (PDF) from the original on 18 August 2010. Retrieved 15 May 2009.
+ "Potter sparks pet owl demand". 18 December 2001. Archived from the original on 15 August 2017. Retrieved 12 April 2018.
+ Paul, David (19 May 2012). "Hundreds of pet owls abandoned after Harry Potter craze fades". mirror. Archived from the original on 12 April 2018. Retrieved 12 April 2018.
+ "Harry Potter tour accused of cruelty for use of live 'Hedwigs'". The Independent. 23 March 2015. Archived from the original on 12 April 2018. Retrieved 12 April 2018.
+ Megias, Diane A.; Anderson, Sean C.; Smith, Robert J.; Veríssimo, Diogo (4 October 2017). "Investigating the impact of media on demand for wildlife: A case study of Harry Potter and the UK trade in owls". PLOS ONE. 12 (10) e0182368. Bibcode:2017PLoSO..1282368M. doi:10.1371/journal.pone.0182368. ISSN 1932-6203. PMC 5627891. PMID 28976986.
+ "England Trip 2004 – King's Cross Station". www.eg.bucknell.edu. Retrieved 24 February 2025.
+ "Platform 9-3/4, Kings Cross Station, London". www.mattblaze.org. Retrieved 24 February 2025.
+ Jim Mimiaga (5 May 2005). "Hello, Harry!". The Denver Post. Retrieved 24 February 2025.
+ "Pottering around England". The Globe and Mail. 30 July 2005. Retrieved 24 February 2025.
+ Owen, Paul (18 November 2005). "The Potter trainspotters". The Guardian. ISSN 0261-3077. Retrieved 24 February 2025.
+ LeakyNews (15 December 2012). Harry Potter Shop at Platform 9 3/4, London. Retrieved 24 February 2025 – via YouTube.
+ Lewis, Ellie (14 December 2012). "Harry Potter shop opens: the verdict". The Guardian. ISSN 0261-3077. Retrieved 24 February 2025.
+ "Platform 9 3/4". Atlas Obscura. Retrieved 24 February 2025.
+ "Prince Charles and Camilla visit Harry Potter platform". BBC Newsround. 30 January 2013. Retrieved 24 February 2025.
+ "As fans celebrate #BackToHogwarts day, J.K. Rowling talks about Harry Potter's kid". AV Club. 1 September 2015. Retrieved 24 February 2025.
+ "'Harry Potter' author wishes James S. Potter luck at Hogwarts - UPI.com". UPI. 1 September 2015. Retrieved 24 February 2025.
+ "JK Rowling makes 'back to Hogwarts' gaffe by getting key date wrong". BBC News. 1 September 2016. Retrieved 24 February 2025.
+ "Tom Felton returns to Hogwarts for Harry Potter film's 20th anniversary". Entertainment Weekly. Retrieved 24 February 2025.
+ Yossman, K. J. (1 September 2023). "Harry Potter Fans Celebrate Back to Hogwarts Day Across the World". Variety. Retrieved 24 February 2025.
+ Media, P. A. (2 September 2024). "Harry Potter fans boo as King's Cross ends 'back to Hogwarts' tradition". The Guardian. ISSN 0261-3077. Retrieved 24 February 2025.
+ "Harry Potter fans boo after Hogwarts Express departures dropped". www.bbc.com. 2 September 2024. Retrieved 24 February 2025.
+ "Harry Potter | Every moment of magic from Back to Hogwarts day 2024 | Wizarding World". www.harrypotter.com. Retrieved 24 February 2025.
+ Library, The Rowling (1 September 2024). "Everything revealed during the Back to Hogwarts 2024 event – The Rowling Library". Retrieved 24 February 2025.
+ "Harry Potter | Everything you need to know about Back to Hogwarts season 2024 | Wizarding World". www.harrypotter.com. Retrieved 24 February 2025.
+ "Harry Potter | Harry Potter Book Night". 3 February 2015. Archived from the original on 3 February 2015. Retrieved 29 March 2025.
+ MuggleNet (6 February 2015). "MuggleNet celebrates Harry Potter Book Night!". MuggleNet. Retrieved 29 March 2025.
+ "Harry Potter Book Night for 2015". The Bookseller. Retrieved 29 March 2025.
+ "Bloomsbury Children's Books rebrands Harry Potter Book Night". The Bookseller. Retrieved 29 March 2025.
+ "Harry Potter Book Day". www.bloomsbury.com. Retrieved 29 March 2025.
+ Bill, Neto (19 April 2021). "Fiction Genres". eBooks Discounts. Archived from the original on 28 March 2022. Retrieved 19 April 2021.
+ "Book honour for Harry Potter author". BBC News. 21 September 2001. Archived from the original on 28 December 2008. Retrieved 28 September 2008.
+ "JK Rowling: From rags to riches". BBC News. 20 September 2008. Archived from the original on 13 July 2012. Retrieved 28 September 2008.
+ "Book 'Oscar' for Potter author". BBC News. 30 May 2001. Archived from the original on 27 December 2008. Retrieved 28 September 2008.
+ "Harry Potter casts a spell on the world". CNN. 18 July 1999. Archived from the original on 26 July 2008. Retrieved 28 September 2008.
+ "Harry Potter: Meet J.K. Rowling". Scholastic Inc. Archived from the original on 4 June 2007. Retrieved 27 September 2008.
+ "2001 Hugo Awards". Hugo Awards. 26 July 2007. Archived from the original on 7 May 2011. Retrieved 19 April 2021.
+ "Harry Potter beaten to top award". BBC News. 7 July 2000. Archived from the original on 28 December 2008. Retrieved 28 September 2008.
+ Levine, Arthur (2001–2005). "Awards". Arthur A. Levine Books. Archived from the original on 29 April 2006. Retrieved 21 May 2006.
+ Fenske, Claudia (2008). Muggles, Monsters and Magicians: A Literary Analysis of the Harry Potter Series. Peter Lang. p. 3.
+ "The Big Read: The Top 100" Archived 31 October 2012 at the Wayback Machine. BBC. Retrieved 7 December 2016
+ Fisher, Douglas; et al. (2004). "Interactive Read-Alouds: Is There a Common Set of Implementation Practices?" (PDF). The Reading Teacher. 58 (1): 8–17. doi:10.1598/RT.58.1.1. Archived from the original (PDF) on 7 December 2013. Retrieved 19 August 2012.
+ National Education Association (2007). "Teachers' Top 100 Books for Children". Archived from the original on 20 September 2012. Retrieved 19 August 2012.
+ "Person of the Year 2007 Runners-up: J. K. Rowling". Time. 23 December 2007. Archived from the original on 21 December 2007. Retrieved 23 December 2007.
+ Bird, Elizabeth (7 July 2012). "Top 100 Chapter Book Poll Results". A Fuse #8 Production. Blog. School Library Journal (blog.schoollibraryjournal.com). Archived from the original on 13 July 2012. Retrieved 19 August 2012.
+ "Owls get the sack, Harry Potter gets a set of stamps". The Guardian. Archived from the original on 22 September 2022. Retrieved 22 September 2022.
+ Bell, Crystal (27 July 2012). "London Olympics: Voldemort, Mary Poppins Have An Epic Duel". The Huffington Post. Archived from the original on 14 April 2017. Retrieved 15 August 2017.
+ "100 'most inspiring' novels revealed by BBC Arts". BBC News. 5 November 2019. Archived from the original on 3 November 2020. Retrieved 10 November 2019.
+ Gunelius 2008, pp. 8, 37.
+ Smith 2002, p. 210.
+ "Warner Bros. Pictures mentions J. K. Rowling as producer". Business Wire. 20 September 2010. Archived from the original on 27 December 2010. Retrieved 24 February 2011.
+ "Harry Potter and the Philosopher's Stone". The Guardian. London. 16 November 2001. Archived from the original on 30 September 2013. Retrieved 26 May 2007.
+ Linder, Bran (28 March 2000). "Chris Columbus to Direct Harry Potter". IGN. Archived from the original on 13 January 2008. Retrieved 8 July 2007.
+ "Harry Potter and the Chamber of Secrets (2002)". Yahoo! Inc. Archived from the original on 24 July 2008. Retrieved 18 August 2008.
+ "Goblet Helmer Confirmed". IGN. 11 August 2003. Archived from the original on 29 June 2007. Retrieved 29 July 2007.
+ Daly, Steve (6 April 2007). "Sneak peek: Harry Potter and the Order of the Phoenix". Entertainment Weekly. p. 28. Archived from the original on 6 April 2007. Retrieved 26 October 2019.
+ "Coming Sooner: Harry Potter Changes Release Date". TV Guide. Archived from the original on 18 April 2009. Retrieved 15 April 2009.
+ "Harry Potter and the Half-Blood Prince". Market Watch. 14 August 2008. Archived from the original on 20 August 2008. Retrieved 17 August 2008.
+ Boucher, Geoff (13 March 2008). "Final 'Harry Potter' book will be split into two movies". Los Angeles Times. Archived from the original on 17 May 2008. Retrieved 13 March 2008.
+ "Last Day 12 June 2010". Snitchseeker.com. Archived from the original on 17 August 2010. Retrieved 24 February 2011.
+ "Fantastic Beasts: JK Rowling confirms there will be five films in Harry Potter spin-off series". The Independent. 14 October 2016. Archived from the original on 8 January 2017. Retrieved 7 January 2017.
+ "Fantastic Beasts 3 cast, release date, plot, title and everything you need to know". Digital Spy. 10 December 2018. Archived from the original on 29 December 2018. Retrieved 28 December 2018.
+ "All Time Top 20 Best Selling Games". 21 May 2003. Archived from the original on 21 February 2006. Retrieved 1 December 2006.
+ EA Harry Potter Archived 10 March 2012 at the Wayback Machine Retrieved 19 June 2010.
+ EA Harry Potter gameplay Retrieved 19 June 2010. Archived 1 July 2010 at the Wayback Machine
+ Robinson, Andy (5 June 2012). "E3 2012: Sony announces intriguing Wonderbook for PS3—Harry Potter author on board". Computer and Video Games. Archived from the original on 8 June 2012. Retrieved 5 June 2012.
+ Mayo, Benjamin (24 April 2018). "Harry Potter: Hogwarts Mystery game now available on iPhone and iPad, but it's an obnoxious free-to-play game". 9to5Mac. Archived from the original on 25 April 2018. Retrieved 25 April 2018.
+ "Hogwarts Legacy—extended gameplay showcase". Gematsu. 11 November 2022. Retrieved 17 October 2023.
+ "Harry Potter and the Cursed Child". Harry Potter The Play. harrypottertheplaylondon.com. 2016. Archived from the original on 26 September 2016. Retrieved 26 July 2016.
+ Lyall, Sarah (7 June 2016). "'Harry Potter and the Cursed Child' Begins Previews in London, as Magic Continues". The New York Times. Archived from the original on 10 April 2017. Retrieved 29 June 2016.
+ "First batch of Harry Potter and the Cursed Child tickets sell out". BBC News. 29 October 2015. Archived from the original on 29 October 2015. Retrieved 29 October 2015.
+ Gerard, Jeremy (4 May 2017). "'Harry Potter And The Cursed Child' Sets April 22, 2018 Broadway Opening". Deadline. Archived from the original on 4 May 2017. Retrieved 4 May 2017.
+ "Harry Potter and the Cursed Child | Melbourne". Harry Potter and the Cursed Child | Melbourne. Archived from the original on 24 October 2017. Retrieved 25 October 2017.
+ Goldberg, Lesley (25 January 2021). "'Harry Potter' Live-Action TV Series in Early Development at HBO Max (Exclusive)". The Hollywood Reporter. Archived from the original on 28 April 2021. Retrieved 25 January 2021.
+ "First ever Harry Potter television series ordered by new streaming service, Max". Wizarding World. 12 April 2023. Archived from the original on 12 April 2023. Retrieved 13 April 2023.
+ "Introducing the enhanced streaming service: Max". Wizarding World. 12 April 2023. Archived from the original on 12 April 2023. Retrieved 13 April 2023.
+ "Harry Potter". Production List | Film & Television Industry Alliance. 24 February 2025. Retrieved 12 March 2025.
+ White, Peter (25 June 2024). "'Harry Potter' & 'Welcome To Derry' Moving From Max To HBO As Part Of Big-Budget Streaming Strategy Rethink". Deadline Hollywood. Retrieved 25 June 2024.
+ Tapp, Tom (23 February 2024). "'Harry Potter' TV Series Due To Hit Max In 2026: Everything We Know About The Cast, What J.K. Rowling Says & More—Update". Deadline. Retrieved 23 February 2024.
+ "Harry Potter | Open casting call for Harry, Ron and Hermione actors in UK and Ireland | Wizarding World". www.harrypotter.com. Retrieved 20 March 2025.
+ Shafer, Ellise (5 December 2024). "'Harry Potter' HBO Series to Film in Summer 2025 After 32,000 Kids Auditioned for Lead Roles". Variety. Retrieved 20 March 2025.
+ "Cast It Talent". 9 September 2024. Archived from the original on 9 September 2024. Retrieved 20 March 2025.
+ Otterson, K. J. Yossman,Joe (11 November 2024). "'Harry Potter' TV Series Eyes Mark Rylance for Dumbledore (EXCLUSIVE)". Variety. Retrieved 28 January 2025.
+ Andreeva, Nellie (12 February 2025). "John Lithgow Nears Deal To Play Dumbledore In HBO's 'Harry Potter' Series". Deadline. Retrieved 14 February 2025.
+ Northrup, Ryan (25 February 2025). "John Lithgow Confirms Casting As Dumbledore In HBO's Harry Potter: "This Is Going To Define The Last Chapter Of My Life" [Exclusive]". ScreenRant. Retrieved 25 February 2025.
+ McPherson, Chris; Weintraub, Steven (25 February 2025). ""There's a Good Deal of Controversy": John Lithgow Knows How Fans Feel About Him Playing Dumbledore in the 'Harry Potter' TV Series [Exclusive]". Collider. Retrieved 28 February 2025.
+ DeNicola, Tiana (13 March 2025). "John Lithgow Says Dumbledore in HBO's 'Harry Potter' Series Is the 'Last Big Role I'll Probably Play,' Teases Trinity Killer's Return in New 'Dexter' Series". Variety. Retrieved 16 March 2025.
+ "John Lithgow doesn't think playing Dumbledore will be 'that hard a job'". Entertainment Weekly. Retrieved 25 March 2025.
+ "TV casting call for kids living near Leavesden 'looks to be for Harry Potter'". Watford Observer. 11 March 2025. Retrieved 26 March 2025.
+ "EXP Juniors". Extra People. Retrieved 26 March 2025.
+ Andreeva, Nellie (7 March 2025). "'Harry Potter': Janet McTeer In Negotiations To Play McGonagall; Paapa Essiedu Near Deal To Play Snape In HBO Series". Deadline. Retrieved 10 March 2025.
+ Goldbart, Max (27 May 2025). "HBO's Harry Potter Series Casts Harry, Ron & Hermione". Deadline Hollywood. Retrieved 27 May 2025.
+ Otterson, Joe (9 June 2025). "'Harry Potter' HBO Series Casts Bel Powley, Daniel Rigby as Petunia and Vernon Dursley". Variety. Retrieved 10 June 2025.
+ Otterson, Joe (9 June 2025). "'Harry Potter' HBO Series Finds Molly Weasley, Draco and Lucius Malfoy and More Hogwarts Students". Variety. Retrieved 10 June 2025.
+ Knight, Lucy (25 April 2024). ""Audible to turn all seven of J.K. Rowling's Harry Potter books into full-cast audiobooks", The Guardian". The Guardian.
+ Spangler, Todd (5 August 2025). ""Audible Harry Potter Cast: Hugh Laurie as Dumbledore, Matthew Macfadyen as Voldemort, Riz Ahmed as Snape and more, variety.com". Variety.
+ Spangler, Todd (10 September 2025). "Audible's 'Harry Potter' Series Expands Cast With Keira Knightley, Kit Harington, James McAvoy, Simon Pegg and More". Variety. Retrieved 11 September 2025.
+ Petski, Denise (22 October 2025). "Harry Potter Audiobooks Adds Bill Nighy, Saoirse-Monica Jackson, Ṣọpẹ́ Dìrísu & More To Cast". Deadline Hollywood. Retrieved 22 October 2025.
+ Garcia, Jason (17 June 2010). "Big day is here: Universal hopes Harry Potter's magic will last". Orlando Sentinel. Archived from the original on 5 September 2012. Retrieved 19 June 2010.
+ "Wizarding World of Harry Potter theme park opens". Australia Times. 19 June 2010. Archived from the original on 6 July 2011. Retrieved 19 June 2010.
+ Niles, Robert (8 July 2014). "The Wizarding World of Harry Potter—Diagon Alley opens officially at Universal Studios Florida". Theme Park Insider. Archived from the original on 15 September 2014. Retrieved 15 September 2014.
+ Kohler, Chris (2014). "What to Expect From the Wild New Harry Potter Ride, 'Escape From Gringotts'". Wired. Archived from the original on 2 July 2014.
+ Goldman, Eric (8 May 2013). "Details on Expansion of Wizarding World of Harry Potter in Orlando Confirmed, Including Diagon Alley as Second Location". IGN. Archived from the original on 8 October 2013. Retrieved 8 May 2013.
+ MacDonald, Brady (9 May 2013). "What may come to Wizarding World of Harry Potter 2.0 at Universal Orlando". Los Angeles Times. Archived from the original on 10 May 2013. Retrieved 18 May 2013.
+ Barnes, Brooks (8 April 2014). "A Makeover at Universal Studios Hollywood Aims at Disney". The New York Times. Universal City, California. Archived from the original on 12 September 2014. Retrieved 12 September 2014.
+ "What to expect when the Wizarding World at Universal Studios Hollywood opens in April". Los Angeles Times. 14 January 2016. Archived from the original on 3 April 2016. Retrieved 3 April 2016.
+ Bevil, Dewayne (18 April 2014). "Universal Studios Japan: Wizarding World of Harry Potter to open July 15". Orlando Sentinel. Archived from the original on 12 September 2014. Retrieved 12 September 2014.
+ Cripps, Karla (16 July 2014). "Universal Studios Japan's 'Wizarding World of Harry Potter' opens". CNN. Archived from the original on 12 September 2014. Retrieved 12 September 2014.
+ "Harry Potter tour to open at Leavesden studios in 2012". BBC News. 5 March 2011. Archived from the original on 25 March 2011. Retrieved 18 May 2011.
+ "Harry Potter tour at Leavesden Studios reveals new sets". BBC News. 19 December 2011. Archived from the original on 22 February 2012. Retrieved 16 February 2012.
+ "Guide to Harry Potter Studio Tour Tokyo". Japan Web Magazine. 21 August 2020.
+ Atkinson, Simon (19 July 2007). "How Rowling conjured up millions". BBC News. Archived from the original on 28 December 2008. Retrieved 7 September 2008.
+ Comic Relief: Quidditch Through the Ages. Albris. Archived from the original on 26 July 2008. Retrieved 7 September 2008.
+ "The Money". Comic Relief. Archived from the original on 29 October 2007. Retrieved 25 October 2007.
+ "JK Rowling book fetches £2 m". BBC News. 13 December 2007. Archived from the original on 15 December 2007. Retrieved 13 December 2007.
+ "The Tales of Beedle the Bard". Amazon UK. Archived from the original on 17 December 2007. Retrieved 14 December 2007.
+ Williams, Rachel (29 May 2008). "Rowling pens Potter prequel for charities". The Guardian. London. Archived from the original on 2 October 2013. Retrieved 30 March 2010.
+ Chan, Melissa (17 August 2016). "J.K. Rowling Is About to Release 3 New 'Harry Potter' Books". Time. Archived from the original on 16 December 2016. Retrieved 22 December 2016.
+ "Waiting for Pottermore?". Pottermore Insider. 8 March 2012. Archived from the original on 10 March 2012. Retrieved 9 March 2012.
+ van Gilder Cooke, Sonia (23 June 2011). "'Pottermore' Secrets Revealed: J.K. Rowling's New Site is E-Book Meets Interactive World". Time. Archived from the original on 29 August 2012. Retrieved 6 January 2013.
+ "Pottermore". Pottermore. Archived from the original on 26 September 2015. Retrieved 8 October 2015.
+Sources
+Anatol, Giselle Liza, ed. (2003). Reading Harry Potter: Critical Essays. Westport, Connecticut: Praeger. ISBN 978-0-313-32067-5. OCLC 50774592.
+Carey, Brycchan (2003). "Hermione and the house-elves: the literary and historical contexts of J. K. Rowling's antislavery campaign". In Anatol, Giselle Liza (ed.). Reading Harry Potter: Critical Essays. Praeger. ISBN 978-0-313-32067-5.
+Gallardo, Ximena; Smith, C. Jason (2003). "Cinderfella: J. K. Rowling's wily web of gender". In Anatol, Giselle Liza (ed.). Reading Harry Potter: Critical Essays. Praeger. ISBN 978-0-313-32067-5.
+Ostry, Elaine (2003). "Accepting Mudbloods: the ambivalent social vision of J. K. Rowling's fairy tales". In Anatol, Giselle Liza (ed.). Reading Harry Potter: Critical Essays. Praeger. ISBN 978-0-313-32067-5.
+Park, Julia (2003). "Class and socioeconomic identity in Harry Potter's England". In Anatol, Giselle Liza (ed.). Reading Harry Potter: Critical Essays. Praeger. ISBN 978-0-313-32067-5.
+Shanoes, Veronica (2003). "Cruel heroes and treacherous texts: educating the reader in moral complexity and critical reading in J. K. Rowling's Harry Potter books". In Anatol, Giselle Liza (ed.). Reading Harry Potter: Critical Essays. Praeger. ISBN 978-0-313-32067-5.
+Barratt, Bethany (2012). The Politics of Harry Potter. New York: Palgrave Macmillan. doi:10.1057/9781137016546. ISBN 978-0-230-60899-3.
+Bell, Christopher, ed. (2012). Hermione Granger Saves the World: Essays on the Feminist Heroine of Hogwarts. Jefferson, North Carolina: McFarland & Company. ISBN 978-0-7864-7137-9.
+Bell, Christopher; Alexander, Julie (2012). "Introduction". In Bell, Christopher (ed.). Hermione Granger Saves the World: Essays on the Feminist Heroine of Hogwarts. McFarland & Company.
+Berents, Helen (2012). "Hermione Granger goes to war". In Bell, Christopher (ed.). Hermione Granger Saves the World: Essays on the Feminist Heroine of Hogwarts. McFarland & Company.
+Berndt, Katrin; Steveker, Lena, eds. (22 April 2016). Heroism in the Harry Potter Series. Routledge. doi:10.4324/9781315586748. ISBN 978-1-317-12211-1.
+Berberich, Christine (22 April 2016). "Harry Potter and the idea of the gentleman as hero". In Berndt, Katrin; Steveker, Lena (eds.). Heroism in the Harry Potter Series. Routledge.
+McEvoy, Kathleen (22 April 2016). "Heroism at the margins". In Berndt, Katrin; Steveker, Lena (eds.). Heroism in the Harry Potter Series. Routledge.
+Nikolajeva, Maria (22 April 2016). "Adult heroism and role models in the Harry Potter novels". In Berndt, Katrin; Steveker, Lena (eds.). Heroism in the Harry Potter Series. Routledge.
+Pharr, Mary (22 April 2016). "A paradox: the Harry Potter series as both epic and postmodern". In Berndt, Katrin; Steveker, Lena (eds.). Heroism in the Harry Potter Series. Routledge.
+Singer, Rita (22 April 2016). "Harry Potter and the battle for the soul: the revival of the psychomachia in secular fiction". In Berndt, Katrin; Steveker, Lena (eds.). Heroism in the Harry Potter Series. Routledge.
+Blake, Andrew (2002). The Irresistible Rise of Harry Potter. London: Verso Books. ISBN 1-85984-666-1. OCLC 49594480.
+Butler, Catherine (2012). "Modern children's fantasy". In James, Edward; Mendlesohn, Farah (eds.). The Cambridge Companion to Fantasy Literature. Cambridge University Press. doi:10.1017/CCOL9780521429597. ISBN 978-0-521-42959-7.
+Clark, Giles; Phillips, Angus (2019). Inside Book Publishing. Routledge. ISBN 978-1-351-26571-3.
+Eberhardt, Maeve (2017). "Gendered representations through speech: The case of the Harry Potter series". Language and Literature. 26 (3): 227–246. doi:10.1177/0963947017701851. S2CID 149129001.
+Eccleshare, Julia (2002). A Guide to the Harry Potter Novels. London: Continuum. ISBN 978-1-84714-418-8. OCLC 229341237.
+Errington, Philip W. (2017). J.K. Rowling: A Bibliography. Bloomsbury Publishing. ISBN 978-1-4742-9737-0.
+Farmer, Joy (2001). "The magician's niece: the kinship between J. K. Rowling and C. S. Lewis". Mythlore. 23 (2): 53–64. ISSN 0146-9339. JSTOR 26814627.
+Groves, Beatrice (2017). Literary Allusion in Harry Potter. Routledge. doi:10.4324/9781315269337. ISBN 978-1-315-26933-7.
+Gunelius, Susan (2008). Harry Potter: The Story of a Global Business Phenomenon. Palgrave Macmillan. doi:10.1057/9780230594104. ISBN 978-0-230-59410-4.
+Gupta, Suman (2009). Re-Reading Harry Potter (2nd ed.). London: Palgrave Macmillan. doi:10.1057/9780230279711. ISBN 978-0-230-21958-8.
+Heilman, Elizabeth E., ed. (7 August 2008). Critical Perspectives on Harry Potter (2nd ed.). Routledge. doi:10.4324/9780203892817. ISBN 978-1-135-89154-1.
+Alton, Anne Hiebert (7 August 2008). "Playing the genre game: generic fusions of the Harry Potter series". In Heilman, Elizabeth E. (ed.). Critical Perspectives on Harry Potter (2nd ed.). Routledge.
+Applebaum, Peter (7 August 2008). "The great Snape debate". In Heilman, Elizabeth E. (ed.). Critical Perspectives on Harry Potter (2nd ed.). Routledge.
+Birch, Megan L. (7 August 2008). "Schooling Harry Potter: teachers and learning, power and knowledge". In Heilman, Elizabeth E. (ed.). Critical Perspectives on Harry Potter (2nd ed.). Routledge.
+Ciaccio, Peter (7 August 2008). "Harry Potter and Christian theology". In Heilman, Elizabeth E. (ed.). Critical Perspectives on Harry Potter (2nd ed.). Routledge.
+Heilman, Elizabeth E.; Donaldson, Trevor (7 August 2008). "From sexist to (sort-of) feminist representations of gender in the Harry Potter series". In Heilman, Elizabeth E. (ed.). Critical Perspectives on Harry Potter (2nd ed.). Routledge.
+Nikolajeva, Maria (7 August 2008). "Harry Potter and the secrets of children's literature". In Heilman, Elizabeth E. (ed.). Critical Perspectives on Harry Potter (2nd ed.). Routledge.
+Taub, Deborah J.; Servaty-Seib, Heather L. (7 August 2008). "Controversial content: is Harry Potter harmful to children?". In Heilman, Elizabeth E. (ed.). Critical Perspectives on Harry Potter (2nd ed.). Routledge.
+Horne, Jackie C. (2010). "Harry and the other: answering the race question in J. K. Rowling's Harry Potter". The Lion and the Unicorn. 34 (1): 76–104. doi:10.1353/uni.0.0488. S2CID 143738308. ProQuest 221753179.
+Kirk, Connie Ann (2003). J.K. Rowling: A Biography. Greenwood Press. ISBN 0-313-32205-8. OCLC 49991592.
+Levy, Michael; Mendlesohn, Farah (2016). Children's Fantasy Literature: An Introduction. Cambridge University Press. doi:10.1017/CBO9781139087421. ISBN 978-1-107-01814-3.
+Los, Fraser (2008). "Harry Potter and the nature of death". Alternatives Journal. 34 (1): 32–33. JSTOR 45033580.
+Mendlesohn, Farah; James, Edward (2012). A Short History of Fantasy. Libri Publishing. ISBN 978-1-907471-66-7. OCLC 857653620.
+Nel, Philip (2001). J.K. Rowling's Harry Potter Novels: A Reader's Guide. New York: Continuum. ISBN 0-8264-5232-9. OCLC 47050453.
+Popple, Jennifer E. (2015). "Embracing the magic: Muggle Quidditch and the transformation of gender equality from fantasy to reality". In Brenner, Lisa S. (ed.). Playing Harry Potter: Essays and Interviews on Fandom and Performance. McFarland & Company. ISBN 978-1-4766-2136-4.
+Pugh, Tison; Wallace, David L. (Fall 2006). "Heteronormative heroism and queering the school story in J.K. Rowling's Harry Potter series". Children's Literature Association Quarterly. 31 (3): 260–281. doi:10.1353/chq.2006.0053. S2CID 143508785.
+Smith, Sean (2002). J.K. Rowling: A Biography. Arrow Books. ISBN 0-09-944542-5. OCLC 51303518.
+Stableford, Brian M. (2009). The A to Z of Fantasy Literature. Scarecrow Press. ISBN 978-0-8108-6345-3. OCLC 1200815959.
+Striphas, Theodore G. (2009). "Harry Potter and the Culture of the Copy". The Late Age of Print: Everyday Book Culture from Consumerism to Control. New York: Columbia University Press. pp. 141–174. ISBN 978-0-231-14814-6. OCLC 256532755.
+Stojilkov, Andrea (2015). "Life(and)death in 'Harry Potter': the immortality of love and soul". Mosaic: An Interdisciplinary Critical Journal. 48 (2): 133–148. ISSN 0027-1276. JSTOR 44030425.
+Whited, Lana A., ed. (2002). The Ivory Tower and Harry Potter: Perspectives on a Literary Phenomenon. Columbia, Missouri: University of Missouri Press. ISBN 978-0-8262-6330-8. OCLC 56424948.
+Doughty, Terri (2002). "Locating Harry Potter in the 'Boys' Book' market". In Whited, Lana A. (ed.). The Ivory Tower and Harry Potter: Perspectives on a Literary Phenomenon. University of Missouri Press. ISBN 978-0-8262-1443-0.
+Mendlesohn, Farah (2002). "Crowning the king: Harry Potter and the construction of authority". In Whited, Lana A. (ed.). The Ivory Tower and Harry Potter: Perspectives on a Literary Phenomenon. University of Missouri Press. ISBN 978-0-8262-1443-0.
+Natov, Roni (2002). "Harry Potter and the extraordinariness of the ordinary". In Whited, Lana A. (ed.). The Ivory Tower and Harry Potter: Perspectives on a Literary Phenomenon. University of Missouri Press. ISBN 978-0-8262-1443-0.
+Whited, Lana A. (2015). "A survey of the critical reception of the Harry Potter series". In Grimes, M. Katherine; Whited, Lana A. (eds.). Critical Insights: The Harry Potter Series. Salem Press. ISBN 978-1-61925-520-3. EBSCOhost 108515151.
+Further reading
+Allardice, Lisa (18 June 2022). "'There was practically a riot at King's Cross': an oral history of Harry Potter at 25". The Guardian. Retrieved 26 August 2024.
+Burkart, Gina (2005). A parent's guide to Harry Potter. InterVarsity Press. ISBN 978-0-8308-3288-0. Harry Potter.
+Duriez, Colin (2007). Field Guide to Harry Potter. IVP Books. ISBN 978-0-8308-3430-3.
+Mulholland, Neil (2007). The Psychology of Harry Potter: An Unauthorized Examination of the Boy Who Lived. BenBella Books. ISBN 978-1-932100-88-4.
+Silvester, William (2010). Harry Potter Collector's Handbook. Krause. ISBN 978-1-4402-0897-3.
+External links
+Listen to this article (59 minutes)
+Duration: 59 minutes and 19 seconds.59:19
+Spoken Wikipedia icon
+This audio file was created from a revision of this article dated 28 October 2024, and does not reflect subsequent edits.
+(Audio help · More spoken articles)
+Harry Potter
+at Wikipedia's sister projects
+Definitions from Wiktionary
+Media from Commons
+News from Wikinews
+Quotations from Wikiquote
+Texts from Wikisource
+Textbooks from Wikibooks
+Resources from Wikiversity
+Travel information from Wikivoyage
+Data from Wikidata
+HarryPotter.com Wizarding World Digital/Warner Brothers Entertainment
+Harry Potter at Scholastic.com (US publisher)
+Harry Potter at Bloomsbury (UK publisher)
+Archived official movie site Warner Brothers
+Harry Potter collected news and commentary at The New York Times
+vte
+Harry Potter by J. K. Rowling
+Harry Potter
+Books	
+Main novels	
+The Philosopher's StoneThe Chamber of SecretsThe Prisoner of AzkabanThe Goblet of FireThe Order of the PhoenixThe Half-Blood PrinceThe Deathly Hallows
+Spin-offs	
+Fantastic Beasts and Where to Find ThemQuidditch Through the AgesThe Tales of Beedle the Bard
+Short stories	
+PrequelHogwarts: An Incomplete and Unreliable GuideShort Stories from Hogwarts of Power, Politics and Pesky PoltergeistsShort Stories from Hogwarts of Heroism, Hardship and Dangerous Hobbies
+Feature films	
+Harry Potter
+(cast · music)	
+The Philosopher's Stone soundtrack, "Hedwig's Theme"The Chamber of Secrets soundtrackThe Prisoner of Azkaban soundtrackThe Goblet of Fire soundtrackThe Order of the Phoenix soundtrackThe Half-Blood Prince soundtrackThe Deathly Hallows – Part 1 productionsoundtrackThe Deathly Hallows – Part 2 productionsoundtrackaccolades
+Fantastic Beasts
+(cast · characters)	
+Fantastic Beasts and Where to Find Them soundtrackThe Crimes of Grindelwald soundtrackThe Secrets of Dumbledore
+Characters
+(cast)	
+Harry PotterRon WeasleyHermione GrangerLord VoldemortAlbus DumbledoreSeverus SnapeRubeus HagridMinerva McGonagallDraco MalfoyNeville LongbottomFred and George WeasleyGinny WeasleySirius BlackRemus LupinBellatrix LestrangeDolores UmbridgeLuna LovegoodBlaise Zabini
+Groups	
+Hogwarts staffOrder of the PhoenixDeath EatersMinistry of Magic
+Fictional universe	
+Magic CreaturesObjectsPlaces BeauxbatonsDiagon AlleyHogwartsMuggleQuidditch
+Other works	
+Wizarding World DigitalThe Cursed ChildHogwarts Tournament of Houses20th Anniversary: Return to HogwartsTelevision series
+Inspired media	
+Video games	
+Lego Creator: Harry PotterThe Philosopher's Stone (2001) PlayStationPCGame Boy AdvanceGame Boy ColorThe Chamber of SecretsCreator: Harry Potter and the Chamber of SecretsQuidditch World CupThe Philosopher's Stone (2003)The Prisoner of AzkabanThe Goblet of FireThe Order of the PhoenixThe Half-Blood PrinceLego Harry Potter: Years 1–4The Deathly Hallows – Part 1The Deathly Hallows – Part 2Lego Harry Potter: Years 5–7Harry Potter for KinectBook of SpellsBook of PotionsLego DimensionsFantastic Beasts: Cases From the Wizarding WorldHogwarts MysteryWizards UniteMagic AwakenedHogwarts LegacyQuidditch Champions
+Amusement parks	
+The Wizarding World of Harry Potter OrlandoJapanHollywoodBeijingAttractions Dragon ChallengeFlight of the HippogriffHagrid's Magical Creatures Motorbike AdventureThe Escape from GringottsThe Forbidden JourneyHogwarts ExpressMovie Magic Experience
+Exhibitions	
+The ExhibitionA History of MagicWarner Bros. Studio Tour London – The Making of Harry PotterWarner Bros. Studio Tour Tokyo – The Making of Harry PotterWarner Bros. Studio Tour Shanghai – The Making of Harry Potter
+Other	
+Lego Harry PotterTrading Card Game
+Fandom	
+A Celebration of Harry PotterDrarryFandom ForwardThe Leaky CauldronMischief ManagementMuggleNetScorbusWizard rockWolfstarWrockstock
+Fan fictions	
+All the Young DudesHarry Potter and the Methods of RationalityHarry Potter in CalcuttaHogwarts School of Prayer and MiraclesMy Immortal
+Fan films	
+Hermione Granger and the Quarter Life CrisisSeverus Snape and the MaraudersVoldemort: Origins of the Heir
+Parodies	
+A Very Potter Musical	
+A Very Potter Musical albumA Very Potter Sequel EPA Very Potter Senior Year
+Other	
+Epic MovieMuddle Earth TooSkulduggery Pleasant: ResurrectionPotter Puppet PalsPuffsWizard People, Dear ReaderTreehouse of Horror XII
+Related	
+Influences and analoguesLegal disputesList of organisms named after the Harry Potter seriesPoliticsPortkey GamesReligious debatesTranslationHarry, A HistoryHarry Potter and the Sacred TextThe Harry Potter LexiconThe Magical Worlds of Harry PotterPollomuhku ja PosityyhtynenPotterlessHeyday Films
+ Category Outline
+vte
+J. K. Rowling
+vte
+Books I Love Best Yearly: Younger Readers Award
+vte
+Books I Love Best Yearly: Older Readers Award
+Portals:
+ Children's literature
+icon Speculative fiction
+ Literature
+icon 1990s
+ 2000s
+Authority control databases Edit this at Wikidata
+Categories: Harry Potter20th-century British children's literature21st-century British children's literatureBILBY Award–winning worksBoarding school fictionBook franchisesBook series introduced in 1997British bildungsromansBritish novels adapted into filmsChildren's books about magicChildren's books about witchesChildren's books set in schoolsContemporary fantasy novelsCulture of the United KingdomNovels about dragonsElves in popular cultureFantasy novel seriesFiction about cursesGiants in popular cultureFiction about invisibilityNovels about secret societiesFiction about wizardsGhosts in popular cultureHeptalogiesNovels about magicNovels adapted into video gamesNovels by J. K. RowlingNovels set in schoolsWizarding WorldFiction about magic schools
+This page was last edited on 3 November 2025, at 01:21 (UTC).
+Text is available under the Creative Commons Attribution-ShareAlike 4.0 License; additional terms may apply. By using this site, you agree to the Terms of Use and Privacy Policy. Wikipedia® is a registered trademark of the Wikimedia Foundation, Inc., a non-profit organization.
+Privacy policyAbout WikipediaDisclaimersContact WikipediaCode of ConductDevelopersStatisticsCookie statementMobile view
+Wikimedia Foundation
+Powered by MediaWiki

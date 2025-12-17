@@ -1,23 +1,27 @@
 ﻿// VNPay Service - Community Library Implementation
 // Following documentation from https://vnpay.js.org/
 
-const { VNPay, HashAlgorithm, VnpLocale, ProductCode} = require('vnpay');
+const { VNPay, HashAlgorithm, VnpLocale, ProductCode, VnpCurrCode, dateFormat } = require('vnpay');
 
 class VNPayService {
     static getVNPayInstance() {
         if (!this.vnpayInstance) {
+            // Configure VNPay with proper settings for sandbox mode
             this.vnpayInstance = new VNPay({
                 tmnCode: process.env.VNPAY_TMN_CODE,
                 secureSecret: process.env.VNPAY_HASH_SECRET,
-                vnpayHost: process.env.VNPAY_URL || 'https://sandbox.vnpayment.vn',
-                testMode: process.env.NODE_ENV !== 'production',
+                vnpayHost: 'https://sandbox.vnpayment.vn', // Use the base URL, not the full payment URL
+                testMode: true, // Always use test mode for sandbox
                 hashAlgorithm: HashAlgorithm.SHA512,
+                enableLog: true,  // Enable logging for debugging
             });
 
             console.log('[VNPAY SERVICE] Initialized with:', {
                 tmnCode: process.env.VNPAY_TMN_CODE,
-                vnpayHost: process.env.VNPAY_URL || 'https://sandbox.vnpayment.vn',
-                testMode: process.env.NODE_ENV !== 'production'
+                vnpayHost: process.env.VNPAY_URL,
+                testMode: true,
+                returnUrl: process.env.VNPAY_RETURN_URL,
+                hashAlgorithm: 'SHA512'
             });
         }
         return this.vnpayInstance;
@@ -37,12 +41,14 @@ class VNPayService {
     static getClientIpAddress(req) {
         if (!req) return '127.0.0.1';
         
-        return req.ip || 
-               req.connection?.remoteAddress || 
-               req.socket?.remoteAddress ||
-               req.headers?.['x-forwarded-for']?.split(',')[0]?.trim() ||
-               req.headers?.['x-real-ip'] ||
-               '127.0.0.1';
+        let clientIP = req.headers.forwarded ||
+            req.ip ||
+            req.socket.remoteAddress ||
+            req.connection.remoteAddress ||
+            '127.0.0.1';
+
+        console.log('[VNPAY SERVICE] Original IP:', req.ip || 'unknown', 'Processed IP:', clientIP);
+        return clientIP;
     }
 
     static createPaymentUrl({ amount, orderId, orderInfo, ipAddr, bankCode = '' }) {
@@ -61,30 +67,23 @@ class VNPayService {
 
             const vnpay = this.getVNPayInstance();
 
+            // Build payment parameters exactly like the successful demo
             const paymentParams = {
-                vnp_Amount: Math.round(amount),
-                vnp_Command: 'pay',
-                vnp_CreateDate: new Date(),
+                vnp_Amount: amount, // VNPay expects amount in smallest currency unit // Use dateFormat from vnpay library
                 vnp_IpAddr: ipAddr,
                 vnp_Locale: VnpLocale.VN,
                 vnp_OrderInfo: orderInfo,
                 vnp_OrderType: ProductCode.Other,
-                vnp_ReturnUrl: process.env.VNPAY_RETURN_URL,
+                vnp_ReturnUrl: process.env.VNPAY_RETURN_URL || 'http://localhost:3000/payment/vnpay-return',
                 vnp_TxnRef: orderId,
-                vnp_Version: '2.1.0'
+                vnp_BankCode: undefined
             };
 
-            if (bankCode && bankCode.trim() !== '') {
-                paymentParams.vnp_BankCode = bankCode;
-                console.log('[VNPAY SERVICE] Using specific bank code:', bankCode);
-            } else {
-                console.log('[VNPAY SERVICE] No bank code - showing all payment methods');
-            }
+            console.log('[VNPAY SERVICE] Using bank code:', bankCode || 'All payment methods');
 
             const paymentUrl = vnpay.buildPaymentUrl(paymentParams);
 
-            console.log(paymentUrl);
-
+            console.log('[VNPAY SERVICE] Generated payment URL:', paymentUrl);
             console.log('[VNPAY SERVICE] Payment URL created successfully');
             return paymentUrl;
 
@@ -92,6 +91,18 @@ class VNPayService {
             console.error('[VNPAY SERVICE] Error creating payment URL:', error);
             throw new Error('Failed to create payment URL: ' + error.message);
         }
+    }
+
+    // Format create date according to VNPay requirements: yyyyMMddHHmmss
+    static formatCreateDate(date) {
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        const hours = String(date.getHours()).padStart(2, '0');
+        const minutes = String(date.getMinutes()).padStart(2, '0');
+        const seconds = String(date.getSeconds()).padStart(2, '0');
+        
+        return `${year}${month}${day}${hours}${minutes}${seconds}`;
     }
 
     static verifyIpnCall(vnpayData) {
@@ -111,7 +122,7 @@ class VNPayService {
 
             const transaction = {
                 orderId: vnpayData.vnp_TxnRef,
-                amount: parseFloat(vnpayData.vnp_Amount) / 100,
+                amount: parseFloat(vnpayData.vnp_Amount) / 100,  // Amount from VNPay is in smallest unit, divide by 100
                 orderInfo: vnpayData.vnp_OrderInfo,
                 responseCode: vnpayData.vnp_ResponseCode,
                 transactionNo: vnpayData.vnp_TransactionNo,
@@ -142,32 +153,44 @@ class VNPayService {
             console.log('[VNPAY SERVICE] Verifying return URL:', vnpayData);
 
             const vnpay = this.getVNPayInstance();
-            const isValid = vnpay.verifyReturnUrl(vnpayData);
-
-            if (!isValid) {
-                console.error('[VNPAY SERVICE] Invalid return URL signature');
-                return {
-                    isValid: false,
-                    message: 'Invalid signature'
-                };
-            }
+            
+            // Use the library's verifyReturnUrl method which returns a verification object
+            const verify = vnpay.verifyReturnUrl(vnpayData);
+            
+            console.log('[VNPAY SERVICE] VNPay library verification result:', {
+                createdAt: new Date(),
+                method: 'verifyReturnUrl',
+                vnp_Amount: verify.vnp_Amount,
+                vnp_BankCode: verify.vnp_BankCode,
+                vnp_CardType: verify.vnp_CardType,
+                vnp_OrderInfo: verify.vnp_OrderInfo,
+                vnp_PayDate: verify.vnp_PayDate,
+                vnp_TmnCode: verify.vnp_TmnCode,
+                vnp_TransactionNo: verify.vnp_TransactionNo,
+                vnp_TransactionStatus: verify.vnp_TransactionStatus,
+                vnp_TxnRef: verify.vnp_TxnRef,
+                isVerified: verify.isVerified,
+                isSuccess: verify.isSuccess,
+                message: verify.message,
+                vnp_SecureHash: verify.vnp_SecureHash
+            });
 
             const transaction = {
-                orderId: vnpayData.vnp_TxnRef,
-                amount: parseFloat(vnpayData.vnp_Amount) / 100,
-                orderInfo: vnpayData.vnp_OrderInfo,
-                responseCode: vnpayData.vnp_ResponseCode,
-                transactionNo: vnpayData.vnp_TransactionNo,
-                bankCode: vnpayData.vnp_BankCode,
-                payDate: vnpayData.vnp_PayDate,
-                transactionStatus: vnpayData.vnp_TransactionStatus,
-                isSuccess: vnpayData.vnp_ResponseCode === '00'
+                orderId: verify.vnp_TxnRef || vnpayData.vnp_TxnRef,
+                amount: verify.vnp_Amount || vnpayData.vnp_Amount, 
+                orderInfo: verify.vnp_OrderInfo || vnpayData.vnp_OrderInfo,
+                responseCode: verify.vnp_ResponseCode || vnpayData.vnp_ResponseCode,
+                transactionNo: verify.vnp_TransactionNo || vnpayData.vnp_TransactionNo,
+                bankCode: verify.vnp_BankCode || vnpayData.vnp_BankCode,
+                payDate: verify.vnp_PayDate || vnpayData.vnp_PayDate,
+                transactionStatus: verify.vnp_TransactionStatus || vnpayData.vnp_TransactionStatus,
+                isSuccess: verify.isVerified && verify.isSuccess
             };
 
             console.log('[VNPAY SERVICE] Return URL verification successful:', transaction);
 
             return {
-                isValid: true,
+                isValid: verify.isVerified,
                 transaction
             };
         } catch (error) {

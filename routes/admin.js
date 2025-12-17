@@ -21,11 +21,11 @@ const express = require('express');
 const router = express.Router();
 const adminController = require('../controllers/adminController');
 const { authMiddleware } = require('../middlewares/authMiddleware');
-const adminMiddleware = require('../middlewares/adminMiddleware');
+const accessMiddleware = require('../middlewares/accessMiddleware');
 
 // Apply authentication and admin-only middleware to all routes
 router.use(authMiddleware);
-router.use(adminMiddleware);
+router.use(accessMiddleware.requireRoles(['Admin']));
 
 /**
  * UC24: MANAGE USERS ROUTES
@@ -59,6 +59,9 @@ router.get('/dashboard', adminController.getSystemDashboard);
 
 // Get system reports (users, devices, sensors, watering)
 router.get('/reports', adminController.getSystemReports);
+
+// Get detailed profit analysis
+router.get('/profit-analysis', adminController.getProfitAnalysis);
 
 /**
  * UC26: CONFIGURE GLOBAL SETTINGS ROUTES

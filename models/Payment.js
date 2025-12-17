@@ -9,6 +9,12 @@ class Payment {
         this.amount = paymentData.amount;
         this.status = paymentData.status;
         this.created_at = paymentData.created_at;
+        this.order_id = paymentData.order_id;
+        this.order_info = paymentData.order_info;
+        this.bank_code = paymentData.bank_code;
+        this.transaction_no = paymentData.transaction_no;
+        this.response_code = paymentData.response_code;
+        this.updated_at = paymentData.updated_at;
     }
 
     // Static method to find all payments
@@ -361,6 +367,33 @@ class Payment {
                 WHERE p.order_id = $1
             `;
             const result = await pool.query(query, [orderId]);
+            
+            if (result.rows.length === 0) {
+                return null;
+            }
+            
+            return new Payment(result.rows[0]);
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    // Static method to find payment by order ID and user ID for security
+    static async findByOrderIdAndUserId(orderId, userId) {
+        // Validate UUID
+        if (!isValidUUID(userId)) {
+            console.error('[PAYMENT] Invalid user_id UUID:', userId);
+            return null;
+        }
+
+        try {
+            const query = `
+                SELECT p.*, CONCAT(u.given_name, ' ', u.family_name) as user_name, u.email 
+                FROM payments p
+                LEFT JOIN users u ON p.user_id = u.user_id
+                WHERE p.order_id = $1 AND p.user_id = $2
+            `;
+            const result = await pool.query(query, [orderId, userId]);
             
             if (result.rows.length === 0) {
                 return null;

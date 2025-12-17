@@ -7,7 +7,7 @@
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '../../providers/AuthProvider';
-import DashboardLayout from '../../components/DashboardLayout';
+import DashboardLayout from '../../components/layout/DashboardLayout';
 import AIFunctionsGrid from '../../components/ai/AIFunctionsGrid';
 import ThemedLoader from '../../components/ThemedLoader';
 

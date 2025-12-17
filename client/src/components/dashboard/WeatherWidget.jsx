@@ -13,10 +13,16 @@ export default function WeatherWidget() {
   const { isDark, themeColors } = useTheme();
   const { settings } = useSettings();
 
-  // Hide the widget if weather info is disabled in settings
-  if (!settings.dashboard.showWeatherInfo) {
+  // Hide the widget if weather widget is disabled in settings
+  if (!settings.widgets?.showWeatherWidget) {
     return null;
   }
+
+  // Widget settings
+  const showTitles = settings?.widgets?.showWidgetTitles ?? true;
+  const showIcons = settings?.widgets?.showWidgetIcons ?? true;
+  const compactMode = settings?.widgets?.compactMode ?? false;
+  const animationsEnabled = settings?.widgets?.animationsEnabled ?? true;
   
   const [weatherData, setWeatherData] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -116,10 +122,8 @@ export default function WeatherWidget() {
         await fetchWithDebug(async () => {
           setLoading(true);
           
-          // Default to Hanoi coordinates if geolocation is not available
-          let lat = 21.0278;
-          let lon = 105.8342;
-          
+          let lat, lon;
+
           // Try to get user's location
           if (navigator.geolocation) {
             const position = await new Promise((resolve, reject) => {
@@ -133,29 +137,75 @@ export default function WeatherWidget() {
             lon = position.coords.longitude;
           }
           
-          // Fetch current weather data from Weatherbit API
-          const apiKey = process.env.NEXT_PUBLIC_WEATHERBIT_API_KEY;
-          const response = await axios.get(`https://api.weatherbit.io/v2.0/current?lat=${lat}&lon=${lon}&key=${apiKey}`);
+          // Fetch current weather data from OpenWeatherMap API
+          const apiKey = process.env.NEXT_PUBLIC_OPENWEATHER_API_KEY;
+          if (!apiKey) {
+            throw new Error('Weather API key is not configured');
+          }
           
-          if (response.data && response.data.data && response.data.data[0]) {
-            const currentWeather = response.data.data[0];
-          
-          // Get forecast data for next 3 days
-          const forecastResponse = await axios.get(`https://api.weatherbit.io/v2.0/forecast/daily?lat=${lat}&lon=${lon}&days=3&key=${apiKey}`);
-          
-          // Map API data to our format
-          const mappedData = {
-            temperature: Math.round(currentWeather.temp),
-            condition: mapWeatherCode(currentWeather.weather.code),
-            humidity: currentWeather.rh,
-            wind: Math.round(currentWeather.wind_spd * 3.6), // Convert m/s to km/h
-            forecast: forecastResponse.data.data.map((day, index) => ({
-              day: getLocalizedWeekday(day.valid_date, index === 0, index === 1),
-              high: Math.round(day.max_temp),
-              low: Math.round(day.min_temp),
-              condition: mapWeatherCode(day.weather.code)
-            })).slice(0, 3)
-          };
+          const response = await axios.get(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric`);
+
+          if (response.data && response.data.main) {
+            const currentWeather = response.data;
+
+            // Get forecast data for next 5 days (OpenWeatherMap provides 5-day forecast)
+            const forecastResponse = await axios.get(`https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric`);
+
+            // Process forecast data to get daily highs and lows
+            const dailyForecasts = [];
+            if (forecastResponse.data && forecastResponse.data.list) {
+              const forecastList = forecastResponse.data.list;
+              const dailyData = {};
+              
+              // Group forecast data by date and find min/max temps
+              forecastList.forEach(item => {
+                const date = new Date(item.dt * 1000);
+                const dateStr = date.toDateString();
+                
+                if (!dailyData[dateStr]) {
+                  dailyData[dateStr] = {
+                    date: date,
+                    temps: [],
+                    conditions: [],
+                    weatherIds: []
+                  };
+                }
+                
+                dailyData[dateStr].temps.push(item.main.temp);
+                dailyData[dateStr].conditions.push(item.weather[0].main);
+                dailyData[dateStr].weatherIds.push(item.weather[0].id);
+              });
+              
+              // Convert to forecast format for next 3 days
+              const dates = Object.keys(dailyData).slice(0, 3);
+              dates.forEach((dateStr, index) => {
+                const data = dailyData[dateStr];
+                const high = Math.round(Math.max(...data.temps));
+                const low = Math.round(Math.min(...data.temps));
+                
+                // Get most frequent weather condition
+                const mostFrequentId = data.weatherIds
+                  .sort((a, b) => data.weatherIds.filter(v => v === a).length - data.weatherIds.filter(v => v === b).length)
+                  .pop();
+                
+                dailyForecasts.push({
+                  day: getLocalizedWeekday(data.date, index === 0, index === 1),
+                  high: high,
+                  low: low,
+                  condition: mapWeatherCode(mostFrequentId)
+                });
+              });
+            }
+
+            // Map API data to our format
+            const mappedData = {
+              temperature: Math.round(currentWeather.main.temp),
+              condition: mapWeatherCode(currentWeather.weather[0].id),
+              humidity: currentWeather.main.humidity,
+              wind: Math.round(currentWeather.wind.speed * 3.6), // Convert m/s to km/h
+              location: currentWeather.name,
+              forecast: dailyForecasts
+            };
           
             setWeatherData(mappedData);
             setLastUpdated(new Date());
@@ -167,26 +217,26 @@ export default function WeatherWidget() {
         }, 'weather-data-fetch');
       } catch (err) {
         console.error('Error fetching weather data:', err);
-        setError(err.message);
         setLoading(false);
         
-        // Fallback to default weather data if API fails
-        const today = new Date();
-        const tomorrow = new Date(today.getTime() + 24 * 60 * 60 * 1000);
-        const dayAfter = new Date(today.getTime() + 2 * 24 * 60 * 60 * 1000);
+        let errorMessage = t('weather.error.general', 'Unable to fetch weather data');
         
+        // Provide specific error messages
+        if (err.message.includes('API key')) {
+          errorMessage = t('weather.error.apiKey', 'Weather service configuration error');
+        } else if (err.response?.status === 401) {
+          errorMessage = t('weather.error.unauthorized', 'Weather service authentication failed');
+        } else if (err.response?.status >= 500) {
+          errorMessage = t('weather.error.serverError', 'Weather service temporarily unavailable');
+        } else if (err.code === 'NETWORK_ERROR' || !navigator.onLine) {
+          errorMessage = t('weather.error.network', 'Check your internet connection');
+        }
+        
+        setError(errorMessage);
         setWeatherData({
-          temperature: 22,
-          condition: 'partly-cloudy',
-          humidity: 65,
-          wind: 8,
-          forecast: [
-            { day: getLocalizedWeekday(today, true, false), high: 22, low: 15, condition: 'partly-cloudy' },
-            { day: getLocalizedWeekday(tomorrow, false, true), high: 24, low: 16, condition: 'sunny' },
-            { day: getLocalizedWeekday(dayAfter, false, false), high: 20, low: 14, condition: 'rainy' }
-          ]
+          error: true,
+          message: errorMessage
         });
-        setLastUpdated(new Date());
       }
     };
     
@@ -198,22 +248,24 @@ export default function WeatherWidget() {
     return () => clearInterval(intervalId);
   }, [t]); // Re-fetch when language changes
   
-  // Map Weatherbit weather codes to our simplified condition categories
-  const mapWeatherCode = (code) => {
-    // Thunderstorm
-    if (code >= 200 && code < 300) return 'rainy';
-    // Drizzle and Rain
-    if ((code >= 300 && code < 400) || (code >= 500 && code < 600)) return 'rainy';
-    // Snow
-    if (code >= 600 && code < 700) return 'rainy';
-    // Atmosphere (fog, haze, etc.)
-    if (code >= 700 && code < 800) return 'partly-cloudy';
-    // Clear
-    if (code === 800) return 'sunny';
-    // Clouds
-    if (code > 800 && code < 900) return 'partly-cloudy';
+  // Map OpenWeatherMap weather IDs to our simplified condition categories
+  const mapWeatherCode = (weatherId) => {
+    // Thunderstorm (200-232)
+    if (weatherId >= 200 && weatherId < 300) return 'rainy';
+    // Drizzle (300-321)
+    if (weatherId >= 300 && weatherId < 400) return 'rainy';
+    // Rain (500-531)
+    if (weatherId >= 500 && weatherId < 600) return 'rainy';
+    // Snow (600-622)
+    if (weatherId >= 600 && weatherId < 700) return 'rainy';
+    // Atmosphere (701-781) - mist, smoke, haze, dust, fog, sand, dust, ash, squalls, tornado
+    if (weatherId >= 700 && weatherId < 800) return 'partly-cloudy';
+    // Clear sky (800)
+    if (weatherId === 800) return 'sunny';
+    // Clouds (801-804) - few clouds, scattered clouds, broken clouds, overcast clouds
+    if (weatherId >= 801 && weatherId <= 804) return 'partly-cloudy';
     
-    return 'partly-cloudy'; // Default
+    return 'partly-cloudy'; // Default fallback
   };
   
   const getWeatherIcon = (condition) => {
@@ -279,13 +331,13 @@ export default function WeatherWidget() {
 
   if (loading) {
     return (
-      <div className={`rounded-xl shadow-sm border overflow-hidden p-5 h-40 ${
+      <div className={`rounded-xl shadow-sm border overflow-hidden ${compactMode ? 'p-3 h-32' : 'p-5 h-60'} ${animationsEnabled ? 'transition-all duration-200 ease-in-out' : ''} ${
         isDark 
           ? 'bg-gray-800 border-gray-700' 
           : 'bg-white border-gray-100'
       }`}>
         <div className="flex items-center justify-between mb-4">
-          <h3 className={`font-medium ${
+          <h3 className={`${showTitles ? 'font-medium' : 'hidden'} ${
             isDark ? 'text-white' : 'text-gray-900'
           }`}>{t('dashboard.weather', 'Local Weather')}</h3>
         </div>
@@ -299,40 +351,56 @@ export default function WeatherWidget() {
     );
   }
 
-  if (error && !weatherData) {
+  if (error || (weatherData && weatherData.error)) {
     return (
-      <div className={`rounded-xl shadow-sm border overflow-hidden p-5 ${
+      <div className={`rounded-xl shadow-sm border overflow-hidden ${compactMode ? 'p-3' : 'p-5'} ${animationsEnabled ? 'transition-all duration-200 ease-in-out' : ''} ${
         isDark 
           ? 'bg-gray-800 border-gray-700' 
           : 'bg-white border-gray-100'
       }`}>
         <div className="flex items-center justify-between mb-4">
-          <h3 className={`font-medium ${
+          <h3 className={`${showTitles ? 'font-medium' : 'hidden'} ${
             isDark ? 'text-white' : 'text-gray-900'
           }`}>{t('dashboard.weather', 'Local Weather')}</h3>
         </div>
-        <div className="p-4 text-center text-red-500 dark:text-red-400">
-          <p>{t('weather.error', 'Unable to fetch weather data')}</p>
-          <p className={`text-sm mt-2 ${
-            isDark ? 'text-gray-400' : 'text-gray-500'
-          }`}>{error}</p>
+        <div className="p-4 text-center">
+          <div className="flex items-center justify-center mb-3">
+            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-red-400">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="15" y1="9" x2="9" y2="15"></line>
+              <line x1="9" y1="9" x2="15" y2="15"></line>
+            </svg>
+          </div>
+          <p className="text-red-500 dark:text-red-400 font-medium">
+            {error || weatherData?.message || t('weather.error.general', 'Unable to fetch weather data')}
+          </p>
+          <button 
+            onClick={() => window.location.reload()} 
+            className={`mt-3 px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+              isDark 
+                ? 'bg-gray-700 hover:bg-gray-600 text-gray-200' 
+                : 'bg-gray-100 hover:bg-gray-200 text-gray-700'
+            }`}
+          >
+            {t('weather.retry', 'Try Again')}
+          </button>
         </div>
       </div>
     );
   }
 
   return (
-    <div className={`rounded-xl shadow-sm border overflow-hidden ${
+    <div className={`rounded-xl shadow-sm border overflow-hidden ${animationsEnabled ? 'transition-all duration-200 ease-in-out hover:shadow-md' : ''} ${
       isDark 
         ? 'bg-gray-800 border-gray-700' 
         : 'bg-white border-gray-100'
     }`}>
       {/* Current weather */}
-      <div className={`p-5 border-b ${
+      <div className={`${compactMode ? 'p-3' : 'p-5'} border-b ${
         isDark ? 'border-gray-700' : 'border-gray-100'
       }`}>
         <div className="flex items-center justify-between mb-4">
-          <h3 className={`font-medium ${
+          <h3 className={`${showTitles ? 'font-medium' : 'hidden'} ${
             isDark ? 'text-white' : 'text-gray-900'
           }`}>{t('dashboard.weather', 'Local Weather')}</h3>
           {lastUpdated && (
@@ -353,6 +421,11 @@ export default function WeatherWidget() {
             <div className={`text-3xl font-semibold ${
               isDark ? 'text-white' : 'text-gray-900'
             }`}>{weatherData.temperature}°C</div>
+            {weatherData.location && (
+              <div className={`text-sm font-medium ${
+                isDark ? 'text-gray-300' : 'text-gray-600'
+              }`}>{weatherData.location}</div>
+            )}
             <div className={`text-sm ${
               isDark ? 'text-gray-400' : 'text-gray-500'
             }`}>{t('weather.humidity', 'Humidity')}: {weatherData.humidity}%</div>
@@ -362,51 +435,55 @@ export default function WeatherWidget() {
           </div>
           
           <div className="w-16 h-16 flex items-center justify-center">
-            {getWeatherIcon(weatherData.condition)}
+            {showIcons && getWeatherIcon(weatherData.condition)}
           </div>
         </div>
       </div>
       
       {/* 3-day forecast */}
-      <div className={`grid grid-cols-3 divide-x ${
-        isDark ? 'divide-gray-700' : 'divide-gray-100'
-      }`}>
-        {weatherData.forecast.map((day, index) => (
-          <div key={index} className="p-3 text-center">
-            <div className={`text-sm font-medium ${
-              isDark ? 'text-gray-200' : 'text-gray-900'
-            }`}>{day.day}</div>
-            <div className="my-2 flex justify-center">
-              {getWeatherIcon(day.condition)}
-            </div>
-            <div className="text-xs">
-              <span className={`font-medium ${
+      {weatherData.forecast && weatherData.forecast.length > 0 && (
+        <div className={`grid grid-cols-3 divide-x ${
+          isDark ? 'divide-gray-700' : 'divide-gray-100'
+        }`}>
+          {weatherData.forecast.map((day, index) => (
+            <div key={index} className={`${compactMode ? 'p-2' : 'p-3'} text-center`}>
+              <div className={`text-sm font-medium ${
                 isDark ? 'text-gray-200' : 'text-gray-900'
-              }`}>{day.high}°</span>
-              <span className={`mx-1 ${
-                isDark ? 'text-gray-400' : 'text-gray-500'
-              }`}>/</span>
-              <span className={`${
-                isDark ? 'text-gray-400' : 'text-gray-500'
-              }`}>{day.low}°</span>
+              }`}>{day.day}</div>
+              <div className="my-2 flex justify-center">
+                {showIcons && getWeatherIcon(day.condition)}
+              </div>
+              <div className="text-xs">
+                <span className={`font-medium ${
+                  isDark ? 'text-gray-200' : 'text-gray-900'
+                }`}>{day.high}°</span>
+                <span className={`mx-1 ${
+                  isDark ? 'text-gray-400' : 'text-gray-500'
+                }`}>/</span>
+                <span className={`${
+                  isDark ? 'text-gray-400' : 'text-gray-500'
+                }`}>{day.low}°</span>
+              </div>
             </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
       
       {/* Plant tip based on weather */}
-      <div className={`p-3 text-sm flex items-start ${
+      <div className={`${compactMode ? 'p-2' : 'p-3'} text-sm flex items-start ${
         isDark 
           ? 'bg-emerald-900/30 text-emerald-200' 
           : 'bg-emerald-50 text-emerald-800'
       }`}>
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={`mr-2 flex-shrink-0 mt-0.5 ${
-          isDark ? 'text-emerald-300' : 'text-emerald-700'
-        }`}>
-          <circle cx="12" cy="12" r="9"></circle>
-          <line x1="12" y1="8" x2="12" y2="12"></line>
-          <line x1="12" y1="16" x2="12.01" y2="16"></line>
-        </svg>
+        {showIcons && (
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={`mr-2 flex-shrink-0 mt-0.5 ${
+            isDark ? 'text-emerald-300' : 'text-emerald-700'
+          }`}>
+            <circle cx="12" cy="12" r="9"></circle>
+            <line x1="12" y1="8" x2="12" y2="12"></line>
+            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+          </svg>
+        )}
         <span>{getWeatherTip(weatherData)}</span>
       </div>
     </div>

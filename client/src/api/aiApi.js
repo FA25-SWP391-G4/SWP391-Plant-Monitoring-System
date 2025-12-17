@@ -16,23 +16,20 @@ const checkUserAccess = () => {
     // Decode JWT to check user role (basic decode without verification)
     const payload = JSON.parse(atob(token.split('.')[1]));
     
-    // Check for admin role (multiple possible formats)
+    // Only Ultimate role and Admin role can access AI features
     const isAdmin = payload.role === 'admin' || payload.role === 'Admin';
+    const isUltimate = payload.role === 'ultimate' || payload.role === 'Ultimate' || payload.isUltimate === true;
     
-    // Check for premium access (multiple ways to determine premium status)
-    const isPremium = payload.isPremium === true || 
-                     payload.role === 'premium' || 
-                     payload.role === 'Premium' || 
-                     payload.role === 'admin' || 
-                     payload.role === 'Admin' ||
-                     payload.subscriptionStatus === 'active';
+    // AI features require Ultimate subscription specifically (or admin override)
+    const hasAIAccess = isUltimate || isAdmin;
     
     return { 
-      hasAccess: isPremium || isAdmin, 
-      isAdmin, 
-      isPremium,
+      hasAccess: hasAIAccess, 
+      isAdmin: isAdmin,
+      isPremium: false, // Premium no longer grants AI access
+      isUltimate: isUltimate,
       requiresLogin: false,
-      requiresPremium: !isPremium && !isAdmin
+      requiresUltimate: !hasAIAccess
     };
   } catch (error) {
     console.error('Error decoding token:', error);
@@ -81,9 +78,9 @@ const handleAuthError = (error) => {
   if (error.response?.status === 403) {
     return {
       success: false,
-      error: 'Premium subscription or admin access required for AI features',
-      requiresPremium: true,
-      code: 'PREMIUM_REQUIRED'
+      error: 'Ultimate subscription required for AI features',
+      requiresUltimate: true,
+      code: 'ULTIMATE_REQUIRED'
     };
   }
   
@@ -135,13 +132,13 @@ const aiApi = {
         };
       }
       
-      if (access.requiresPremium) {
-        console.log('AI API - Premium required');
+      if (access.requiresUltimate) {
+        console.log('AI API - Ultimate required');
         return {
           success: false,
-          error: 'Premium subscription or admin access required for AI chatbot',
-          requiresPremium: true,
-          code: 'PREMIUM_REQUIRED'
+          error: 'Ultimate subscription required for AI chatbot access',
+          requiresUltimate: true,
+          code: 'ULTIMATE_REQUIRED'
         };
       }
       
@@ -186,12 +183,12 @@ const aiApi = {
         };
       }
       
-      if (access.requiresPremium) {
+      if (access.requiresUltimate) {
         return {
           success: false,
-          error: 'Premium subscription or admin access required for image analysis',
-          requiresPremium: true,
-          code: 'PREMIUM_REQUIRED'
+          error: 'Ultimate subscription required for image analysis',
+          requiresUltimate: true,
+          code: 'ULTIMATE_REQUIRED'
         };
       }
       

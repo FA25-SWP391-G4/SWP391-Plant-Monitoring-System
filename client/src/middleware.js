@@ -25,8 +25,8 @@ export function middleware(request) {
   if (premiumPaths.includes(pathname) && user) {
     try {
       const userData = JSON.parse(user);
-      if (!['Premium', 'Admin'].includes(userData.role)) {
-        return NextResponse.redirect(new URL('/upgrade', request.url));
+      if (!['Premium', 'Admin', 'Ultimate'].includes(userData.role)) {
+        return NextResponse.redirect(new URL('/premium', request.url));
       }
     } catch (error) {
       // If user data is invalid, redirect to login

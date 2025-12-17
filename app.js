@@ -163,14 +163,9 @@ connectAwsIoT().catch(console.error);
 const mqttClient = require('./mqtt/mqttClient');
 const { scheduleAllPumps } = require('./services/schedulerService.js');
 
-(async () => {
-  try {
-    await scheduleAllPumps();
-    console.log('✅ All existing pump schedules loaded into cron jobs');
-  } catch (err) {
-    console.error('❌ Failed to initialize pump schedules:', err);
-  }
-})();
+// Initialize subscription scheduler
+const SubscriptionScheduler = require('./services/subscriptionScheduler');
+
 // Import PostgreSQL database connection module (it initializes on require)
 require('./config/db');
 
@@ -195,7 +190,6 @@ var plantProfileRouter = require('./routes/plantProfile'); // Plant profile data
 // var premiumRouter = require('./routes/premium');      // 🔄 UC14-23: Premium features
 var googleAuthRouter = require('./routes/googleAuth'); // ✅ UC12: Google OAuth authentication (implemented)
 var settingsRouter = require('./routes/settings');     // ✅ UC13: User settings management (implemented)
-
 
 var app = express();
 
@@ -266,8 +260,12 @@ app.use('/api/upload', require('./routes/upload')); // File upload API
 app.use('/api/dashboard', dashboardRouter);      // 🔄 UC4: Dashboard API
 app.use('/api/plants', plantRouter);              // 🔄 UC5-9: Plant management API
 app.use('/api/zones', zoneRouter);              // 🔄 UC14: Zone management API
+app.use('/api/reports', require('./routes/reportsRoutes')); // ✅ Reports API with charts and export
+app.use('/api/plans', require('./routes/plans')); // ✅ Subscription plans API
+app.use('/api/subscriptions', require('./routes/subscriptions')); // ✅ Subscription management API
 app.use('/api/plant-profiles', plantProfileRouter); // Plant profile database API
 app.use('/api/devices', deviceRouter);          // IoT device management API
+app.use('/api/admin', adminRouter);             // ✅ UC24-31: Admin functions
 // app.use('/api/report', reportRouter);            // 🔄 UC8-9, UC15, UC17: Reports API
 // app.use('/api/premium', premiumRouter);          // 🔄 UC14-23: Premium features API
 
@@ -315,5 +313,7 @@ app.use(function(err, req, res, next) {
   });
 });
 
+// Initialize subscription scheduler with fallback support
+SubscriptionScheduler.start();
 
 module.exports = app;

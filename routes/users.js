@@ -38,4 +38,6 @@ router.post('/upgrade-to-premium', userController.upgradeToPremium);
 // Get premium status
 router.get('/premium-status', userController.getPremiumStatus);
 
+router.get('/subscription', userController.hasActivePremiumSubscription);
+
 module.exports = router;
