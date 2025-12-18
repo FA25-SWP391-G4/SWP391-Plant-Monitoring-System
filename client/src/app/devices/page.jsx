@@ -160,6 +160,16 @@ export default function DevicesPage() {
                 {t('common.retry', 'Retry')}
               </button>
             </div>
+          ) : !Array.isArray(devices) ? (
+            <div className="p-8 text-center text-red-500">
+              {t('devices.invalidData', 'Invalid data received from server')}
+              <button 
+                onClick={() => window.location.reload()} 
+                className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+              >
+                {t('common.retry', 'Retry')}
+              </button>
+            </div>
           ) : devices.length === 0 ? (
             <div className="p-8 text-center">
               <div className="flex justify-center mb-4">

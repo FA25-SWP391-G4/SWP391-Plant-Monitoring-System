@@ -36,7 +36,7 @@ const ManualWateringControl = ({ plantId, deviceStatus, className, isEmbedded = 
       // Stop watering
       try {
         setIsWatering(false);
-        await plantApi.waterPlant(plantId, 0); // 0 duration to stop watering
+        await plantApi.waterPlant(plantId, null, 'pump_off'); // explicit stop
         alert(t('watering.stopped', 'Watering stopped successfully!'));
         await fetchWateringHistory(); // Refresh history after stopping
       } catch (error) {
@@ -55,7 +55,9 @@ const ManualWateringControl = ({ plantId, deviceStatus, className, isEmbedded = 
         // Auto stop after duration
         setTimeout(async () => {
           try {
-            await plantApi.waterPlant(plantId, 0); // Stop watering after duration
+            await plantApi.waterPlant(plantId, null, 'pump_off'); // Stop watering after duration
+
+            // await plantApi.waterPlant(plantId, 0); // Stop watering after duration
             setIsWatering(false);
             await fetchWateringHistory(); // Refresh history after auto-stop
           } catch (error) {
@@ -194,3 +196,5 @@ const ManualWateringControl = ({ plantId, deviceStatus, className, isEmbedded = 
 };
 
 export default ManualWateringControl;
+
+//funny debug

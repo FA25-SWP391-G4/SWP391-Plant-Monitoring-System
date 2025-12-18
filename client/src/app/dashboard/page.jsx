@@ -7,7 +7,6 @@ import { useRouter } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from '@/contexts/ThemeContext';
 import settingsApi from '@/api/settingsApi';
-
 import WeatherWidget from '@/components/dashboard/WeatherWidget';
 import RecentActivity from '@/components/dashboard/RecentActivity';
 import WateringSchedule from '@/components/dashboard/WateringSchedule';
@@ -559,6 +558,16 @@ export default function DashboardPage() {
                 {t('dashboard.openSettings', 'Open Settings')}
               </Link>
             </div>
+
+            {settings.dashboard.enableAIFeatures && user?.role === 'Ultimate' && (
+              <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-5">
+                <h3 className="font-medium text-gray-900 mb-4">{t('dashboard.aiInsights', 'AI Insights')}</h3>
+                {/* AI insights component would go here */}
+                <div className="text-sm text-gray-600">
+                  {t('dashboard.aiInsightsComingSoon', 'AI-powered plant insights are coming soon')}
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </main>

@@ -161,6 +161,7 @@ connectAwsIoT().catch(console.error);
 
 //initialize MQTT client
 const mqttClient = require('./mqtt/mqttClient');
+const { scheduleAllPumps } = require('./services/schedulerService.js');
 
 // Initialize subscription scheduler
 const SubscriptionScheduler = require('./services/subscriptionScheduler');

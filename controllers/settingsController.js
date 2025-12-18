@@ -45,6 +45,14 @@ const DEFAULT_SETTINGS = {
     anonymousAnalytics: true,
     locationAccess: 'while-using'
   },
+  dashboard: {
+    showWateringStatus: true,
+    showPlantHealth: true,
+    showWeatherInfo: true,
+    showSensorData: true,
+    showAlerts: true,
+    enableAIFeatures: false
+  },
   widgets: {
     // Main dashboard widgets
     showPlantOverview: true,

@@ -6,6 +6,7 @@ class PumpSchedule {
         this.plant_id = scheduleData.plant_id;
         this.cron_expression = scheduleData.cron_expression;
         this.is_active = scheduleData.is_active;
+        this.duration_seconds = scheduleData.duration_second
     }
 
     // Static method to find all pump schedules
@@ -17,7 +18,7 @@ class PumpSchedule {
                 FROM pump_schedules ps
                 LEFT JOIN plants p ON ps.plant_id = p.plant_id
                 LEFT JOIN users u ON p.user_id = u.user_id
-                LEFT JOIN devices d ON p.device_id = d.device_id
+                LEFT JOIN devices d ON p.device_key = d.device_key
                 ORDER BY ps.schedule_id
             `;
             const result = await pool.query(query);
@@ -36,7 +37,7 @@ class PumpSchedule {
                 FROM pump_schedules ps
                 LEFT JOIN plants p ON ps.plant_id = p.plant_id
                 LEFT JOIN users u ON p.user_id = u.user_id
-                LEFT JOIN devices d ON p.device_id = d.device_id
+                LEFT JOIN devices d ON p.device_key = d.device_key
                 WHERE ps.schedule_id = $1
             `;
             const result = await pool.query(query, [id]);
@@ -55,12 +56,15 @@ class PumpSchedule {
     static async findByPlantId(plantId) {
         try {
             const query = `
-                SELECT ps.*, p.custom_name as plant_name, 
-                       u.full_name as owner_name, d.device_name
+                SELECT ps.*, 
+                p.custom_name AS plant_name, 
+                (u.given_name || ' ' || u.family_name) AS owner_name,
+                d.device_name
                 FROM pump_schedules ps
                 LEFT JOIN plants p ON ps.plant_id = p.plant_id
                 LEFT JOIN users u ON p.user_id = u.user_id
-                LEFT JOIN devices d ON p.device_id = d.device_id
+                LEFT JOIN devices d ON p.device_key = d.device_key
+
                 WHERE ps.plant_id = $1
                 ORDER BY ps.schedule_id
             `;
@@ -75,12 +79,14 @@ class PumpSchedule {
     static async findByUserId(userId) {
         try {
             const query = `
-                SELECT ps.*, p.custom_name as plant_name, 
-                       u.full_name as owner_name, d.device_name
+                SELECT ps.*, 
+                p.custom_name AS plant_name, 
+                (u.given_name || ' ' || u.family_name) AS owner_name,
+                d.device_name
                 FROM pump_schedules ps
                 INNER JOIN plants p ON ps.plant_id = p.plant_id
                 INNER JOIN users u ON p.user_id = u.user_id
-                LEFT JOIN devices d ON p.device_id = d.device_id
+                LEFT JOIN devices d ON p.device_key = d.device_key
                 WHERE u.user_id = $1
                 ORDER BY ps.schedule_id
             `;
@@ -91,17 +97,31 @@ class PumpSchedule {
         }
     }
 
+    // Delete all schedules for a specific plant
+    static async deleteByPlantId(plantId) {
+        try {
+            const query = 'DELETE FROM pump_schedules WHERE plant_id = $1';
+            await pool.query(query, [plantId]);
+            return true;
+        } catch (error) {
+            throw error;
+        }
+    }
+
+
     // Static method to find active pump schedules
     static async findActive() {
         try {
             const query = `
-                SELECT ps.*, p.custom_name as plant_name, 
-                       u.full_name as owner_name, d.device_name,
-                       d.status as device_status
+                SELECT ps.*, 
+                p.custom_name AS plant_name, 
+                (u.given_name || ' ' || u.family_name) AS owner_name,
+                d.device_name,
+                d.status as device_status
                 FROM pump_schedules ps
                 INNER JOIN plants p ON ps.plant_id = p.plant_id
                 INNER JOIN users u ON p.user_id = u.user_id
-                INNER JOIN devices d ON p.device_id = d.device_id
+                INNER JOIN devices d ON p.device_key = d.device_key
                 WHERE ps.is_active = true 
                 AND d.status = 'online'
                 AND p.auto_watering_on = true
@@ -120,9 +140,8 @@ class PumpSchedule {
             if (this.schedule_id) {
                 // Update existing schedule
                 const query = `
-                    UPDATE pump_schedules 
-                    SET plant_id = $1, cron_expression = $2, is_active = $3
-                    WHERE schedule_id = $4
+                    INSERT INTO pump_schedules (plant_id, cron_expression, is_active, duration_seconds)
+                    VALUES ($1, $2, $3, $4)
                     RETURNING *
                 `;
                 
@@ -130,7 +149,8 @@ class PumpSchedule {
                     this.plant_id,
                     this.cron_expression,
                     this.is_active,
-                    this.schedule_id
+                    this.duration_seconds
+                    // this.schedule_id
                 ]);
                 
                 const updatedSchedule = new PumpSchedule(result.rows[0]);
@@ -148,6 +168,21 @@ class PumpSchedule {
                     this.plant_id,
                     this.cron_expression,
                     this.is_active !== false // Default to true
+                ]);
+
+                const queryUpdate = `
+                    UPDATE pump_schedules 
+                    SET plant_id = $1, cron_expression = $2, is_active = $3, duration_seconds = $4
+                    WHERE schedule_id = $5
+                    RETURNING *
+                `;
+
+                const resultUpdate = await pool.query(queryUpdate, [
+                    this.plant_id,
+                    this.cron_expression,
+                    this.is_active,
+                    this.duration_seconds || 10,
+                    this.schedule_id
                 ]);
                 
                 const newSchedule = new PumpSchedule(result.rows[0]);
@@ -309,9 +344,13 @@ class PumpSchedule {
             plant_id: this.plant_id,
             cron_expression: this.cron_expression,
             is_active: this.is_active,
-            description: this.getCronDescription()
+            duration_seconds: this.duration_seconds,
+            description: `${this.getCronDescription()} (Duration: ${this.duration_seconds}s)`
         };
     }
 }
 
 module.exports = PumpSchedule;
+
+
+//funny debug
