@@ -28,8 +28,8 @@ connection.on("connect", async () => {
   console.log("✅ Connected to AWS IoT Core");
 
     const handleIncomingMessage = async (topic, payload) => {
-    const data = JSON.parse(new TextDecoder().decode(payload));
-    console.log("📩 Received message from ESP32:", topic, data);
+      const data = JSON.parse(new TextDecoder().decode(payload));
+      console.log("📩 Received message from ESP32:", topic, data);
 
       try {
         const { pool } = require("../config/db");
@@ -38,33 +38,8 @@ connection.on("connect", async () => {
         // determine device id (payload-first, then topic)
         let deviceId = payloadObj.deviceId || payloadObj.device_id || null;
 
-          // Look up plant_id for this device_key
-          let plantId = null;
-          try {
-            const plantQuery = await pool.query(
-              `SELECT plant_id FROM plants WHERE device_key = $1`,
-              [deviceId]
-            );
-            if (plantQuery.rows.length > 0) {
-              plantId = plantQuery.rows[0].plant_id;
-            }
-          } catch (error) {
-            console.error(`⚠️ Failed to lookup plant_id for device ${deviceId}:`, error);
-          }
-
-          await pool.query(
-            `INSERT INTO sensors_data(device_key, plant_id, timestamp, soil_moisture, temperature, air_humidity, light_intensity)
-             VALUES($1, $2, $3, $4, $5, $6, $7)`,
-            [deviceId, plantId, ts, soil, temp, humidity, light]
-          );
-          console.log(`📥 Stored sensor data for device ${deviceId}${plantId ? ` (plant ${plantId})` : ' (no plant linked)'}`);
-          return;
-        }
-
         // Normalize/truncate device key and guard
-        if (deviceId && typeof deviceId === 'string') {
-          deviceId = deviceId.trim().substring(0, 36); // match DB length if needed
-        } else {
+        if (!deviceId || typeof deviceId !== 'string') {
           console.warn(`⚠️ Missing device id for incoming message on ${topic}. Skipping sensors_data insert.`);
           await pool.query(
             `INSERT INTO system_logs (log_level, source, message)
@@ -74,7 +49,23 @@ connection.on("connect", async () => {
           return; // bail out: avoid inserting null device_key
         }
 
-        // now deviceId is safe to use in DB insert
+        deviceId = deviceId.trim().substring(0, 36); // match DB length if needed
+
+        // Look up plant_id for this device_key
+        let plantId = null;
+        try {
+          const plantQuery = await pool.query(
+            `SELECT plant_id FROM plants WHERE device_key = $1`,
+            [deviceId]
+          );
+          if (plantQuery.rows.length > 0) {
+            plantId = plantQuery.rows[0].plant_id;
+          }
+        } catch (error) {
+          console.error(`⚠️ Failed to lookup plant_id for device ${deviceId}:`, error);
+        }
+
+        // Extract sensor data values
         const ts = payloadObj.timestamp
           ? new Date(payloadObj.timestamp)
           : new Date();
@@ -83,13 +74,22 @@ connection.on("connect", async () => {
         const humidity = payloadObj.air_humidity ?? payloadObj.humidity ?? null;
         const light = payloadObj.light_intensity ?? payloadObj.light ?? null;
 
-        await pool.query(
-          `INSERT INTO sensors_data(device_key, timestamp, soil_moisture, temperature, air_humidity, light_intensity)
-           VALUES($1, $2, $3, $4, $5, $6)`,
-          [deviceId, ts, soil, temp, humidity, light]
-        );
-        console.log(`📥 Stored sensor data for device ${deviceId}`);
-        return;
+        // Insert sensor data
+        if (plantId) {
+          await pool.query(
+            `INSERT INTO sensors_data(device_key, plant_id, timestamp, soil_moisture, temperature, air_humidity, light_intensity)
+             VALUES($1, $2, $3, $4, $5, $6, $7)`,
+            [deviceId, plantId, ts, soil, temp, humidity, light]
+          );
+          console.log(`📥 Stored sensor data for device ${deviceId} (plant ${plantId})`);
+        } else {
+          await pool.query(
+            `INSERT INTO sensors_data(device_key, timestamp, soil_moisture, temperature, air_humidity, light_intensity)
+             VALUES($1, $2, $3, $4, $5, $6)`,
+            [deviceId, ts, soil, temp, humidity, light]
+          );
+          console.log(`📥 Stored sensor data for device ${deviceId} (no plant linked)`);
+        }
       } catch (dbErr) {
         console.error("❌ Failed to save IoT payload to DB", dbErr);
       }

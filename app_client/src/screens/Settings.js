@@ -9,6 +9,7 @@ import {
   Alert,
 } from 'react-native';
 import { useNotificationPermission } from '../hooks/useNotificationPermission';
+import { colors, spacing, typography } from '../theme';
 
 const Settings = () => {
   const [pollingInterval, setPollingInterval] = useState(5);
@@ -69,12 +70,10 @@ const Settings = () => {
 
   return (
     <ScrollView style={styles.container}>
-      {/* Header */}
       <View style={styles.header}>
         <Text style={styles.title}>Settings</Text>
       </View>
 
-      {/* Notifications Section */}
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Notifications</Text>
 
@@ -105,7 +104,6 @@ const Settings = () => {
         )}
       </View>
 
-      {/* Polling Configuration */}
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Polling Configuration</Text>
         <View style={styles.settingsCard}>
@@ -138,7 +136,6 @@ const Settings = () => {
         </View>
       </View>
 
-      {/* Debug Mode */}
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Developer</Text>
         <View style={styles.settingsCard}>
@@ -147,8 +144,8 @@ const Settings = () => {
             <Switch
               value={debugMode}
               onValueChange={setDebugMode}
-              trackColor={{ false: '#ccc', true: '#81c784' }}
-              thumbColor={debugMode ? '#2ecc71' : '#999'}
+              trackColor={{ false: colors.borderLight, true: colors.success }}
+              thumbColor={debugMode ? colors.primary : colors.textMuted}
             />
           </View>
 
@@ -172,7 +169,6 @@ const Settings = () => {
         </View>
       </View>
 
-      {/* App Info */}
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>App Information</Text>
         <View style={styles.settingsCard}>
@@ -191,14 +187,12 @@ const Settings = () => {
         </View>
       </View>
 
-      {/* Logout */}
       <View style={styles.section}>
         <Pressable onPress={handleLogout} style={styles.logoutButton}>
           <Text style={styles.logoutButtonText}>Logout</Text>
         </Pressable>
       </View>
 
-      {/* Footer */}
       <View style={styles.footer}>
         <Text style={styles.footerText}>Plant Monitoring System</Text>
       </View>
@@ -209,152 +203,152 @@ const Settings = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
-    padding: 16,
+    backgroundColor: colors.backgroundLight,
+    padding: spacing.lg,
   },
   header: {
-    marginBottom: 24,
-    paddingTop: 12,
+    marginBottom: spacing.xxl,
+    paddingTop: spacing.md,
   },
   title: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    color: '#1a1a1a',
+    fontSize: typography.sizes.size5xl,
+    fontWeight: typography.fontWeights.bold,
+    color: colors.textPrimary,
   },
   section: {
-    marginBottom: 24,
+    marginBottom: spacing.xxl,
   },
   sectionTitle: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: '#2c3e50',
-    marginBottom: 12,
+    fontSize: typography.sizes.xl,
+    fontWeight: typography.fontWeights.semibold,
+    color: colors.textPrimary,
+    marginBottom: spacing.md,
   },
   settingsCard: {
-    backgroundColor: '#fff',
-    borderRadius: 8,
-    padding: 16,
+    backgroundColor: colors.surface,
+    borderRadius: spacing.radius.lg,
+    padding: spacing.lg,
     borderLeftWidth: 4,
-    borderLeftColor: '#3498db',
+    borderLeftColor: colors.primary,
   },
   settingRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingVertical: 8,
+    paddingVertical: spacing.md,
     borderBottomWidth: 1,
-    borderBottomColor: '#ecf0f1',
+    borderBottomColor: colors.borderLight,
   },
   settingLabel: {
-    fontSize: 16,
-    fontWeight: '500',
-    color: '#2c3e50',
+    fontSize: typography.sizes.lg,
+    fontWeight: typography.fontWeights.medium,
+    color: colors.textPrimary,
   },
   settingValue: {
-    fontSize: 14,
-    color: '#7f8c8d',
+    fontSize: typography.sizes.md,
+    color: colors.textMuted,
   },
   button: {
-    marginTop: 12,
-    paddingVertical: 10,
-    paddingHorizontal: 16,
-    backgroundColor: '#2ecc71',
-    borderRadius: 6,
+    marginTop: spacing.md,
+    paddingVertical: spacing.md,
+    paddingHorizontal: spacing.lg,
+    backgroundColor: colors.success,
+    borderRadius: spacing.radius.md,
     alignItems: 'center',
   },
   buttonText: {
-    color: '#fff',
-    fontSize: 14,
-    fontWeight: '600',
+    color: colors.white,
+    fontSize: typography.sizes.md,
+    fontWeight: typography.fontWeights.semibold,
   },
   intervalButtons: {
     flexDirection: 'row',
-    gap: 8,
-    marginTop: 12,
+    gap: spacing.sm,
+    marginTop: spacing.md,
     flexWrap: 'wrap',
   },
   intervalButton: {
-    paddingHorizontal: 10,
-    paddingVertical: 6,
-    borderRadius: 4,
-    backgroundColor: '#ecf0f1',
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.sm,
+    borderRadius: spacing.radius.sm,
+    backgroundColor: colors.borderLight,
   },
   intervalButtonActive: {
-    backgroundColor: '#3498db',
+    backgroundColor: colors.primary,
   },
   intervalButtonText: {
-    color: '#2c3e50',
-    fontSize: 12,
-    fontWeight: '500',
+    color: colors.textPrimary,
+    fontSize: typography.sizes.md,
+    fontWeight: typography.fontWeights.medium,
   },
   intervalButtonTextActive: {
-    color: '#fff',
+    color: colors.white,
   },
   debugInfo: {
-    marginTop: 12,
-    paddingTop: 12,
+    marginTop: spacing.md,
+    paddingTop: spacing.md,
     borderTopWidth: 1,
-    borderTopColor: '#ecf0f1',
+    borderTopColor: colors.borderLight,
   },
   debugLabel: {
-    fontSize: 12,
-    fontWeight: 'bold',
-    color: '#7f8c8d',
-    marginBottom: 8,
+    fontSize: typography.sizes.sm,
+    fontWeight: typography.fontWeights.bold,
+    color: colors.textMuted,
+    marginBottom: spacing.md,
   },
   debugText: {
-    fontSize: 11,
-    color: '#7f8c8d',
+    fontSize: typography.sizes.xs,
+    color: colors.textMuted,
     fontFamily: 'monospace',
-    marginBottom: 4,
+    marginBottom: spacing.sm,
   },
   infoRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingVertical: 8,
+    paddingVertical: spacing.md,
     borderBottomWidth: 1,
-    borderBottomColor: '#ecf0f1',
+    borderBottomColor: colors.borderLight,
   },
   infoLabel: {
-    fontSize: 14,
-    fontWeight: '500',
-    color: '#2c3e50',
+    fontSize: typography.sizes.md,
+    fontWeight: typography.fontWeights.medium,
+    color: colors.textPrimary,
   },
   infoValue: {
-    fontSize: 13,
-    color: '#7f8c8d',
+    fontSize: typography.sizes.md,
+    color: colors.textMuted,
   },
   infoBox: {
-    backgroundColor: '#fef5e7',
-    borderRadius: 6,
-    padding: 12,
+    backgroundColor: colors.warningBg,
+    borderRadius: spacing.radius.md,
+    padding: spacing.md,
     borderLeftWidth: 4,
-    borderLeftColor: '#f39c12',
+    borderLeftColor: colors.warning,
   },
   infoText: {
-    fontSize: 14,
-    color: '#e67e22',
+    fontSize: typography.sizes.md,
+    color: colors.warning,
   },
   logoutButton: {
-    paddingVertical: 12,
-    paddingHorizontal: 16,
-    backgroundColor: '#e74c3c',
-    borderRadius: 8,
+    paddingVertical: spacing.md,
+    paddingHorizontal: spacing.lg,
+    backgroundColor: colors.error,
+    borderRadius: spacing.radius.lg,
     alignItems: 'center',
   },
   logoutButtonText: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: '600',
+    color: colors.white,
+    fontSize: typography.sizes.lg,
+    fontWeight: typography.fontWeights.semibold,
   },
   footer: {
-    paddingVertical: 20,
+    paddingVertical: spacing.xxl,
     alignItems: 'center',
   },
   footerText: {
-    fontSize: 12,
-    color: '#95a5a6',
+    fontSize: typography.sizes.sm,
+    color: colors.textMuted,
   },
 });
 
