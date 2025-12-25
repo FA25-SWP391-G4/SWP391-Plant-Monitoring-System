@@ -1,4 +1,4 @@
-# 🌱 Plant Monitoring System# Plant Monitoring System
+<img width="1080" height="1432" alt="image" src="https://github.com/user-attachments/assets/85107a49-7790-4b97-b727-842f9c166756" /># 🌱 Plant Monitoring System# Plant Monitoring System
 
 
 
@@ -170,25 +170,21 @@ PORT=3010
 
 
 
-**AI Service:**## Testing
+~~## **AI Service: Testing**~~
 
-- Python 3.8+
+~~- Python 3.8+~~  
+~~- TensorFlow / PyTorch~~  
+~~- Flask~~  
+~~- NumPy / Pandas~~
 
-- TensorFlow/PyTorch```bash
+~~```bash
+# Run backend tests
+npm test
+```~~
 
-- Flask# Run backend tests
-
-- NumPy/Pandasnpm test
+~~## **DevOps: Testing**~~
 
 
-
-**DevOps:**# Run frontend tests
-
-- Dockercd client && npm test
-
-- GitHub Actions```
-
-- AWS EC2/RDS
 
 ## Project Structure
 
@@ -214,9 +210,8 @@ Before you begin, ensure you have the following installed:- `/models` - Data mod
 
 ### Optional
 
-- **Docker**: For containerized deploymentThe application supports both JWT-based authentication and Google OAuth 2.0 integration:
 
-- **AWS Account**: For IoT Core integration
+- **AWS Account**: For AWS IoT Core integration
 
 - **Google Cloud Console**: For OAuth integration1. Traditional email/password authentication
 
@@ -252,100 +247,53 @@ cd client
 npm install
 cd ..
 ```
-
-### 4. Install AI Service Dependencies (Optional)
+### 4. Install Mobile Dependencies
 
 ```bash
-cd ai_service
-pip install -r requirements.txt
+cd app_client
+npm install
+npx expo install
 cd ..
 ```
 
-### 5. Set Up PostgreSQL Database
+### 5. ~~Install AI Service Dependencies (Optional)~~
+
+~~```bash
+cd ai_service
+pip install -r requirements.txt
+cd ..
+```~~
+
+### 6. Set Up PostgreSQL Database
+
+```bash
+- Install Database Client JDBC (https://marketplace.visualstudio.com/items?itemName=cweijan.dbclient-jdbc)
+- Install Postgre SQL (https://www.postgresql.org/)
+```
 
 ```sql
--- Create database
-CREATE DATABASE plant_monitoring_system;
-
--- Run migrations
-\i postgredb.sql
+-- Create database using mysql_schema.sql in PGAdmin(included in PostgreSQL setup)
 ```
-
-Or use the test setup script:
 
 ```bash
-npm run test:setup
+- Use Database Client JDBC and connect to your SQL Server
+- Match your port, username and password with PostgreSQL and .env
+<img width="1146" height="620" alt="image" src="https://github.com/user-attachments/assets/0f4cd336-8d7b-40a6-8aef-c9e88ca81024" />
+
 ```
 
-### 6. Configure Environment Variables
 
-Create a `.env` file in the root directory:
+### 7. Configure Environment Variables
 
-```bash
-cp .env.example .env
-```
+Create a `.env` file in the root directory
 
-See [Configuration](#configuration) section for required variables.
 
 ## ⚙️ Configuration
 
 ### Required Environment Variables
 
-Create a `.env` file with the following variables:
+Create a `.env` in your main directory
 
-```env
-# Server Configuration
-NODE_ENV=development
-PORT=3010
-FRONTEND_URL=http://localhost:3000
-
-# Database Configuration
-DATABASE_URL=postgresql://username:password@localhost:5432/plant_monitoring_system
-
-# JWT Authentication
-JWT_SECRET=your-super-secret-jwt-key-change-this
-JWT_EXPIRES_IN=1d
-
-# Session Management
-SESSION_SECRET=your-super-secret-session-key-change-this
-
-# Google OAuth (Optional)
-GOOGLE_CLIENT_ID=your-client-id.apps.googleusercontent.com
-GOOGLE_CLIENT_SECRET=your-client-secret
-GOOGLE_REDIRECT_URI=http://localhost:3010/auth/google/callback
-
-# Email Configuration
-EMAIL_SERVICE=gmail
-EMAIL_HOST=smtp.gmail.com
-EMAIL_PORT=587
-EMAIL_SECURE=false
-EMAIL_USER=your-email@gmail.com
-EMAIL_PASS=your-app-password
-
-# VNPay Payment (Optional)
-VNPAY_TMN_CODE=your-vnpay-tmn-code
-VNPAY_HASH_SECRET=your-vnpay-hash-secret
-VNPAY_URL=https://sandbox.vnpayment.vn/paymentv2/vpcpay.html
-VNPAY_RETURN_URL=http://localhost:3010/api/payment/vnpay/return
-
-# AWS IoT Core (Optional)
-AWS_IOT_ENDPOINT=your-iot-endpoint.amazonaws.com
-AWS_REGION=us-east-1
-AWS_ACCESS_KEY_ID=your-access-key
-AWS_SECRET_ACCESS_KEY=your-secret-key
-
-# MQTT Configuration (Optional)
-MQTT_BROKER_URL=mqtt://localhost:1883
-MQTT_USERNAME=your-username
-MQTT_PASSWORD=your-password
-MQTT_CLIENT_ID=plant-system-server
-
-# AI Service (Optional)
-AI_SERVICE_URL=http://localhost:5000
-AI_MODEL_VERSION=v1.0
-```
-
-For detailed configuration guide, see [docs/ENVIRONMENT_VARIABLES.md](docs/ENVIRONMENT_VARIABLES.md)
 
 ## 🏃 Running the Application
 
@@ -371,15 +319,21 @@ npm start
 cd client
 npm run dev
 
-# AI Service (Terminal 3 - Optional)
+# Mobile Development Server (Terminal 2)
+cd app_client
+npm start
+
+~~# AI Service (Terminal 3 - Optional)~~
+~~```bash
 cd ai_service
 python main.py
-```
+```~~
+
 
 The application will be available at:
 - **Frontend**: http://localhost:3000
 - **Backend API**: http://localhost:3010
-- **AI Service**: http://localhost:5000
+~~**AI Service**: http://localhost:5000~~
 
 ### Production Mode
 
@@ -391,19 +345,6 @@ cd ..
 
 # Start production server
 NODE_ENV=production npm start
-```
-
-### Docker Deployment
-
-```bash
-# Build and run with Docker Compose
-docker-compose up -d
-
-# View logs
-docker-compose logs -f
-
-# Stop services
-docker-compose down
 ```
 
 ## 🧪 Testing
@@ -456,11 +397,34 @@ npm run test:i18n
 
 ```
 plant-system/
-├── ai_service/              # Python AI microservice
+├── ai_service/           
 │   ├── app.py
 │   ├── main.py
 │   ├── requirements.txt
 │   └── models/
+├── app_client/                 
+│   ├── App.js                  
+│   ├── app.json
+│   ├── package.json
+│   ├── node_modules/
+│   ├── .expo/
+│   ├── assets/
+│   └── src/
+│       ├── hooks/
+│       │   ├── useSensorPolling.js
+│       │   └── useNotificationPermission.js
+│       ├── services/
+│       │   ├── plantService.js
+│       │   └── exportService.js
+│       ├── screens/
+│       │   ├── SensorDashboard.js
+│       │   ├── WateringHistory.js
+│       │   └── Settings.js
+│       ├── components/
+│       │   └── SensorCard.js
+│       ├── theme/
+│       │   └── index.js
+│       └── utils/
 ├── bin/                     # Server startup scripts
 │   └── www
 ├── client/                  # Next.js frontend
@@ -587,24 +551,6 @@ For detailed authentication flow, see [docs/GOOGLE_OAUTH_CONFIGURATION.md](docs/
 
 See [DEPLOYMENT.md](DEPLOYMENT.md) for complete deployment guide.
 
-### Quick Deployment Steps:
-
-1. Set up PostgreSQL RDS instance
-2. Deploy backend to EC2 or Elastic Beanstalk
-3. Deploy frontend to Vercel or EC2
-4. Configure environment variables
-5. Set up SSL certificates
-6. Configure AWS IoT Core for device communication
-
-### Docker Deployment
-
-```bash
-# Build images
-docker-compose build
-
-# Deploy to production
-docker-compose -f docker-compose.prod.yml up -d
-```
 
 ## 🐛 Troubleshooting
 
