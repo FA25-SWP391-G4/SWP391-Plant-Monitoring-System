@@ -10,7 +10,7 @@ import {
   Alert,
 } from 'react-native';
 import { useSensorPolling } from '../hooks/useSensorPolling';
-import * as plantApi from '../api/plantApi';
+import plantService from '../services/plantService';
 import SensorCard from '../components/SensorCard';
 import { colors, spacing, typography } from '../theme';
 import { elevations } from '../theme/shadows';
@@ -63,7 +63,7 @@ const SensorDashboard = () => {
   const fetchPlants = async () => {
     try {
       setPlantsLoading(true);
-      const response = await plantApi.getAll();
+      const response = await plantService.getAllPlants();
       if (response && response.data) {
         setPlants(response.data);
         if (response.data.length > 0) {

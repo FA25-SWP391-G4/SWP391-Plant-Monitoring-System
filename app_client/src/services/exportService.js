@@ -1,6 +1,6 @@
 import * as FileSystem from 'expo-file-system';
 import * as Sharing from 'expo-sharing';
-import { axiosClient } from '../api/axiosClient';
+import axiosClient from './axiosClient';
 
 /**
  * exportService - Service for exporting watering history to CSV

@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { AppState } from 'react-native';
-import * as plantApi from '../api/plantApi';
+import plantService from '../services/plantService';
 
 /**
  * useSensorPolling - Hook for polling sensor data at configurable intervals
@@ -41,7 +41,7 @@ export const useSensorPolling = (plantId, intervalMs = 5000) => {
     try {
       setLoading(true);
       setError(null);
-      const response = await plantApi.getSensorHistory(plantId, 1);
+      const response = await plantService.getSensorHistory(plantId);
       
       if (response && response.data && response.data.length > 0) {
         const latest = response.data[0];

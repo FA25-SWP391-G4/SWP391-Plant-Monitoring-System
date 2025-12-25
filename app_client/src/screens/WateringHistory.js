@@ -10,7 +10,7 @@ import {
   Alert,
   TextInput,
 } from 'react-native';
-import * as plantApi from '../api/plantApi';
+import plantService from '../services/plantService';
 import * as exportService from '../services/exportService';
 import { colors, spacing, typography } from '../theme';
 
@@ -37,7 +37,7 @@ const WateringHistory = () => {
 
   const fetchPlants = async () => {
     try {
-      const response = await plantApi.getAll();
+      const response = await plantService.getAllPlants();
       if (response && response.data) {
         setPlants(response.data);
         if (response.data.length > 0) {
@@ -53,7 +53,7 @@ const WateringHistory = () => {
   const fetchHistory = async () => {
     try {
       setLoading(true);
-      const response = await plantApi.getWateringHistory(selectedPlantId);
+      const response = await plantService.getWateringHistory(selectedPlantId);
       
       if (response && response.data) {
         let filteredData = response.data;
