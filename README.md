@@ -1,4 +1,4 @@
-<img width="1080" height="1432" alt="image" src="https://github.com/user-attachments/assets/85107a49-7790-4b97-b727-842f9c166756" /># 🌱 Plant Monitoring System# Plant Monitoring System
+# 🌱 Plant Monitoring System# Plant Monitoring System
 
 
 
