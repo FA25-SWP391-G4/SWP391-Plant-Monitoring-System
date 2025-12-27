@@ -1,35 +1,35 @@
-# 🌱 Plant Monitoring System# Plant Monitoring System
+# 🌱 ESP - Extremely Smart Plant 
 
 
 
-A comprehensive IoT-based plant monitoring and automated watering system with AI-powered plant health analysis, real-time sensor data tracking, and multi-language support.## Recent Updates
+A comprehensive IoT-based plant monitoring and automated watering system with AI-powered plant health analysis, real-time sensor data tracking, and multi-language support.
 
 
-## ✨ Features```
+## ✨ Features
 
 
 
 ### Core Functionalitiws
 
-- 🌡️ **Real-time Monitoring**: Track soil moisture, temperature, humidity, and light levels```bash
+- 🌡️ **Real-time Monitoring**: Track soil moisture, temperature, humidity, and light levels
 
 - 💧 **Automated Watering**: Schedule-based and sensor-triggered wateringcd client
 
 - 📊 **Analytics Dashboard**: Historical data visualization and trendsnpm install
 
-- 🔔 **Smart Notifications**: Email and in-app alerts for plant health issuescd ..
+- 🔔 **Smart Notifications**: Email and in-app alerts for plant health issues
 
-- 🤖 **AI Analysis**: Machine learning-based plant health predictions```
+- 🤖 **AI Analysis**: Machine learning-based plant health predictions
 
 - 📱 **Mobile Responsive**: Works seamlessly on desktop and mobile devices
 
 
 
-### User Management```bash
+### User Management
 
 - 👤 **User Authentication**: JWT-based auth with Google OAuth integrationcp .env.example .env
 
-- 🔐 **Role-Based Access**: Regular, Premium, and Admin user roles```
+- 🔐 **Role-Based Access**: Regular, Premium, and Admin user roles
 
 - 💳 **Premium Subscriptions**: VNPay payment integrationEdit `.env` with your configuration values.
 
@@ -39,7 +39,7 @@ A comprehensive IoT-based plant monitoring and automated watering system with AI
 
 ### IoT Integration
 
-- 📡 **MQTT Protocol**: Real-time communication with ESP32 devices```
+- 📡 **MQTT Protocol**: Real-time communication with ESP32 devices
 
 - ⚡ **Device Management**: Register and monitor multiple sensors# Database
 
@@ -47,7 +47,7 @@ A comprehensive IoT-based plant monitoring and automated watering system with AI
 
 
 
-## 🏗️ Architecture# Server
+## 🏗️ Server Architecture
 
 PORT=3010
 
@@ -87,7 +87,8 @@ PORT=3010
 
                                              └──────────────┘
 
-``````bash
+```
+
 
 # Backend only
 
@@ -129,25 +130,16 @@ PORT=3010
 
 
 
-~~## **AI Service: Testing**~~
-
-~~- Python 3.8+~~  
-~~- TensorFlow / PyTorch~~  
-~~- Flask~~  
-~~- NumPy / Pandas~~
-
-~~```bash
+```bash
 # Run backend tests
 npm test
-```~~
-
-~~## **DevOps: Testing**~~
+```
 
 
 
-## Project Structure
 
-## 📦 Prerequisites
+
+# 📦 Prerequisites
 
 - `/controllers` - Express route controllers
 
@@ -165,9 +157,7 @@ Before you begin, ensure you have the following installed:- `/models` - Data mod
 
 - **Git**: For version control
 
-## Authentication Flow
-
-### Optional
+# Optional
 
 
 - **AWS Account**: For AWS IoT Core integration
@@ -179,7 +169,6 @@ Before you begin, ensure you have the following installed:- `/models` - Data mod
 
 
 ## 🚀 Installation## Documentation
-
 
 
 ### 1. Clone the RepositorySee the `/docs` directory for detailed documentation on specific features:
@@ -229,7 +218,6 @@ cd ..
 ```bash
 - Use Database Client JDBC and connect to your SQL Server
 - Match your port, username and password with PostgreSQL and .env
-<img width="1146" height="620" alt="image" src="https://github.com/user-attachments/assets/0f4cd336-8d7b-40a6-8aef-c9e88ca81024" />
 
 ```
 
@@ -237,13 +225,6 @@ cd ..
 ### 6. Configure Environment Variables
 
 Create a `.env` file in the root directory
-
-
-## ⚙️ Configuration
-
-### Required Environment Variables
-
-Create a `.env` in your main directory
 
 
 ## 🏃 Running the Application
