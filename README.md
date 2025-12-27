@@ -5,52 +5,11 @@
 A comprehensive IoT-based plant monitoring and automated watering system with AI-powered plant health analysis, real-time sensor data tracking, and multi-language support.## Recent Updates
 
 
-
-[![Node.js](https://img.shields.io/badge/Node.js-16+-green.svg)](https://nodejs.org/)- **Google OAuth Session Fix (2025-10-19)**: Fixed session persistence issues in the OAuth flow by implementing PostgreSQL-based session storage.
-
-[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-13+-blue.svg)](https://www.postgresql.org/)- **Absolute URL Redirects (2025-10-18)**: Updated all OAuth redirects to use absolute URLs as required by Next.js middleware.
-
-[![Next.js](https://img.shields.io/badge/Next.js-14+-black.svg)](https://nextjs.org/)
-
-[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)## Prerequisites
-
-
-
-## 📋 Table of Contents- Node.js 16+
-
-- PostgreSQL 13+
-
-- [Features](#features)- Python 3.8+ (for AI service)
-
-- [Architecture](#architecture)
-
-- [Prerequisites](#prerequisites)## Installation
-
-- [Installation](#installation)
-
-- [Configuration](#configuration)1. Clone the repository
-
-- [Running the Application](#running-the-application)```bash
-
-- [Testing](#testing)git clone https://github.com/FA25-SWP391-G4/SWP391-Plant-Monitoring-System.git
-
-- [Project Structure](#project-structure)cd plant-system
-
-- [API Documentation](#api-documentation)```
-
-- [Authentication](#authentication)
-
-- [Deployment](#deployment)2. Install backend dependencies
-
-- [Troubleshooting](#troubleshooting)```bash
-
-npm install
-
 ## ✨ Features```
 
 
 
-### Core Functionality3. Install frontend dependencies
+### Core Functionalitiws
 
 - 🌡️ **Real-time Monitoring**: Track soil moisture, temperature, humidity, and light levels```bash
 
@@ -64,7 +23,7 @@ npm install
 
 - 📱 **Mobile Responsive**: Works seamlessly on desktop and mobile devices
 
-4. Set up environment variables
+
 
 ### User Management```bash
 
@@ -256,15 +215,7 @@ npx expo install
 cd ..
 ```
 
-### 5. ~~Install AI Service Dependencies (Optional)~~
-
-~~```bash
-cd ai_service
-pip install -r requirements.txt
-cd ..
-```~~
-
-### 6. Set Up PostgreSQL Database
+### 5. Set Up PostgreSQL Database
 
 ```bash
 - Install Database Client JDBC (https://marketplace.visualstudio.com/items?itemName=cweijan.dbclient-jdbc)
@@ -283,7 +234,7 @@ cd ..
 ```
 
 
-### 7. Configure Environment Variables
+### 6. Configure Environment Variables
 
 Create a `.env` file in the root directory
 
@@ -323,11 +274,6 @@ npm run dev
 cd app_client
 npm start
 
-~~# AI Service (Terminal 3 - Optional)~~
-~~```bash
-cd ai_service
-python main.py
-```~~
 
 
 The application will be available at:
