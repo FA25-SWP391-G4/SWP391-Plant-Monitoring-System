@@ -1,76 +1,35 @@
-# 🌱 Plant Monitoring System# Plant Monitoring System
+# 🌱 ESP - Extremely Smart Plant 
 
 
 
-A comprehensive IoT-based plant monitoring and automated watering system with AI-powered plant health analysis, real-time sensor data tracking, and multi-language support.## Recent Updates
+A comprehensive IoT-based plant monitoring and automated watering system with AI-powered plant health analysis, real-time sensor data tracking, and multi-language support.
+
+
+## ✨ Features
 
 
 
-[![Node.js](https://img.shields.io/badge/Node.js-16+-green.svg)](https://nodejs.org/)- **Google OAuth Session Fix (2025-10-19)**: Fixed session persistence issues in the OAuth flow by implementing PostgreSQL-based session storage.
+### Core Functionalitiws
 
-[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-13+-blue.svg)](https://www.postgresql.org/)- **Absolute URL Redirects (2025-10-18)**: Updated all OAuth redirects to use absolute URLs as required by Next.js middleware.
-
-[![Next.js](https://img.shields.io/badge/Next.js-14+-black.svg)](https://nextjs.org/)
-
-[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)## Prerequisites
-
-
-
-## 📋 Table of Contents- Node.js 16+
-
-- PostgreSQL 13+
-
-- [Features](#features)- Python 3.8+ (for AI service)
-
-- [Architecture](#architecture)
-
-- [Prerequisites](#prerequisites)## Installation
-
-- [Installation](#installation)
-
-- [Configuration](#configuration)1. Clone the repository
-
-- [Running the Application](#running-the-application)```bash
-
-- [Testing](#testing)git clone https://github.com/FA25-SWP391-G4/SWP391-Plant-Monitoring-System.git
-
-- [Project Structure](#project-structure)cd plant-system
-
-- [API Documentation](#api-documentation)```
-
-- [Authentication](#authentication)
-
-- [Deployment](#deployment)2. Install backend dependencies
-
-- [Troubleshooting](#troubleshooting)```bash
-
-npm install
-
-## ✨ Features```
-
-
-
-### Core Functionality3. Install frontend dependencies
-
-- 🌡️ **Real-time Monitoring**: Track soil moisture, temperature, humidity, and light levels```bash
+- 🌡️ **Real-time Monitoring**: Track soil moisture, temperature, humidity, and light levels
 
 - 💧 **Automated Watering**: Schedule-based and sensor-triggered wateringcd client
 
 - 📊 **Analytics Dashboard**: Historical data visualization and trendsnpm install
 
-- 🔔 **Smart Notifications**: Email and in-app alerts for plant health issuescd ..
+- 🔔 **Smart Notifications**: Email and in-app alerts for plant health issues
 
-- 🤖 **AI Analysis**: Machine learning-based plant health predictions```
+- 🤖 **AI Analysis**: Machine learning-based plant health predictions
 
 - 📱 **Mobile Responsive**: Works seamlessly on desktop and mobile devices
 
-4. Set up environment variables
 
-### User Management```bash
+
+### User Management
 
 - 👤 **User Authentication**: JWT-based auth with Google OAuth integrationcp .env.example .env
 
-- 🔐 **Role-Based Access**: Regular, Premium, and Admin user roles```
+- 🔐 **Role-Based Access**: Regular, Premium, and Admin user roles
 
 - 💳 **Premium Subscriptions**: VNPay payment integrationEdit `.env` with your configuration values.
 
@@ -80,7 +39,7 @@ npm install
 
 ### IoT Integration
 
-- 📡 **MQTT Protocol**: Real-time communication with ESP32 devices```
+- 📡 **MQTT Protocol**: Real-time communication with ESP32 devices
 
 - ⚡ **Device Management**: Register and monitor multiple sensors# Database
 
@@ -88,7 +47,7 @@ npm install
 
 
 
-## 🏗️ Architecture# Server
+## 🏗️ Server Architecture
 
 PORT=3010
 
@@ -128,7 +87,8 @@ PORT=3010
 
                                              └──────────────┘
 
-``````bash
+```
+
 
 # Backend only
 
@@ -170,29 +130,16 @@ PORT=3010
 
 
 
-**AI Service:**## Testing
-
-- Python 3.8+
-
-- TensorFlow/PyTorch```bash
-
-- Flask# Run backend tests
-
-- NumPy/Pandasnpm test
+```bash
+# Run backend tests
+npm test
+```
 
 
 
-**DevOps:**# Run frontend tests
 
-- Dockercd client && npm test
 
-- GitHub Actions```
-
-- AWS EC2/RDS
-
-## Project Structure
-
-## 📦 Prerequisites
+# 📦 Prerequisites
 
 - `/controllers` - Express route controllers
 
@@ -210,13 +157,10 @@ Before you begin, ensure you have the following installed:- `/models` - Data mod
 
 - **Git**: For version control
 
-## Authentication Flow
+# Optional
 
-### Optional
 
-- **Docker**: For containerized deploymentThe application supports both JWT-based authentication and Google OAuth 2.0 integration:
-
-- **AWS Account**: For IoT Core integration
+- **AWS Account**: For AWS IoT Core integration
 
 - **Google Cloud Console**: For OAuth integration1. Traditional email/password authentication
 
@@ -225,7 +169,6 @@ Before you begin, ensure you have the following installed:- `/models` - Data mod
 
 
 ## 🚀 Installation## Documentation
-
 
 
 ### 1. Clone the RepositorySee the `/docs` directory for detailed documentation on specific features:
@@ -252,100 +195,37 @@ cd client
 npm install
 cd ..
 ```
-
-### 4. Install AI Service Dependencies (Optional)
+### 4. Install Mobile Dependencies
 
 ```bash
-cd ai_service
-pip install -r requirements.txt
+cd app_client
+npm install
+npx expo install
 cd ..
 ```
 
 ### 5. Set Up PostgreSQL Database
 
-```sql
--- Create database
-CREATE DATABASE plant_monitoring_system;
-
--- Run migrations
-\i postgredb.sql
+```bash
+- Install Database Client JDBC (https://marketplace.visualstudio.com/items?itemName=cweijan.dbclient-jdbc)
+- Install Postgre SQL (https://www.postgresql.org/)
 ```
 
-Or use the test setup script:
+```sql
+-- Create database using mysql_schema.sql in PGAdmin(included in PostgreSQL setup)
+```
 
 ```bash
-npm run test:setup
+- Use Database Client JDBC and connect to your SQL Server
+- Match your port, username and password with PostgreSQL and .env
+
 ```
+
 
 ### 6. Configure Environment Variables
 
-Create a `.env` file in the root directory:
+Create a `.env` file in the root directory
 
-```bash
-cp .env.example .env
-```
-
-See [Configuration](#configuration) section for required variables.
-
-## ⚙️ Configuration
-
-### Required Environment Variables
-
-Create a `.env` file with the following variables:
-
-```env
-# Server Configuration
-NODE_ENV=development
-PORT=3010
-FRONTEND_URL=http://localhost:3000
-
-# Database Configuration
-DATABASE_URL=postgresql://username:password@localhost:5432/plant_monitoring_system
-
-# JWT Authentication
-JWT_SECRET=your-super-secret-jwt-key-change-this
-JWT_EXPIRES_IN=1d
-
-# Session Management
-SESSION_SECRET=your-super-secret-session-key-change-this
-
-# Google OAuth (Optional)
-GOOGLE_CLIENT_ID=your-client-id.apps.googleusercontent.com
-GOOGLE_CLIENT_SECRET=your-client-secret
-GOOGLE_REDIRECT_URI=http://localhost:3010/auth/google/callback
-
-# Email Configuration
-EMAIL_SERVICE=gmail
-EMAIL_HOST=smtp.gmail.com
-EMAIL_PORT=587
-EMAIL_SECURE=false
-EMAIL_USER=your-email@gmail.com
-EMAIL_PASS=your-app-password
-
-# VNPay Payment (Optional)
-VNPAY_TMN_CODE=your-vnpay-tmn-code
-VNPAY_HASH_SECRET=your-vnpay-hash-secret
-VNPAY_URL=https://sandbox.vnpayment.vn/paymentv2/vpcpay.html
-VNPAY_RETURN_URL=http://localhost:3010/api/payment/vnpay/return
-
-# AWS IoT Core (Optional)
-AWS_IOT_ENDPOINT=your-iot-endpoint.amazonaws.com
-AWS_REGION=us-east-1
-AWS_ACCESS_KEY_ID=your-access-key
-AWS_SECRET_ACCESS_KEY=your-secret-key
-
-# MQTT Configuration (Optional)
-MQTT_BROKER_URL=mqtt://localhost:1883
-MQTT_USERNAME=your-username
-MQTT_PASSWORD=your-password
-MQTT_CLIENT_ID=plant-system-server
-
-# AI Service (Optional)
-AI_SERVICE_URL=http://localhost:5000
-AI_MODEL_VERSION=v1.0
-```
-
-For detailed configuration guide, see [docs/ENVIRONMENT_VARIABLES.md](docs/ENVIRONMENT_VARIABLES.md)
 
 ## 🏃 Running the Application
 
@@ -371,15 +251,16 @@ npm start
 cd client
 npm run dev
 
-# AI Service (Terminal 3 - Optional)
-cd ai_service
-python main.py
-```
+# Mobile Development Server (Terminal 2)
+cd app_client
+npm start
+
+
 
 The application will be available at:
 - **Frontend**: http://localhost:3000
 - **Backend API**: http://localhost:3010
-- **AI Service**: http://localhost:5000
+~~**AI Service**: http://localhost:5000~~
 
 ### Production Mode
 
@@ -391,19 +272,6 @@ cd ..
 
 # Start production server
 NODE_ENV=production npm start
-```
-
-### Docker Deployment
-
-```bash
-# Build and run with Docker Compose
-docker-compose up -d
-
-# View logs
-docker-compose logs -f
-
-# Stop services
-docker-compose down
 ```
 
 ## 🧪 Testing
@@ -456,11 +324,34 @@ npm run test:i18n
 
 ```
 plant-system/
-├── ai_service/              # Python AI microservice
+├── ai_service/           
 │   ├── app.py
 │   ├── main.py
 │   ├── requirements.txt
 │   └── models/
+├── app_client/                 
+│   ├── App.js                  
+│   ├── app.json
+│   ├── package.json
+│   ├── node_modules/
+│   ├── .expo/
+│   ├── assets/
+│   └── src/
+│       ├── hooks/
+│       │   ├── useSensorPolling.js
+│       │   └── useNotificationPermission.js
+│       ├── services/
+│       │   ├── plantService.js
+│       │   └── exportService.js
+│       ├── screens/
+│       │   ├── SensorDashboard.js
+│       │   ├── WateringHistory.js
+│       │   └── Settings.js
+│       ├── components/
+│       │   └── SensorCard.js
+│       ├── theme/
+│       │   └── index.js
+│       └── utils/
 ├── bin/                     # Server startup scripts
 │   └── www
 ├── client/                  # Next.js frontend
@@ -587,24 +478,6 @@ For detailed authentication flow, see [docs/GOOGLE_OAUTH_CONFIGURATION.md](docs/
 
 See [DEPLOYMENT.md](DEPLOYMENT.md) for complete deployment guide.
 
-### Quick Deployment Steps:
-
-1. Set up PostgreSQL RDS instance
-2. Deploy backend to EC2 or Elastic Beanstalk
-3. Deploy frontend to Vercel or EC2
-4. Configure environment variables
-5. Set up SSL certificates
-6. Configure AWS IoT Core for device communication
-
-### Docker Deployment
-
-```bash
-# Build images
-docker-compose build
-
-# Deploy to production
-docker-compose -f docker-compose.prod.yml up -d
-```
 
 ## 🐛 Troubleshooting
 
