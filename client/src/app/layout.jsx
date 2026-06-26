@@ -19,6 +19,8 @@ import { NotificationProvider } from '@/contexts/NotificationContext'
  import { useEffect } from 'react'
 import ChunkErrorBoundary from '@/components/ChunkErrorBoundary'
 
+export const dynamicParams = true; // allow dynamic IDs
+
 export default function RootLayout({ children }) {
   // Temporarily disabling chunk error management to fix app loading
   // Initialize chunk error management on app startup

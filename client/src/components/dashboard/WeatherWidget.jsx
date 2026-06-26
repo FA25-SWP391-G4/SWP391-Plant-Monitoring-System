@@ -29,6 +29,16 @@ export default function WeatherWidget() {
   const [error, setError] = useState(null);
   const [lastUpdated, setLastUpdated] = useState(null);
   
+  // Custom location and search states
+  const [selectedCity, setSelectedCity] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem('weather_selected_city') || '';
+    }
+    return '';
+  });
+  const [showSearch, setShowSearch] = useState(false);
+  const [searchInput, setSearchInput] = useState('');
+  
   // 🚀 RENDER DEBUG
   const renderDebug = useRenderDebug('WeatherWidget', {
     hasWeatherData: !!weatherData,
@@ -116,52 +126,124 @@ export default function WeatherWidget() {
     return fallback;
   };
 
-  useEffect(() => {
-    const fetchWeather = async () => {
-      try {
-        await fetchWithDebug(async () => {
-          setLoading(true);
-          
-          let lat, lon;
+  const fetchWeather = async () => {
+    try {
+      await fetchWithDebug(async () => {
+        setLoading(true);
+        setError(null);
+        
+        const openWeatherKey = process.env.NEXT_PUBLIC_OPENWEATHER_API_KEY;
+        const weatherbitKey = process.env.NEXT_PUBLIC_WEATHERBIT_API_KEY;
+        const apiKey = weatherbitKey || openWeatherKey;
 
-          // Try to get user's location
-          if (navigator.geolocation) {
-            const position = await new Promise((resolve, reject) => {
-              navigator.geolocation.getCurrentPosition(resolve, reject, {
-                timeout: 5000,
-                maximumAge: 60000 // Cache for 1 minute
+        if (!apiKey) {
+          throw new Error('Weather API key is not configured');
+        }
+
+        let lat = null, lon = null;
+        let queryCity = selectedCity;
+
+        // If no custom city is selected, try geolocation
+        if (!queryCity) {
+          try {
+            if (navigator.geolocation) {
+              const position = await new Promise((resolve, reject) => {
+                navigator.geolocation.getCurrentPosition(resolve, reject, {
+                  timeout: 5000,
+                  maximumAge: 60000 // Cache for 1 minute
+                });
               });
-            });
-            
-            lat = position.coords.latitude;
-            lon = position.coords.longitude;
+              lat = position.coords.latitude;
+              lon = position.coords.longitude;
+            }
+          } catch (geoErr) {
+            console.warn('Geolocation failed or was denied, falling back to default city:', geoErr);
+            queryCity = 'Hanoi';
           }
+        }
+
+        // If still no lat/lon and no city name (e.g., geolocation not supported), use default city
+        if (!lat && !lon && !queryCity) {
+          queryCity = 'Hanoi';
+        }
+
+        let mappedData = null;
+
+        if (weatherbitKey) {
+          // Call Weatherbit API
+          let url = '';
+          let forecastUrl = '';
           
-          // Fetch current weather data from OpenWeatherMap API
-          const apiKey = process.env.NEXT_PUBLIC_OPENWEATHER_API_KEY;
-          if (!apiKey) {
-            throw new Error('Weather API key is not configured');
+          if (queryCity) {
+            url = `https://api.weatherbit.io/v2.0/current?city=${encodeURIComponent(queryCity)}&key=${weatherbitKey}&units=M`;
+            forecastUrl = `https://api.weatherbit.io/v2.0/forecast/daily?city=${encodeURIComponent(queryCity)}&key=${weatherbitKey}&units=M&days=3`;
+          } else {
+            url = `https://api.weatherbit.io/v2.0/current?lat=${lat}&lon=${lon}&key=${weatherbitKey}&units=M`;
+            forecastUrl = `https://api.weatherbit.io/v2.0/forecast/daily?lat=${lat}&lon=${lon}&key=${weatherbitKey}&units=M&days=3`;
           }
+
+          const [response, forecastResponse] = await Promise.all([
+            axios.get(url),
+            axios.get(forecastUrl)
+          ]);
+
+          if (response.data && response.data.data && response.data.data[0]) {
+            const currentWeather = response.data.data[0];
+            const dailyForecasts = [];
+
+            if (forecastResponse.data && forecastResponse.data.data) {
+              forecastResponse.data.data.slice(0, 3).forEach((item, index) => {
+                const date = new Date(item.ts * 1000);
+                dailyForecasts.push({
+                  day: getLocalizedWeekday(date, index === 0, index === 1),
+                  high: Math.round(item.high_temp || item.max_temp || 0),
+                  low: Math.round(item.low_temp || item.min_temp || 0),
+                  condition: mapWeatherCode(item.weather.code)
+                });
+              });
+            }
+
+            mappedData = {
+              temperature: Math.round(currentWeather.temp),
+              condition: mapWeatherCode(currentWeather.weather.code),
+              humidity: currentWeather.rh,
+              wind: Math.round(currentWeather.wind_spd * 3.6),
+              location: currentWeather.city_name,
+              forecast: dailyForecasts
+            };
+          } else {
+            throw new Error('Invalid data format from Weatherbit API');
+          }
+        } else if (openWeatherKey) {
+          // Call OpenWeatherMap API
+          let url = '';
+          let forecastUrl = '';
           
-          const response = await axios.get(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric`);
+          if (queryCity) {
+            url = `https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(queryCity)}&appid=${openWeatherKey}&units=metric`;
+            forecastUrl = `https://api.openweathermap.org/data/2.5/forecast?q=${encodeURIComponent(queryCity)}&appid=${openWeatherKey}&units=metric`;
+          } else {
+            url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${openWeatherKey}&units=metric`;
+            forecastUrl = `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${openWeatherKey}&units=metric`;
+          }
+
+          const [response, forecastResponse] = await Promise.all([
+            axios.get(url),
+            axios.get(forecastUrl)
+          ]);
 
           if (response.data && response.data.main) {
             const currentWeather = response.data;
-
-            // Get forecast data for next 5 days (OpenWeatherMap provides 5-day forecast)
-            const forecastResponse = await axios.get(`https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric`);
-
-            // Process forecast data to get daily highs and lows
             const dailyForecasts = [];
+
             if (forecastResponse.data && forecastResponse.data.list) {
               const forecastList = forecastResponse.data.list;
               const dailyData = {};
-              
-              // Group forecast data by date and find min/max temps
+
               forecastList.forEach(item => {
                 const date = new Date(item.dt * 1000);
                 const dateStr = date.toDateString();
-                
+
                 if (!dailyData[dateStr]) {
                   dailyData[dateStr] = {
                     date: date,
@@ -170,24 +252,22 @@ export default function WeatherWidget() {
                     weatherIds: []
                   };
                 }
-                
+
                 dailyData[dateStr].temps.push(item.main.temp);
                 dailyData[dateStr].conditions.push(item.weather[0].main);
                 dailyData[dateStr].weatherIds.push(item.weather[0].id);
               });
-              
-              // Convert to forecast format for next 3 days
+
               const dates = Object.keys(dailyData).slice(0, 3);
               dates.forEach((dateStr, index) => {
                 const data = dailyData[dateStr];
                 const high = Math.round(Math.max(...data.temps));
                 const low = Math.round(Math.min(...data.temps));
-                
-                // Get most frequent weather condition
+
                 const mostFrequentId = data.weatherIds
                   .sort((a, b) => data.weatherIds.filter(v => v === a).length - data.weatherIds.filter(v => v === b).length)
                   .pop();
-                
+
                 dailyForecasts.push({
                   day: getLocalizedWeekday(data.date, index === 0, index === 1),
                   high: high,
@@ -197,56 +277,79 @@ export default function WeatherWidget() {
               });
             }
 
-            // Map API data to our format
-            const mappedData = {
+            mappedData = {
               temperature: Math.round(currentWeather.main.temp),
               condition: mapWeatherCode(currentWeather.weather[0].id),
               humidity: currentWeather.main.humidity,
-              wind: Math.round(currentWeather.wind.speed * 3.6), // Convert m/s to km/h
+              wind: Math.round(currentWeather.wind.speed * 3.6),
               location: currentWeather.name,
               forecast: dailyForecasts
             };
-          
-            setWeatherData(mappedData);
-            setLastUpdated(new Date());
-            setLoading(false);
-            return mappedData;
           } else {
-            throw new Error('Invalid data format from weather API');
+            throw new Error('Invalid data format from OpenWeatherMap API');
           }
-        }, 'weather-data-fetch');
-      } catch (err) {
-        console.error('Error fetching weather data:', err);
-        setLoading(false);
-        
-        let errorMessage = t('weather.error.general', 'Unable to fetch weather data');
-        
-        // Provide specific error messages
-        if (err.message.includes('API key')) {
-          errorMessage = t('weather.error.apiKey', 'Weather service configuration error');
-        } else if (err.response?.status === 401) {
-          errorMessage = t('weather.error.unauthorized', 'Weather service authentication failed');
-        } else if (err.response?.status >= 500) {
-          errorMessage = t('weather.error.serverError', 'Weather service temporarily unavailable');
-        } else if (err.code === 'NETWORK_ERROR' || !navigator.onLine) {
-          errorMessage = t('weather.error.network', 'Check your internet connection');
         }
-        
-        setError(errorMessage);
-        setWeatherData({
-          error: true,
-          message: errorMessage
-        });
+
+        setWeatherData(mappedData);
+        setLastUpdated(new Date());
+        setLoading(false);
+        setError(null);
+      }, 'weather-data-fetch');
+    } catch (err) {
+      console.error('Error fetching weather data:', err);
+      setLoading(false);
+      
+      let errorMessage = t('weather.error.general', 'Unable to fetch weather data');
+      
+      if (err.message && err.message.includes('API key')) {
+        errorMessage = t('weather.error.apiKey', 'Weather service configuration error');
+      } else if (err.response?.status === 401) {
+        errorMessage = t('weather.error.unauthorized', 'Weather service authentication failed');
+      } else if (err.response?.status === 404) {
+        errorMessage = t('weather.error.notFound', 'City not found');
+      } else if (err.response?.status >= 500) {
+        errorMessage = t('weather.error.serverError', 'Weather service temporarily unavailable');
+      } else if (err.code === 'NETWORK_ERROR' || !navigator.onLine) {
+        errorMessage = t('weather.error.network', 'Check your internet connection');
       }
-    };
-    
+      
+      setError(errorMessage);
+      setWeatherData({
+        error: true,
+        message: errorMessage
+      });
+    }
+  };
+
+  useEffect(() => {
     fetchWeather();
     
     // Refresh weather data every 30 minutes
     const intervalId = setInterval(fetchWeather, 30 * 60 * 1000);
     
     return () => clearInterval(intervalId);
-  }, [t]); // Re-fetch when language changes
+  }, [t, selectedCity]);
+
+  const handleSearchSubmit = (e) => {
+    e.preventDefault();
+    if (searchInput.trim()) {
+      const city = searchInput.trim();
+      setSelectedCity(city);
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('weather_selected_city', city);
+      }
+      setShowSearch(false);
+    }
+  };
+
+  const handleResetLocation = () => {
+    setSelectedCity('');
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('weather_selected_city');
+    }
+    setSearchInput('');
+    setShowSearch(false);
+  };
   
   // Map OpenWeatherMap weather IDs to our simplified condition categories
   const mapWeatherCode = (weatherId) => {
@@ -362,6 +465,20 @@ export default function WeatherWidget() {
           <h3 className={`${showTitles ? 'font-medium' : 'hidden'} ${
             isDark ? 'text-white' : 'text-gray-900'
           }`}>{t('dashboard.weather', 'Local Weather')}</h3>
+          {selectedCity && (
+            <button
+              onClick={handleResetLocation}
+              title={t('weather.useMyLocation', 'Use Geolocation')}
+              className={`p-1 rounded-md transition-colors ${
+                isDark ? 'hover:bg-gray-700 text-emerald-400 hover:text-emerald-300' : 'hover:bg-gray-100 text-emerald-600 hover:text-emerald-700'
+              }`}
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="12" cy="12" r="3"></circle>
+                <path d="M12 2v2M12 20v2M4 12H2M20 12h2"></path>
+              </svg>
+            </button>
+          )}
         </div>
         <div className="p-4 text-center">
           <div className="flex items-center justify-center mb-3">
@@ -371,19 +488,58 @@ export default function WeatherWidget() {
               <line x1="9" y1="9" x2="15" y2="15"></line>
             </svg>
           </div>
-          <p className="text-red-500 dark:text-red-400 font-medium">
+          <p className="text-red-500 dark:text-red-400 font-medium text-sm mb-3">
             {error || weatherData?.message || t('weather.error.general', 'Unable to fetch weather data')}
           </p>
-          <button 
-            onClick={() => window.location.reload()} 
-            className={`mt-3 px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-              isDark 
-                ? 'bg-gray-700 hover:bg-gray-600 text-gray-200' 
-                : 'bg-gray-100 hover:bg-gray-200 text-gray-700'
-            }`}
-          >
-            {t('weather.retry', 'Try Again')}
-          </button>
+          
+          <form onSubmit={handleSearchSubmit} className="flex items-center max-w-xs mx-auto gap-2 mb-3">
+            <input
+              type="text"
+              placeholder={t('weather.enterCity', 'Enter city (e.g. Hanoi)...')}
+              value={searchInput}
+              onChange={(e) => setSearchInput(e.target.value)}
+              className={`flex-1 text-xs px-2.5 py-1.5 rounded-lg border outline-none ${
+                isDark 
+                  ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400' 
+                  : 'bg-gray-50 border-gray-200 text-gray-900 placeholder-gray-500'
+              }`}
+            />
+            <button 
+              type="submit" 
+              className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
+                isDark 
+                  ? 'bg-emerald-600 hover:bg-emerald-700 text-white' 
+                  : 'bg-emerald-500 hover:bg-emerald-600 text-white'
+              }`}
+            >
+              {t('weather.search', 'Search')}
+            </button>
+          </form>
+
+          <div className="flex items-center justify-center gap-2">
+            <button 
+              onClick={fetchWeather} 
+              className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
+                isDark 
+                  ? 'bg-gray-700 hover:bg-gray-600 text-gray-200' 
+                  : 'bg-gray-100 hover:bg-gray-200 text-gray-700'
+              }`}
+            >
+              {t('weather.retry', 'Try Again')}
+            </button>
+            {selectedCity && (
+              <button 
+                onClick={handleResetLocation} 
+                className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
+                  isDark 
+                    ? 'bg-gray-700 hover:bg-gray-600 text-gray-200' 
+                    : 'bg-gray-100 hover:bg-gray-200 text-gray-700'
+                }`}
+              >
+                {t('weather.reset', 'Reset to GPS')}
+              </button>
+            )}
+          </div>
         </div>
       </div>
     );
@@ -399,20 +555,87 @@ export default function WeatherWidget() {
       <div className={`${compactMode ? 'p-3' : 'p-5'} border-b ${
         isDark ? 'border-gray-700' : 'border-gray-100'
       }`}>
-        <div className="flex items-center justify-between mb-4">
-          <h3 className={`${showTitles ? 'font-medium' : 'hidden'} ${
-            isDark ? 'text-white' : 'text-gray-900'
-          }`}>{t('dashboard.weather', 'Local Weather')}</h3>
-          {lastUpdated && (
-            <span className={`text-xs ${
-              isDark ? 'text-gray-400' : 'text-gray-500'
-            }`}>
-              {t('weather.updatedAt', 'Updated at')} {formatDateTime(
-                lastUpdated, 
-                settings.language.dateFormat,
-                settings.language.timeFormat === '24h'
+        <div className="flex items-center justify-between mb-4 min-h-[28px]">
+          {showSearch ? (
+            <form onSubmit={handleSearchSubmit} className="flex items-center w-full gap-2">
+              <input
+                type="text"
+                placeholder={t('weather.searchPlaceholder', 'Enter city...')}
+                value={searchInput}
+                onChange={(e) => setSearchInput(e.target.value)}
+                className={`flex-1 text-xs px-2 py-1 rounded border outline-none ${
+                  isDark 
+                    ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400' 
+                    : 'bg-gray-50 border-gray-200 text-gray-900 placeholder-gray-500'
+                }`}
+                autoFocus
+              />
+              <button 
+                type="submit" 
+                className="p-1 rounded hover:bg-gray-100 dark:hover:bg-gray-700 text-emerald-600 dark:text-emerald-400"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+              </button>
+              <button 
+                type="button" 
+                onClick={() => { setShowSearch(false); setSearchInput(''); }}
+                className="p-1 rounded hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-500"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <line x1="18" y1="6" x2="6" y2="18"></line>
+                  <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+              </button>
+            </form>
+          ) : (
+            <>
+              <div className="flex items-center gap-2">
+                <h3 className={`${showTitles ? 'font-medium' : 'hidden'} ${
+                  isDark ? 'text-white' : 'text-gray-900'
+                }`}>{t('dashboard.weather', 'Local Weather')}</h3>
+                <div className="flex items-center gap-1">
+                  <button
+                    onClick={() => setShowSearch(true)}
+                    title={t('weather.searchLocation', 'Search City')}
+                    className={`p-1 rounded-md transition-colors ${
+                      isDark ? 'hover:bg-gray-700 text-gray-400 hover:text-gray-200' : 'hover:bg-gray-100 text-gray-500 hover:text-gray-700'
+                    }`}
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <circle cx="11" cy="11" r="8"></circle>
+                      <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                    </svg>
+                  </button>
+                  {selectedCity && (
+                    <button
+                      onClick={handleResetLocation}
+                      title={t('weather.useMyLocation', 'Use Geolocation')}
+                      className={`p-1 rounded-md transition-colors ${
+                        isDark ? 'hover:bg-gray-700 text-emerald-400 hover:text-emerald-300' : 'hover:bg-gray-100 text-emerald-600 hover:text-emerald-700'
+                      }`}
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <circle cx="12" cy="12" r="3"></circle>
+                        <path d="M12 2v2M12 20v2M4 12H2M20 12h2"></path>
+                      </svg>
+                    </button>
+                  )}
+                </div>
+              </div>
+              {lastUpdated && (
+                <span className={`text-[10px] ${
+                  isDark ? 'text-gray-400' : 'text-gray-500'
+                }`}>
+                  {formatDateTime(
+                    lastUpdated, 
+                    settings.language.dateFormat,
+                    settings.language.timeFormat === '24h'
+                  )}
+                </span>
               )}
-            </span>
+            </>
           )}
         </div>
         

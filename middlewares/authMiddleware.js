@@ -36,16 +36,16 @@ const authMiddleware = async (req, res, next) => {
     console.log('  - Authorization:', req.headers.authorization ? `${req.headers.authorization.substring(0, 30)}...` : 'MISSING');
     console.log('  - Cookie:', req.headers.cookie || 'MISSING');
     console.log('  - User-Agent:', req.headers['user-agent']?.substring(0, 50) + '...' || 'MISSING');
-    
+
     try {
         // Get token from Authorization header OR cookies
         const authHeader = req.headers.authorization;
         let token = null;
-        
+
         console.log('[AUTH MIDDLEWARE] Token source validation:');
         console.log('  - Auth header exists:', !!authHeader);
         console.log('  - Auth header starts with Bearer:', authHeader?.startsWith('Bearer '));
-        
+
         // Try Authorization header first
         if (authHeader && authHeader.startsWith('Bearer ')) {
             token = authHeader.split(' ')[1];
@@ -53,7 +53,7 @@ const authMiddleware = async (req, res, next) => {
         } else {
             // Fallback to cookies
             console.log('[AUTH MIDDLEWARE] No valid Authorization header, checking cookies...');
-            
+
             // Parse cookie header for token
             const cookieHeader = req.headers.cookie;
             if (cookieHeader) {
@@ -62,7 +62,7 @@ const authMiddleware = async (req, res, next) => {
                     acc[key] = value;
                     return acc;
                 }, {});
-                
+
                 // Check for both 'token' and 'token_client' cookies
                 token = cookies.token || cookies.token_client;
                 console.log('[AUTH MIDDLEWARE] Cookie parsing result:');
@@ -70,38 +70,40 @@ const authMiddleware = async (req, res, next) => {
                 console.log('  - Token from "token" cookie:', !!cookies.token);
                 console.log('  - Token from "token_client" cookie:', !!cookies.token_client);
                 console.log('  - Final token found:', !!token);
-                
+
                 if (token) {
                     console.log('[AUTH MIDDLEWARE] ✅ Token found in cookies');
                 }
             }
         }
-        
+
         if (!token) {
             console.log('[AUTH MIDDLEWARE] ❌ No token found in Authorization header or cookies');
-            return res.status(401).json({ 
+            return res.status(401).json({
                 success: false,
-                error: 'Authentication required. No token provided.' 
+                error: 'Authentication required. No token provided.'
             });
         }
-        
+
         console.log('[AUTH MIDDLEWARE] Token extraction:');
         console.log('  - Token length:', token?.length || 0);
         console.log('  - Token preview:', token ? `${token.substring(0, 20)}...` : 'MISSING');
-        
+
         if (!token) {
             console.log('[AUTH MIDDLEWARE] ❌ Token extraction failed');
-            return res.status(401).json({ 
+            return res.status(401).json({
                 success: false,
-                error: 'Authentication required. Invalid token format.' 
+                error: 'Authentication required. Invalid token format.'
             });
         }
-        
+
         // Verify token
         console.log('[AUTH MIDDLEWARE] Verifying JWT token...');
         let decoded;
         try {
-            decoded = jwt.verify(token, process.env.JWT_SECRET);
+            const secret = (process.env.JWT_SECRET || '').trim();
+            console.log('[TOKEN VERIFY] JWT secret length (trimmed):', secret.length);
+            decoded = jwt.verify(token, secret);
             console.log('[AUTH MIDDLEWARE] ✅ Token verification successful');
             console.log('  - User ID:', decoded.user_id);
             console.log('  - Email:', decoded.email);
@@ -110,37 +112,43 @@ const authMiddleware = async (req, res, next) => {
             console.log('  - Expires at:', new Date(decoded.exp * 1000).toISOString());
         } catch (jwtError) {
             console.log('[AUTH MIDDLEWARE] ❌ Token verification failed:', jwtError.message);
-            return res.status(401).json({ 
+            // Decode token without verification for debugging
+            const decodedUnverified = jwt.decode(token);
+            console.log('[AUTH MIDDLEWARE] Decoded payload without verification:', decodedUnverified);
+            // Log a hash of the secret for comparison (simple base64 truncation)
+            const secretHash = Buffer.from((process.env.JWT_SECRET || '').trim()).toString('base64').slice(0, 8);
+            console.log('[AUTH MIDDLEWARE] JWT secret hash (first 8 chars):', secretHash);
+            return res.status(401).json({
                 success: false,
-                error: 'Invalid or expired token. Please log in again.' 
+                error: 'Invalid or expired token. Please log in again.'
             });
         }
-        
+
         // Validate UUID format from token
         if (!decoded.user_id || !isValidUUID(decoded.user_id)) {
             console.error('[AUTH MIDDLEWARE] ❌ Invalid user_id UUID in token:', decoded.user_id);
-            return res.status(401).json({ 
+            return res.status(401).json({
                 success: false,
-                error: 'Invalid token format. Please log in again.' 
+                error: 'Invalid token format. Please log in again.'
             });
         }
-        
+
         console.log('[AUTH MIDDLEWARE] Looking up user in database...');
-        
+
         // Find user by ID from decoded token
         const user = await User.findById(decoded.user_id);
-        
+
         if (!user) {
-            return res.status(404).json({ 
+            return res.status(404).json({
                 success: false,
-                error: 'User not found. Token may be invalid.' 
+                error: 'User not found. Token may be invalid.'
             });
         }
 
         // Get the most up-to-date user role (subscription status may have changed)
         // The database trigger should keep the role updated, but we'll get fresh data
         const currentRole = user.role;
-        
+
         // Attach user to request object with all needed data
         req.user = {
             ...user,
@@ -153,7 +161,7 @@ const authMiddleware = async (req, res, next) => {
             given_name: decoded.given_name || user.given_name,
             full_name: decoded.full_name || user.fullName
         };
-        
+
         console.log('User data attached to request:', {
             user_id: req.user.user_id,
             email: req.user.email,
@@ -161,30 +169,30 @@ const authMiddleware = async (req, res, next) => {
             given_name: req.user.given_name,
             full_name: req.user.full_name
         });
-        
+
         // Proceed to next middleware/route handler
         next();
-        
+
     } catch (error) {
         console.error('Auth middleware error:', error);
-        
+
         if (error.name === 'JsonWebTokenError') {
-            return res.status(401).json({ 
+            return res.status(401).json({
                 success: false,
-                error: 'Invalid token' 
+                error: 'Invalid token'
             });
         }
-        
+
         if (error.name === 'TokenExpiredError') {
-            return res.status(401).json({ 
+            return res.status(401).json({
                 success: false,
-                error: 'Token expired' 
+                error: 'Token expired'
             });
         }
-        
-        res.status(500).json({ 
+
+        res.status(500).json({
             success: false,
-            error: 'Authentication error' 
+            error: 'Authentication error'
         });
     }
 }
@@ -194,19 +202,19 @@ const authMiddleware = async (req, res, next) => {
  */
 const isAdmin = (req, res, next) => {
     if (!req.user) {
-        return res.status(401).json({ 
+        return res.status(401).json({
             success: false,
-            error: 'Authentication required' 
+            error: 'Authentication required'
         });
     }
-    
+
     if (req.user.role !== 'Admin') {
-        return res.status(403).json({ 
+        return res.status(403).json({
             success: false,
-            error: 'Admin access required' 
+            error: 'Admin access required'
         });
     }
-    
+
     next();
 }
 

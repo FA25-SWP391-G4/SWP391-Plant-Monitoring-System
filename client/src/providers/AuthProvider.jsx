@@ -22,37 +22,37 @@ export default function AuthProvider({ children }) {
   const router = useRouter();
 
   useEffect(() => {
-  console.log('[auth] current user:', user);
-}, [user]);
+    console.log('[auth] current user:', user);
+  }, [user]);
 
   useEffect(() => {
     console.log('[AUTH PROVIDER] Initializing auth state...');
     console.log('[AUTH PROVIDER] All cookies:', document.cookie);
-    
+
     // Check for both possible token cookie names
     const tokenFromStandard = Cookies.get('token');
     const tokenFromClient = Cookies.get('token_client');
     const token = tokenFromClient || tokenFromStandard;
-    
+
     const userFromCookie = Cookies.get('user');
-    
+
     console.log('[AUTH PROVIDER] Cookie check results:', {
       standardToken: !!tokenFromStandard,
       clientToken: !!tokenFromClient,
       selectedToken: !!token,
       user: !!userFromCookie
     });
-    
-    if (token && userFromCookie) { 
+
+    if (token && userFromCookie) {
       console.log('[AUTH PROVIDER] ✅ Found valid auth cookies, restoring session');
-      setToken(token); 
-      try { 
+      setToken(token);
+      try {
         const parsedUser = JSON.parse(userFromCookie);
         console.log('[AUTH PROVIDER] Parsed user:', parsedUser);
-        setUser(parsedUser); 
+        setUser(parsedUser);
       } catch (e) {
         console.error('[AUTH PROVIDER] Failed to parse user data from cookie:', e);
-      } 
+      }
     } else {
       console.log('[AUTH PROVIDER] ❌ No valid auth cookies found');
     }
@@ -64,37 +64,38 @@ export default function AuthProvider({ children }) {
       token: t ? `${t.substring(0, 20)}...` : 'missing',
       user: u
     });
-    
+
     // Set cookies with appropriate security settings
     const cookieOptions = {
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'lax',
+      path: '/',
       expires: 7 // 7 days
     };
-    
+
     console.log('[AUTH PROVIDER] Setting cookies with options:', cookieOptions);
-    
+
     // Set both token names for compatibility
     Cookies.set('token', t, cookieOptions);
     Cookies.set('token_client', t, cookieOptions);
     Cookies.set('user', JSON.stringify(u), cookieOptions);
-    
+
     console.log('[AUTH PROVIDER] ✅ Cookies set successfully');
     console.log('[AUTH PROVIDER] Final cookie state:', document.cookie);
-    
-    setToken(t); 
-    setUser(u); 
-    
+
+    setToken(t);
+    setUser(u);
+
     console.log('[AUTH PROVIDER] Login completed - state updated');
   };
 
-  const logout = async () => { 
+  const logout = async (redirectPath = '/login') => {
     console.log('[AUTH PROVIDER] Logout initiated');
-    
+
     try {
       const cookieToken = Cookies.get('token_client') || Cookies.get('token');
       console.log('[AUTH PROVIDER] Calling logout endpoint...');
-      
+
       // Call logout endpoint to clear HTTP-only cookie on server
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || ''}/auth/logout`, {
         method: 'POST',
@@ -106,42 +107,53 @@ export default function AuthProvider({ children }) {
           'Content-Type': 'application/json'
         }
       });
-      
+
       console.log('[AUTH PROVIDER] Logout response:', response.status);
     } catch (error) {
       console.error('[AUTH PROVIDER] Logout error:', error);
     } finally {
       console.log('[AUTH PROVIDER] Clearing local state and preparing redirect...');
-      
-      // Clear local state and both cookies regardless of server response
-      Cookies.remove('token_client');
-      Cookies.remove('token');
-      
-      // Also clear any other potential auth-related cookies
-      Cookies.remove('token_httpOnly');
-      
+
+      // Clear cookies with and without domain parameters
+      const cookieNames = ['token', 'token_client', 'user', 'token_httpOnly'];
+      const domains = [undefined, 'localhost', '.localhost'];
+
+      cookieNames.forEach(name => {
+        domains.forEach(domain => {
+          try {
+            Cookies.remove(name, domain ? { domain } : undefined);
+          } catch (cookieErr) {
+            console.error(`Failed to remove cookie ${name} on domain ${domain}:`, cookieErr);
+          }
+        });
+      });
+
       // Clear local storage items that might contain auth data
       if (typeof window !== 'undefined') {
+        localStorage.removeItem('auth_token');
         localStorage.removeItem('plantsmart_user');
         localStorage.removeItem('sg_user'); // Legacy storage key
+        localStorage.removeItem('googleProfileData');
+        localStorage.removeItem('redirectAfterLogin');
         sessionStorage.removeItem('plantsmart_user');
       }
-      
-      setToken(null); 
-      setUser(null); 
-      
-      console.log('[AUTH PROVIDER] State cleared, adding redirect delay (similar to Google auth fix)...');
-      
-      // Add a small delay before redirect to ensure all cleanup completes
-      // This follows the same pattern as the Google auth callback fix
-      setTimeout(() => {
-        console.log('[AUTH PROVIDER] Executing delayed redirect to login page...');
-        router.push('/login');
-      }, 100); // Small delay to let cleanup finish, similar to Google auth pattern
+
+      setToken(null);
+      setUser(null);
+
+      console.log('[AUTH PROVIDER] State cleared');
+
+      if (redirectPath) {
+        console.log('[AUTH PROVIDER] Adding redirect delay...');
+        setTimeout(() => {
+          console.log(`[AUTH PROVIDER] Executing delayed redirect to: ${redirectPath}`);
+          router.push(redirectPath);
+        }, 100);
+      }
     }
   };
 
   const value = useMemo(() => ({ user, token, login, logout, loading }), [user, token, loading, logout]);
-  
+
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }

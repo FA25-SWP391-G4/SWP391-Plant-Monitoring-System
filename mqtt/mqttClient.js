@@ -17,7 +17,31 @@ const pendingCommands = new Map(); // key: commandId, value: { resolve, reject, 
 const DEFAULT_COMMAND_TIMEOUT_MS = 20000;
 
 // Determine which MQTT connection to use
-const USE_AWS_IOT = process.env.USE_AWS_IOT === 'true';
+let USE_AWS_IOT = process.env.USE_AWS_IOT === 'true';
+
+// Validate AWS IoT configuration before attempting connection
+if (USE_AWS_IOT) {
+  const requiredAwsConfig = {
+    'AWS_IOT_ENDPOINT': process.env.AWS_IOT_ENDPOINT,
+    'AWS_CERT_PATH': process.env.AWS_CERT_PATH,
+    'AWS_PRIVATE_KEY_PATH': process.env.AWS_PRIVATE_KEY_PATH,
+    'AWS_ROOT_CA_PATH': process.env.AWS_ROOT_CA_PATH
+  };
+
+  const missingConfig = Object.entries(requiredAwsConfig)
+    .filter(([key, value]) => !value)
+    .map(([key]) => key);
+
+  if (missingConfig.length > 0) {
+    console.warn(`⚠️ AWS IoT configuration incomplete. Missing: ${missingConfig.join(', ')}`);
+    console.warn('Falling back to local MQTT broker...');
+    USE_AWS_IOT = false;
+  } else if (!process.env.AWS_IOT_ENDPOINT.includes('.')) {
+    console.warn('⚠️ AWS_IOT_ENDPOINT appears invalid (no domain found)');
+    console.warn('Falling back to local MQTT broker...');
+    USE_AWS_IOT = false;
+  }
+}
 
 // Shared client id so both implementations can use the same identity if desired
 const CLIENT_ID = process.env.MQTT_CLIENT_ID || process.env.AWS_CLIENT_ID || ('ESP32_SmartPlant_Server_' + Math.random().toString(16).slice(3));
@@ -26,23 +50,25 @@ let client = null;
 let isClientConnected = false;
 
 if (USE_AWS_IOT) {
-  // Use aws-iot-device-sdk-v2 and create a small adapter to mimic mqtt.js API used in the rest of the module
-  const { mqtt: AwsMqtt, iot, io } = require('aws-iot-device-sdk-v2');
+  console.log('🔐 Attempting AWS IoT connection...');
+  try {
+    // Use aws-iot-device-sdk-v2 and create a small adapter to mimic mqtt.js API used in the rest of the module
+    const { mqtt: AwsMqtt, iot, io } = require('aws-iot-device-sdk-v2');
 
-  const clientBootstrap = new io.ClientBootstrap();
+    const clientBootstrap = new io.ClientBootstrap();
 
-  const configBuilder = iot.AwsIotMqttConnectionConfigBuilder
-    .new_mtls_builder_from_path(
-      process.env.AWS_CERT_PATH,
-      process.env.AWS_PRIVATE_KEY_PATH
+    const configBuilder = iot.AwsIotMqttConnectionConfigBuilder
+      .new_mtls_builder_from_path(
+        process.env.AWS_CERT_PATH,
+        process.env.AWS_PRIVATE_KEY_PATH
+      );
+
+    configBuilder.with_certificate_authority_from_path(
+      undefined,
+      process.env.AWS_ROOT_CA_PATH
     );
-
-  configBuilder.with_certificate_authority_from_path(
-    undefined,
-    process.env.AWS_ROOT_CA_PATH
-  );
-  configBuilder.with_client_id(CLIENT_ID);
-  configBuilder.with_endpoint(process.env.AWS_IOT_ENDPOINT);
+    configBuilder.with_client_id(CLIENT_ID);
+    configBuilder.with_endpoint(process.env.AWS_IOT_ENDPOINT);
 
   const config = configBuilder.build();
 
@@ -57,6 +83,7 @@ if (USE_AWS_IOT) {
   // Emit connect/close/error events from the v2 connection
   connection.on('connect', () => {
     awsAdapter.connected = true;
+    console.log('✅ Connected to AWS IoT successfully');
     awsAdapter.emit('connect');
   });
   connection.on('disconnect', () => {
@@ -64,7 +91,11 @@ if (USE_AWS_IOT) {
     awsAdapter.emit('close');
   });
   connection.on('error', (err) => {
+    console.error('AWS IoT connection error:', err.message || err);
     awsAdapter.emit('error', err);
+  });
+  connection.on('connection_failure', (data) => {
+    console.error('AWS IoT connection failure:', data.error?.message || 'Unknown error');
   });
 
   // subscribe: wrap v2 subscribe and route incoming payloads to 'message' events
@@ -104,24 +135,42 @@ if (USE_AWS_IOT) {
   connectAws = async () => {
     try {
       await connection.connect();
+      console.log('🔐 AWS IoT connection established');
     } catch (err) {
-      console.error('AWS IoT v2 connection error:', err);
+      console.error('❌ Failed to connect to AWS IoT:', err.message || err);
+      console.error('AWS IoT v2 connection error:', err.message || err);
       awsAdapter.emit('error', err);
     }
   };
-  connectAws().catch(console.error);
+  connectAws().catch((err) => {
+    console.error('MQTT error:', err.message || err);
+  });
 
-  client = awsAdapter;
-} else {
+    client = awsAdapter;
+  } catch (error) {
+    console.error('❌ Failed to initialize AWS IoT client:', error.message);
+    console.error('Falling back to local MQTT broker...');
+    USE_AWS_IOT = false;
+    // Continue to local MQTT setup below
+  }
+}
+
+if (!USE_AWS_IOT) {
   // Local or cloud MQTT broker connection (mqtt.js)
   const mqttUrl = process.env.MQTT_URL;
   
-  client = mqtt.connect(mqttUrl, {
-    clientId: CLIENT_ID,
-    clean: true,
-    connectTimeout: 4000,
-    reconnectPeriod: 1000
-  });
+  if (!mqttUrl) {
+    console.error('❌ MQTT_URL not configured in environment variables');
+    console.error('Please set MQTT_URL in your .env file');
+  } else {
+    console.log('🔌 Connecting to local MQTT broker:', mqttUrl);
+    client = mqtt.connect(mqttUrl, {
+      clientId: CLIENT_ID,
+      clean: true,
+      connectTimeout: 4000,
+      reconnectPeriod: 1000
+    });
+  }
 }
 
 // Attach packet-level debug for mqtt.js (harmless if client doesn't emit)

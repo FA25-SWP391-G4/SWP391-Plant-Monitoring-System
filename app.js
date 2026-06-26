@@ -214,18 +214,15 @@ app.use(cookieParser());
 // Session configuration
 const session = require('express-session');
 const pgSession = require('connect-pg-simple')(session);
-const { Pool } = require('pg');
 
-// Create a dedicated pool for sessions
-const sessionPool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-  ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false
-});
+// Reuse the shared pool from config/db.js (avoids duplicate connections)
+const { pool: sessionPool } = require('./config/db');
 
 app.use(session({
   store: new pgSession({
-    pool: sessionPool,                         // Use the dedicated session pool
-    tableName: 'user_sessions'                 // Name of the session table
+    pool: sessionPool,                         // Shared DB pool
+    tableName: 'user_sessions',               // Name of the session table
+    createTableIfMissing: true                // Auto-create table if it doesn't exist
   }),
   secret: process.env.SESSION_SECRET || 'your-secret-key',
   resave: false,
@@ -310,6 +307,14 @@ app.use(function(err, req, res, next) {
   res.status(err.status || 500).json({
     success: false,
     message: err.message || 'Internal Server Error'
+  });
+});
+
+app.post('/', (req, res) => {
+  res.status(200).json({
+    status: 'error',
+    message: 'This endpoint does not accept POST requests',
+    redirectTo: '/api/v1'
   });
 });
 

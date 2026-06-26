@@ -193,8 +193,10 @@ const generateToken = (user) => {
         : user.family_name || user.given_name || '';
 
     console.log('[AUTH] Generating JWT token for user UUID:', user.user_id);
-        
-    return jwt.sign(
+    // Log secret hash for comparison
+    const genSecretHash = Buffer.from(process.env.JWT_SECRET || '').toString('base64').slice(0, 8);
+    console.log('[AUTH] JWT secret hash (first 8 chars) during generation:', genSecretHash);
+    const token = jwt.sign(
         { 
             user_id: user.user_id,  // Now UUID instead of integer
             email: user.email, 
@@ -203,9 +205,10 @@ const generateToken = (user) => {
             given_name: user.given_name,
             full_name: fullName
         },
-        process.env.JWT_SECRET,
+        (process.env.JWT_SECRET || '').trim(),
         { expiresIn: '1d' }
     );
+    return token;
 };
 
 /**
@@ -552,7 +555,7 @@ async function login(req, res) {
                 sameSite: 'lax',
                 path: '/',
                 maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
-                domain: process.env.NODE_ENV === 'production' ? process.env.COOKIE_DOMAIN : 'localhost'
+                ...(process.env.NODE_ENV === 'production' && process.env.COOKIE_DOMAIN ? { domain: process.env.COOKIE_DOMAIN } : {})
             };
             
             console.log(`[LOGIN] Setting cookies with options:`, cookieOptions);
@@ -598,7 +601,7 @@ async function login(req, res) {
             sameSite: 'lax',
             path: '/',
             maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
-            domain: process.env.NODE_ENV === 'production' ? process.env.COOKIE_DOMAIN : 'localhost'
+            ...(process.env.NODE_ENV === 'production' && process.env.COOKIE_DOMAIN ? { domain: process.env.COOKIE_DOMAIN } : {})
         };
         
         // HttpOnly cookie for server-side auth (secure)

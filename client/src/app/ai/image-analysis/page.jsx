@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { useAuth } from '@/providers/AuthProvider';
 import { useRouter } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
-import AIImageRecognition from '@/components/AIImageRecognition';
+// import AIImageRecognition from '@/components/AIImageRecognition';
 
 export default function AIImageAnalysisPage() {
   const { user, loading } = useAuth();
