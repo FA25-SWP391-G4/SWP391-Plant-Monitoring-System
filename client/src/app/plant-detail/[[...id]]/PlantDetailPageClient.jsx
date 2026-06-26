@@ -7,13 +7,16 @@ import { useTranslation } from 'react-i18next';
 import PlantDetails from '@/components/plants/PlantDetails';
 import AIChatbot from '@/components/ai/AIChatbot';
 import AIWateringPrediction from '@/components/AIWateringPrediction';
-import AIImageRecognition from '@/components/AIImageRecognition';
 import SensorReadings from '@/components/plants/SensorReadings';
 import WateringScheduleControl from '@/components/plants/WateringScheduleControl';
 import ManualWateringControl from '@/components/plants/ManualWateringControl';
 import api from '@/api/axiosClient';
 
-export default function PlantDetailPage({ params }) {
+export default function PlantDetailPageClient({ params }) {
+  const plantId = Array.isArray(params?.id)
+    ? params.id[0]
+    : params?.id;
+
   const { t } = useTranslation();
   const { isAuthenticated, user, loading } = useAuth();
   const router = useRouter();
@@ -24,35 +27,63 @@ export default function PlantDetailPage({ params }) {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const [activeTab, setActiveTab] = useState('overview');
-  
-  const plantId = params?.id;
-  
+
   useEffect(() => {
     if (!loading && !isAuthenticated) {
       router.push('/login');
     }
   }, [isAuthenticated, loading, router]);
-  
+
   useEffect(() => {
     if (isAuthenticated && plantId) {
       fetchPlants();
     }
   }, [isAuthenticated, plantId]);
-  
-const fetchPlants = async () => {
+
+  const fetchPlants = async () => {
     try {
-      setLoading(true);
+      setIsLoading(true);
       const response = await api.get('/api/plants');
-      setPlants(response.data.data);
+      const foundPlant = response.data.data.find(p => p.plant_id === plantId || p.id === plantId);
+      setPlant(foundPlant);
+      
+      // If we found the plant, fetch sensor data and schedule
+      if (foundPlant) {
+        // Fetch current sensor readings
+        try {
+          const sensorRes = await api.get(`/api/sensors/plant/${plantId}`);
+          setSensorData(sensorRes.data.data);
+        } catch (sensorErr) {
+          console.error('Error fetching sensor data:', sensorErr);
+        }
+
+        // Fetch watering schedule
+        try {
+          const scheduleRes = await api.get(`/api/plants/${plantId}/watering-schedule`);
+          setSchedule(scheduleRes.data.data);
+        } catch (scheduleErr) {
+          console.error('Error fetching watering schedule:', scheduleErr);
+        }
+
+        // Fetch device status
+        if (foundPlant.device_id) {
+          try {
+            const deviceRes = await api.get(`/api/devices/${foundPlant.device_id}/status`);
+            setDeviceStatus(deviceRes.data.data?.status || 'offline');
+          } catch (deviceErr) {
+            console.error('Error fetching device status:', deviceErr);
+          }
+        }
+      }
       setError(null);
     } catch (err) {
       console.error('Error fetching plants:', err);
       setError(t('errors.fetchFailed', 'Failed to fetch plants'));
     } finally {
-      setLoading(false);
+      setIsLoading(false);
     }
   };
-  
+
   const handleWateringScheduleUpdate = async (newSchedule) => {
     try {
       const response = await api.put(`/api/plants/${plantId}/watering-schedule`, newSchedule);
@@ -62,17 +93,16 @@ const fetchPlants = async () => {
       setError(t('errors.updateFailed', 'Failed to update watering schedule'));
     }
   };
-  
+
   const handleManualWatering = async (duration) => {
     try {
       await api.post(`/api/plants/${plantId}/water`, { duration });
-      // Show success message
     } catch (err) {
       console.error('Error triggering manual watering:', err);
       setError(t('errors.wateringFailed', 'Failed to trigger watering'));
     }
   };
-  
+
   if (loading || isLoading) {
     return (
       <div className="container mx-auto px-4 py-8 flex justify-center items-center min-h-[70vh]">
@@ -80,11 +110,11 @@ const fetchPlants = async () => {
       </div>
     );
   }
-  
+
   if (!isAuthenticated) {
     return null; // Will redirect to login via useEffect
   }
-  
+
   if (error) {
     return (
       <div className="container mx-auto px-4 py-8">
@@ -94,7 +124,7 @@ const fetchPlants = async () => {
       </div>
     );
   }
-  
+
   if (!plant) {
     return (
       <div className="container mx-auto px-4 py-8">
@@ -104,9 +134,9 @@ const fetchPlants = async () => {
       </div>
     );
   }
-  
+
   const isPremiumUser = user?.role === 'Premium' || user?.role === 'Admin';
-  
+
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="mb-8">
@@ -128,53 +158,47 @@ const fetchPlants = async () => {
           </ul>
         </div>
       </div>
-      
+
       <div className="flex flex-col lg:flex-row gap-6">
         {/* Left column: Plant details */}
         <div className="w-full lg:w-2/3">
           <div className="bg-white rounded-xl shadow-sm overflow-hidden border border-gray-100">
             {/* Tabs navigation */}
             <div className="flex border-b border-gray-100">
-              <button 
+              <button
                 className={`px-6 py-3 text-sm font-medium ${activeTab === 'overview' ? 'border-b-2 border-emerald-500 text-emerald-600' : 'text-gray-500 hover:text-gray-700'}`}
                 onClick={() => setActiveTab('overview')}
               >
                 {t('plants.tabs.overview', 'Overview')}
               </button>
-              <button 
+              <button
                 className={`px-6 py-3 text-sm font-medium ${activeTab === 'sensors' ? 'border-b-2 border-emerald-500 text-emerald-600' : 'text-gray-500 hover:text-gray-700'}`}
                 onClick={() => setActiveTab('sensors')}
               >
                 {t('plants.tabs.sensorData', 'Sensor Data')}
               </button>
               {isPremiumUser && (
-                <button 
+                <button
                   className={`px-6 py-3 text-sm font-medium ${activeTab === 'schedule' ? 'border-b-2 border-emerald-500 text-emerald-600' : 'text-gray-500 hover:text-gray-700'}`}
                   onClick={() => setActiveTab('schedule')}
                 >
                   {t('plants.tabs.wateringSchedule', 'Watering Schedule')}
                 </button>
               )}
-              <button 
+              <button
                 className={`px-6 py-3 text-sm font-medium ${activeTab === 'ai-predictions' ? 'border-b-2 border-emerald-500 text-emerald-600' : 'text-gray-500 hover:text-gray-700'}`}
                 onClick={() => setActiveTab('ai-predictions')}
               >
                 {t('plants.tabs.aiPredictions', 'AI Predictions')}
               </button>
-              <button 
-                className={`px-6 py-3 text-sm font-medium ${activeTab === 'disease-recognition' ? 'border-b-2 border-emerald-500 text-emerald-600' : 'text-gray-500 hover:text-gray-700'}`}
-                onClick={() => setActiveTab('disease-recognition')}
-              >
-                {t('plants.tabs.diseaseRecognition', 'Disease Recognition')}
-              </button>
-              <button 
+              <button
                 className={`px-6 py-3 text-sm font-medium ${activeTab === 'ai-assistant' ? 'border-b-2 border-emerald-500 text-emerald-600' : 'text-gray-500 hover:text-gray-700'}`}
                 onClick={() => setActiveTab('ai-assistant')}
               >
                 {t('plants.tabs.aiAssistant', 'AI Assistant')}
               </button>
             </div>
-            
+
             {/* Tab content */}
             <div className="p-6">
               {activeTab === 'overview' && (
@@ -184,33 +208,25 @@ const fetchPlants = async () => {
                 <SensorReadings readings={sensorData} />
               )}
               {activeTab === 'schedule' && isPremiumUser && (
-                <WateringScheduleControl 
-                  plantId={plantId} 
-                  schedule={schedule} 
-                  isPremium={isPremiumUser} 
+                <WateringScheduleControl
+                  plantId={plantId}
+                  schedule={schedule}
+                  isPremium={isPremiumUser}
                   onUpdateSchedule={handleWateringScheduleUpdate}
                 />
               )}
               {activeTab === 'ai-predictions' && (
                 <div className="max-w-4xl">
-                  <AIWateringPrediction 
-                    plant={plant} 
-                    className="w-full"
-                  />
-                </div>
-              )}
-              {activeTab === 'disease-recognition' && (
-                <div className="max-w-4xl">
-                  <AIImageRecognition 
-                    plant={plant} 
+                  <AIWateringPrediction
+                    plant={plant}
                     className="w-full"
                   />
                 </div>
               )}
               {activeTab === 'ai-assistant' && (
                 <div className="max-w-4xl">
-                  <AIChatbot 
-                    plant={plant} 
+                  <AIChatbot
+                    plant={plant}
                     className="w-full"
                   />
                 </div>
@@ -218,7 +234,7 @@ const fetchPlants = async () => {
             </div>
           </div>
         </div>
-        
+
         {/* Right column: Controls and status */}
         <div className="w-full lg:w-1/3">
           {/* Manual watering control */}
@@ -227,14 +243,14 @@ const fetchPlants = async () => {
               <h3 className="text-lg font-semibold text-gray-900 mb-4">
                 {t('plants.manualWatering', 'Manual Watering')}
               </h3>
-              <ManualWateringControl 
-                plantId={plantId} 
-                deviceStatus={deviceStatus} 
+              <ManualWateringControl
+                plantId={plantId}
+                deviceStatus={deviceStatus}
                 onWater={handleManualWatering}
               />
             </div>
           </div>
-          
+
           {/* Status and info cards */}
           <div className="bg-white rounded-xl shadow-sm overflow-hidden border border-gray-100 mb-6">
             <div className="p-6">
@@ -244,19 +260,19 @@ const fetchPlants = async () => {
               <div className="flex items-center mb-4">
                 <div className={`w-3 h-3 rounded-full mr-2 ${deviceStatus === 'online' ? 'bg-green-500' : 'bg-red-500'}`}></div>
                 <span className="text-gray-700">
-                  {deviceStatus === 'online' 
-                    ? t('devices.online', 'Online') 
+                  {deviceStatus === 'online'
+                    ? t('devices.online', 'Online')
                     : t('devices.offline', 'Offline')}
                 </span>
               </div>
-              
+
               <h4 className="font-medium text-gray-700 mb-2">
                 {t('plants.lastWatered', 'Last Watered')}
               </h4>
               <p className="text-sm text-gray-600 mb-4">
                 {plant.last_watered ? new Date(plant.last_watered).toLocaleString() : t('plants.notWateredYet', 'Not watered yet')}
               </p>
-              
+
               <h4 className="font-medium text-gray-700 mb-2">
                 {t('plants.nextScheduled', 'Next Scheduled Watering')}
               </h4>
@@ -265,7 +281,7 @@ const fetchPlants = async () => {
               </p>
             </div>
           </div>
-          
+
           {/* Premium features promotion */}
           {!isPremiumUser && (
             <div className="bg-gradient-to-r from-emerald-500 to-teal-600 rounded-xl shadow-sm overflow-hidden text-white">
@@ -290,5 +306,3 @@ const fetchPlants = async () => {
     </div>
   );
 }
-
-//funny debug

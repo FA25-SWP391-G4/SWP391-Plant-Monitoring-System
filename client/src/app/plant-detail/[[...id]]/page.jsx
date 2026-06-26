@@ -1,7 +1,7 @@
 import PlantDetailPageClient from './PlantDetailPageClient';
 
 export function generateStaticParams() {
-  return [{ id: '1' }];
+  return [{ id: [] }];
 }
 
 export default function Page({ params }) {

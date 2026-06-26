@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
 import PhoneInput from '@/components/forms/PhoneInput';
 import axios from 'axios';
+import { useAuth } from '@/providers/AuthProvider';
 
 /**
  * RegisterForm component
@@ -15,6 +16,7 @@ import axios from 'axios';
 export function RegisterForm() {
   const { t } = useTranslation();
   const { getAuthClass, presets } = useTheme();
+  const { login } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
     firstName: "",
@@ -192,17 +194,32 @@ export function RegisterForm() {
         headers: response.headers
       });
 
-      setRegisterStatus(`Success! Redirecting to login page...`); // Update status
-
-      // Store session info in localStorage if provided
-      if (response.data?.sessionId) {
-        localStorage.setItem('sessionId', response.data.sessionId);
+      // Check if registration returned a token and user (which allows direct login)
+      if (response.data?.data?.token && response.data?.data?.user) {
+        setRegisterStatus(`Success! Logging you in and redirecting to dashboard...`);
+        login(response.data.data.token, response.data.data.user);
+        
+        // Store session info in localStorage if provided
+        if (response.data?.sessionId) {
+          localStorage.setItem('sessionId', response.data.sessionId);
+        }
+        
+        setTimeout(() => {
+          window.location.href = '/dashboard';
+        }, 1500);
+      } else {
+        setRegisterStatus(`Success! Redirecting to login page...`);
+        
+        // Store session info in localStorage if provided
+        if (response.data?.sessionId) {
+          localStorage.setItem('sessionId', response.data.sessionId);
+        }
+        
+        // Redirect to login after successful registration
+        setTimeout(() => {
+          window.location.href = '/login?registered=true';
+        }, 1500);
       }
-
-      // Redirect to login after successful registration
-      setTimeout(() => {
-        window.location.href = '/login?registered=true';
-      }, 1500);
     } catch (error) {
       // Detailed error logging
       console.error('Registration error:', error);

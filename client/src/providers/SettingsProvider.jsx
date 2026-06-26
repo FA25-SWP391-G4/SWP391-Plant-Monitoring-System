@@ -75,6 +75,7 @@ const defaultSettings = {
 export function SettingsProvider({ children }) {
   const [settings, setSettings] = useState(defaultSettings);
   const [loading, setLoading] = useState(true);
+  const [hasFetched, setHasFetched] = useState(false);
   const pathname = usePathname();
   const { i18n } = useTranslation();
 
@@ -84,11 +85,17 @@ export function SettingsProvider({ children }) {
                          pathname.startsWith('/register') || 
                          pathname.startsWith('/forgot-password') || 
                          pathname.startsWith('/reset-password') || 
-                         pathname.startsWith('/demo');
+                         pathname.startsWith('/demo') ||
+                         pathname.startsWith('/api/auth/callback') ||
+                         pathname.startsWith('/auth/callback');
 
   useEffect(() => {
-    fetchSettings();
-  }, []);
+    if (!isExcludedPage && !hasFetched) {
+      fetchSettings();
+    } else if (isExcludedPage) {
+      setLoading(false);
+    }
+  }, [isExcludedPage, hasFetched]);
 
   const fetchSettings = async () => {
     try {
@@ -96,6 +103,7 @@ export function SettingsProvider({ children }) {
       if (response.data.success) {
         // Server already returns merged settings with defaults
         setSettings(response.data.data);
+        setHasFetched(true);
       }
     } catch (error) {
       console.error('Failed to fetch settings:', error);

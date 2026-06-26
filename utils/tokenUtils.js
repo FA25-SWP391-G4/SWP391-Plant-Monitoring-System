@@ -10,11 +10,11 @@ const jwt = require('jsonwebtoken');
  */
 function generateToken(user) {
     return jwt.sign(
-        { 
+        {
             user_id: user.user_id,
-            role: user.role 
+            role: user.role
         },
-        process.env.JWT_SECRET,
+        (process.env.JWT_SECRET || '').trim(),
         { expiresIn: '1h' } // Token expires in 1 hour
     );
 }
@@ -25,7 +25,7 @@ function generateToken(user) {
  * @returns {Object} Decoded token payload or throws error
  */
 function verifyToken(token) {
-    return jwt.verify(token, process.env.JWT_SECRET);
+    return jwt.verify(token, (process.env.JWT_SECRET || '').trim());
 }
 
 module.exports = {

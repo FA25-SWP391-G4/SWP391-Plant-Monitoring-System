@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { Droplets, ArrowLeft, AlertCircle, CheckCircle, Loader, Thermometer, Gauge, Humidity } from 'lucide-react';
+import { Droplets, ArrowLeft, AlertCircle, CheckCircle, Loader, Thermometer, Gauge } from 'lucide-react';
 import { useAuth } from '../../../providers/AuthProvider';
 import aiApi from '../../../api/aiApi';
 
@@ -311,7 +311,7 @@ const SmartWateringPage = () => {
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   <div className="flex items-center gap-2">
-                    <Humidity size={16} />
+                    <Droplets size={16} />
                     Humidity (%) *
                   </div>
                 </label>

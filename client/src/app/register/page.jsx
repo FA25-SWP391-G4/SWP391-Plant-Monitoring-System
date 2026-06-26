@@ -3,19 +3,64 @@
 import { RegisterForm } from '@/components/auth/RegisterForm';
 import { useAuth } from '@/providers/AuthProvider';
 import { useRouter } from 'next/navigation';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from '@/contexts/ThemeContext';
+import Cookies from 'js-cookie';
 
 export default function RegisterPage() {
-  const { user, loading } = useAuth();
+  const { user, loading, logout } = useAuth();
   const router = useRouter();
   const { t } = useTranslation();
   const { isDark, isLight, getThemeColor } = useTheme();
+  
+  const isGoogleFlow = useRef(false);
+  
+  if (typeof window !== 'undefined' && !isGoogleFlow.current) {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('source') === 'google') {
+      isGoogleFlow.current = true;
+    }
+  }
+
+  // Clear stale auth session if registering from Google OAuth callback
+  useEffect(() => {
+    if (isGoogleFlow.current) {
+      console.log('[REGISTER PAGE] Google source detected, clearing stale auth session...');
+      
+      // Sync clear cookies
+      const cookieNames = ['token', 'token_client', 'user', 'token_httpOnly'];
+      const domains = [undefined, 'localhost', '.localhost'];
+      cookieNames.forEach(name => {
+        domains.forEach(domain => {
+          try {
+            Cookies.remove(name, domain ? { domain } : undefined);
+          } catch (e) {
+            console.error(e);
+          }
+        });
+      });
+      
+      // Sync clear localStorage
+      localStorage.removeItem('auth_token');
+      localStorage.removeItem('plantsmart_user');
+      localStorage.removeItem('sg_user');
+      localStorage.removeItem('googleProfileData');
+      localStorage.removeItem('redirectAfterLogin');
+
+      logout(null); // Clear state in context without redirecting
+    }
+  }, [logout]);
 
   useEffect(() => {
+    // Avoid redirecting to dashboard if we are coming from Google register flow
+    if (isGoogleFlow.current) {
+      console.log('[REGISTER PAGE] Google register flow active, skipping dashboard redirect check');
+      return;
+    }
+
     if (!loading && user) {
       router.push('/dashboard');
     }

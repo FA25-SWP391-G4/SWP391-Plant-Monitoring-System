@@ -127,21 +127,46 @@ axiosClient.interceptors.response.use(
     if (error.response && error.response.status === 401) {
       console.log('[AXIOS DEBUG] 401 Unauthorized error detected');
 
-      // Clear cookies and redirect to login
-      Cookies.remove("token");
-      Cookies.remove("user");
+      // Clear cookies with and without domain parameters
+      const cookieNames = ['token', 'token_client', 'user', 'token_httpOnly'];
+      const domains = [undefined, 'localhost', '.localhost'];
+      
+      cookieNames.forEach(name => {
+        domains.forEach(domain => {
+          try {
+            Cookies.remove(name, domain ? { domain } : undefined);
+          } catch (cookieErr) {
+            console.error(`Failed to remove cookie ${name} on domain ${domain}:`, cookieErr);
+          }
+        });
+      });
       
       // Check if we're in browser environment
       if (typeof window !== "undefined") {
+        // Clear local storage items that might contain auth data
+        localStorage.removeItem('auth_token');
+        localStorage.removeItem('plantsmart_user');
+        localStorage.removeItem('sg_user');
+        localStorage.removeItem('googleProfileData');
+        
         // Store the current URL for redirect after login
         localStorage.setItem("redirectAfterLogin", window.location.pathname);
         
-        // Redirect to login page - only if not already on login page
-        if (!window.location.pathname.includes('/login')) {
+        // Redirect to login page - only if not on an auth or public page
+        const isAuthOrPublicPage = window.location.pathname === '/' ||
+                                  window.location.pathname.includes('/login') ||
+                                  window.location.pathname.includes('/register') ||
+                                  window.location.pathname.includes('/forgot-password') ||
+                                  window.location.pathname.includes('/reset-password') ||
+                                  window.location.pathname.includes('/demo') ||
+                                  window.location.pathname.includes('/api/auth/callback') ||
+                                  window.location.pathname.includes('/auth/callback');
+        
+        if (!isAuthOrPublicPage) {
           console.log('[AXIOS DEBUG] Redirecting to login page');
           window.location.href = "/login";
         } else {
-          console.log('[AXIOS DEBUG] Already on login page, not redirecting');
+          console.log('[AXIOS DEBUG] Already on auth/public page, not redirecting');
         }
       }
     }

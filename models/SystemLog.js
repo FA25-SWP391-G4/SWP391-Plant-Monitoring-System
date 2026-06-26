@@ -9,6 +9,10 @@ try {
     console.log('EventNotificationService not available:', error.message);
 }
 
+// Database column constraints
+const MAX_SOURCE_LENGTH = 100;
+const MAX_MESSAGE_LENGTH = 10000; // text field, but let's be reasonable
+
 class SystemLog {
     constructor(logData) {
         this.log_id = logData.log_id;
@@ -16,6 +20,14 @@ class SystemLog {
         this.log_level = logData.log_level;
         this.source = logData.source;
         this.message = logData.message;
+    }
+
+    // Helper method to truncate strings to fit database constraints
+    static truncateString(str, maxLength) {
+        if (!str) return str;
+        const stringValue = String(str);
+        if (stringValue.length <= maxLength) return stringValue;
+        return stringValue.substring(0, maxLength - 3) + '...';
     }
 
     //create log 
@@ -43,10 +55,15 @@ class SystemLog {
         if (!validLevels.includes(log_level)) {
             log_level = 'INFO';
         }
+        
+        // Truncate source and message to fit database constraints
+        const truncatedSource = SystemLog.truncateString(log_source, MAX_SOURCE_LENGTH);
+        const truncatedMessage = SystemLog.truncateString(log_message, MAX_MESSAGE_LENGTH);
+        
         const systemLog = new SystemLog({
             log_level: log_level,
-            source: log_source,
-            message: log_message,
+            source: truncatedSource,
+            message: truncatedMessage,
             timestamp: new Date()
         });
         const savedLog = await systemLog.save();

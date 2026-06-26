@@ -85,7 +85,16 @@ constructor(userData) {
 
     this.family_name = userData.family_name || userData.familyName;
     this.given_name = userData.given_name || userData.givenName;
-    this.role = userData.role || 'Regular'; // Default role for UC1
+    // Map database lowercase roles to capitalized versions for codebase compatibility
+    const dbRole = userData.role || 'Regular';
+    const roleMap = {
+        'regular': 'Regular',
+        'premium': 'Premium',
+        'admin': 'Admin',
+        'ultimate': 'Ultimate',
+        'user': 'Regular'
+    };
+    this.role = roleMap[dbRole.toLowerCase()] || (dbRole.charAt(0).toUpperCase() + dbRole.slice(1));
     this.notification_prefs = userData.notification_prefs; // Notification preferences
     this.fcm_tokens = userData.fcm_tokens || []; // Firebase Cloud Messaging tokens for push notifications
     this.password_reset_token = userData.password_reset_token;
@@ -393,7 +402,7 @@ async updatePasswordResetFields(token, expires) {
                     hashedPassword,
                     this.family_name,
                     this.given_name,
-                    this.role,
+                    this.role ? this.role.toLowerCase() : 'regular',
                     this.notification_prefs,
                     this.google_id,
                     this.profile_picture
@@ -619,7 +628,11 @@ createPasswordResetToken() {
                                    key === 'profile_picture' ? 'profile_picture' : key;
                     
                     updates.push(`${dbField} = $${paramIndex}`);
-                    values.push(userData[key]);
+                    let val = userData[key];
+                    if (key === 'role' && typeof val === 'string') {
+                        val = val.toLowerCase();
+                    }
+                    values.push(val);
                     paramIndex++;
                 }
             });

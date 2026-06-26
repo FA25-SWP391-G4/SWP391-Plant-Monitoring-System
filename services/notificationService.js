@@ -53,7 +53,7 @@ function init(server) {
                 }
                 
                 // Verify JWT token
-                const decoded = jwt.verify(token, process.env.JWT_SECRET);
+                const decoded = jwt.verify(token, (process.env.JWT_SECRET || '').trim());
                 
                 // Get user from database
                 const user = await User.findById(decoded.user_id);
