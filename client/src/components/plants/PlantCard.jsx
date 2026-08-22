@@ -280,15 +280,9 @@ export default function PlantCard({ plant, sensorData = {} }) {
       initial="hidden"
       animate="visible"
       whileHover={animationsEnabled ? "hover" : undefined}
-      className={`rounded-xl shadow-sm border ${compactMode ? 'p-2' : 'p-4'} flex flex-col sm:flex-row hover:shadow-md transition-all ${animationsEnabled ? 'duration-200 ease-in-out fade-in' : ''} card-hover ${
-      isDark
-        ? 'bg-gray-800 border-gray-700'
-        : 'bg-white border-gray-100'
-    }`}>
+      className={`rounded-xl shadow-sm border ${compactMode ? 'p-2' : 'p-4'} flex flex-col sm:flex-row hover:shadow-md transition-all ${animationsEnabled ? 'duration-200 ease-in-out fade-in' : ''} card-hover bg-white dark:bg-gray-800 border-gray-100 dark:border-gray-700`}>
       {/* Plant Image */}
-      <div className={`w-full ${compactMode ? 'sm:w-24 h-24' : 'sm:w-40 h-40'} rounded-lg flex items-center justify-center overflow-hidden mb-4 sm:mb-0 sm:mr-6 ${
-        isDark ? 'bg-gray-700' : 'bg-gray-100'
-      }`}>
+      <div className={`w-full ${compactMode ? 'sm:w-24 h-24' : 'sm:w-40 h-40'} rounded-lg flex items-center justify-center overflow-hidden mb-4 sm:mb-0 sm:mr-6 bg-gray-100 dark:bg-gray-700`}>
         {plant.image ? (
           <img 
             src={plant.image} 
@@ -296,9 +290,7 @@ export default function PlantCard({ plant, sensorData = {} }) {
             className="w-full h-full object-cover" 
           />
         ) : (
-          <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" className={
-            isDark ? 'text-gray-500' : 'text-gray-300'
-          }>
+          <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" className="text-gray-300 dark:text-gray-500">
             <path d="M12 10a6 6 0 0 0-6-6H4v12h2a6 6 0 0 0 6-6Z"></path>
             <path d="M12 10a6 6 0 0 1 6-6h2v12h-2a6 6 0 0 1-6-6Z"></path>
             <path d="M12 22v-8.3"></path>
@@ -311,12 +303,8 @@ export default function PlantCard({ plant, sensorData = {} }) {
         {/* Plant name and status */}
         <div className="flex justify-between items-start mb-2">
           <div>
-            <h3 className={`${showTitles ? (compactMode ? 'text-base font-semibold' : 'text-xl font-semibold') : 'hidden'} ${
-              isDark ? 'text-white' : 'text-gray-900'
-            }`}>{plant.name}</h3>
-            <p className={`${showTitles ? 'text-sm' : 'hidden'} ${
-              isDark ? 'text-gray-400' : 'text-gray-500'
-            }`}>{plant.species}</p>
+            <h3 className={`${showTitles ? (compactMode ? 'text-base font-semibold' : 'text-xl font-semibold') : 'hidden'} text-gray-900 dark:text-white`}>{plant.name}</h3>
+            <p className={`${showTitles ? 'text-sm' : 'hidden'} text-gray-500 dark:text-gray-400`}>{plant.species}</p>
           </div>
         <div className="flex items-center space-x-2">
           <div className={`${statusInfo.bgColor} ${statusInfo.color} px-2 py-1 rounded-full flex items-center text-xs font-medium`}>
@@ -357,9 +345,7 @@ export default function PlantCard({ plant, sensorData = {} }) {
         </div>
         
         {/* Plant Location */}
-        <div className={`flex items-center text-sm mb-4 ${
-          isDark ? 'text-gray-400' : 'text-gray-500'
-        }`}>
+        <div className="flex items-center text-sm mb-4 text-gray-500 dark:text-gray-400">
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-1">
             <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"></path>
             <circle cx="12" cy="10" r="3"></circle>
@@ -371,15 +357,15 @@ export default function PlantCard({ plant, sensorData = {} }) {
         <div className="grid grid-cols-4 gap-2 mb-2">
           {/* Moisture level */}
           <div 
-            className={`flex flex-col ${activeChart === 'soil_moisture' ? 'bg-blue-50 rounded p-1' : ''} cursor-pointer`}
+            className={`flex flex-col ${activeChart === 'soil_moisture' ? 'bg-blue-50 dark:bg-blue-900/30 rounded p-1' : 'p-1'} cursor-pointer`}
             onClick={() => { setActiveChart('soil_moisture'); setShowHistory(true); }}
           >
-            <span className="text-xs text-gray-500 mb-1">{t('metrics.soil_moisture', 'Soil Moisture')}</span>
+            <span className="text-xs text-gray-500 dark:text-gray-400 mb-1">{t('metrics.soil_moisture', 'Soil Moisture')}</span>
             <div className="flex items-center">
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-blue-500 mr-1">
                 <path d="M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5C6 11.1 5 15 5 15a7 7 0 0 0 7 7z"></path>
               </svg>
-              <span className="font-medium">{currentSensorData?.soil_moisture ?? 'N/A'}%</span>
+              <span className="font-medium text-gray-900 dark:text-gray-100">{currentSensorData?.soil_moisture ?? 'N/A'}%</span>
             </div>
           </div>
 
@@ -405,24 +391,24 @@ export default function PlantCard({ plant, sensorData = {} }) {
           
           {/* Temperature */}
           <div 
-            className={`flex flex-col ${activeChart === 'temperature' ? 'bg-red-50 rounded p-1' : ''} cursor-pointer`}
+            className={`flex flex-col ${activeChart === 'temperature' ? 'bg-red-50 dark:bg-red-900/30 rounded p-1' : 'p-1'} cursor-pointer`}
             onClick={() => { setActiveChart('temperature'); setShowHistory(true); }}
           >
-            <span className="text-xs text-gray-500 mb-1">{t('metrics.temperature', 'Temperature')}</span>
+            <span className="text-xs text-gray-500 dark:text-gray-400 mb-1">{t('metrics.temperature', 'Temperature')}</span>
             <div className="flex items-center">
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-red-500 mr-1">
                 <path d="M14 4v10.54a4 4 0 1 1-4 0V4a2 2 0 0 1 4 0Z"></path>
               </svg>
-              <span className="font-medium">{currentSensorData?.temperature || 'N/A'}°C</span>
+              <span className="font-medium text-gray-900 dark:text-gray-100">{currentSensorData?.temperature || 'N/A'}°C</span>
             </div>
           </div>
           
           {/* Light level */}
           <div 
-            className={`flex flex-col ${activeChart === 'light_intensity' ? 'bg-amber-50 rounded p-1' : ''} cursor-pointer`}
+            className={`flex flex-col ${activeChart === 'light_intensity' ? 'bg-amber-50 dark:bg-amber-900/30 rounded p-1' : 'p-1'} cursor-pointer`}
             onClick={() => { setActiveChart('light_intensity'); setShowHistory(true); }}
           >
-            <span className="text-xs text-gray-500 mb-1">{t('metrics.light_intensity', 'Light')}</span>
+            <span className="text-xs text-gray-500 dark:text-gray-400 mb-1">{t('metrics.light_intensity', 'Light')}</span>
             <div className="flex items-center">
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-amber-500 mr-1">
                 <circle cx="12" cy="12" r="4"></circle>
@@ -435,21 +421,21 @@ export default function PlantCard({ plant, sensorData = {} }) {
                 <path d="m6.34 17.66-1.41 1.41"></path>
                 <path d="m19.07 4.93-1.41 1.41"></path>
               </svg>
-              <span className="font-medium">{currentSensorData?.light_intensity || 'N/A'} lux</span>
+              <span className="font-medium text-gray-900 dark:text-gray-100">{currentSensorData?.light_intensity || 'N/A'} lux</span>
             </div>
           </div>
           {/* Humidity */}
           <div 
-            className={`flex flex-col ${activeChart === 'air_humidity' ? 'bg-cyan-50 rounded p-1' : ''} cursor-pointer`}
+            className={`flex flex-col ${activeChart === 'air_humidity' ? 'bg-cyan-50 dark:bg-cyan-900/30 rounded p-1' : 'p-1'} cursor-pointer`}
             onClick={() => { setActiveChart('air_humidity'); setShowHistory(true); }}
           >
-            <span className="text-xs text-gray-500 mb-1">{t('metrics.air_humidity', 'Air Humidity')}</span>
+            <span className="text-xs text-gray-500 dark:text-gray-400 mb-1">{t('metrics.air_humidity', 'Air Humidity')}</span>
             <div className="flex items-center">
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-cyan-500 mr-1">
                 <path d="M12 2s-6 6.5-6 11a6 6 0 0 0 12 0c0-4.5-6-11-6-11z"></path>
                 <circle cx="12" cy="13" r="3"></circle>
               </svg>
-              <span className="font-medium">{currentSensorData?.air_humidity || 'N/A'}%</span>
+              <span className="font-medium text-gray-900 dark:text-gray-100">{currentSensorData?.air_humidity || 'N/A'}%</span>
             </div>
           </div>
         </div>
@@ -461,7 +447,7 @@ export default function PlantCard({ plant, sensorData = {} }) {
               <h4 className="text-sm font-medium">{t('charts.history', 'Sensor History')}</h4>
               <button 
                 onClick={() => setShowHistory(false)}
-                className="text-xs text-gray-500 hover:text-gray-700"
+                className="text-xs text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200"
               >
                 {t('common.hide', 'Hide')}
               </button>
@@ -475,7 +461,7 @@ export default function PlantCard({ plant, sensorData = {} }) {
         )}
         
         {/* Last watered */}
-        <div className="flex items-center text-sm text-gray-500 mb-4">
+        <div className="flex items-center text-sm text-gray-500 dark:text-gray-400 mb-4">
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-1">
             <circle cx="12" cy="12" r="10"></circle>
             <polyline points="12 6 12 12 16 14"></polyline>
@@ -488,7 +474,7 @@ export default function PlantCard({ plant, sensorData = {} }) {
               </span>
             )}
             {lastWateredInfo.triggerType && (
-              <span className="text-xs bg-gray-100 text-gray-600 px-1 rounded ml-2">
+              <span className="text-xs bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 px-1 rounded ml-2">
                 {lastWateredInfo.triggerType}
               </span>
             )}
@@ -497,18 +483,18 @@ export default function PlantCard({ plant, sensorData = {} }) {
         
         {/* AI Prediction Banner */}
         {enableAI && currentSensorData?.moisture && currentSensorData.moisture < 40 && (
-          <div className="bg-gradient-to-r from-blue-50 to-blue-100 border border-blue-200 rounded-lg p-3 mb-4">
+          <div className="bg-gradient-to-r from-blue-50 to-blue-100 dark:from-blue-900/30 dark:to-blue-800/30 border border-blue-200 dark:border-blue-800 rounded-lg p-3 mb-4">
             <div className="flex items-center">
-              <div className="text-blue-600 mr-2">🤖</div>
+              <div className="text-blue-600 dark:text-blue-400 mr-2">🤖</div>
               <div className="flex-1">
-                <p className="text-sm font-medium text-blue-900">
+                <p className="text-sm font-medium text-blue-900 dark:text-blue-100">
                   {t('ai.prediction.wateringSoon', 'AI predicts watering needed in 2 days')}
                 </p>
-                <p className="text-xs text-blue-700">
+                <p className="text-xs text-blue-700 dark:text-blue-300">
                   {t('ai.prediction.confidence', 'Confidence: 89%')} • {t('ai.prediction.amount', 'Recommended: 250ml')}
                 </p>
               </div>
-              <button className="text-blue-600 hover:text-blue-700 text-xs font-medium">
+              <button className="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 text-xs font-medium">
                 {t('ai.prediction.details', 'Details')}
               </button>
             </div>

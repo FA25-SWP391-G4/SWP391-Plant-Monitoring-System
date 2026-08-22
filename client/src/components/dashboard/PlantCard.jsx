@@ -283,7 +283,7 @@ export default function PlantCard({ plant, sensorData = {} }) {
         <div className="grid grid-cols-4 gap-2 mb-2">
           {/* Moisture level */}
           <div 
-            className={`flex flex-col ${activeChart === 'soil_moisture' ? 'bg-blue-50 rounded p-1' : ''} cursor-pointer`}
+            className={`flex flex-col ${activeChart === 'soil_moisture' ? 'bg-blue-50 dark:bg-blue-900/30 rounded p-1' : 'p-1'} cursor-pointer`}
             onClick={() => { setActiveChart('soil_moisture'); setShowHistory(true); }}
           >
             <span className="text-xs text-gray-500 mb-1">{t('metrics.soil_moisture', 'Soil Moisture')}</span>
@@ -317,7 +317,7 @@ export default function PlantCard({ plant, sensorData = {} }) {
           
           {/* Temperature */}
           <div 
-            className={`flex flex-col ${activeChart === 'temperature' ? 'bg-red-50 rounded p-1' : ''} cursor-pointer`}
+            className={`flex flex-col ${activeChart === 'temperature' ? 'bg-red-50 dark:bg-red-900/30 rounded p-1' : 'p-1'} cursor-pointer`}
             onClick={() => { setActiveChart('temperature'); setShowHistory(true); }}
           >
             <span className="text-xs text-gray-500 mb-1">{t('metrics.temperature', 'Temperature')}</span>
@@ -331,7 +331,7 @@ export default function PlantCard({ plant, sensorData = {} }) {
           
           {/* Light level */}
           <div 
-            className={`flex flex-col ${activeChart === 'light_intensity' ? 'bg-amber-50 rounded p-1' : ''} cursor-pointer`}
+            className={`flex flex-col ${activeChart === 'light_intensity' ? 'bg-amber-50 dark:bg-amber-900/30 rounded p-1' : 'p-1'} cursor-pointer`}
             onClick={() => { setActiveChart('light_intensity'); setShowHistory(true); }}
           >
             <span className="text-xs text-gray-500 mb-1">{t('metrics.light_intensity', 'Light')}</span>
@@ -352,7 +352,7 @@ export default function PlantCard({ plant, sensorData = {} }) {
           </div>
           {/* Humidity */}
           <div 
-            className={`flex flex-col ${activeChart === 'air_humidity' ? 'bg-cyan-50 rounded p-1' : ''} cursor-pointer`}
+            className={`flex flex-col ${activeChart === 'air_humidity' ? 'bg-cyan-50 dark:bg-cyan-900/30 rounded p-1' : 'p-1'} cursor-pointer`}
             onClick={() => { setActiveChart('air_humidity'); setShowHistory(true); }}
           >
             <span className="text-xs text-gray-500 mb-1">{t('metrics.air_humidity', 'Air Humidity')}</span>
@@ -409,14 +409,14 @@ export default function PlantCard({ plant, sensorData = {} }) {
         
         {/* AI Prediction Banner */}
         {sensorData?.moisture && sensorData.moisture < 40 && (
-          <div className="bg-gradient-to-r from-blue-50 to-blue-100 border border-blue-200 rounded-lg p-3 mb-4">
+          <div className="mb-4 p-3 bg-blue-50 dark:bg-blue-900/30 rounded-lg border border-blue-200 dark:border-blue-800">
             <div className="flex items-center">
               <div className="text-blue-600 mr-2">🤖</div>
               <div className="flex-1">
-                <p className="text-sm font-medium text-blue-900">
-                  {t('ai.prediction.wateringSoon', 'AI predicts watering needed in 2 days')}
-                </p>
-                <p className="text-xs text-blue-700">
+                <h4 className="text-sm font-medium text-blue-900 dark:text-blue-100 mb-1">
+                  {t('ai.prediction.wateringSoon', 'Watering Recommended')}
+                </h4>
+                <p className="text-xs text-blue-700 dark:text-blue-300">
                   {t('ai.prediction.confidence', 'Confidence: 89%')} • {t('ai.prediction.amount', 'Recommended: 250ml')}
                 </p>
               </div>

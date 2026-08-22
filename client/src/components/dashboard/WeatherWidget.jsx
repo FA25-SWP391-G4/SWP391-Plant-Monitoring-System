@@ -434,15 +434,9 @@ export default function WeatherWidget() {
 
   if (loading) {
     return (
-      <div className={`rounded-xl shadow-sm border overflow-hidden ${compactMode ? 'p-3 h-32' : 'p-5 h-60'} ${animationsEnabled ? 'transition-all duration-200 ease-in-out' : ''} ${
-        isDark 
-          ? 'bg-gray-800 border-gray-700' 
-          : 'bg-white border-gray-100'
-      }`}>
+      <div className={`rounded-xl shadow-sm border overflow-hidden ${compactMode ? 'p-3 h-32' : 'p-5 h-60'} ${animationsEnabled ? 'transition-all duration-200 ease-in-out' : ''} bg-white dark:bg-gray-800 border-gray-100 dark:border-gray-700`}>
         <div className="flex items-center justify-between mb-4">
-          <h3 className={`${showTitles ? 'font-medium' : 'hidden'} ${
-            isDark ? 'text-white' : 'text-gray-900'
-          }`}>{t('dashboard.weather', 'Local Weather')}</h3>
+          <h3 className={`${showTitles ? 'font-medium' : 'hidden'} text-gray-900 dark:text-white`}>{t('dashboard.weather', 'Local Weather')}</h3>
         </div>
         <ThemedLoader 
           size="lg" 
@@ -456,22 +450,14 @@ export default function WeatherWidget() {
 
   if (error || (weatherData && weatherData.error)) {
     return (
-      <div className={`rounded-xl shadow-sm border overflow-hidden ${compactMode ? 'p-3' : 'p-5'} ${animationsEnabled ? 'transition-all duration-200 ease-in-out' : ''} ${
-        isDark 
-          ? 'bg-gray-800 border-gray-700' 
-          : 'bg-white border-gray-100'
-      }`}>
+      <div className={`rounded-xl shadow-sm border overflow-hidden ${compactMode ? 'p-3' : 'p-5'} ${animationsEnabled ? 'transition-all duration-200 ease-in-out' : ''} bg-white dark:bg-gray-800 border-gray-100 dark:border-gray-700`}>
         <div className="flex items-center justify-between mb-4">
-          <h3 className={`${showTitles ? 'font-medium' : 'hidden'} ${
-            isDark ? 'text-white' : 'text-gray-900'
-          }`}>{t('dashboard.weather', 'Local Weather')}</h3>
+          <h3 className={`${showTitles ? 'font-medium' : 'hidden'} text-gray-900 dark:text-white`}>{t('dashboard.weather', 'Local Weather')}</h3>
           {selectedCity && (
             <button
               onClick={handleResetLocation}
               title={t('weather.useMyLocation', 'Use Geolocation')}
-              className={`p-1 rounded-md transition-colors ${
-                isDark ? 'hover:bg-gray-700 text-emerald-400 hover:text-emerald-300' : 'hover:bg-gray-100 text-emerald-600 hover:text-emerald-700'
-              }`}
+              className="p-1 rounded-md transition-colors hover:bg-gray-100 dark:hover:bg-gray-700 text-emerald-600 hover:text-emerald-700 dark:text-emerald-400 dark:hover:text-emerald-300"
             >
               <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <circle cx="12" cy="12" r="3"></circle>
@@ -498,19 +484,11 @@ export default function WeatherWidget() {
               placeholder={t('weather.enterCity', 'Enter city (e.g. Hanoi)...')}
               value={searchInput}
               onChange={(e) => setSearchInput(e.target.value)}
-              className={`flex-1 text-xs px-2.5 py-1.5 rounded-lg border outline-none ${
-                isDark 
-                  ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400' 
-                  : 'bg-gray-50 border-gray-200 text-gray-900 placeholder-gray-500'
-              }`}
+              className="flex-1 text-xs px-2.5 py-1.5 rounded-lg border outline-none bg-gray-50 dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
             />
             <button 
               type="submit" 
-              className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
-                isDark 
-                  ? 'bg-emerald-600 hover:bg-emerald-700 text-white' 
-                  : 'bg-emerald-500 hover:bg-emerald-600 text-white'
-              }`}
+              className="px-3 py-1.5 rounded-lg text-xs font-medium transition-colors bg-emerald-500 hover:bg-emerald-600 dark:bg-emerald-600 dark:hover:bg-emerald-700 text-white"
             >
               {t('weather.search', 'Search')}
             </button>
@@ -519,22 +497,14 @@ export default function WeatherWidget() {
           <div className="flex items-center justify-center gap-2">
             <button 
               onClick={fetchWeather} 
-              className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
-                isDark 
-                  ? 'bg-gray-700 hover:bg-gray-600 text-gray-200' 
-                  : 'bg-gray-100 hover:bg-gray-200 text-gray-700'
-              }`}
+              className="px-3 py-1.5 rounded-lg text-xs font-medium transition-colors bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200"
             >
               {t('weather.retry', 'Try Again')}
             </button>
             {selectedCity && (
               <button 
                 onClick={handleResetLocation} 
-                className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
-                  isDark 
-                    ? 'bg-gray-700 hover:bg-gray-600 text-gray-200' 
-                    : 'bg-gray-100 hover:bg-gray-200 text-gray-700'
-                }`}
+                className="px-3 py-1.5 rounded-lg text-xs font-medium transition-colors bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200"
               >
                 {t('weather.reset', 'Reset to GPS')}
               </button>
@@ -546,15 +516,9 @@ export default function WeatherWidget() {
   }
 
   return (
-    <div className={`rounded-xl shadow-sm border overflow-hidden ${animationsEnabled ? 'transition-all duration-200 ease-in-out hover:shadow-md' : ''} ${
-      isDark 
-        ? 'bg-gray-800 border-gray-700' 
-        : 'bg-white border-gray-100'
-    }`}>
+    <div className={`rounded-xl shadow-sm border overflow-hidden ${animationsEnabled ? 'transition-all duration-200 ease-in-out hover:shadow-md' : ''} bg-white dark:bg-gray-800 border-gray-100 dark:border-gray-700`}>
       {/* Current weather */}
-      <div className={`${compactMode ? 'p-3' : 'p-5'} border-b ${
-        isDark ? 'border-gray-700' : 'border-gray-100'
-      }`}>
+      <div className={`${compactMode ? 'p-3' : 'p-5'} border-b border-gray-100 dark:border-gray-700`}>
         <div className="flex items-center justify-between mb-4 min-h-[28px]">
           {showSearch ? (
             <form onSubmit={handleSearchSubmit} className="flex items-center w-full gap-2">
@@ -563,11 +527,7 @@ export default function WeatherWidget() {
                 placeholder={t('weather.searchPlaceholder', 'Enter city...')}
                 value={searchInput}
                 onChange={(e) => setSearchInput(e.target.value)}
-                className={`flex-1 text-xs px-2 py-1 rounded border outline-none ${
-                  isDark 
-                    ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400' 
-                    : 'bg-gray-50 border-gray-200 text-gray-900 placeholder-gray-500'
-                }`}
+                className="flex-1 text-xs px-2 py-1 rounded border outline-none bg-gray-50 dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
                 autoFocus
               />
               <button 
@@ -592,16 +552,12 @@ export default function WeatherWidget() {
           ) : (
             <>
               <div className="flex items-center gap-2">
-                <h3 className={`${showTitles ? 'font-medium' : 'hidden'} ${
-                  isDark ? 'text-white' : 'text-gray-900'
-                }`}>{t('dashboard.weather', 'Local Weather')}</h3>
+                <h3 className={`${showTitles ? 'font-medium' : 'hidden'} text-gray-900 dark:text-white`}>{t('dashboard.weather', 'Local Weather')}</h3>
                 <div className="flex items-center gap-1">
                   <button
                     onClick={() => setShowSearch(true)}
                     title={t('weather.searchLocation', 'Search City')}
-                    className={`p-1 rounded-md transition-colors ${
-                      isDark ? 'hover:bg-gray-700 text-gray-400 hover:text-gray-200' : 'hover:bg-gray-100 text-gray-500 hover:text-gray-700'
-                    }`}
+                    className="p-1 rounded-md transition-colors hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200"
                   >
                     <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                       <circle cx="11" cy="11" r="8"></circle>
@@ -612,9 +568,7 @@ export default function WeatherWidget() {
                     <button
                       onClick={handleResetLocation}
                       title={t('weather.useMyLocation', 'Use Geolocation')}
-                      className={`p-1 rounded-md transition-colors ${
-                        isDark ? 'hover:bg-gray-700 text-emerald-400 hover:text-emerald-300' : 'hover:bg-gray-100 text-emerald-600 hover:text-emerald-700'
-                      }`}
+                      className="p-1 rounded-md transition-colors hover:bg-gray-100 dark:hover:bg-gray-700 text-emerald-600 dark:text-emerald-400 hover:text-emerald-700 dark:hover:text-emerald-300"
                     >
                       <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                         <circle cx="12" cy="12" r="3"></circle>
@@ -625,9 +579,7 @@ export default function WeatherWidget() {
                 </div>
               </div>
               {lastUpdated && (
-                <span className={`text-[10px] ${
-                  isDark ? 'text-gray-400' : 'text-gray-500'
-                }`}>
+                <span className="text-[10px] text-gray-500 dark:text-gray-400">
                   {formatDateTime(
                     lastUpdated, 
                     settings.language.dateFormat,
@@ -641,20 +593,12 @@ export default function WeatherWidget() {
         
         <div className="flex items-center">
           <div className="flex-1">
-            <div className={`text-3xl font-semibold ${
-              isDark ? 'text-white' : 'text-gray-900'
-            }`}>{weatherData.temperature}°C</div>
+            <div className="text-3xl font-semibold text-gray-900 dark:text-white">{weatherData.temperature}°C</div>
             {weatherData.location && (
-              <div className={`text-sm font-medium ${
-                isDark ? 'text-gray-300' : 'text-gray-600'
-              }`}>{weatherData.location}</div>
+              <div className="text-sm font-medium text-gray-600 dark:text-gray-300">{weatherData.location}</div>
             )}
-            <div className={`text-sm ${
-              isDark ? 'text-gray-400' : 'text-gray-500'
-            }`}>{t('weather.humidity', 'Humidity')}: {weatherData.humidity}%</div>
-            <div className={`text-sm ${
-              isDark ? 'text-gray-400' : 'text-gray-500'
-            }`}>{t('weather.wind', 'Wind')}: {weatherData.wind} km/h</div>
+            <div className="text-sm text-gray-500 dark:text-gray-400">{t('weather.humidity', 'Humidity')}: {weatherData.humidity}%</div>
+            <div className="text-sm text-gray-500 dark:text-gray-400">{t('weather.wind', 'Wind')}: {weatherData.wind} km/h</div>
           </div>
           
           <div className="w-16 h-16 flex items-center justify-center">
@@ -665,27 +609,17 @@ export default function WeatherWidget() {
       
       {/* 3-day forecast */}
       {weatherData.forecast && weatherData.forecast.length > 0 && (
-        <div className={`grid grid-cols-3 divide-x ${
-          isDark ? 'divide-gray-700' : 'divide-gray-100'
-        }`}>
+        <div className="grid grid-cols-3 divide-x divide-gray-100 dark:divide-gray-700">
           {weatherData.forecast.map((day, index) => (
             <div key={index} className={`${compactMode ? 'p-2' : 'p-3'} text-center`}>
-              <div className={`text-sm font-medium ${
-                isDark ? 'text-gray-200' : 'text-gray-900'
-              }`}>{day.day}</div>
+              <div className="text-sm font-medium text-gray-900 dark:text-gray-200">{day.day}</div>
               <div className="my-2 flex justify-center">
                 {showIcons && getWeatherIcon(day.condition)}
               </div>
               <div className="text-xs">
-                <span className={`font-medium ${
-                  isDark ? 'text-gray-200' : 'text-gray-900'
-                }`}>{day.high}°</span>
-                <span className={`mx-1 ${
-                  isDark ? 'text-gray-400' : 'text-gray-500'
-                }`}>/</span>
-                <span className={`${
-                  isDark ? 'text-gray-400' : 'text-gray-500'
-                }`}>{day.low}°</span>
+                <span className="font-medium text-gray-900 dark:text-gray-200">{day.high}°</span>
+                <span className="mx-1 text-gray-500 dark:text-gray-400">/</span>
+                <span className="text-gray-500 dark:text-gray-400">{day.low}°</span>
               </div>
             </div>
           ))}
@@ -693,15 +627,9 @@ export default function WeatherWidget() {
       )}
       
       {/* Plant tip based on weather */}
-      <div className={`${compactMode ? 'p-2' : 'p-3'} text-sm flex items-start ${
-        isDark 
-          ? 'bg-emerald-900/30 text-emerald-200' 
-          : 'bg-emerald-50 text-emerald-800'
-      }`}>
+      <div className={`${compactMode ? 'p-2' : 'p-3'} text-sm flex items-start bg-emerald-50 dark:bg-emerald-900/30 text-emerald-800 dark:text-emerald-200`}>
         {showIcons && (
-          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={`mr-2 flex-shrink-0 mt-0.5 ${
-            isDark ? 'text-emerald-300' : 'text-emerald-700'
-          }`}>
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-2 flex-shrink-0 mt-0.5 text-emerald-700 dark:text-emerald-300">
             <circle cx="12" cy="12" r="9"></circle>
             <line x1="12" y1="8" x2="12" y2="12"></line>
             <line x1="12" y1="16" x2="12.01" y2="16"></line>

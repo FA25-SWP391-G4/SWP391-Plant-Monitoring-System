@@ -74,8 +74,12 @@ class EventNotificationService {
             });
 
             if (notification) {
-                await this.createNotification(notification);
-                this.trackNotification(source, message);
+                if (notification.user_id) {
+                    await this.createNotification(notification);
+                    this.trackNotification(source, message);
+                } else {
+                    console.log(`[EventNotification] Skipping alert creation for event (no user_id): ${notification.title}`);
+                }
             }
 
         } catch (error) {
