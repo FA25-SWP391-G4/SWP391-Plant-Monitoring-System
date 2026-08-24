@@ -152,13 +152,13 @@ async function checkSmartPlantConnection() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6">
-      <div className="max-w-2xl mx-auto bg-white shadow rounded p-6">
-        <h1 className="text-xl font-semibold mb-4">Add New Device — Wi‑Fi Setup</h1>
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 p-6">
+      <div className="max-w-2xl mx-auto bg-white dark:bg-gray-800 shadow dark:border dark:border-gray-700 rounded p-6">
+        <h1 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">Add New Device — Wi‑Fi Setup</h1>
 
         {step === 1 && (
           <div>
-            <p className="mb-4">To configure your ESP32, first connect your computer to the device's Wi‑Fi access point (usually its SSID). Then click "Find Device" and the page will probe common device IPs.</p>
+            <p className="mb-4 text-gray-700 dark:text-gray-300">To configure your ESP32, first connect your computer to the device's Wi‑Fi access point (usually its SSID). Then click "Find Device" and the page will probe common device IPs.</p>
             <button
               className="px-4 py-2 bg-emerald-600 text-white rounded"
               onClick={checkSmartPlantConnection}
@@ -168,40 +168,40 @@ async function checkSmartPlantConnection() {
             </button>
 
             <button
-              className="ml-2 px-4 py-2 border rounded"
+              className="ml-2 px-4 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-200 rounded hover:bg-gray-50 dark:hover:bg-gray-700"
               onClick={probeDevice}
               disabled={loading}
             >
               Probe Common IPs
             </button>
-            <button className="ml-2 px-4 py-2 border rounded" onClick={() => setStep(2)}>Enter IP manually</button>
-            <p className="mt-3 text-sm text-gray-600">Status: {status}</p>
+            <button className="ml-2 px-4 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-200 rounded hover:bg-gray-50 dark:hover:bg-gray-700" onClick={() => setStep(2)}>Enter IP manually</button>
+            <p className="mt-3 text-sm text-gray-600 dark:text-gray-400">Status: {status}</p>
           </div>
         )}
 
         {step === 2 && (
           <div>
-            <label className="block mb-2">Device IP (e.g. 192.168.4.1)</label>
-            <input className="w-full border rounded p-2 mb-3" value={deviceIp} onChange={e => setDeviceIp(e.target.value)} />
+            <label className="block mb-2 text-gray-700 dark:text-gray-300">Device IP (e.g. 192.168.4.1)</label>
+            <input className="w-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded p-2 mb-3" value={deviceIp} onChange={e => setDeviceIp(e.target.value)} />
 
-            <label className="block mb-2">Wi‑Fi SSID</label>
-            <input className="w-full border rounded p-2 mb-3" value={ssid} onChange={e => setSsid(e.target.value)} />
+            <label className="block mb-2 text-gray-700 dark:text-gray-300">Wi‑Fi SSID</label>
+            <input className="w-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded p-2 mb-3" value={ssid} onChange={e => setSsid(e.target.value)} />
 
-            <label className="block mb-2">Wi‑Fi Password</label>
-            <input className="w-full border rounded p-2 mb-3" type="password" value={password} onChange={e => setPassword(e.target.value)} />
+            <label className="block mb-2 text-gray-700 dark:text-gray-300">Wi‑Fi Password</label>
+            <input className="w-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded p-2 mb-3" type="password" value={password} onChange={e => setPassword(e.target.value)} />
 
             <div className="flex items-center">
               <button className="px-4 py-2 bg-emerald-600 text-white rounded" onClick={sendCredentials} disabled={loading}>Send Credentials</button>
-              <button className="ml-2 px-4 py-2 border rounded" onClick={() => { setStep(1); setStatus(''); }}>Back</button>
+              <button className="ml-2 px-4 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-200 rounded hover:bg-gray-50 dark:hover:bg-gray-700" onClick={() => { setStep(1); setStatus(''); }}>Back</button>
             </div>
 
-            <p className="mt-3 text-sm text-gray-600">Status: {status}</p>
+            <p className="mt-3 text-sm text-gray-600 dark:text-gray-400">Status: {status}</p>
           </div>
         )}
 
         {step === 3 && (
           <div>
-            <p className="mb-4">Configuration sent. The device should connect to the provided Wi‑Fi network. It may take 10–30 seconds. After the device connects, it should appear in your dashboard.</p>
+            <p className="mb-4 text-gray-700 dark:text-gray-300">Configuration sent. The device should connect to the provided Wi‑Fi network. It may take 10–30 seconds. After the device connects, it should appear in your dashboard.</p>
             <div className="flex">
               <button className="px-4 py-2 bg-emerald-600 text-white rounded" onClick={() => router.push('/dashboard')}>Back to Dashboard</button>
             </div>

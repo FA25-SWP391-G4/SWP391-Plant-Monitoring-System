@@ -1,8 +1,160 @@
-import React, { useMemo, useState, useEffect } from 'react';
+import React, { useMemo, useState, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useSettings } from '@/providers/SettingsProvider';
 import plantApi from '@/api/plantApi';
+
+const CustomTimePicker = ({ time, setTime, isDark }) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const [view, setView] = useState('hours'); // 'hours' or 'minutes'
+  const containerRef = useRef(null);
+
+  // Parse time for UI
+  const [h24, mVal] = time.split(':').map(Number);
+  const isPM = h24 >= 12;
+  const h12 = h24 % 12 || 12;
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (containerRef.current && !containerRef.current.contains(event.target)) {
+        setIsOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const handleHourSelect = (val) => {
+    let newH24 = val;
+    if (isPM && val < 12) newH24 += 12;
+    if (!isPM && val === 12) newH24 = 0;
+    setTime(`${newH24.toString().padStart(2, '0')}:${mVal.toString().padStart(2, '0')}`);
+    setView('minutes');
+  };
+
+  const handleMinuteSelect = (val) => {
+    setTime(`${h24.toString().padStart(2, '0')}:${val.toString().padStart(2, '0')}`);
+  };
+  
+  const toggleAMPM = (toPM) => {
+    let newH24 = h12;
+    if (toPM && h12 < 12) newH24 += 12;
+    if (!toPM && h12 === 12) newH24 = 0;
+    setTime(`${newH24.toString().padStart(2, '0')}:${mVal.toString().padStart(2, '0')}`);
+  };
+
+  // Generate clock numbers (12 at top, 3 at right, 6 at bottom, 9 at left)
+  // For index 0 to 11, angle = i * 30 degrees. i=0 is top (12).
+  const clockNumbers = view === 'hours' 
+    ? Array.from({length: 12}, (_, i) => i === 0 ? 12 : i)
+    : Array.from({length: 12}, (_, i) => i * 5);
+
+  const currentValue = view === 'hours' ? h12 : mVal;
+
+  return (
+    <div className="relative" ref={containerRef}>
+      <div 
+        className={`w-full border rounded-md px-2 py-1.5 text-sm cursor-pointer flex justify-between items-center transition-colors ${isDark ? 'bg-gray-700 border-gray-600 text-white hover:bg-gray-600' : 'bg-white border-gray-300 text-gray-900 hover:bg-gray-50'}`}
+        onClick={() => { setIsOpen(!isOpen); setView('hours'); }}
+      >
+        <span>{time}</span>
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={isDark ? "text-gray-400" : "text-gray-500"}><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+      </div>
+
+      {isOpen && (
+        <div className={`absolute z-[60] bottom-full mb-1 w-64 p-4 rounded-2xl shadow-2xl border ${isDark ? 'bg-gray-800 border-gray-700 text-white' : 'bg-[#eef3ea] border-gray-200 text-gray-900'}`}>
+          <div className="flex justify-between items-center mb-5">
+            <div className="flex items-baseline space-x-1">
+              <span 
+                className={`text-4xl cursor-pointer px-2 py-1 rounded-xl transition-colors font-semibold ${view === 'hours' ? 'bg-[#b6f09c] text-[#1f4a13]' : isDark ? 'text-gray-300 hover:bg-gray-700' : 'text-gray-600 hover:bg-[#d5e0cd]'}`}
+                onClick={() => setView('hours')}
+              >
+                {h12}
+              </span>
+              <span className="text-2xl font-bold">:</span>
+              <span 
+                className={`text-4xl cursor-pointer px-2 py-1 rounded-xl transition-colors font-semibold ${view === 'minutes' ? 'bg-[#b6f09c] text-[#1f4a13]' : isDark ? 'text-gray-300 hover:bg-gray-700' : 'text-gray-600 hover:bg-[#d5e0cd]'}`}
+                onClick={() => setView('minutes')}
+              >
+                {mVal.toString().padStart(2, '0')}
+              </span>
+            </div>
+            
+            <div className={`flex flex-col border rounded overflow-hidden text-xs font-semibold ${isDark ? 'border-gray-600' : 'border-[#b8c7ad]'}`}>
+              <button 
+                onClick={() => toggleAMPM(false)}
+                className={`px-3 py-2 transition-colors ${!isPM ? 'bg-[#bfe6e0] text-[#19403a]' : isDark ? 'bg-gray-700 text-gray-300 hover:bg-gray-600' : 'bg-transparent text-gray-600 hover:bg-[#d5e0cd]'}`}
+              >AM</button>
+              <button 
+                onClick={() => toggleAMPM(true)}
+                className={`px-3 py-2 border-t transition-colors ${isDark ? 'border-gray-600' : 'border-[#b8c7ad]'} ${isPM ? 'bg-[#bfe6e0] text-[#19403a]' : isDark ? 'bg-gray-700 text-gray-300 hover:bg-gray-600' : 'bg-transparent text-gray-600 hover:bg-[#d5e0cd]'}`}
+              >PM</button>
+            </div>
+          </div>
+
+          <div className={`relative w-48 h-48 mx-auto rounded-full ${isDark ? 'bg-gray-700' : 'bg-[#e0e8d8]'}`}>
+            {/* Center dot */}
+            <div className="absolute w-2 h-2 rounded-full bg-[#3c7028]" style={{ top: 'calc(50% - 4px)', left: 'calc(50% - 4px)' }}></div>
+            
+            {/* Clock line */}
+            {(() => {
+              const valIndex = view === 'hours' ? (h12 === 12 ? 0 : h12) : mVal / 5;
+              const deg = valIndex * 30 - 90;
+              return (
+                <div 
+                  className="absolute bg-[#3c7028] origin-left"
+                  style={{
+                    top: 'calc(50% - 1px)',
+                    left: '50%',
+                    width: '38%',
+                    height: '2px',
+                    transform: `rotate(${deg}deg)`
+                  }}
+                ></div>
+              );
+            })()}
+
+            {/* Clock numbers */}
+            {clockNumbers.map((num, i) => {
+              const angle = (i * 30 - 90) * (Math.PI / 180);
+              const isSelected = num === currentValue;
+              return (
+                <button
+                  key={num}
+                  onClick={() => view === 'hours' ? handleHourSelect(num) : handleMinuteSelect(num)}
+                  className={`absolute w-8 h-8 -ml-4 -mt-4 rounded-full flex items-center justify-center text-sm transition-colors ${
+                    isSelected ? 'bg-[#3c7028] text-white font-bold' : isDark ? 'text-gray-300 hover:bg-gray-600' : 'text-gray-800 hover:bg-white hover:shadow'
+                  }`}
+                  style={{
+                    left: `${50 + 42 * Math.cos(angle)}%`,
+                    top: `${50 + 42 * Math.sin(angle)}%`
+                  }}
+                >
+                  {view === 'minutes' ? num.toString().padStart(2, '0') : num}
+                </button>
+              );
+            })}
+          </div>
+
+          <div className="flex justify-end mt-4 space-x-4 pr-2">
+            <button 
+              className={`text-sm font-semibold tracking-wide ${isDark ? 'text-gray-400 hover:text-gray-300' : 'text-[#3c7028] hover:text-[#2d521d]'}`}
+              onClick={() => setIsOpen(false)}
+            >
+              CANCEL
+            </button>
+            <button 
+              className={`text-sm font-semibold tracking-wide ${isDark ? 'text-emerald-400 hover:text-emerald-300' : 'text-[#3c7028] hover:text-[#2d521d]'}`}
+              onClick={() => setIsOpen(false)}
+            >
+              OK
+            </button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
 
 export default function WateringSchedule({ plants = [] }) {
   const { t } = useTranslation();
@@ -11,10 +163,15 @@ export default function WateringSchedule({ plants = [] }) {
   const [lastWateredData, setLastWateredData] = useState({});
   const [showAddModal, setShowAddModal] = useState(false);
   const [selectedPlant, setSelectedPlant] = useState('');
-  const [dayOfWeek, setDayOfWeek] = useState('');
-  const [hour, setHour] = useState('');
-  const [minute, setMinute] = useState('');
-  const [duration, setDuration] = useState('');
+  const [selectedDays, setSelectedDays] = useState(['Monday']);
+  const [time, setTime] = useState('08:00');
+  const [duration, setDuration] = useState(5);
+
+  const toggleDay = (day) => {
+    setSelectedDays(prev =>
+      prev.includes(day) ? prev.filter(d => d !== day) : [...prev, day]
+    );
+  };
   const [loading, setLoading] = useState(false);
   const [schedules, setSchedules] = useState({});
 
@@ -133,15 +290,19 @@ export default function WateringSchedule({ plants = [] }) {
     if (!selectedPlant) return alert('Please select a plant');
     setLoading(true);
     try {
-      const schedule = [
-        {
-          dayOfWeek,
-          hour: parseInt(hour),
-          minute: parseInt(minute),
-          duration: parseInt(duration),
-          enabled: true,
-        },
-      ];
+      if (selectedDays.length === 0) {
+        alert('Please select at least one day');
+        setLoading(false);
+        return;
+      }
+      const [hourStr, minuteStr] = time.split(':');
+      const schedule = selectedDays.map(day => ({
+        dayOfWeek: day,
+        hour: parseInt(hourStr, 10) || 0,
+        minute: parseInt(minuteStr, 10) || 0,
+        duration: parseInt(duration, 10) || 5,
+        enabled: true,
+      }));
       await plantApi.setWateringSchedule(selectedPlant, { schedule });
       await plantApi.toggleAutoWatering(selectedPlant, true);
 
@@ -270,43 +431,42 @@ export default function WateringSchedule({ plants = [] }) {
         );
       })}
       
-      <button
-        onClick={() => setShowAddModal(true)}
-        className={`w-full mt-2 py-1.5 text-xs flex items-center justify-center transition-colors ${
-          isDark
-            ? 'text-emerald-400 hover:text-emerald-300'
-            : 'text-emerald-600 hover:text-emerald-700'
-        }`}
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="14"
-          height="14"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          className="mr-1"
+      {!showAddModal ? (
+        <button
+          onClick={() => setShowAddModal(true)}
+          className={`w-full mt-2 py-1.5 text-xs flex items-center justify-center transition-colors ${
+            isDark
+              ? 'text-emerald-400 hover:text-emerald-300'
+              : 'text-emerald-600 hover:text-emerald-700'
+          }`}
         >
-          <path d="M12 5v14"></path>
-          <path d="M5 12h14"></path>
-        </svg>
-        {t('watering.addPlant', 'Add plant to schedule')}
-      </button>
-
-      {showAddModal && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-50">
-          <div
-            className={`p-4 rounded-xl shadow-lg w-80 ${
-              isDark ? 'bg-gray-800 text-white' : 'bg-white text-gray-900'
-            }`}
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className="mr-1"
           >
+            <path d="M12 5v14"></path>
+            <path d="M5 12h14"></path>
+          </svg>
+          {t('watering.addPlant', 'Add plant to schedule')}
+        </button>
+      ) : (
+        <div
+          className={`mt-3 p-4 rounded-xl shadow-sm border ${
+            isDark ? 'bg-gray-800 text-white border-gray-700' : 'bg-gray-50 text-gray-900 border-gray-200'
+          }`}
+        >
             <h3 className="text-sm font-semibold mb-2">Add Plant to Schedule</h3>
 
             <select
-              className="w-full mb-2 border rounded p-1 text-sm"
+              className={`w-full mb-2 border rounded p-1 text-sm ${isDark ? 'bg-gray-700 border-gray-600 text-white' : 'bg-white border-gray-300 text-gray-900'}`}
               value={selectedPlant}
               onChange={(e) => setSelectedPlant(e.target.value)}
             >
@@ -318,53 +478,56 @@ export default function WateringSchedule({ plants = [] }) {
               ))}
             </select>
 
-            <div className="grid grid-cols-2 gap-2 mb-2">
-              <label className="block text-xs font-medium text-gray-500 mb-1">
-                Day of Week
-              </label>
-              <select
-                value={dayOfWeek}
-                onChange={(e) => setDayOfWeek(e.target.value)}
-                className="w-full text-sm border border-gray-300 rounded-md px-2 py-1 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
-              >
-                <option value="Monday">Monday</option>
-                <option value="Tuesday">Tuesday</option>
-                <option value="Wednesday">Wednesday</option>
-                <option value="Thursday">Thursday</option>
-                <option value="Friday">Friday</option>
-                <option value="Saturday">Saturday</option>
-                <option value="Sunday">Sunday</option>
-              </select>
-              <input
-                type="number"
-                className="border rounded p-1 text-sm"
-                value={duration}
-                onChange={(e) => setDuration(e.target.value)}
-                placeholder="Duration (s)"
-              />
+            <label className={`block text-xs font-medium mb-1.5 ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
+              Days of Week
+            </label>
+            <div className="flex justify-between mb-4">
+              {['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'].map((day) => (
+                <button
+                  key={day}
+                  onClick={() => toggleDay(day)}
+                  className={`w-8 h-8 rounded-full text-xs font-semibold flex items-center justify-center transition-all ${
+                    selectedDays.includes(day)
+                      ? 'bg-emerald-500 text-white shadow-md transform scale-105'
+                      : isDark
+                        ? 'bg-gray-700 text-gray-300 hover:bg-gray-600'
+                        : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                  }`}
+                >
+                  {day.charAt(0)}
+                </button>
+              ))}
             </div>
 
-            <div className="grid grid-cols-2 gap-2 mb-3">
-              <input
-                type="number"
-                className="border rounded p-1 text-sm"
-                value={hour}
-                onChange={(e) => setHour(e.target.value)}
-                placeholder="Hour (0-23)"
-              />
-              <input
-                type="number"
-                className="border rounded p-1 text-sm"
-                value={minute}
-                onChange={(e) => setMinute(e.target.value)}
-                placeholder="Minute (0-59)"
-              />
+            <div className="grid grid-cols-2 gap-4 mb-4">
+              <div>
+                <label className={`block text-xs font-medium mb-1 ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
+                  Time
+                </label>
+                <CustomTimePicker time={time} setTime={setTime} isDark={isDark} />
+              </div>
+              <div>
+                <label className={`block text-xs font-medium mb-1 ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
+                  Duration: <span className={isDark ? 'text-emerald-400' : 'text-emerald-600'}>{duration}s</span>
+                </label>
+                <div className="flex items-center h-[34px]">
+                  <input
+                    type="range"
+                    min="1"
+                    max="60"
+                    step="1"
+                    className="w-full accent-emerald-500 cursor-pointer"
+                    value={duration}
+                    onChange={(e) => setDuration(e.target.value)}
+                  />
+                </div>
+              </div>
             </div>
 
             <div className="flex justify-end space-x-2">
               <button
                 onClick={() => setShowAddModal(false)}
-                className="text-xs px-3 py-1 border rounded hover:bg-gray-100 dark:hover:bg-gray-700"
+                className={`text-xs px-3 py-1 border rounded ${isDark ? 'border-gray-600 hover:bg-gray-700 text-gray-300' : 'border-gray-300 hover:bg-gray-100 text-gray-700'}`}
               >
                 Cancel
               </button>
@@ -376,7 +539,6 @@ export default function WateringSchedule({ plants = [] }) {
                 {loading ? 'Saving...' : 'Add'}
               </button>
             </div>
-          </div>
         </div>
       )}
     </div>
