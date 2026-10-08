@@ -1,13 +1,7 @@
 /**
  * ============================================================================
  * PLANT CONTROLLER - PLANT & WATERING MANAGEMENT
- * ===            });
-
-            await sendPumpCommand(device.device_key, 'pump_on', duration); // Pass parameters in correct order: device_key, command, duration
-            
-            console.log('✅ [PUMP DEBUG] Pump command sent successfully');
-            
-            // Log to system logs for tracking==================================================================
+ * ============================================================================
  * 
  * This controller handles plant management and watering functionality:
  * - UC5: Manual Watering - Direct pump control
@@ -32,6 +26,20 @@ const { connectAwsIoT } = require('../services/awsIOTClient');
 const { mqtt } = require('aws-iot-device-sdk-v2');
 const { isValidUUID } = require('../utils/uuidGenerator');
 const { data } = require('@tensorflow/tfjs');
+const { sendScheduleToDevice } = require('../services/schedulerService');
+
+function dayNameToNumber(dayName) {
+    const days = {
+        'Sunday': 0,
+        'Monday': 1,
+        'Tuesday': 2,
+        'Wednesday': 3,
+        'Thursday': 4,
+        'Friday': 5,
+        'Saturday': 6
+    };
+    return days[dayName] !== undefined ? days[dayName] : 0;
+}
 
 // AWS IoT connection for device communication
 let awsIoTConnection = null;

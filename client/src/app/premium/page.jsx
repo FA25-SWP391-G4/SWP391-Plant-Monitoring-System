@@ -243,21 +243,21 @@ export default function PremiumPage() {
       
       {/* Premium Header */}
       <div className="text-center max-w-3xl mx-auto mb-12">
-        <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+        <h1 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
           {t('premium.upgradeToday', 'Upgrade to Premium Today')}
         </h1>
-        <p className="text-lg text-gray-600 mb-8">
+        <p className="text-lg text-gray-600 dark:text-gray-300 mb-8">
           {t('premium.unlockDescription', 'Take your plant care to the next level with advanced features, detailed analytics, and premium support.')}
         </p>
         
         {/* Plan toggle */}
-        <div className="inline-flex items-center bg-gray-100 rounded-lg p-1">
+        <div className="inline-flex items-center bg-gray-100 dark:bg-gray-700 rounded-lg p-1">
           <button
             onClick={() => setSelectedPlan('monthly')}
             className={`px-4 py-2 text-sm font-medium rounded-md ${
               selectedPlan === 'monthly' 
-                ? 'bg-white text-emerald-600 shadow-sm' 
-                : 'text-gray-500 hover:text-gray-700'
+                ? 'bg-white dark:bg-gray-800 text-emerald-600 shadow-sm' 
+                : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:text-gray-200'
             }`}
           >
             {t('premium.monthly', 'Monthly')}
@@ -266,8 +266,8 @@ export default function PremiumPage() {
             onClick={() => setSelectedPlan('annual')}
             className={`px-4 py-2 text-sm font-medium rounded-md ${
               selectedPlan === 'annual' 
-                ? 'bg-white text-emerald-600 shadow-sm' 
-                : 'text-gray-500 hover:text-gray-700'
+                ? 'bg-white dark:bg-gray-800 text-emerald-600 shadow-sm' 
+                : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:text-gray-200'
             }`}
           >
             {t('premium.annual', 'Annual')} 
@@ -291,29 +291,29 @@ export default function PremiumPage() {
         <div className="max-w-7xl mx-auto mb-12">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {/* Free Plan */}
-          <div className="bg-white rounded-xl overflow-hidden border border-gray-200 shadow-sm">
+          <div className="bg-white dark:bg-gray-800 rounded-xl overflow-hidden border border-gray-200 dark:border-gray-700 shadow-sm">
             <div className="p-6">
-              <h2 className="text-xl font-semibold text-gray-900 mb-2">
+              <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
                 {t('premium.basic', 'Basic')}
               </h2>
-              <p className="text-gray-500 mb-4">
+              <p className="text-gray-500 dark:text-gray-400 mb-4">
                 {t('premium.basicDesc', 'Essential features for casual plant owners')}
               </p>
               <div className="mb-6">
-                <span className="text-3xl font-bold text-gray-900">0₫</span>
-                <span className="text-gray-500 ml-1">{t('premium.forever', 'forever')}</span>
+                <span className="text-3xl font-bold text-gray-900 dark:text-white">0₫</span>
+                <span className="text-gray-500 dark:text-gray-400 ml-1">{t('premium.forever', 'forever')}</span>
               </div>
               {!hasActivePremiumSubscription() && (
                 <button
-                  className="w-full bg-gray-100 hover:bg-gray-200 text-gray-700 py-2 px-4 rounded-lg font-medium transition-colors"
+                  className="w-full bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 text-gray-700 dark:text-gray-200 py-2 px-4 rounded-lg font-medium transition-colors"
                   disabled
                 >
                   {t('premium.currentPlan', 'Current Plan')}
                 </button>
               )}
             </div>
-            <div className="border-t border-gray-200 p-6">
-              <h3 className="font-medium text-gray-900 mb-4">
+            <div className="border-t border-gray-200 dark:border-gray-700 p-6">
+              <h3 className="font-medium text-gray-900 dark:text-white mb-4">
                 {t('premium.includes', 'Includes:')}
               </h3>
               <ul className="space-y-3">
@@ -327,7 +327,7 @@ export default function PremiumPage() {
           </div>
 
           {/* Premium Plan */}
-          <div className="bg-white rounded-xl overflow-hidden border border-emerald-200 shadow-sm relative">
+          <div className="bg-white dark:bg-gray-800 rounded-xl overflow-hidden border border-emerald-200 shadow-sm relative">
             <div className={`absolute top-0 right-0 text-white text-xs font-bold py-1 px-3 rounded-bl-lg ${
               hasActivePremiumSubscription() && userSubscription?.planName === 'Premium'
                 ? 'bg-green-600' 
@@ -339,10 +339,10 @@ export default function PremiumPage() {
               }
             </div>
             <div className="p-6">
-              <h2 className="text-xl font-semibold text-gray-900 mb-2">
+              <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
                 {t('premium.premium', 'Premium')}
               </h2>
-              <p className="text-gray-500 mb-4">
+              <p className="text-gray-500 dark:text-gray-400 mb-4">
                 {t('premium.premiumDesc', 'Advanced features for serious plant enthusiasts')}
               </p>
               <div className="mb-6">
@@ -350,7 +350,7 @@ export default function PremiumPage() {
                   // Show expiry date for active subscribers
                   <>
                     <div className="text-center">
-                      <span className="text-lg font-medium text-gray-600 block mb-2">
+                      <span className="text-lg font-medium text-gray-600 dark:text-gray-300 block mb-2">
                         {t('premium.currentPlan', 'Current Plan')}
                       </span>
                       <div className="text-2xl font-bold text-emerald-600 mb-2">
@@ -360,7 +360,7 @@ export default function PremiumPage() {
                         }
                       </div>
                       {userSubscription?.subscriptionType !== 'lifetime' && (
-                        <div className="text-sm text-gray-500">
+                        <div className="text-sm text-gray-500 dark:text-gray-400">
                           {userSubscription?.subscriptionType === 'yearly' 
                             ? t('premium.yearlySubscription', 'Annual Subscription')
                             : t('premium.monthlySubscription', 'Monthly Subscription')
@@ -376,14 +376,14 @@ export default function PremiumPage() {
                       <span className="text-3xl font-bold text-emerald-600">
                         {formatPrice(getPlanByName('Premium')?.priceMonthly)}₫
                       </span>
-                      <span className="text-gray-500 ml-1">{t('premium.perMonth', 'per month')}</span>
+                      <span className="text-gray-500 dark:text-gray-400 ml-1">{t('premium.perMonth', 'per month')}</span>
                     </>
                   ) : (
                     <>
                       <span className="text-3xl font-bold text-emerald-600">
                         {formatPrice(getPlanByName('Premium')?.priceYearly)}₫
                       </span>
-                      <span className="text-gray-500 ml-1">{t('premium.perYear', 'per year')}</span>
+                      <span className="text-gray-500 dark:text-gray-400 ml-1">{t('premium.perYear', 'per year')}</span>
                       <div className="text-sm text-emerald-600 font-medium mt-1">
                         {t('premium.billed', 'Billed annually (17% off)')}
                       </div>
@@ -415,7 +415,7 @@ export default function PremiumPage() {
                       </button>
                       {userSubscription?.subscriptionType === 'monthly' && (
                         <button
-                          className="w-full bg-white border border-emerald-600 hover:bg-emerald-50 text-emerald-600 py-2 px-4 rounded-lg font-medium transition-colors"
+                          className="w-full bg-white dark:bg-gray-800 border border-emerald-600 hover:bg-emerald-50 text-emerald-600 py-2 px-4 rounded-lg font-medium transition-colors"
                           onClick={() => handleUpgradeClick('annual')}
                         >
                           {t('premium.upgradeToYearly', 'Upgrade to Annual Plan')}
@@ -435,7 +435,7 @@ export default function PremiumPage() {
                         t('premium.annualUpgrade', 'Get Annual Plan')}
                     </button>
                     <button
-                      className="w-full bg-white border border-emerald-600 hover:bg-emerald-50 text-emerald-600 py-2 px-4 rounded-lg font-medium transition-colors"
+                      className="w-full bg-white dark:bg-gray-800 border border-emerald-600 hover:bg-emerald-50 text-emerald-600 py-2 px-4 rounded-lg font-medium transition-colors"
                       onClick={() => handleUpgradeClick('lifetime')}
                     >
                       {t('premium.lifetimeUpgrade', 'Lifetime Access - ')}{formatPrice(getPlanByName('Premium')?.priceLifetime)}₫
@@ -444,8 +444,8 @@ export default function PremiumPage() {
                 )}
               </div>
             </div>
-            <div className="border-t border-gray-200 p-6">
-              <h3 className="font-medium text-gray-900 mb-4">
+            <div className="border-t border-gray-200 dark:border-gray-700 p-6">
+              <h3 className="font-medium text-gray-900 dark:text-white mb-4">
                 {t('premium.includes', 'Includes everything in Basic, plus:')}
               </h3>
               <ul className="space-y-3">
@@ -476,7 +476,7 @@ export default function PremiumPage() {
               <h2 className="text-xl font-semibold bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent mb-2">
                 {t('premium.ultimate', 'Ultimate')}
               </h2>
-              <p className="text-gray-600 mb-4">
+              <p className="text-gray-600 dark:text-gray-300 mb-4">
                 {t('premium.ultimateDesc', 'Everything Premium has + AI intelligence & real-time monitoring')}
               </p>
               <div className="mb-6">
@@ -484,7 +484,7 @@ export default function PremiumPage() {
                   // Show expiry date for active Ultimate subscribers
                   <>
                     <div className="text-center">
-                      <span className="text-lg font-medium text-gray-600 block mb-2">
+                      <span className="text-lg font-medium text-gray-600 dark:text-gray-300 block mb-2">
                         {t('premium.currentPlan', 'Current Plan')}
                       </span>
                       <div className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent mb-2">
@@ -494,7 +494,7 @@ export default function PremiumPage() {
                         }
                       </div>
                       {userSubscription?.subscriptionType !== 'lifetime' && (
-                        <div className="text-sm text-gray-500">
+                        <div className="text-sm text-gray-500 dark:text-gray-400">
                           {userSubscription?.subscriptionType === 'yearly' 
                             ? t('premium.yearlySubscription', 'Annual Subscription')
                             : t('premium.monthlySubscription', 'Monthly Subscription')
@@ -510,14 +510,14 @@ export default function PremiumPage() {
                       <span className="text-3xl font-bold bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent">
                         {formatPrice(getPlanByName('Ultimate')?.priceMonthly)}₫
                       </span>
-                      <span className="text-gray-500 ml-1">{t('premium.perMonth', 'per month')}</span>
+                      <span className="text-gray-500 dark:text-gray-400 ml-1">{t('premium.perMonth', 'per month')}</span>
                     </>
                   ) : (
                     <>
                       <span className="text-3xl font-bold bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent">
                         {formatPrice(getPlanByName('Ultimate')?.priceYearly)}₫
                       </span>
-                      <span className="text-gray-500 ml-1">{t('premium.perYear', 'per year')}</span>
+                      <span className="text-gray-500 dark:text-gray-400 ml-1">{t('premium.perYear', 'per year')}</span>
                       <div className="text-sm text-purple-600 font-medium mt-1">
                         {t('premium.ultimateBilled', 'Billed annually (26% off)')}
                       </div>
@@ -549,7 +549,7 @@ export default function PremiumPage() {
                       </button>
                       {userSubscription?.subscriptionType === 'monthly' && (
                         <button
-                          className="w-full bg-white border border-purple-600 hover:bg-purple-50 text-purple-600 py-2 px-4 rounded-lg font-medium transition-colors"
+                          className="w-full bg-white dark:bg-gray-800 border border-purple-600 hover:bg-purple-50 text-purple-600 py-2 px-4 rounded-lg font-medium transition-colors"
                           onClick={() => handleUpgradeClick('ultimate-annual')}
                         >
                           {t('premium.upgradeToYearly', 'Upgrade to Annual Plan')}
@@ -570,8 +570,8 @@ export default function PremiumPage() {
                 )}
               </div>
             </div>
-            <div className="border-t border-purple-200 p-6 bg-white/50">
-              <h3 className="font-medium text-gray-900 mb-4">
+            <div className="border-t border-purple-200 p-6 bg-white dark:bg-gray-800/50">
+              <h3 className="font-medium text-gray-900 dark:text-white mb-4">
                 {t('premium.includes', 'Includes everything in Premium, plus:')}
               </h3>
               <ul className="space-y-3">
@@ -592,92 +592,92 @@ export default function PremiumPage() {
       {!isLoading && (
         <>
         <div className="mb-16">
-          <h2 className="text-2xl font-semibold text-gray-900 text-center mb-8">
+          <h2 className="text-2xl font-semibold text-gray-900 dark:text-white text-center mb-8">
             {t('premium.featuresTitle', 'Premium Features')}
           </h2>
 
         </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
+          <div className="bg-white dark:bg-gray-800 p-6 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm">
             <div className="rounded-full bg-emerald-100 w-12 h-12 flex items-center justify-center mb-4">
               <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
               </svg>
             </div>
-            <h3 className="text-lg font-medium text-gray-900 mb-2">
+            <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">
               {t('premium.advancedAnalytics', 'Advanced Analytics')}
             </h3>
-            <p className="text-gray-600">
+            <p className="text-gray-600 dark:text-gray-300">
               {t('premium.advancedAnalyticsDesc', "Get detailed insights into your plant's health over time with comprehensive data visualization and trend analysis.")}
             </p>
           </div>
           
-          <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
+          <div className="bg-white dark:bg-gray-800 p-6 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm">
             <div className="rounded-full bg-emerald-100 w-12 h-12 flex items-center justify-center mb-4">
               <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
               </svg>
             </div>
-            <h3 className="text-lg font-medium text-gray-900 mb-2">
+            <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">
               {t('premium.automatedSchedules', 'Automated Schedules')}
             </h3>
-            <p className="text-gray-600">
+            <p className="text-gray-600 dark:text-gray-300">
               {t('premium.automatedSchedulesDesc', "Create smart watering schedules tailored to each plant's needs, with automatic adjustments based on real-time sensor data.")}
             </p>
           </div>
           
-          <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
+          <div className="bg-white dark:bg-gray-800 p-6 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm">
             <div className="rounded-full bg-emerald-100 w-12 h-12 flex items-center justify-center mb-4">
               <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z" />
               </svg>
             </div>
-            <h3 className="text-lg font-medium text-gray-900 mb-2">
+            <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">
               {t('premium.aiRecommendations', 'AI Recommendations')}
             </h3>
-            <p className="text-gray-600">
+            <p className="text-gray-600 dark:text-gray-300">
               {t('premium.aiRecommendationsDesc', "Receive personalized care recommendations from our AI system, which learns from your plants' specific conditions and growth patterns.")}
             </p>
           </div>
           
-          <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
+          <div className="bg-white dark:bg-gray-800 p-6 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm">
             <div className="rounded-full bg-emerald-100 w-12 h-12 flex items-center justify-center mb-4">
               <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
               </svg>
             </div>
-            <h3 className="text-lg font-medium text-gray-900 mb-2">
+            <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">
               {t('premium.customZones', 'Custom Zones')}
             </h3>
-            <p className="text-gray-600">
+            <p className="text-gray-600 dark:text-gray-300">
               {t('premium.customZonesDesc', 'Organize plants into custom zones based on location, type, or care requirements to streamline monitoring and management.')}
             </p>
           </div>
           
-          <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
+          <div className="bg-white dark:bg-gray-800 p-6 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm">
             <div className="rounded-full bg-emerald-100 w-12 h-12 flex items-center justify-center mb-4">
               <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
               </svg>
             </div>
-            <h3 className="text-lg font-medium text-gray-900 mb-2">
+            <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">
               {t('premium.dataExport', 'Data Export')}
             </h3>
-            <p className="text-gray-600">
+            <p className="text-gray-600 dark:text-gray-300">
               {t('premium.dataExportDesc', 'Export your plant data in various formats, including CSV and PDF, for record-keeping or further analysis.')}
             </p>
           </div>
           
-          <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
+          <div className="bg-white dark:bg-gray-800 p-6 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm">
             <div className="rounded-full bg-emerald-100 w-12 h-12 flex items-center justify-center mb-4">
               <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z" />
               </svg>
             </div>
-            <h3 className="text-lg font-medium text-gray-900 mb-2">
+            <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">
               {t('premium.prioritySupport', 'Priority Support')}
             </h3>
-            <p className="text-gray-600">
+            <p className="text-gray-600 dark:text-gray-300">
               {t('premium.prioritySupportDesc', 'Get priority access to our support team with faster response times and dedicated assistance for any issues.')}
             </p>
           </div>
@@ -688,7 +688,7 @@ export default function PremiumPage() {
       
       {/* FAQ Section */}
       <div className="max-w-3xl mx-auto mb-16 mt-16">
-        <h2 className="text-2xl font-semibold text-gray-900 text-center mb-8">
+        <h2 className="text-2xl font-semibold text-gray-900 dark:text-white text-center mb-8">
           {t('premium.faqTitle', 'Frequently Asked Questions')}
         </h2>
         
@@ -735,14 +735,14 @@ export default function PremiumPage() {
             {userSubscription?.subscriptionType !== 'lifetime' && (
               <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
                 <button 
-                  className="bg-white text-emerald-600 hover:bg-gray-100 px-8 py-3 rounded-lg font-medium transition-colors"
+                  className="bg-white dark:bg-gray-800 text-emerald-600 hover:bg-gray-100 dark:bg-gray-700 px-8 py-3 rounded-lg font-medium transition-colors"
                   onClick={() => handleUpgradeClick(userSubscription?.subscriptionType)}
                 >
                   {t('premium.extendCurrent', 'Extend Current Plan')}
                 </button>
                 {userSubscription?.planName === 'Premium' && (
                   <button 
-                    className="bg-white text-emerald-600 hover:bg-gray-100 px-8 py-3 rounded-lg font-medium transition-colors"
+                    className="bg-white dark:bg-gray-800 text-emerald-600 hover:bg-gray-100 dark:bg-gray-700 px-8 py-3 rounded-lg font-medium transition-colors"
                     onClick={() => handleUpgradeClick('ultimate-annual')}
                   >
                     {t('premium.upgradeToUltimate', 'Upgrade to Ultimate')}
@@ -762,13 +762,13 @@ export default function PremiumPage() {
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
               <button 
-                className="bg-white text-emerald-600 hover:bg-gray-100 px-8 py-3 rounded-lg font-medium transition-colors"
+                className="bg-white dark:bg-gray-800 text-emerald-600 hover:bg-gray-100 dark:bg-gray-700 px-8 py-3 rounded-lg font-medium transition-colors"
                 onClick={() => handleUpgradeClick('monthly')}
               >
                 {t('premium.getStartedMonthly', 'Get Started - ')}{formatPrice(getPlanByName('Premium')?.priceMonthly)}₫/{t('premium.month', 'month')}
               </button>
               <button 
-                className="bg-white text-emerald-600 hover:bg-gray-100 px-8 py-3 rounded-lg font-medium transition-colors"
+                className="bg-white dark:bg-gray-800 text-emerald-600 hover:bg-gray-100 dark:bg-gray-700 px-8 py-3 rounded-lg font-medium transition-colors"
                 onClick={() => handleUpgradeClick('lifetime')}
               >
                 {t('premium.getLifetime', 'Get Lifetime - ')}{formatPrice(getPlanByName('Premium')?.priceLifetime)}₫
@@ -784,12 +784,12 @@ export default function PremiumPage() {
       {/* Processing and Error Display */}
       {isProcessing && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 max-w-md w-full text-center">
+          <div className="bg-white dark:bg-gray-800 rounded-lg p-6 max-w-md w-full text-center">
             <div className="flex items-center justify-center mb-4">
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-emerald-600"></div>
               <span className="ml-2 text-lg font-medium">{t('payment.processing', 'Processing payment...')}</span>
             </div>
-            <p className="text-gray-600">{t('payment.redirecting', 'Redirecting to VNPay payment gateway...')}</p>
+            <p className="text-gray-600 dark:text-gray-300">{t('payment.redirecting', 'Redirecting to VNPay payment gateway...')}</p>
           </div>
         </div>
       )}
@@ -797,19 +797,19 @@ export default function PremiumPage() {
       {/* Payment Error Message */}
       {paymentError && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 max-w-md w-full">
+          <div className="bg-white dark:bg-gray-800 rounded-lg p-6 max-w-md w-full">
             <div className="text-center mb-4">
               <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100 mb-4">
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.82 16.5c-.77.833.192 2.5 1.732 2.5z" />
                 </svg>
               </div>
-              <h3 className="text-lg font-medium text-gray-900 mb-2">{t('payment.error', 'Payment Error')}</h3>
-              <p className="text-sm text-gray-600 mb-4">{paymentError}</p>
+              <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">{t('payment.error', 'Payment Error')}</h3>
+              <p className="text-sm text-gray-600 dark:text-gray-300 mb-4">{paymentError}</p>
             </div>
             <div className="flex justify-center">
               <button
-                className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200"
+                className="px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded-lg hover:bg-gray-200"
                 onClick={() => setPaymentError(null)}
               >
                 {t('common.close', 'Close')}
@@ -828,7 +828,7 @@ function PlanFeature({ text, highlighted = false }) {
       <svg 
         xmlns="http://www.w3.org/2000/svg" 
         className={`h-5 w-5 mr-2 ${
-          highlighted ? 'text-emerald-500' : 'text-gray-500'
+          highlighted ? 'text-emerald-500' : 'text-gray-500 dark:text-gray-400'
         }`} 
         fill="none" 
         viewBox="0 0 24 24" 
@@ -836,7 +836,7 @@ function PlanFeature({ text, highlighted = false }) {
       >
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
       </svg>
-      <span className={highlighted ? 'text-gray-900' : 'text-gray-600'}>{text}</span>
+      <span className={highlighted ? 'text-gray-900 dark:text-white' : 'text-gray-600 dark:text-gray-300'}>{text}</span>
     </li>
   );
 }
@@ -845,15 +845,15 @@ function FAQ({ question, answer }) {
   const [isOpen, setIsOpen] = useState(false);
   
   return (
-    <div className="border border-gray-200 rounded-lg overflow-hidden">
+    <div className="border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden">
       <button
         className="flex items-center justify-between w-full text-left p-4 focus:outline-none"
         onClick={() => setIsOpen(!isOpen)}
       >
-        <h3 className="font-medium text-gray-900">{question}</h3>
+        <h3 className="font-medium text-gray-900 dark:text-white">{question}</h3>
         <svg 
           xmlns="http://www.w3.org/2000/svg" 
-          className={`h-5 w-5 text-gray-500 transition-transform ${isOpen ? 'transform rotate-180' : ''}`}
+          className={`h-5 w-5 text-gray-500 dark:text-gray-400 transition-transform ${isOpen ? 'transform rotate-180' : ''}`}
           fill="none" 
           viewBox="0 0 24 24" 
           stroke="currentColor"
@@ -862,8 +862,8 @@ function FAQ({ question, answer }) {
         </svg>
       </button>
       {isOpen && (
-        <div className="p-4 bg-gray-50 border-t border-gray-200">
-          <p className="text-gray-600">{answer}</p>
+        <div className="p-4 bg-gray-50 dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700">
+          <p className="text-gray-600 dark:text-gray-300">{answer}</p>
         </div>
       )}
     </div>
