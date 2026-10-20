@@ -1,8 +1,8 @@
 # 🌿 AI Models & Services - PlantSmart Monitoring System
 
-Thư mục này chứa toàn bộ các mô hình Trí tuệ Nhân tạo (AI) phục vụ cho hệ thống giám sát và chăm sóc cây cảnh thông minh **PlantSmart**, bao gồm:
+Thư mục này chứa các phân hệ Trí tuệ Nhân tạo (AI) phục vụ cho hệ thống giám sát và chăm sóc cây cảnh thông minh **PlantSmart**:
 1. **Disease Recognition Engine (Chẩn đoán bệnh & nhận diện loài cây qua ảnh chụp lá)**
-2. **Watering Prediction Engine (Dự đoán nhu cầu tưới nước theo cảm biến môi trường)**
+2. **Watering Prediction Engine (Dự đoán nhu cầu tưới nước theo dữ liệu cảm biến)**
 
 ---
 
@@ -10,131 +10,120 @@ Thư mục này chứa toàn bộ các mô hình Trí tuệ Nhân tạo (AI) ph�
 
 ```text
 ai_models/
-├── disease_recognition/                    # 🌿 Phân hệ AI chẩn đoán bệnh qua hình ảnh
-│   ├── models/                             # Trọng số mô hình ONNX tối ưu trên CPU
-│   │   ├── mobilenet_v3_large_14class_320x320.onnx  # Phân loại 14 lớp bệnh (~16 MB, ~6ms)
-│   │   ├── resnet18_14class_320x320.onnx            # Mô hình phân loại dự phòng (~44 MB)
-│   │   └── u2netp.onnx                              # Tách nền & bóc tách lá (~4.5 MB, ~140ms)
-│   ├── sample_images/                      # Bộ ảnh mẫu để kiểm thử chẩn đoán
+├── disease_recognition/                    # 🌿 Phân hệ AI chẩn đoán bệnh cây cảnh
+│   ├── models/                             # ⚠️ Thư mục chứa trọng số mô hình ONNX
+│   │   ├── .gitkeep                        # File giữ chỗ thư mục trên Git
+│   │   ├── mobilenet_v3_large_14class_320x320.onnx   # [BẮT BUỘC] Model phân loại (~16.8 MB)
+│   │   ├── u2netp.onnx                               # [BẮT BUỘC] Model tách phiến lá (~4.5 MB)
+│   │   └── resnet18_14class_320x320.onnx             # [TÙY CHỌN] Model ResNet-18 (~44.7 MB)
 │   ├── app.py                              # Server FastAPI phục vụ API chẩn đoán (Port 8000)
 │   ├── pipeline.py                         # Master Engine kết hợp 2 giai đoạn (Tách lá + Phân loại)
 │   ├── enhanced_leaf_extractor.py          # Lọc màu thực vật (HSV) & làm mịn viền lá
-│   ├── demo.py                             # Script kiểm tra chẩn đoán qua dòng lệnh CLI
-│   └── requirements.txt                    # Thư viện Python cần thiết
+│   └── requirements.txt                    # Danh sách thư viện Python phụ thuộc
 │
 ├── watering_prediction/                    # 💧 Phân hệ AI dự đoán chu kỳ tưới cây
 │   ├── model.js                            # Logic mô hình tưới
 │   ├── dataPreprocessor.js                 # Chuẩn hóa dữ liệu sensor
 │   └── index.js
 │
-├── config.json                             # File cấu hình metadata tổng thể cho cả 2 hệ thống AI
-├── tensorflow-config.js                    # Cấu hình TensorFlow runtime (nếu dùng)
-└── README.md                               # Tài liệu hướng dẫn này
+├── config.json                             # File cấu hình metadata tổng thể
+└── README.md                               # Hướng dẫn setup & vận hành này
 ```
 
 ---
 
-## 🚀 Hướng dẫn Cài đặt & Khởi động Disease Recognition Server
+## 🚀 HƯỚNG DẪN SETUP & CHẠY SERVER AI CHẨN ĐOÁN BỆNH
 
-### 1. Yêu cầu môi trường
-* **Python 3.8+** (Khuyên dùng Python 3.10 hoặc 3.11).
-* Chạy hoàn toàn trên **CPU** (Không yêu cầu GPU/Card đồ họa rời).
+> [!IMPORTANT]
+> **LƯU Ý VỀ FILE MÔ HÌNH (MODELS):**  
+> Để giữ kích thước Git repository gọn nhẹ, các file mô hình trọng số (`.onnx`) **không được commit trực tiếp lên Git**.  
+> Bạn cần nhận các file mô hình từ người phụ trách và bỏ vào đúng thư mục trước khi chạy server.
 
-### 2. Cài đặt thư viện Python phụ thuộc
-Mở Terminal / PowerShell và chạy lệnh:
+---
+
+### Bước 1: Bỏ các file mô hình vào thư mục `models/`
+
+Hãy sao chép các file mô hình ONNX vào đường dẫn:
+📁 **`ai_models/disease_recognition/models/`**
+
+Danh sách file cần thiết:
+1. **`u2netp.onnx`** (~4.5 MB): Mô hình bóc tách phiến lá cây ra khỏi hậu cảnh bàn, ghế, tường nhà...
+2. **`mobilenet_v3_large_14class_320x320.onnx`** (~16.8 MB): Mô hình phân loại 14 lớp bệnh trên 5 loài cây cảnh (chạy chính thức, độ trễ cực thấp ~6ms trên CPU).
+3. *(Tùy chọn)* **`resnet18_14class_320x320.onnx`** (~44.7 MB): Mô hình phân loại dự phòng.
+
+Sau khi copy xong, kiểm tra đảm bảo cấu trúc như sau:
+```text
+ai_models/disease_recognition/models/
+├── .gitkeep
+├── mobilenet_v3_large_14class_320x320.onnx
+├── u2netp.onnx
+└── resnet18_14class_320x320.onnx
+```
+
+---
+
+### Bước 2: Cài đặt thư viện Python phụ thuộc
+
+Mở Terminal / PowerShell và chạy lệnh cài đặt:
 
 ```bash
-cd D:\FPTU_SEM\sem_8\EXE201\SWP391-Plant-Monitoring-System\ai_models\disease_recognition
+cd ai_models/disease_recognition
 pip install -r requirements.txt
 ```
 
-> **Các gói chính được cài đặt:** `onnxruntime`, `rembg`, `fastapi`, `uvicorn`, `opencv-python`, `pillow`, `numpy`, `python-multipart`.
+> **Yêu cầu môi trường:** Python 3.8+ (đã kiểm thử ổn định trên Python 3.10 và 3.11). Chạy trực tiếp trên CPU thông thường, không yêu cầu card đồ họa rời (GPU).  
+> **Thư viện chính:** `onnxruntime`, `rembg`, `fastapi`, `uvicorn`, `opencv-python`, `pillow`, `numpy`, `python-multipart`.
 
 ---
 
-### 3. Cách khởi động Server AI
+### Bước 3: Khởi động Server AI
 
 Bạn có thể chạy bằng **1 trong 2 cách**:
 
-#### 👉 Cách 1: Chạy 1-Click từ thư mục gốc dự án (Tiện lợi nhất)
+#### 👉 Cách A: Chạy 1-Click từ thư mục gốc dự án (Tiện nhất)
 Tại thư mục gốc `SWP391-Plant-Monitoring-System`, click đúp chuột vào file:
 ```text
 start-ai-diagnostic.bat
 ```
 
-#### 👉 Cách 2: Chạy bằng dòng lệnh Terminal
+#### 👉 Cách B: Chạy qua lệnh Terminal
 ```bash
-cd D:\FPTU_SEM\sem_8\EXE201\SWP391-Plant-Monitoring-System\ai_models\disease_recognition
+cd ai_models/disease_recognition
 python app.py
 ```
 
-* Khi server khởi động thành công, bạn sẽ thấy log:
-  ```text
-  Starting Plant Diagnostic Server...
-  Pipeline ready on CPU (u2netp + MobileNetV3-Large).
-  INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
-  ```
-* Truy cập `http://localhost:8000` trên trình duyệt để dùng thử Web Studio kéo thả ảnh demo có sẵn của server AI.
-
----
-
-### 4. Kiểm tra thử mô hình bằng CLI (Không cần bật Web)
-
-Để kiểm tra nhanh mô hình có phân tích chính xác trên ảnh mẫu hay không:
-
-```bash
-cd D:\FPTU_SEM\sem_8\EXE201\SWP391-Plant-Monitoring-System\ai_models\disease_recognition
-
-# Test 1 ảnh cụ thể:
-python demo.py sample_images/money_plant_manganese_toxicity.jpg
-
-# Hoặc test toàn bộ ảnh trong thư mục:
-python demo.py sample_images
+Khi server khởi động thành công, màn hình sẽ thông báo:
+```text
+Starting Plant Diagnostic Server...
+Pipeline ready on CPU (u2netp + MobileNetV3-Large).
+INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
 ```
+
+Server sẽ lắng nghe tại: **`http://localhost:8000`** (sẵn sàng tiếp nhận yêu cầu từ Web Client Next.js).
 
 ---
 
 ## 📡 API Reference (Dành cho Web Client)
-
-Frontend Next.js kết nối trực tiếp với server AI thông qua REST API:
 
 * **Endpoint:** `POST http://localhost:8000/diagnose`
 * **Content-Type:** `multipart/form-data`
 * **Form Field:** `file` (File ảnh định dạng JPG, PNG, WEBP)
 * **CORS:** Đã kích hoạt sẵn cho phép mọi client (`allow_origins=["*"]`).
 
-### Cấu trúc dữ liệu JSON trả về:
-```json
-{
-  "status": "DIAGNOSIS_HIGH_CONFIDENCE",
-  "verdict": "CONFIDENT",
-  "predicted_species": "Money Plant",
-  "predicted_condition": "Manganese Toxicity",
-  "confidence": 0.815,
-  "confidence_margin": 0.669,
-  "user_guidance": "✅ Confident diagnosis: Money Plant with Manganese Toxicity (81.5% confidence).",
-  "condition_details": "Brown necrotic speckles, chlorotic leaf margins, and stunted growth...",
-  "treatment_recommendation": "Flush potting soil with clean water. Check and adjust soil pH toward neutral (6.2 - 6.8). Reduce high-manganese fertilizers.",
-  "timing_breakdown_ms": {
-    "segmentation": 243.4,
-    "isolation_smoothing": 21.5,
-    "classification": 27.5,
-    "total_latency": 325.2
-  },
-  "segmented_leaf_base64": "<chuỗi_base64_ảnh_lá_đã_bóc_tách_nền_đen>",
-  "top3_predictions": [
-    {"class": "Money_Plant_Manganese_Toxicity", "species": "Money Plant", "condition": "Manganese Toxicity", "confidence": 0.815},
-    {"class": "Money_Plant_Healthy", "species": "Money Plant", "condition": "Healthy", "confidence": 0.146},
-    {"class": "Money_Plant_Bacterial_wilt_disease", "species": "Money Plant", "condition": "Bacterial wilt disease", "confidence": 0.024}
-  ]
-}
-```
+### Dữ liệu JSON trả về:
+* `status`: Trạng thái phán đoán (`DIAGNOSIS_HIGH_CONFIDENCE`, `DIAGNOSIS_MODERATE_CONFIDENCE`, `DIAGNOSIS_UNCERTAIN`).
+* `verdict`: Mức độ tin cậy (`CONFIDENT`, `MODERATE`, `UNCERTAIN`).
+* `predicted_species`: Loài cây nhận diện (Aloe, Cactus, Money Plant, Snake Plant, Spider Plant).
+* `predicted_condition`: Tình trạng bệnh (Healthy, Anthracnose, Bacterial wilt, Manganese Toxicity,...).
+* `confidence`: Độ tin cậy (từ 0.0 đến 1.0).
+* `segmented_leaf_base64`: Chuỗi Base64 của ảnh lá cây đã được mô hình AI bóc tách sạch nền.
+* `treatment_recommendation`: Phác đồ hướng dẫn chữa trị và chăm sóc chi tiết.
 
 ---
 
 ## 🌿 Danh sách 14 Lớp Bệnh & 5 Loài Cây Được Hỗ Trợ
 
-| Loài cây (*Species*) | Các tình trạng & bệnh được hỗ trợ (*Conditions*) |
+| Loài cây (*Species*) | Tình trạng & Bệnh (*Conditions*) |
 | :--- | :--- |
 | **Aloe** *(Nha đam)* | `Aloe_Healthy` (Khỏe mạnh)<br>`Aloe_Fungal_Infection` (Nhiễm nấm)<br>`Aloe_Sunburn` (Cháy nắng) |
 | **Cactus** *(Xương rồng)* | `Cactus_Healthy` (Khỏe mạnh)<br>`Cactus_Dactylopius_Opuntia` (Bị rệp sáp hại cây) |
@@ -146,11 +135,9 @@ Frontend Next.js kết nối trực tiếp với server AI thông qua REST API:
 
 ## 🛠️ Khắc phục sự cố thường gặp (Troubleshooting)
 
-1. **Lỗi `ModuleNotFoundError: No module named 'rembg'`:**
+1. **Lỗi `FileNotFoundError: ... models/u2netp.onnx` hoặc `mobilenet_v3...onnx`:**
+   - Đảm bảo bạn đã hoàn thành **Bước 1**: copy đầy đủ các file model vào thư mục `ai_models/disease_recognition/models/`.
+2. **Lỗi `ModuleNotFoundError: No module named 'rembg'`:**
    - Chạy: `pip install rembg`
-2. **Lỗi `Address already in use` hoặc Port 8000 bị chiếm:**
-   - Kiểm tra tiến trình đang chạy port 8000: `netstat -ano | findstr :8000`
-   - Hoặc đổi port khác khi chạy trong `app.py` (dòng cuối: `port=8000`).
-3. **Web không mở được Camera khi bấm nút Analyze Image:**
-   - Trình duyệt yêu cầu kết nối an toàn (hoặc `http://localhost`) để cấp quyền Webcam. Hãy chắc chắn bạn đã bấm **Allow** quyền truy cập Camera khi trình duyệt hỏi.
-   - Nếu máy tính bàn không có Webcam, bạn chỉ cần chuyển sang tab **Upload Photo** để chọn file ảnh từ máy.
+3. **Lỗi `Address already in use` hoặc Port 8000 bị chiếm:**
+   - Kiểm tra tiến trình đang chạy port 8000: `netstat -ano | findstr :8000` và kill tiến trình cũ, hoặc đổi port trong file `app.py`.

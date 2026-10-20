@@ -53,6 +53,15 @@ Thumbs.db
 /uploads/images/*
 !/uploads/images/.gitkeep
 
+# Large AI Model weights (provide separately)
+*.onnx
+/ai_models/**/models/*.onnx
+!/ai_models/**/models/.gitkeep
+
+# AI Sample test images & demo CLI
+/ai_models/**/sample_images/
+/ai_models/**/demo.py
+
 # Python cache
 __pycache__/
 *.py[cod]
