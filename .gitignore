@@ -49,7 +49,7 @@ Thumbs.db
 /ai_models/**/*.bin
 /ai_models/**/*.json
 !/ai_models/config.json
-!/ai_models/**/README.md
+!/ai_models/**/*.md
 /uploads/images/*
 !/uploads/images/.gitkeep
 
