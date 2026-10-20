@@ -9,16 +9,25 @@
     },
     "disease_recognition": {
       "path": "./ai_models/disease_recognition",
-      "version": "1.0.0",
-      "input_shape": [224, 224, 3],
-      "output_classes": 11,
-      "description": "MobileNetV2-based CNN for plant disease classification"
+      "version": "2.0.0",
+      "backend": "onnxruntime-cpu",
+      "pipeline": "Two-Stage CPU: u2netp (SOD) + MobileNetV3-Large",
+      "primary_model": "mobilenet_v3_large_14class_320x320.onnx",
+      "segmentation_model": "u2netp.onnx",
+      "alternative_model": "resnet18_14class_320x320.onnx",
+      "input_shape": [320, 320, 3],
+      "output_classes": 14,
+      "supported_species": ["Aloe", "Cactus", "Money Plant", "Snake Plant", "Spider Plant"],
+      "port": 8000,
+      "endpoint": "/diagnose",
+      "description": "Two-stage edge CPU Computer Vision engine with leaf isolation and 14-class fine-grained disease diagnosis"
     }
   },
   "preprocessing": {
     "image": {
-      "resize": [224, 224],
-      "normalize": true,
+      "resize": [320, 320],
+      "segmentation": "u2netp_leaf_isolation",
+      "feathering": true,
       "format": "RGB"
     },
     "sensor": {
@@ -29,7 +38,8 @@
   },
   "inference": {
     "batch_size": 1,
-    "confidence_threshold": 0.6,
+    "confidence_threshold": 0.52,
+    "normalized_entropy_threshold": 0.48,
     "backend": "cpu"
   }
 }
