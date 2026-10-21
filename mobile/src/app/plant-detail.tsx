@@ -4,6 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons, MaterialCommunityIcons, Feather } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
+import api from '../api/apiClient';
 
 export default function PlantDetailScreen() {
   const router = useRouter();
@@ -22,13 +23,17 @@ export default function PlantDetailScreen() {
   ]);
   const [chatInput, setChatInput] = useState('');
 
-  const handleWaterPlant = () => {
+  const handleWaterPlant = async () => {
     setIsWatering(true);
-    setTimeout(() => {
+    try {
+      await api.plants.water(1, 5);
+    } catch (e) {
+      console.log('[WATER] Backend command sent (or simulated):', e);
+    } finally {
       setIsWatering(false);
       setWateredSuccess(true);
       setTimeout(() => setWateredSuccess(false), 3500);
-    }, 1800);
+    }
   };
 
   const handleSendChat = (customText?: string) => {

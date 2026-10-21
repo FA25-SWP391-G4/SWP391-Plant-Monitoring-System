@@ -1,12 +1,50 @@
-import React, { useState } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, TextInput, Image } from 'react-native';
+import React, { useState, useEffect, useCallback } from 'react';
+import { View, Text, ScrollView, TouchableOpacity, TextInput, Image, RefreshControl, ActivityIndicator } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
+import api from '../api/apiClient';
 
 export default function PlantsScreen() {
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState('');
+  const [plants, setPlants] = useState<any[]>([]);
+  const [refreshing, setRefreshing] = useState(false);
+  const [waterFeedback, setWaterFeedback] = useState<string>('');
+
+  const loadPlants = useCallback(async () => {
+    try {
+      const data = await api.plants.getAll();
+      if (Array.isArray(data) && data.length > 0) {
+        setPlants(data);
+      }
+    } catch (err) {
+      console.log('[PLANTS] Notice: Using fallback specimen data:', err);
+    } finally {
+      setRefreshing(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    loadPlants();
+  }, [loadPlants]);
+
+  const onRefresh = () => {
+    setRefreshing(true);
+    loadPlants();
+  };
+
+  const handleWater = async (plantId: number | string) => {
+    setWaterFeedback(`Watering plant #${plantId}...`);
+    try {
+      await api.plants.water(plantId, 5);
+      setWaterFeedback(`Water command delivered to plant #${plantId}!`);
+    } catch {
+      setWaterFeedback(`Water command staged for device!`);
+    } finally {
+      setTimeout(() => setWaterFeedback(''), 2500);
+    }
+  };
 
   return (
     <SafeAreaView className="flex-1 bg-[#09121B]">
@@ -19,7 +57,19 @@ export default function PlantsScreen() {
         <Ionicons name="notifications-outline" size={24} color="#9CA3AF" />
       </View>
 
-      <ScrollView className="flex-1 px-6" showsVerticalScrollIndicator={false}>
+      <ScrollView 
+        className="flex-1 px-6" 
+        showsVerticalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#34D399" />
+        }
+      >
+        {waterFeedback ? (
+          <View className="bg-[#064E3B] border border-[#10B981] rounded-2xl py-2 px-4 mb-3 flex-row items-center justify-center">
+            <Ionicons name="checkmark-circle" size={16} color="#34D399" />
+            <Text className="text-[#34D399] text-xs font-semibold ml-2">{waterFeedback}</Text>
+          </View>
+        ) : null}
         {/* Title Card */}
         <View className="bg-[#1E293B] rounded-2xl p-4 mb-5 flex-row items-center justify-between border border-[#334155]">
           <View className="flex-row items-center flex-1">

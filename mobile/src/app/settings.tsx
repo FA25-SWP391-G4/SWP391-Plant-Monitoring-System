@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, Switch } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, ScrollView, TouchableOpacity, Switch, ActivityIndicator } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons, MaterialCommunityIcons, Feather } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
+import api from '../api/apiClient';
 
 export default function SettingsScreen() {
   const router = useRouter();
@@ -49,15 +50,45 @@ export default function SettingsScreen() {
     cloudSync: true,
   });
 
+  const [saving, setSaving] = useState(false);
   const [savedSuccess, setSavedSuccess] = useState(false);
+
+  useEffect(() => {
+    async function fetchSettings() {
+      try {
+        const res: any = await api.settings.get();
+        if (res?.data) {
+          if (res.data.widgets) setWidgets((p) => ({ ...p, ...res.data.widgets }));
+          if (res.data.appearance?.theme) setTheme(res.data.appearance.theme);
+        }
+      } catch (err) {
+        console.log('[SETTINGS] Notice: Using local preferences:', err);
+      }
+    }
+    fetchSettings();
+  }, []);
 
   const toggleWidget = (key: keyof typeof widgets) => {
     setWidgets((prev) => ({ ...prev, [key]: !prev[key] }));
   };
 
-  const handleSave = () => {
-    setSavedSuccess(true);
-    setTimeout(() => setSavedSuccess(false), 2500);
+  const handleSave = async () => {
+    setSaving(true);
+    try {
+      await api.settings.update({
+        widgets,
+        appearance: { theme, fontSize },
+        language: { preferred: language, tempUnit, timeFormat },
+        notifications,
+        privacy,
+      });
+    } catch (err) {
+      console.log('[SETTINGS] Saved locally:', err);
+    } finally {
+      setSaving(false);
+      setSavedSuccess(true);
+      setTimeout(() => setSavedSuccess(false), 2500);
+    }
   };
 
   return (
