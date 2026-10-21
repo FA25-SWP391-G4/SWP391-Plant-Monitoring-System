@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, TextInput, Switch, ActivityIndicator, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons, MaterialCommunityIcons, Feather } from '@expo/vector-icons';
@@ -7,15 +7,34 @@ import api from '../api/apiClient';
 
 export default function AddPlantScreen() {
   const router = useRouter();
-  const [nickname, setNickname] = useState('Monty Deliciosa');
+  const [nickname, setNickname] = useState('Monstera Deliciosa');
   const [species, setSpecies] = useState('Monstera deliciosa');
-  const [notes, setNotes] = useState('Rooted cutting from parent stem in March.\nHigh humidity room placement preferred.');
-  const [autoIrrigation, setAutoIrrigation] = useState(false);
+  const [location, setLocation] = useState('Indoor Herb Zone');
+  const [threshold, setThreshold] = useState(55);
+  const [notes, setNotes] = useState('High humidity placement. Monitor soil moisture regularly.');
+  const [autoIrrigation, setAutoIrrigation] = useState(true);
+  const [devices, setDevices] = useState<any[]>([]);
+  const [selectedDeviceKey, setSelectedDeviceKey] = useState<string>('');
   const [saving, setSaving] = useState(false);
+
+  useEffect(() => {
+    async function loadDevices() {
+      try {
+        const devList = await api.devices.getAll();
+        if (Array.isArray(devList) && devList.length > 0) {
+          setDevices(devList);
+          setSelectedDeviceKey(devList[0].device_key || '');
+        }
+      } catch (err) {
+        console.log('[ADD PLANT] Devices fetch notice:', err);
+      }
+    }
+    loadDevices();
+  }, []);
 
   const handleSavePlant = async () => {
     if (!nickname.trim()) {
-      Alert.alert('Plant Name Required', 'Please provide a nickname for your plant.');
+      Alert.alert('Plant Name Required', 'Please enter a name or nickname for your plant.');
       return;
     }
 
@@ -24,15 +43,18 @@ export default function AddPlantScreen() {
       await api.plants.create({
         name: nickname.trim(),
         species_name: species.trim(),
-        location: 'Indoor Herb Zone',
+        location: location.trim(),
         notes: notes,
-        moisture_threshold: 55,
+        moisture_threshold: threshold,
+        device_key: selectedDeviceKey || undefined,
       });
-      router.push('/plants');
+
+      Alert.alert('Plant Added', `"${nickname.trim()}" has been added to your sanctuary!`, [
+        { text: 'OK', onPress: () => router.push('/plants') },
+      ]);
     } catch (err: any) {
-      console.log('[ADD PLANT] Notice, saved locally/fallback:', err);
-      // Navigate anyway so user experience is smooth
-      router.push('/plants');
+      console.error('[ADD PLANT] Failed to save plant:', err);
+      Alert.alert('Notice', err.message || 'Unable to register plant on backend. Check network connection.');
     } finally {
       setSaving(false);
     }
@@ -132,23 +154,32 @@ export default function AddPlantScreen() {
 
         {/* Location & Microclimate Zone */}
         <Text className="text-gray-400 text-[10px] font-bold tracking-widest uppercase mb-3">Location & Microclimate Zone</Text>
-        <View className="flex-row flex-wrap gap-3 mb-8">
-          <TouchableOpacity className="bg-[#34D399] px-3 py-2 rounded-xl flex-row items-center">
-            <Ionicons name="home-outline" size={14} color="#064E3B" />
-            <Text className="text-[#064E3B] text-xs font-bold ml-1.5">Indoor Herb Zone</Text>
-          </TouchableOpacity>
-          <TouchableOpacity className="bg-[#1E293B] border border-[#334155] px-3 py-2 rounded-xl flex-row items-center">
-            <Ionicons name="sunny-outline" size={14} color="#9CA3AF" />
-            <Text className="text-gray-300 text-xs font-medium ml-1.5">Living Room South</Text>
-          </TouchableOpacity>
-          <TouchableOpacity className="bg-[#1E293B] border border-[#334155] px-3 py-2 rounded-xl flex-row items-center">
-            <MaterialCommunityIcons name="balcony" size={14} color="#9CA3AF" />
-            <Text className="text-gray-300 text-xs font-medium ml-1.5">Balcony Terrace</Text>
-          </TouchableOpacity>
-          <TouchableOpacity className="bg-[#064E3B]/20 border border-[#064E3B] px-3 py-2 rounded-xl flex-row items-center">
-            <Ionicons name="add" size={14} color="#34D399" />
-            <Text className="text-[#34D399] text-xs font-medium ml-1">New Zone</Text>
-          </TouchableOpacity>
+        <View className="flex-row flex-wrap gap-2.5 mb-6">
+          {['Indoor Herb Zone', 'Living Room South', 'Balcony Terrace', 'Kitchen Window'].map((loc) => {
+            const isSelected = location === loc;
+            return (
+              <TouchableOpacity
+                key={loc}
+                onPress={() => setLocation(loc)}
+                className={`px-3 py-2 rounded-xl flex-row items-center border ${
+                  isSelected ? 'bg-[#34D399] border-[#34D399]' : 'bg-[#1E293B] border-[#334155]'
+                }`}
+              >
+                <Ionicons
+                  name={loc.includes('Balcony') ? 'sunny-outline' : 'home-outline'}
+                  size={14}
+                  color={isSelected ? '#064E3B' : '#9CA3AF'}
+                />
+                <Text
+                  className={`text-xs ml-1.5 font-bold ${
+                    isSelected ? 'text-[#064E3B]' : 'text-gray-300'
+                  }`}
+                >
+                  {loc}
+                </Text>
+              </TouchableOpacity>
+            );
+          })}
         </View>
 
         {/* Telemetry & Automation Triggers */}
@@ -169,7 +200,7 @@ export default function AddPlantScreen() {
           </View>
         </View>
 
-        <View className="bg-[#1E293B] rounded-2xl p-4 mb-8">
+        <View className="bg-[#1E293B] rounded-2xl p-4 mb-8 border border-[#334155]">
           <View className="flex-row justify-between items-start mb-4">
             <View className="flex-row items-center">
               <View className="w-8 h-8 bg-[#0F172A] rounded-lg items-center justify-center mr-3">
@@ -181,45 +212,61 @@ export default function AddPlantScreen() {
               </View>
             </View>
             <View className="items-end">
-              <Text className="text-[#34D399] text-xl font-bold">55%</Text>
+              <Text className="text-[#34D399] text-xl font-bold">{threshold}%</Text>
               <Text className="text-[#34D399] text-[8px] font-bold tracking-wider">TARGET</Text>
             </View>
           </View>
 
-          {/* Slider Mockup */}
-          <View className="mb-2">
-            <View className="h-1.5 bg-[#334155] rounded-full flex-row relative mb-2">
-              <View className="h-full bg-[#34D399] rounded-full w-[55%]" />
-              <View className="w-3.5 h-3.5 bg-[#34D399] rounded-full absolute top-[-4px] left-[55%]" />
-            </View>
-            <View className="flex-row justify-between px-1">
-              <Text className="text-gray-400 text-[9px]">{'Dry (<25%)'}</Text>
-              <Text className="text-[#34D399] text-[9px] font-bold">Optimal (45-65%)</Text>
-              <Text className="text-gray-400 text-[9px]">{'Saturated (>75%)'}</Text>
-            </View>
+          {/* Threshold Presets */}
+          <View className="flex-row gap-2 mb-3">
+            {[35, 45, 55, 65].map((val) => (
+              <TouchableOpacity
+                key={val}
+                onPress={() => setThreshold(val)}
+                className={`flex-1 py-1.5 rounded-xl items-center border ${
+                  threshold === val
+                    ? 'bg-[#34D399] border-[#34D399]'
+                    : 'bg-[#0F172A] border-[#334155]'
+                }`}
+              >
+                <Text
+                  className={`text-xs font-bold ${
+                    threshold === val ? 'text-[#064E3B]' : 'text-gray-300'
+                  }`}
+                >
+                  {val}%
+                </Text>
+              </TouchableOpacity>
+            ))}
           </View>
 
-          <View className="h-[1px] bg-[#334155] my-4" />
+          <View className="h-[1px] bg-[#334155] my-3" />
 
-          {/* Hardware Link */}
+          {/* Hardware Device Link */}
           <View className="flex-row justify-between items-center">
-            <View className="flex-row items-center">
+            <View className="flex-row items-center flex-1 pr-2">
               <View className="w-8 h-8 bg-[#0F172A] rounded-lg items-center justify-center mr-3">
                 <Ionicons name="hardware-chip-outline" size={16} color="#34D399" />
               </View>
-              <View>
-                <Text className="text-gray-300 text-xs font-medium">Hardware Link</Text>
-                <View className="flex-row items-center">
-                  <View className="w-1.5 h-1.5 bg-[#34D399] rounded-full mr-1" />
-                  <Text className="text-[#34D399] text-[10px]">PlantMaster-BLE #042 Detected</Text>
-                </View>
+              <View className="flex-1">
+                <Text className="text-gray-300 text-xs font-medium">Assigned Hardware</Text>
+                {devices.length > 0 ? (
+                  <View className="flex-row items-center">
+                    <View className="w-1.5 h-1.5 bg-[#34D399] rounded-full mr-1" />
+                    <Text className="text-[#34D399] text-[10px] font-bold" numberOfLines={1}>
+                      {selectedDeviceKey ? `${selectedDeviceKey.slice(0, 16)}...` : 'Default ESP32'}
+                    </Text>
+                  </View>
+                ) : (
+                  <Text className="text-gray-400 text-[10px]">No ESP32 linked yet (Auto-probed)</Text>
+                )}
               </View>
             </View>
             <TouchableOpacity 
-              className="bg-[#334155] px-3 py-1.5 rounded-lg"
+              className="bg-[#334155] px-3 py-1.5 rounded-lg active:opacity-90"
               onPress={() => router.push('/add-device')}
             >
-              <Text className="text-white text-[10px] font-medium">Change</Text>
+              <Text className="text-[#34D399] text-[10px] font-bold">Pair ESP32</Text>
             </TouchableOpacity>
           </View>
         </View>

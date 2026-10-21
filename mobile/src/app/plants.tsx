@@ -46,6 +46,29 @@ export default function PlantsScreen() {
     }
   };
 
+  const [activeFilter, setActiveFilter] = useState<'all' | 'needs_water' | 'indoor'>('all');
+
+  const filteredPlants = plants.filter((p) => {
+    const q = searchQuery.toLowerCase().trim();
+    const nameMatch =
+      !q ||
+      (p.name || p.custom_name || '').toLowerCase().includes(q) ||
+      (p.species || p.species_name || '').toLowerCase().includes(q) ||
+      (p.location || p.zone_name || '').toLowerCase().includes(q);
+    if (!nameMatch) return false;
+
+    const moisture = p.sensor_data?.moisture ?? p.moisture ?? 50;
+    const threshold = p.moisture_threshold || 45;
+
+    if (activeFilter === 'needs_water') {
+      return moisture < threshold;
+    }
+    if (activeFilter === 'indoor') {
+      return (p.location || p.zone_name || '').toLowerCase().includes('indoor');
+    }
+    return true;
+  });
+
   return (
     <SafeAreaView className="flex-1 bg-[#09121B]">
       {/* Header */}
@@ -54,7 +77,9 @@ export default function PlantsScreen() {
           <MaterialCommunityIcons name="flower-tulip-outline" size={24} color="#34D399" />
           <Text className="text-white text-xl font-bold tracking-tight ml-2">PlantSmart</Text>
         </View>
-        <Ionicons name="notifications-outline" size={24} color="#9CA3AF" />
+        <TouchableOpacity onPress={() => router.push('/settings')}>
+          <Ionicons name="settings-outline" size={22} color="#9CA3AF" />
+        </TouchableOpacity>
       </View>
 
       <ScrollView 
@@ -70,6 +95,7 @@ export default function PlantsScreen() {
             <Text className="text-[#34D399] text-xs font-semibold ml-2">{waterFeedback}</Text>
           </View>
         ) : null}
+
         {/* Title Card */}
         <View className="bg-[#1E293B] rounded-2xl p-4 mb-5 flex-row items-center justify-between border border-[#334155]">
           <View className="flex-row items-center flex-1">
@@ -78,7 +104,9 @@ export default function PlantsScreen() {
             </View>
             <View className="flex-1 pr-2">
               <Text className="text-white text-xl font-bold mb-1">My Plants</Text>
-              <Text className="text-gray-400 text-[11px] leading-tight">Manage & monitor your sanctuary</Text>
+              <Text className="text-gray-400 text-[11px] leading-tight">
+                {plants.length} botanical specimen connected
+              </Text>
             </View>
           </View>
           <TouchableOpacity className="bg-[#34D399] rounded-xl px-3 py-2 flex-row items-center" onPress={() => router.push('/add-plant')}>
@@ -92,260 +120,192 @@ export default function PlantsScreen() {
           <Ionicons name="search" size={18} color="#9CA3AF" />
           <TextInput
             className="flex-1 text-white ml-3 text-sm"
-            placeholder="Search plants, sensors..."
+            placeholder="Search plants, species, zones..."
             placeholderTextColor="#64748B"
             value={searchQuery}
             onChangeText={setSearchQuery}
           />
-          <Ionicons name="options-outline" size={18} color="#9CA3AF" />
+          {searchQuery ? (
+            <TouchableOpacity onPress={() => setSearchQuery('')}>
+              <Ionicons name="close-circle" size={18} color="#9CA3AF" />
+            </TouchableOpacity>
+          ) : null}
         </View>
 
         {/* Filters */}
-        <View className="flex-row mb-6 space-x-3">
-          <TouchableOpacity className="bg-[#34D399] rounded-full px-4 py-1.5 flex-row items-center">
-            <Ionicons name="infinite" size={14} color="#064E3B" />
-            <Text className="text-[#064E3B] text-[11px] font-bold ml-1">All (3)</Text>
+        <View className="flex-row mb-6 gap-2">
+          <TouchableOpacity 
+            className={`rounded-full px-4 py-1.5 flex-row items-center border ${
+              activeFilter === 'all'
+                ? 'bg-[#34D399] border-[#34D399]'
+                : 'bg-[#1E293B] border-[#334155]'
+            }`}
+            onPress={() => setActiveFilter('all')}
+          >
+            <Ionicons name="infinite" size={14} color={activeFilter === 'all' ? '#064E3B' : '#9CA3AF'} />
+            <Text className={`text-[11px] font-bold ml-1 ${activeFilter === 'all' ? 'text-[#064E3B]' : 'text-gray-300'}`}>
+              All ({plants.length})
+            </Text>
           </TouchableOpacity>
-          <TouchableOpacity className="bg-[#1E293B] border border-[#334155] rounded-full px-4 py-1.5 flex-row items-center">
-            <Ionicons name="warning-outline" size={12} color="#9CA3AF" />
-            <Text className="text-gray-300 text-[11px] font-medium ml-1">Needs Water (1)</Text>
+
+          <TouchableOpacity 
+            className={`rounded-full px-4 py-1.5 flex-row items-center border ${
+              activeFilter === 'needs_water'
+                ? 'bg-[#F87171] border-[#F87171]'
+                : 'bg-[#1E293B] border-[#334155]'
+            }`}
+            onPress={() => setActiveFilter('needs_water')}
+          >
+            <Ionicons name="warning-outline" size={12} color={activeFilter === 'needs_water' ? '#7F1D1D' : '#F87171'} />
+            <Text className={`text-[11px] font-bold ml-1 ${activeFilter === 'needs_water' ? 'text-[#7F1D1D]' : 'text-gray-300'}`}>
+              Needs Water
+            </Text>
           </TouchableOpacity>
-          <TouchableOpacity className="bg-[#1E293B] border border-[#334155] rounded-full px-4 py-1.5 flex-row items-center">
-            <Ionicons name="home-outline" size={12} color="#9CA3AF" />
-            <Text className="text-gray-300 text-[11px] font-medium ml-1">Indoor</Text>
+
+          <TouchableOpacity 
+            className={`rounded-full px-4 py-1.5 flex-row items-center border ${
+              activeFilter === 'indoor'
+                ? 'bg-[#34D399] border-[#34D399]'
+                : 'bg-[#1E293B] border-[#334155]'
+            }`}
+            onPress={() => setActiveFilter('indoor')}
+          >
+            <Ionicons name="home-outline" size={12} color={activeFilter === 'indoor' ? '#064E3B' : '#9CA3AF'} />
+            <Text className={`text-[11px] font-bold ml-1 ${activeFilter === 'indoor' ? 'text-[#064E3B]' : 'text-gray-300'}`}>
+              Indoor
+            </Text>
           </TouchableOpacity>
         </View>
 
-        {/* Active Collection Header */}
-        <View className="flex-row justify-between items-center mb-4">
-          <View className="flex-row items-center">
-            <Text className="text-gray-300 text-[10px] font-bold tracking-widest uppercase">Active Collection</Text>
-            <View className="bg-[#064E3B] w-5 h-5 rounded-full items-center justify-center ml-2">
-              <Text className="text-[#34D399] text-[10px] font-bold">3</Text>
-            </View>
-          </View>
-          <View className="flex-row space-x-3">
-            <Ionicons name="reorder-two" size={20} color="#34D399" />
-            <Ionicons name="grid-outline" size={16} color="#64748B" />
-          </View>
-        </View>
-
-        {/* Plant 1: Basil */}
-        <View className="bg-[#1E293B] rounded-2xl p-4 mb-4 border border-[#334155]">
-          <View className="flex-row mb-4 relative">
-            <View className="w-20 h-20 bg-gray-700 rounded-xl mr-4 overflow-hidden relative">
-              <Image 
-                source={{ uri: 'https://images.unsplash.com/photo-1615477023356-af4cfa52022e?q=80&w=200&auto=format&fit=crop' }} 
-                className="w-full h-full"
-              />
-              <View className="absolute bottom-1 right-1 bg-black/60 px-1.5 py-0.5 rounded-full flex-row items-center">
-                <View className="w-1.5 h-1.5 bg-[#34D399] rounded-full mr-1" />
-                <Text className="text-white text-[8px] font-bold">IoT</Text>
-              </View>
-            </View>
-            <View className="flex-1 justify-center">
-              <View className="flex-row justify-between items-start">
-                <Text className="text-white text-base font-bold mb-0.5">Basil Plant</Text>
-                <View className="flex-row items-center">
-                  <View className="bg-[#064E3B] px-2 py-0.5 rounded-full flex-row items-center mr-2">
-                    <Ionicons name="checkmark" size={10} color="#34D399" />
-                    <Text className="text-[#34D399] text-[9px] font-bold ml-1">Healthy</Text>
-                  </View>
-                  <Ionicons name="ellipsis-vertical" size={16} color="#9CA3AF" />
-                </View>
-              </View>
-              <Text className="text-gray-400 text-[11px] italic mb-1">Ocimum basilicum</Text>
-              <View className="flex-row items-center mb-0.5">
-                <Ionicons name="location-outline" size={12} color="#34D399" />
-                <Text className="text-gray-300 text-[10px] ml-1 font-medium">Indoor Herb Zone</Text>
-              </View>
-              <View className="flex-row items-center">
-                <Ionicons name="water-outline" size={12} color="#9CA3AF" />
-                <Text className="text-gray-400 text-[10px] ml-1">Last: 2 days ago</Text>
-              </View>
-            </View>
-          </View>
-          <View className="flex-row justify-between bg-[#0F172A] rounded-xl p-3 mb-4">
-            <View>
-              <View className="flex-row items-center mb-1">
-                <Ionicons name="water-outline" size={10} color="#F87171" />
-                <Text className="text-gray-400 text-[9px] font-bold tracking-wider ml-1">MOISTURE</Text>
-              </View>
-              <Text className="text-[#F87171] text-xs font-bold">8% <Text className="text-[9px] font-normal text-[#FCA5A5]">Low</Text></Text>
-            </View>
-            <View>
-              <View className="flex-row items-center mb-1">
-                <Ionicons name="thermometer-outline" size={10} color="#9CA3AF" />
-                <Text className="text-gray-400 text-[9px] font-bold tracking-wider ml-1">TEMP</Text>
-              </View>
-              <Text className="text-white text-xs font-bold">33.5°C</Text>
-            </View>
-            <View>
-              <View className="flex-row items-center mb-1">
-                <Ionicons name="sunny-outline" size={10} color="#34D399" />
-                <Text className="text-gray-400 text-[9px] font-bold tracking-wider ml-1">SUNLIGHT</Text>
-              </View>
-              <Text className="text-white text-xs font-bold">Moderate</Text>
-            </View>
-          </View>
-          <View className="flex-row space-x-3">
+        {/* Dynamic Plant Cards */}
+        {filteredPlants.length === 0 ? (
+          <View className="bg-[#1E293B] rounded-2xl p-6 items-center border border-[#334155] mb-8">
+            <Ionicons name="leaf-outline" size={40} color="#64748B" className="mb-2" />
+            <Text className="text-white text-base font-bold mb-1">No Specimen Found</Text>
+            <Text className="text-gray-400 text-xs text-center mb-4">
+              {plants.length === 0 
+                ? 'No plants in your garden yet. Connect an ESP32 or add your first plant!'
+                : 'No plants matched your search or filter.'}
+            </Text>
             <TouchableOpacity 
-              className="flex-[2] bg-[#34D399] rounded-xl py-2.5 items-center" 
-              onPress={() => router.push('/plant-detail')}
+              className="bg-[#34D399] px-4 py-2 rounded-xl"
+              onPress={() => router.push('/add-plant')}
             >
-              <Text className="text-[#064E3B] font-bold text-xs">View Details</Text>
-            </TouchableOpacity>
-            <TouchableOpacity className="flex-1 bg-[#334155] rounded-xl py-2.5 items-center flex-row justify-center">
-              <Ionicons name="water-outline" size={14} color="#34D399" />
-              <Text className="text-[#34D399] font-bold text-xs ml-1">Water</Text>
+              <Text className="text-[#064E3B] font-bold text-xs">+ Add New Plant</Text>
             </TouchableOpacity>
           </View>
-        </View>
+        ) : (
+          filteredPlants.map((plant, idx) => {
+            const pId = plant.plant_id || plant.id || idx + 1;
+            const pName = plant.name || plant.custom_name || `Plant #${idx + 1}`;
+            const pSpecies = plant.species || plant.species_name || 'Botanical Specimen';
+            const pLocation = plant.location || plant.zone_name || 'Indoor Zone';
+            const pMoisture = plant.sensor_data?.moisture ?? plant.moisture ?? 42;
+            const pTemp = plant.sensor_data?.temperature ?? plant.temperature ?? 28;
+            const pThreshold = plant.moisture_threshold || 45;
+            const isDry = pMoisture < pThreshold;
 
-        {/* Plant 2: Monstera */}
-        <View className="bg-[#1E293B] rounded-2xl p-4 mb-4 border border-[#334155]">
-          <View className="flex-row mb-4 relative">
-            <View className="w-20 h-20 bg-gray-700 rounded-xl mr-4 overflow-hidden relative">
-              <Image 
-                source={{ uri: 'https://images.unsplash.com/photo-1614594975525-e45190c55d0b?q=80&w=200&auto=format&fit=crop' }} 
-                className="w-full h-full"
-              />
-              <View className="absolute bottom-1 right-1 bg-black/60 px-1.5 py-0.5 rounded-full flex-row items-center">
-                <View className="w-1.5 h-1.5 bg-[#34D399] rounded-full mr-1" />
-                <Text className="text-white text-[8px] font-bold">IoT</Text>
-              </View>
-            </View>
-            <View className="flex-1 justify-center">
-              <View className="flex-row justify-between items-start">
-                <Text className="text-white text-base font-bold mb-0.5" numberOfLines={1}>Monstera D...</Text>
-                <View className="flex-row items-center">
-                  <View className="border border-[#34D399] px-2 py-0.5 rounded-full flex-row items-center mr-2">
-                    <Ionicons name="checkmark-done-outline" size={10} color="#34D399" />
-                    <Text className="text-[#34D399] text-[9px] font-bold ml-1">Optimal</Text>
+            return (
+              <View key={pId} className="bg-[#1E293B] rounded-2xl p-4 mb-4 border border-[#334155]">
+                <View className="flex-row mb-4 relative">
+                  <View className="w-20 h-20 bg-gray-700 rounded-xl mr-4 overflow-hidden relative">
+                    <Image 
+                      source={{ uri: plant.image_url || 'https://images.unsplash.com/photo-1615477023356-af4cfa52022e?q=80&w=200&auto=format&fit=crop' }} 
+                      className="w-full h-full"
+                    />
+                    <View className="absolute bottom-1 right-1 bg-black/60 px-1.5 py-0.5 rounded-full flex-row items-center">
+                      <View className={`w-1.5 h-1.5 rounded-full mr-1 ${isDry ? 'bg-[#F87171]' : 'bg-[#34D399]'}`} />
+                      <Text className="text-white text-[8px] font-bold">{isDry ? 'Dry' : 'IoT'}</Text>
+                    </View>
                   </View>
-                  <Ionicons name="ellipsis-vertical" size={16} color="#9CA3AF" />
+                  <View className="flex-1 justify-center">
+                    <View className="flex-row justify-between items-start">
+                      <Text className="text-white text-base font-bold mb-0.5" numberOfLines={1}>{pName}</Text>
+                      <View className="flex-row items-center">
+                        <View className={`px-2 py-0.5 rounded-full flex-row items-center mr-2 ${
+                          isDry ? 'bg-[#7F1D1D]' : 'bg-[#064E3B]'
+                        }`}>
+                          <Ionicons name={isDry ? 'water' : 'checkmark'} size={10} color={isDry ? '#FCA5A5' : '#34D399'} />
+                          <Text className={`text-[9px] font-bold ml-1 ${isDry ? 'text-[#FCA5A5]' : 'text-[#34D399]'}`}>
+                            {isDry ? 'Needs Water' : 'Healthy'}
+                          </Text>
+                        </View>
+                      </View>
+                    </View>
+                    <Text className="text-gray-400 text-[11px] italic mb-1">{pSpecies}</Text>
+                    <View className="flex-row items-center mb-0.5">
+                      <Ionicons name="location-outline" size={12} color="#34D399" />
+                      <Text className="text-gray-300 text-[10px] ml-1 font-medium">{pLocation}</Text>
+                    </View>
+                    <View className="flex-row items-center">
+                      <Ionicons name="hardware-chip-outline" size={12} color="#9CA3AF" />
+                      <Text className="text-gray-400 text-[10px] ml-1">
+                        {plant.device_key ? `ESP32: ${plant.device_key.slice(0, 10)}...` : 'Device: Unassigned'}
+                      </Text>
+                    </View>
+                  </View>
+                </View>
+
+                {/* Telemetry bar */}
+                <View className="flex-row justify-between bg-[#0F172A] rounded-xl p-3 mb-4">
+                  <View>
+                    <View className="flex-row items-center mb-1">
+                      <Ionicons name="water-outline" size={10} color={isDry ? '#F87171' : '#34D399'} />
+                      <Text className="text-gray-400 text-[9px] font-bold tracking-wider ml-1">MOISTURE</Text>
+                    </View>
+                    <Text className={`text-xs font-bold ${isDry ? 'text-[#F87171]' : 'text-[#34D399]'}`}>
+                      {pMoisture}% <Text className="text-[9px] font-normal text-gray-400">{isDry ? 'Low' : 'Good'}</Text>
+                    </Text>
+                  </View>
+                  <View>
+                    <View className="flex-row items-center mb-1">
+                      <Ionicons name="thermometer-outline" size={10} color="#9CA3AF" />
+                      <Text className="text-gray-400 text-[9px] font-bold tracking-wider ml-1">TEMP</Text>
+                    </View>
+                    <Text className="text-white text-xs font-bold">{pTemp}°C</Text>
+                  </View>
+                  <View>
+                    <View className="flex-row items-center mb-1">
+                      <Ionicons name="shield-checkmark-outline" size={10} color="#34D399" />
+                      <Text className="text-gray-400 text-[9px] font-bold tracking-wider ml-1">THRESHOLD</Text>
+                    </View>
+                    <Text className="text-white text-xs font-bold">{pThreshold}%</Text>
+                  </View>
+                </View>
+
+                {/* Actions */}
+                <View className="flex-row space-x-3 gap-2">
+                  <TouchableOpacity 
+                    className="flex-[2] bg-[#34D399] rounded-xl py-2.5 items-center active:opacity-90" 
+                    onPress={() => router.push({
+                      pathname: '/plant-detail' as any,
+                      params: { plantId: String(pId), plantName: pName },
+                    })}
+                  >
+                    <Text className="text-[#064E3B] font-bold text-xs">View Details</Text>
+                  </TouchableOpacity>
+
+                  <TouchableOpacity 
+                    className="flex-1 bg-[#334155] rounded-xl py-2.5 items-center flex-row justify-center active:opacity-90"
+                    onPress={() => handleWater(pId)}
+                  >
+                    <Ionicons name="water-outline" size={14} color="#34D399" />
+                    <Text className="text-[#34D399] font-bold text-xs ml-1">Water (5s)</Text>
+                  </TouchableOpacity>
                 </View>
               </View>
-              <Text className="text-gray-400 text-[11px] italic mb-1">Swiss Cheese Plant</Text>
-              <View className="flex-row items-center mb-0.5">
-                <Ionicons name="location-outline" size={12} color="#34D399" />
-                <Text className="text-gray-300 text-[10px] ml-1 font-medium">Living Room Window</Text>
-              </View>
-              <View className="flex-row items-center">
-                <Ionicons name="water-outline" size={12} color="#9CA3AF" />
-                <Text className="text-gray-400 text-[10px] ml-1">Last: Today, 08:30 AM</Text>
-              </View>
-            </View>
-          </View>
-          <View className="flex-row justify-between bg-[#0F172A] rounded-xl p-3 mb-4">
-            <View>
-              <View className="flex-row items-center mb-1">
-                <Ionicons name="water-outline" size={10} color="#34D399" />
-                <Text className="text-gray-400 text-[9px] font-bold tracking-wider ml-1">MOISTURE</Text>
-              </View>
-              <Text className="text-[#34D399] text-xs font-bold">65% <Text className="text-[9px] font-normal text-gray-400">Good</Text></Text>
-            </View>
-            <View>
-              <View className="flex-row items-center mb-1">
-                <Ionicons name="thermometer-outline" size={10} color="#9CA3AF" />
-                <Text className="text-gray-400 text-[9px] font-bold tracking-wider ml-1">TEMP</Text>
-              </View>
-              <Text className="text-white text-xs font-bold">24.2°C</Text>
-            </View>
-            <View>
-              <View className="flex-row items-center mb-1">
-                <Ionicons name="sunny-outline" size={10} color="#34D399" />
-                <Text className="text-gray-400 text-[9px] font-bold tracking-wider ml-1">SUNLIGHT</Text>
-              </View>
-              <Text className="text-white text-xs font-bold">Bright Ind.</Text>
-            </View>
-          </View>
-          <View className="flex-row space-x-3">
-            <TouchableOpacity className="flex-[2] bg-[#334155] rounded-xl py-2.5 items-center">
-              <Text className="text-white font-bold text-xs">View Details</Text>
-            </TouchableOpacity>
-            <TouchableOpacity className="flex-1 bg-[#334155] rounded-xl py-2.5 items-center flex-row justify-center">
-              <Ionicons name="water-outline" size={14} color="#34D399" />
-              <Text className="text-[#34D399] font-bold text-xs ml-1">Mist</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
+            );
+          })
+        )}
 
-        {/* Plant 3: Snake Plant */}
-        <View className="bg-[#1E293B] rounded-2xl p-4 mb-8 border border-[#334155]">
-          <View className="flex-row mb-4 relative">
-            <View className="w-20 h-20 bg-gray-700 rounded-xl mr-4 overflow-hidden relative">
-              <Image 
-                source={{ uri: 'https://images.unsplash.com/photo-1599598425947-33002629ee8f?q=80&w=200&auto=format&fit=crop' }} 
-                className="w-full h-full"
-              />
-              <View className="absolute bottom-1 right-1 bg-black/60 px-1.5 py-0.5 rounded-full flex-row items-center">
-                <View className="w-1.5 h-1.5 bg-[#F87171] rounded-full mr-1" />
-                <Text className="text-white text-[8px] font-bold">Dry</Text>
-              </View>
-            </View>
-            <View className="flex-1 justify-center">
-              <View className="flex-row justify-between items-start">
-                <Text className="text-white text-base font-bold mb-0.5" numberOfLines={1}>Snake Pl...</Text>
-                <View className="flex-row items-center">
-                  <View className="bg-[#7F1D1D] px-2 py-1 rounded-lg flex-row items-center mr-2">
-                    <Text className="text-[#FCA5A5] text-[9px] font-bold text-center leading-tight">Needs{'\n'}Water</Text>
-                  </View>
-                  <Ionicons name="ellipsis-vertical" size={16} color="#9CA3AF" />
-                </View>
-              </View>
-              <Text className="text-gray-400 text-[11px] italic mb-1">Dracaena trifasciata</Text>
-              <View className="flex-row items-center mb-0.5">
-                <Ionicons name="location-outline" size={12} color="#34D399" />
-                <Text className="text-gray-300 text-[10px] ml-1 font-medium">Master Bedroom</Text>
-              </View>
-              <View className="flex-row items-center">
-                <Ionicons name="water-outline" size={12} color="#9CA3AF" />
-                <Text className="text-gray-400 text-[10px] ml-1">Last: 14 days ago</Text>
-              </View>
-            </View>
-          </View>
-          <View className="flex-row justify-between bg-[#0F172A] rounded-xl p-3 mb-4">
-            <View>
-              <View className="flex-row items-center mb-1">
-                <Ionicons name="water-outline" size={10} color="#F87171" />
-                <Text className="text-gray-400 text-[9px] font-bold tracking-wider ml-1">MOISTURE</Text>
-              </View>
-              <Text className="text-[#F87171] text-xs font-bold">15% <Text className="text-[9px] font-normal text-[#FCA5A5]">Crit.</Text></Text>
-            </View>
-            <View>
-              <View className="flex-row items-center mb-1">
-                <Ionicons name="thermometer-outline" size={10} color="#9CA3AF" />
-                <Text className="text-gray-400 text-[9px] font-bold tracking-wider ml-1">TEMP</Text>
-              </View>
-              <Text className="text-white text-xs font-bold">21.8°C</Text>
-            </View>
-            <View>
-              <View className="flex-row items-center mb-1">
-                <Ionicons name="sunny-outline" size={10} color="#34D399" />
-                <Text className="text-gray-400 text-[9px] font-bold tracking-wider ml-1">SUNLIGHT</Text>
-              </View>
-              <Text className="text-white text-xs font-bold">Low Light</Text>
-            </View>
-          </View>
-          <View className="flex-row space-x-3">
-            <TouchableOpacity className="flex-[2] bg-[#34D399] rounded-xl py-2.5 items-center">
-              <Text className="text-[#064E3B] font-bold text-xs">Water Now</Text>
-            </TouchableOpacity>
-            <TouchableOpacity className="flex-1 bg-[#334155] rounded-xl py-2.5 items-center">
-              <Text className="text-white font-bold text-xs">Details</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-
-        {/* Add Another Plant */}
+        {/* Add Another Plant footer */}
         <View className="items-center mb-32">
           <TouchableOpacity className="w-12 h-12 bg-[#1E293B] border border-[#334155] rounded-full items-center justify-center mb-3" onPress={() => router.push('/add-plant')}>
             <Ionicons name="add" size={24} color="#34D399" />
           </TouchableOpacity>
           <Text className="text-white font-bold text-sm mb-1">Add Another Plant</Text>
           <Text className="text-gray-400 text-[11px] text-center px-8">
-            Scan an NFC tag, barcode, or use AI leaf photo diagnosis to connect.
+            Connect sensor hardware or capture leaf photos for AI diagnosis.
           </Text>
         </View>
       </ScrollView>

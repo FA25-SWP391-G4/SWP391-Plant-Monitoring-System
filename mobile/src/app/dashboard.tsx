@@ -9,13 +9,23 @@ import api, { authStore, getBackendBaseUrl } from '../api/apiClient';
 export default function DashboardScreen() {
   const router = useRouter();
   const [plants, setPlants] = useState<any[]>([]);
+  const [selectedPlantIndex, setSelectedPlantIndex] = useState(0);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [wateringPlantId, setWateringPlantId] = useState<number | string | null>(null);
   const [waterSuccessMessage, setWaterSuccessMessage] = useState<string>('');
+  const [currentSensors, setCurrentSensors] = useState<{
+    moisture?: number | null;
+    temperature?: number | null;
+    humidity?: number | null;
+    light?: number | null;
+    battery?: number | null;
+  } | null>(null);
+  const [lastWateredInfo, setLastWateredInfo] = useState<string>('Not recorded');
 
   const currentUser = authStore.getUser();
 
+  // Load plants
   const loadDashboardData = useCallback(async () => {
     try {
       const data = await api.plants.getAll();
@@ -34,35 +44,96 @@ export default function DashboardScreen() {
     loadDashboardData();
   }, [loadDashboardData]);
 
-  const onRefresh = () => {
-    setRefreshing(true);
-    loadDashboardData();
-  };
-
-  const handleWater = async (plantId: number | string) => {
-    setWateringPlantId(plantId);
-    try {
-      await api.plants.water(plantId, 5);
-      setWaterSuccessMessage('Watering pulse sent (5s)!');
-    } catch {
-      setWaterSuccessMessage('Watering pulse dispatched to device!');
-    } finally {
-      setWateringPlantId(null);
-      setTimeout(() => setWaterSuccessMessage(''), 3000);
-    }
-  };
-
   // Primary active plant (from backend or default)
-  const activePlant = plants[0] || {
+  const activePlant = plants[selectedPlantIndex] || plants[0] || {
     plant_id: 1,
     name: 'Basil Plant',
     species: 'Ocimum basilicum',
     location: 'Indoor Herb Zone',
     status: 'healthy',
-    moisture: 8,
-    temperature: 33.5,
-    humidity: 57.5,
+    moisture: 42,
+    temperature: 28.5,
+    humidity: 60.0,
+    moisture_threshold: 45,
   };
+
+  // Fetch current live sensors for active plant
+  const fetchLiveSensors = useCallback(async (plantId: number | string) => {
+    try {
+      const res: any = await api.plants.getSensorsCurrent(plantId);
+      const data = res?.data || res;
+      if (data) {
+        setCurrentSensors({
+          moisture: data.moisture !== undefined ? data.moisture : data.soil_moisture,
+          temperature: data.temperature,
+          humidity: data.humidity,
+          light: data.light !== undefined ? data.light : data.light_level,
+          battery: data.battery,
+        });
+      }
+    } catch (err) {
+      // Keep cached or active plant values
+    }
+  }, []);
+
+  // Fetch last watered
+  const fetchLastWatered = useCallback(async (plantId: number | string) => {
+    try {
+      const res: any = await api.plants.getLastWatered(plantId);
+      const data = res?.data || res;
+      if (data?.last_watered_at || data?.created_at) {
+        const d = new Date(data.last_watered_at || data.created_at);
+        setLastWateredInfo(d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }));
+      }
+    } catch {
+      // ignore
+    }
+  }, []);
+
+  // Poll current telemetry every 10 seconds
+  useEffect(() => {
+    const id = activePlant?.plant_id || activePlant?.id;
+    if (id) {
+      fetchLiveSensors(id);
+      fetchLastWatered(id);
+
+      const interval = setInterval(() => {
+        fetchLiveSensors(id);
+      }, 10000);
+      return () => clearInterval(interval);
+    }
+  }, [activePlant, fetchLiveSensors, fetchLastWatered]);
+
+  const onRefresh = () => {
+    setRefreshing(true);
+    loadDashboardData();
+    const id = activePlant?.plant_id || activePlant?.id;
+    if (id) {
+      fetchLiveSensors(id);
+      fetchLastWatered(id);
+    }
+  };
+
+  // Water pump control capped at 10 seconds max
+  const handleWater = async (plantId: number | string, seconds: number = 5) => {
+    const duration = Math.min(10, Math.max(1, seconds));
+    setWateringPlantId(plantId);
+    try {
+      const res: any = await api.plants.water(plantId, duration);
+      setWaterSuccessMessage(res?.message || `Watering command executed (${duration}s)!`);
+      // Refresh sensors after watering pulse
+      setTimeout(() => fetchLiveSensors(plantId), 2000);
+    } catch (err: any) {
+      setWaterSuccessMessage(err?.message || `Water pulse (${duration}s) dispatched to device!`);
+    } finally {
+      setWateringPlantId(null);
+      setTimeout(() => setWaterSuccessMessage(''), 3500);
+    }
+  };
+
+  const currentMoisture = currentSensors?.moisture ?? activePlant.moisture ?? activePlant.sensor_data?.moisture ?? 45;
+  const currentTemp = currentSensors?.temperature ?? activePlant.temperature ?? activePlant.sensor_data?.temperature ?? 27.5;
+  const currentHumidity = currentSensors?.humidity ?? activePlant.humidity ?? activePlant.sensor_data?.humidity ?? 62.0;
 
   return (
     <SafeAreaView className="flex-1 bg-[#09121B]">
@@ -75,7 +146,7 @@ export default function DashboardScreen() {
         
         {/* Backend Connectivity Indicator */}
         <View className="flex-row items-center bg-[#0F172A] px-2.5 py-1 rounded-full border border-[#334155]">
-          <View className="w-1.5 h-1.5 bg-[#34D399] rounded-full mr-1.5" />
+          <View className="w-1.5 h-1.5 bg-[#34D399] rounded-full mr-1.5 animate-pulse" />
           <Text className="text-gray-300 text-[10px] font-medium">Live Node API</Text>
         </View>
       </View>
@@ -88,27 +159,68 @@ export default function DashboardScreen() {
         }
       >
         {/* Welcome Card */}
-        <View className="rounded-2xl overflow-hidden mb-6 mt-1">
+        <View className="rounded-2xl overflow-hidden mb-5 mt-1">
           <LinearGradient
             colors={['#10B981', '#22C55E']}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 1 }}
-            style={{ padding: 22 }}
+            style={{ padding: 20 }}
           >
             <Text className="text-white text-2xl font-extrabold mb-1">
               Welcome back, {currentUser?.given_name || 'Plant Parent'}!
             </Text>
-            <Text className="text-white/90 text-xs font-medium mb-5">
+            <Text className="text-white/90 text-xs font-medium mb-4">
               Managing {plants.length > 0 ? plants.length : 1} active botanical specimen.
             </Text>
-            <TouchableOpacity 
-              className="bg-white rounded-xl py-2 px-4 self-start shadow-sm active:opacity-90" 
-              onPress={() => router.push('/add-plant')}
-            >
-              <Text className="text-[#064E3B] font-bold text-xs">Add New Plant</Text>
-            </TouchableOpacity>
+            <View className="flex-row gap-2">
+              <TouchableOpacity 
+                className="bg-white rounded-xl py-2 px-3.5 shadow-sm active:opacity-90" 
+                onPress={() => router.push('/add-plant')}
+              >
+                <Text className="text-[#064E3B] font-bold text-xs">+ Add Plant</Text>
+              </TouchableOpacity>
+              <TouchableOpacity 
+                className="bg-[#064E3B]/40 border border-white/30 rounded-xl py-2 px-3.5 active:opacity-90" 
+                onPress={() => router.push('/add-device')}
+              >
+                <Text className="text-white font-bold text-xs">Link ESP32</Text>
+              </TouchableOpacity>
+            </View>
           </LinearGradient>
         </View>
+
+        {/* Plant Switcher Tabs (if user has multiple plants) */}
+        {plants.length > 1 && (
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} className="flex-row mb-4 gap-2">
+            {plants.map((p, idx) => (
+              <TouchableOpacity
+                key={p.plant_id || p.id || idx}
+                onPress={() => {
+                  setSelectedPlantIndex(idx);
+                  setCurrentSensors(null);
+                }}
+                className={`px-3.5 py-1.5 rounded-full border mr-2 flex-row items-center ${
+                  selectedPlantIndex === idx
+                    ? 'bg-[#34D399] border-[#34D399]'
+                    : 'bg-[#1E293B] border-[#334155]'
+                }`}
+              >
+                <MaterialCommunityIcons
+                  name="leaf"
+                  size={12}
+                  color={selectedPlantIndex === idx ? '#064E3B' : '#9CA3AF'}
+                />
+                <Text
+                  className={`text-xs ml-1.5 font-bold ${
+                    selectedPlantIndex === idx ? 'text-[#064E3B]' : 'text-gray-300'
+                  }`}
+                >
+                  {p.name || p.custom_name || `Plant #${idx + 1}`}
+                </Text>
+              </TouchableOpacity>
+            ))}
+          </ScrollView>
+        )}
 
         {/* Live Water Success Banner */}
         {waterSuccessMessage ? (
@@ -142,32 +254,38 @@ export default function DashboardScreen() {
               </View>
               <View className="flex-row items-center bg-[#0F172A] px-2 py-0.5 rounded-full border border-[#334155]">
                 <View className="w-1.5 h-1.5 bg-[#34D399] rounded-full mr-1" />
-                <Text className="text-gray-300 text-[9px] font-bold">Online</Text>
+                <Text className="text-gray-300 text-[9px] font-bold">Live Stream</Text>
               </View>
             </View>
           </View>
 
-          {/* Plant Metrics */}
+          {/* Plant Metrics - Real Telemetry */}
           <View className="flex-row justify-between space-x-2 mb-5">
             <View className="flex-1 bg-[#0F172A] rounded-2xl p-2.5 border-b-2 border-[#3B82F6]">
               <Text className="text-gray-400 text-[9px] font-bold mb-1">SOIL MOISTURE</Text>
               <View className="flex-row items-center">
                 <Ionicons name="water-outline" size={14} color="#3B82F6" />
-                <Text className="text-white text-sm font-bold ml-1">8%</Text>
+                <Text className="text-white text-sm font-bold ml-1">
+                  {currentMoisture !== null && currentMoisture !== undefined ? `${currentMoisture}%` : '--'}
+                </Text>
               </View>
             </View>
             <View className="flex-1 bg-[#0F172A] rounded-2xl p-2.5 border-b-2 border-[#F87171]">
               <Text className="text-gray-400 text-[9px] font-bold mb-1">TEMP</Text>
               <View className="flex-row items-center">
                 <Ionicons name="thermometer-outline" size={14} color="#F87171" />
-                <Text className="text-white text-sm font-bold ml-1">33.5°C</Text>
+                <Text className="text-white text-sm font-bold ml-1">
+                  {currentTemp !== null && currentTemp !== undefined ? `${currentTemp}°C` : '--'}
+                </Text>
               </View>
             </View>
             <View className="flex-1 bg-[#0F172A] rounded-2xl p-2.5 border-b-2 border-[#22D3EE]">
               <Text className="text-gray-400 text-[9px] font-bold mb-1">HUMIDITY</Text>
               <View className="flex-row items-center">
                 <Ionicons name="cloud-outline" size={14} color="#22D3EE" />
-                <Text className="text-white text-sm font-bold ml-1">57.5%</Text>
+                <Text className="text-white text-sm font-bold ml-1">
+                  {currentHumidity !== null && currentHumidity !== undefined ? `${currentHumidity}%` : '--'}
+                </Text>
               </View>
             </View>
           </View>
@@ -176,22 +294,28 @@ export default function DashboardScreen() {
           <View className="flex-row flex-wrap gap-2">
             <TouchableOpacity 
               className="bg-[#2563EB] rounded-xl py-2.5 px-3 items-center flex-1 shadow-md shadow-blue-500/20 active:opacity-90"
-              onPress={() => router.push('/plant-detail')}
+              onPress={() => router.push({
+                pathname: '/plant-detail' as any,
+                params: {
+                  plantId: String(activePlant.plant_id || activePlant.id || '1'),
+                  plantName: activePlant.name || activePlant.custom_name || 'Basil Plant',
+                },
+              })}
             >
               <Text className="text-white font-bold text-xs">View Details</Text>
             </TouchableOpacity>
 
             <TouchableOpacity 
               className="bg-[#059669] rounded-xl py-2.5 px-3 items-center flex-1 flex-row justify-center active:opacity-90"
-              onPress={() => handleWater(activePlant.plant_id)}
-              disabled={wateringPlantId === activePlant.plant_id}
+              onPress={() => handleWater(activePlant.plant_id || activePlant.id || 1, 5)}
+              disabled={wateringPlantId === (activePlant.plant_id || activePlant.id)}
             >
-              {wateringPlantId === activePlant.plant_id ? (
+              {wateringPlantId === (activePlant.plant_id || activePlant.id) ? (
                 <ActivityIndicator size="small" color="#FFFFFF" />
               ) : (
                 <>
                   <Ionicons name="water" size={14} color="#FFFFFF" />
-                  <Text className="text-white font-bold text-xs ml-1">Water Now</Text>
+                  <Text className="text-white font-bold text-xs ml-1">Water (5s)</Text>
                 </>
               )}
             </TouchableOpacity>
@@ -201,7 +325,7 @@ export default function DashboardScreen() {
               onPress={() => router.push({
                 pathname: '/analyze-image' as any,
                 params: {
-                  plantId: String(activePlant.plant_id || '1'),
+                  plantId: String(activePlant.plant_id || activePlant.id || '1'),
                   plantName: activePlant.name || activePlant.custom_name || 'Basil Plant',
                 },
               })}
@@ -212,7 +336,13 @@ export default function DashboardScreen() {
 
             <TouchableOpacity 
               className="bg-[#7C3AED] rounded-xl py-2.5 px-3 items-center flex-1 flex-row justify-center active:opacity-90"
-              onPress={() => router.push('/plant-detail')}
+              onPress={() => router.push({
+                pathname: '/plant-detail' as any,
+                params: {
+                  plantId: String(activePlant.plant_id || activePlant.id || '1'),
+                  plantName: activePlant.name || activePlant.custom_name || 'Basil Plant',
+                },
+              })}
             >
               <MaterialCommunityIcons name="star-four-points" size={14} color="#FFFFFF" />
               <Text className="text-white font-bold text-xs ml-1">Ask AI</Text>
@@ -225,7 +355,7 @@ export default function DashboardScreen() {
           <View className="flex-row justify-between items-start mb-4">
             <View>
               <Text className="text-gray-400 text-[10px] font-bold tracking-widest uppercase mb-1">Local Microclimate</Text>
-              <Text className="text-white text-4xl font-light tracking-tighter mb-1">24°C</Text>
+              <Text className="text-white text-4xl font-light tracking-tighter mb-1">26°C</Text>
               <Text className="text-gray-400 text-xs">Humidity: 65% • Wind: 8 km/h</Text>
             </View>
             <View className="w-12 h-12 rounded-2xl bg-[#0F172A] items-center justify-center border border-[#334155]">
@@ -236,7 +366,9 @@ export default function DashboardScreen() {
           <View className="bg-[#0F172A] rounded-2xl p-3 flex-row items-center border border-[#334155]/60">
             <Ionicons name="information-circle-outline" size={16} color="#34D399" />
             <Text className="text-gray-300 text-[11px] font-medium ml-2 flex-1">
-              Warm conditions detected. Check soil moisture before dusk.
+              {currentMoisture < (activePlant.moisture_threshold || 45)
+                ? 'Soil moisture is low. Recommended to run watering pulse.'
+                : 'Hydration levels optimal for current room conditions.'}
             </Text>
           </View>
         </View>
@@ -255,10 +387,12 @@ export default function DashboardScreen() {
 
           <View className="bg-[#0F172A] rounded-2xl p-3.5 border border-[#334155]">
             <Text className="text-white text-xs font-bold mb-1">{activePlant.name || 'Basil Plant'}</Text>
-            <Text className="text-gray-400 text-[10px] mb-2">Target threshold: 45% moisture</Text>
+            <Text className="text-gray-400 text-[10px] mb-2">
+              Target threshold: {activePlant.moisture_threshold || 45}% moisture
+            </Text>
             <View className="flex-row items-center justify-between pt-1 border-t border-[#334155]/60">
-              <Text className="text-gray-300 text-xs">Next automated run:</Text>
-              <Text className="text-[#34D399] text-xs font-bold">Today at 17:30</Text>
+              <Text className="text-gray-300 text-xs">Last watered session:</Text>
+              <Text className="text-[#34D399] text-xs font-bold">{lastWateredInfo}</Text>
             </View>
           </View>
         </View>

@@ -78,6 +78,7 @@ export default function AnalyzeImageScreen() {
   const targetPlantName = plantName || 'Basil Plant';
   
   const [selectedImageUri, setSelectedImageUri] = useState<string | null>(null);
+  const [imageBase64, setImageBase64] = useState<string | null>(null);
   const [mimeType, setMimeType] = useState<string>('image/jpeg');
   const [fileName, setFileName] = useState<string>('plant_leaf.jpg');
   
@@ -99,12 +100,14 @@ export default function AnalyzeImageScreen() {
         mediaTypes: ['images'],
         allowsEditing: true,
         aspect: [1, 1],
-        quality: 0.9,
+        quality: 0.85,
+        base64: true,
       });
 
       if (!result.canceled && result.assets && result.assets.length > 0) {
         const asset = result.assets[0];
         setSelectedImageUri(asset.uri);
+        setImageBase64(asset.base64 || null);
         setMimeType(asset.mimeType || 'image/jpeg');
         setFileName(asset.fileName || 'camera_leaf.jpg');
         setDiagnosisResult(null);
@@ -129,12 +132,14 @@ export default function AnalyzeImageScreen() {
         mediaTypes: ['images'],
         allowsEditing: true,
         aspect: [1, 1],
-        quality: 0.9,
+        quality: 0.85,
+        base64: true,
       });
 
       if (!result.canceled && result.assets && result.assets.length > 0) {
         const asset = result.assets[0];
         setSelectedImageUri(asset.uri);
+        setImageBase64(asset.base64 || null);
         setMimeType(asset.mimeType || 'image/jpeg');
         setFileName(asset.fileName || 'gallery_leaf.jpg');
         setDiagnosisResult(null);
@@ -149,6 +154,7 @@ export default function AnalyzeImageScreen() {
   // Select sample preset
   const handleSelectSample = (sample: typeof SAMPLE_PRESETS[0]) => {
     setSelectedImageUri(sample.uri);
+    setImageBase64(null);
     setMimeType('image/jpeg');
     setFileName(`${sample.id}.jpg`);
     setDiagnosisResult(null);
@@ -166,13 +172,13 @@ export default function AnalyzeImageScreen() {
     setErrorMessage(null);
 
     try {
-      const result = await api.ai.diagnoseImage(selectedImageUri, mimeType, fileName);
+      const result = await api.ai.diagnoseImage(selectedImageUri, mimeType, fileName, imageBase64);
       setDiagnosisResult(result);
       setActiveImageTab(result.segmented_leaf_base64 ? 'isolated' : 'original');
     } catch (err: any) {
       console.error('Diagnosis failed:', err);
       setErrorMessage(
-        err.message || 'Failed to reach AI Diagnostic Server. Make sure python app.py is running on port 8000.'
+        err.message || 'Failed to reach AI Diagnostic Server. Please verify the AI URL or network connection.'
       );
     } finally {
       setIsAnalyzing(false);
@@ -182,6 +188,7 @@ export default function AnalyzeImageScreen() {
   // Reset to analyze another leaf
   const handleReset = () => {
     setSelectedImageUri(null);
+    setImageBase64(null);
     setDiagnosisResult(null);
     setErrorMessage(null);
   };
