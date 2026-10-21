@@ -9,25 +9,55 @@ export default function PlantsScreen() {
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState('');
   const [plants, setPlants] = useState<any[]>([]);
+  const [sensorMap, setSensorMap] = useState<Record<string, { moisture?: number | null; temperature?: number | null }>>({});
   const [refreshing, setRefreshing] = useState(false);
   const [waterFeedback, setWaterFeedback] = useState<string>('');
+
+  const fetchLiveSensorsForPlants = useCallback(async (plantList: any[]) => {
+    plantList.forEach(async (p: any) => {
+      const pid = p.plant_id || p.id;
+      if (pid) {
+        try {
+          const res: any = await api.plants.getSensorsCurrent(pid);
+          const sData = res?.data || res;
+          if (sData) {
+            const m = sData.soil_moisture !== undefined ? sData.soil_moisture : sData.moisture;
+            const t = sData.temperature;
+            setSensorMap((prev) => ({
+              ...prev,
+              [String(pid)]: { moisture: m, temperature: t },
+            }));
+          }
+        } catch {
+          // ignore
+        }
+      }
+    });
+  }, []);
 
   const loadPlants = useCallback(async () => {
     try {
       const data = await api.plants.getAll();
       if (Array.isArray(data) && data.length > 0) {
         setPlants(data);
+        fetchLiveSensorsForPlants(data);
       }
     } catch (err) {
       console.log('[PLANTS] Notice: Using fallback specimen data:', err);
     } finally {
       setRefreshing(false);
     }
-  }, []);
+  }, [fetchLiveSensorsForPlants]);
 
   useEffect(() => {
     loadPlants();
-  }, [loadPlants]);
+    const interval = setInterval(() => {
+      if (plants.length > 0) {
+        fetchLiveSensorsForPlants(plants);
+      }
+    }, 10000);
+    return () => clearInterval(interval);
+  }, [loadPlants, plants, fetchLiveSensorsForPlants]);
 
   const onRefresh = () => {
     setRefreshing(true);
@@ -39,6 +69,7 @@ export default function PlantsScreen() {
     try {
       await api.plants.water(plantId, 5);
       setWaterFeedback(`Water command delivered to plant #${plantId}!`);
+      setTimeout(() => fetchLiveSensorsForPlants(plants), 2000);
     } catch {
       setWaterFeedback(`Water command staged for device!`);
     } finally {
@@ -57,7 +88,9 @@ export default function PlantsScreen() {
       (p.location || p.zone_name || '').toLowerCase().includes(q);
     if (!nameMatch) return false;
 
-    const moisture = p.sensor_data?.moisture ?? p.moisture ?? 50;
+    const pid = String(p.plant_id || p.id || '');
+    const live = sensorMap[pid];
+    const moisture = live?.moisture !== undefined ? live.moisture : (p.soil_moisture ?? p.sensor_data?.moisture ?? p.moisture ?? 0);
     const threshold = p.moisture_threshold || 45;
 
     if (activeFilter === 'needs_water') {
@@ -200,8 +233,14 @@ export default function PlantsScreen() {
             const pName = plant.name || plant.custom_name || `Plant #${idx + 1}`;
             const pSpecies = plant.species || plant.species_name || 'Botanical Specimen';
             const pLocation = plant.location || plant.zone_name || 'Indoor Zone';
-            const pMoisture = plant.sensor_data?.moisture ?? plant.moisture ?? 42;
-            const pTemp = plant.sensor_data?.temperature ?? plant.temperature ?? 28;
+            const pidStr = String(pId);
+            const liveSensor = sensorMap[pidStr];
+            const pMoisture = liveSensor?.moisture !== undefined 
+              ? liveSensor.moisture 
+              : (plant.soil_moisture ?? plant.data?.moisture ?? plant.sensor_data?.moisture ?? plant.moisture ?? 0);
+            const pTemp = liveSensor?.temperature !== undefined 
+              ? liveSensor.temperature 
+              : (plant.temperature ?? plant.data?.temperature ?? plant.sensor_data?.temperature ?? null);
             const pThreshold = plant.moisture_threshold || 45;
             const isDry = pMoisture < pThreshold;
 
@@ -262,7 +301,9 @@ export default function PlantsScreen() {
                       <Ionicons name="thermometer-outline" size={10} color="#9CA3AF" />
                       <Text className="text-gray-400 text-[9px] font-bold tracking-wider ml-1">TEMP</Text>
                     </View>
-                    <Text className="text-white text-xs font-bold">{pTemp}°C</Text>
+                    <Text className="text-white text-xs font-bold">
+                      {pTemp !== null && pTemp !== undefined ? `${pTemp}°C` : '--'}
+                    </Text>
                   </View>
                   <View>
                     <View className="flex-row items-center mb-1">

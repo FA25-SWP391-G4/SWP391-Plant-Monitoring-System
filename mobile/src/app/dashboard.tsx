@@ -64,10 +64,10 @@ export default function DashboardScreen() {
       const data = res?.data || res;
       if (data) {
         setCurrentSensors({
-          moisture: data.moisture !== undefined ? data.moisture : data.soil_moisture,
-          temperature: data.temperature,
-          humidity: data.humidity,
-          light: data.light !== undefined ? data.light : data.light_level,
+          moisture: data.soil_moisture !== undefined ? data.soil_moisture : (data.moisture !== undefined ? data.moisture : 0),
+          temperature: data.temperature !== undefined ? data.temperature : null,
+          humidity: data.air_humidity !== undefined ? data.air_humidity : (data.humidity !== undefined ? data.humidity : null),
+          light: data.light_intensity !== undefined ? data.light_intensity : (data.light !== undefined ? data.light : (data.light_level ?? null)),
           battery: data.battery,
         });
       }
@@ -131,9 +131,15 @@ export default function DashboardScreen() {
     }
   };
 
-  const currentMoisture = currentSensors?.moisture ?? activePlant.moisture ?? activePlant.sensor_data?.moisture ?? 45;
-  const currentTemp = currentSensors?.temperature ?? activePlant.temperature ?? activePlant.sensor_data?.temperature ?? 27.5;
-  const currentHumidity = currentSensors?.humidity ?? activePlant.humidity ?? activePlant.sensor_data?.humidity ?? 62.0;
+  const currentMoisture = currentSensors?.moisture !== null && currentSensors?.moisture !== undefined
+    ? currentSensors.moisture
+    : (activePlant.soil_moisture ?? activePlant.sensor_data?.moisture ?? activePlant.moisture ?? 0);
+  const currentTemp = currentSensors?.temperature !== null && currentSensors?.temperature !== undefined
+    ? currentSensors.temperature
+    : (activePlant.temperature ?? activePlant.sensor_data?.temperature ?? null);
+  const currentHumidity = currentSensors?.humidity !== null && currentSensors?.humidity !== undefined
+    ? currentSensors.humidity
+    : (activePlant.air_humidity ?? activePlant.humidity ?? activePlant.sensor_data?.humidity ?? null);
 
   return (
     <SafeAreaView className="flex-1 bg-[#09121B]">

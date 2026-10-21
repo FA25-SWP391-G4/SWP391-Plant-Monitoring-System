@@ -1,9 +1,8 @@
 # Minimal CPU-only dependencies for Indoor Plant Disease Diagnostic Engine
 onnxruntime>=1.15.0
-opencv-python>=4.7.0
+opencv-python-headless>=4.7.0
 pillow>=9.5.0
 numpy>=1.23.0
-rembg>=2.0.50
 fastapi>=0.95.0
 uvicorn>=0.22.0
 python-multipart>=0.0.6
