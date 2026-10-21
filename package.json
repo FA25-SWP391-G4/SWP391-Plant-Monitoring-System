@@ -71,6 +71,7 @@
     "start:all-services": "concurrently \"./bin/www\" \"npm run start:client\" \"npm run start:ai-service\"",
     "install:all": "npm install && npm --prefix client install",
     "build": "npm --prefix client run build",
+    "build:client": "npm --prefix client run build",
     "test": "jest --projects jest.config.json",
     "test:unit": "jest --projects tests/unit --testPathPattern=tests/unit",
     "test:integration": "jest --projects tests/integration --testPathPattern=tests/integration",

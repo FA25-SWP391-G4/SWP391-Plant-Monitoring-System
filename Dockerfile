@@ -1,21 +1,18 @@
-FROM node:18-alpine
+FROM node:20-alpine
 
 WORKDIR /app
 
-# Copy package.json and package-lock.json
+# Copy root package definitions
 COPY package*.json ./
 
-# Install dependencies
+# Install backend dependencies
 RUN npm ci
 
-# Copy the rest of the application
+# Copy backend application source files
 COPY . .
 
-# Build the client
-RUN npm run build:client
+# Expose the backend API port
+EXPOSE 3010
 
-# Expose the application port
-EXPOSE 3000
-
-# Start the application
+# Start backend server
 CMD ["npm", "start"]

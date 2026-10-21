@@ -1,0 +1,15 @@
+node_modules
+npm-debug.log
+.git
+.gitignore
+.vscode
+.expo
+client/node_modules
+client/.next
+client/out
+mobile/node_modules
+mobile/.expo
+debug.md
+coverage
+dist_test
+*.log

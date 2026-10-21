@@ -14,12 +14,13 @@ services:
   backend:
     build: .
     ports:
-      - "3000:3000"
+      - "3010:3010"
     volumes:
       - .:/app
       - /app/node_modules
     environment:
       - NODE_ENV=development
+      - PORT=3010
       - AI_SERVICE_URL=http://ai_service:8000
     depends_on:
       - ai_service
