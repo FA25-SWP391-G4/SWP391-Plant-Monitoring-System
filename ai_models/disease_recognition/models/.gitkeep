@@ -1,0 +1,5 @@
+# Keep this directory in git.
+# Place the following ONNX model files here:
+# - mobilenet_v3_large_14class_320x320.onnx (Primary classifier, ~16.8 MB)
+# - u2netp.onnx (Salient object detection for leaf segmentation, ~4.5 MB)
+# - resnet18_14class_320x320.onnx (Alternative classifier, ~44.7 MB, optional)

@@ -482,7 +482,7 @@ export default function PlantCard({ plant, sensorData = {} }) {
         </div>
         
         {/* AI Prediction Banner */}
-        {enableAI && currentSensorData?.moisture && currentSensorData.moisture < 40 && (
+        {enableAI && (currentSensorData?.moisture ?? currentSensorData?.soil_moisture) != null && (currentSensorData?.moisture ?? currentSensorData?.soil_moisture) < 40 && (
           <div className="bg-gradient-to-r from-blue-50 to-blue-100 dark:from-blue-900/30 dark:to-blue-800/30 border border-blue-200 dark:border-blue-800 rounded-lg p-3 mb-4">
             <div className="flex items-center">
               <div className="text-blue-600 dark:text-blue-400 mr-2">🤖</div>
