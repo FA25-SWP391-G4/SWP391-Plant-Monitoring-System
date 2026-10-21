@@ -645,11 +645,23 @@ const getUserPlants = async (req, res) => {
                 z.description as zone_description,
                 pp.species_name,
                 pp.description as species_description,
-                pp.ideal_moisture
+                pp.ideal_moisture,
+                sd.soil_moisture,
+                sd.temperature,
+                sd.air_humidity,
+                sd.light_intensity,
+                sd.timestamp as sensor_timestamp
             FROM plants p
             LEFT JOIN devices d ON p.device_key = d.device_key
             LEFT JOIN zones z ON p.zone_id = z.zone_id
             LEFT JOIN plant_profiles pp ON p.profile_id = pp.profile_id
+            LEFT JOIN LATERAL (
+                SELECT soil_moisture, temperature, air_humidity, light_intensity, timestamp
+                FROM sensors_data
+                WHERE TRIM(device_key) = TRIM(p.device_key)
+                ORDER BY timestamp DESC
+                LIMIT 1
+            ) sd ON true
             WHERE p.user_id = $1
             ORDER BY p.created_at DESC
         `;
@@ -677,6 +689,7 @@ const getUserPlants = async (req, res) => {
                 image: plant.image || null,
                 lastWatered: null, // Will be populated from watering history later
                 auto_watering_on: plant.auto_watering_on || false,
+                moisture_threshold: plant.moisture_threshold || 45,
                 thresholds: plant.thresholds || {},
                 device_key: plant.device_key,
                 device_name: plant.device_name,
@@ -684,7 +697,12 @@ const getUserPlants = async (req, res) => {
                 zone_name: plant.zone_name,
                 zone_description: plant.zone_description,
                 notes: plant.notes,
-                created_at: plant.created_at
+                created_at: plant.created_at,
+                soil_moisture: plant.soil_moisture,
+                temperature: plant.temperature,
+                humidity: plant.air_humidity,
+                light: plant.light_intensity,
+                sensor_timestamp: plant.sensor_timestamp
             };
         });
         
@@ -788,6 +806,8 @@ const getPlantById = async (req, res) => {
             location: plant.location || 'Not specified',
             status: plant.status || 'healthy',
             image: plant.image_url || null,
+            moisture_threshold: plant.moisture_threshold || 45,
+            thresholds: thresholds,
             lastWatered: plant.last_watered || new Date().toISOString(),
             auto_watering_on: plant.auto_watering_on || false,
             device_key: plant.device_key,

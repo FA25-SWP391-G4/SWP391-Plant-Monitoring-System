@@ -14,6 +14,7 @@ import { Ionicons, MaterialCommunityIcons, Feather } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import * as ImagePicker from 'expo-image-picker';
+import * as ImageManipulator from 'expo-image-manipulator';
 import api from '../api/apiClient';
 
 interface DiagnosticResult {
@@ -87,6 +88,24 @@ export default function AnalyzeImageScreen() {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [activeImageTab, setActiveImageTab] = useState<'isolated' | 'original'>('isolated');
 
+  // Helper to downscale image to max 512px before transmission (prevents 512MB RAM OOM on AI server)
+  const optimizeImage = async (uri: string) => {
+    try {
+      const manipResult = await ImageManipulator.manipulateAsync(
+        uri,
+        [{ resize: { width: 512 } }],
+        { compress: 0.75, format: ImageManipulator.SaveFormat.JPEG, base64: true }
+      );
+      return {
+        uri: manipResult.uri,
+        base64: manipResult.base64 || null,
+      };
+    } catch (e) {
+      console.warn('Failed to downscale image, using original:', e);
+      return { uri, base64: null };
+    }
+  };
+
   // Launch camera
   const handleTakePhoto = async () => {
     try {
@@ -100,16 +119,16 @@ export default function AnalyzeImageScreen() {
         mediaTypes: ['images'],
         allowsEditing: true,
         aspect: [1, 1],
-        quality: 0.85,
-        base64: true,
+        quality: 0.8,
       });
 
       if (!result.canceled && result.assets && result.assets.length > 0) {
         const asset = result.assets[0];
-        setSelectedImageUri(asset.uri);
-        setImageBase64(asset.base64 || null);
-        setMimeType(asset.mimeType || 'image/jpeg');
-        setFileName(asset.fileName || 'camera_leaf.jpg');
+        const optimized = await optimizeImage(asset.uri);
+        setSelectedImageUri(optimized.uri);
+        setImageBase64(optimized.base64);
+        setMimeType('image/jpeg');
+        setFileName('camera_leaf.jpg');
         setDiagnosisResult(null);
         setErrorMessage(null);
       }
@@ -132,15 +151,15 @@ export default function AnalyzeImageScreen() {
         mediaTypes: ['images'],
         allowsEditing: true,
         aspect: [1, 1],
-        quality: 0.85,
-        base64: true,
+        quality: 0.8,
       });
 
       if (!result.canceled && result.assets && result.assets.length > 0) {
         const asset = result.assets[0];
-        setSelectedImageUri(asset.uri);
-        setImageBase64(asset.base64 || null);
-        setMimeType(asset.mimeType || 'image/jpeg');
+        const optimized = await optimizeImage(asset.uri);
+        setSelectedImageUri(optimized.uri);
+        setImageBase64(optimized.base64);
+        setMimeType('image/jpeg');
         setFileName(asset.fileName || 'gallery_leaf.jpg');
         setDiagnosisResult(null);
         setErrorMessage(null);

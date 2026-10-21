@@ -7,31 +7,19 @@ import io
 if sys.stdout and hasattr(sys.stdout, 'reconfigure'):
     sys.stdout.reconfigure(encoding='utf-8')
 
+# Resolve local paths relative to this script
+CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
+if CURRENT_DIR not in sys.path:
+    sys.path.insert(0, CURRENT_DIR)
+
 import cv2
 import numpy as np
 from PIL import Image
 import onnxruntime as ort
-import rembg
 from enhanced_leaf_extractor import extract_tight_leaf
 
-# Resolve local paths relative to this script
-CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 MODELS_DIR = os.path.join(CURRENT_DIR, "models")
-
-# Point rembg to local offline model if available
-local_u2netp = os.path.join(MODELS_DIR, "u2netp.onnx")
-if os.path.exists(local_u2netp):
-    os.environ["U2NET_HOME"] = MODELS_DIR
-    # rembg checks ~/.u2net/u2netp.onnx by default, create directory link or fallback gracefully
-    u2_cache = os.path.expanduser("~/.u2net")
-    os.makedirs(u2_cache, exist_ok=True)
-    cache_target = os.path.join(u2_cache, "u2netp.onnx")
-    if not os.path.exists(cache_target):
-        try:
-            import shutil
-            shutil.copy2(local_u2netp, cache_target)
-        except Exception:
-            pass
+U2NETP_MODEL = os.path.join(MODELS_DIR, "u2netp.onnx")
 
 DEFAULT_MODEL = os.path.join(MODELS_DIR, "mobilenet_v3_large_14class_320x320.onnx")
 ACCURATE_MODEL = os.path.join(MODELS_DIR, "resnet18_14class_320x320.onnx")
@@ -116,8 +104,17 @@ class ProductionPlantPipeline:
         self.model_variant = model_variant.lower()
         self.temperature = float(temperature)
         
-        # 1. Stage 1: Fast u2netp Segmentation Session
-        self.seg_session = rembg.new_session("u2netp", providers=['CPUExecutionProvider'])
+        # 1. Stage 1: Ultra-lightweight u2netp ONNX Segmentation Session (Zero-PyTorch, ~4.5MB)
+        if not os.path.exists(U2NETP_MODEL):
+            raise FileNotFoundError(f"u2netp model checkpoint not found: {U2NETP_MODEL}")
+            
+        seg_opts = ort.SessionOptions()
+        seg_opts.intra_op_num_threads = 1
+        seg_opts.inter_op_num_threads = 1
+        seg_opts.execution_mode = ort.ExecutionMode.ORT_SEQUENTIAL
+        seg_opts.graph_optimization_level = ort.GraphOptimizationLevel.ORT_ENABLE_ALL
+        self.seg_session = ort.InferenceSession(U2NETP_MODEL, seg_opts, providers=['CPUExecutionProvider'])
+        self.seg_input_name = self.seg_session.get_inputs()[0].name
         
         # 2. Stage 2: ONNX Classification Session
         if self.model_variant in ["mobilenetv3", "mobilenet", "mbv3", "fast"]:
@@ -129,13 +126,30 @@ class ProductionPlantPipeline:
             raise FileNotFoundError(f"Model checkpoint not found: {model_path}")
             
         opts = ort.SessionOptions()
-        opts.intra_op_num_threads = 4
+        opts.intra_op_num_threads = 1
+        opts.inter_op_num_threads = 1
+        opts.execution_mode = ort.ExecutionMode.ORT_SEQUENTIAL
         opts.graph_optimization_level = ort.GraphOptimizationLevel.ORT_ENABLE_ALL
         self.cls_session = ort.InferenceSession(model_path, opts, providers=['CPUExecutionProvider'])
         self.input_name = self.cls_session.get_inputs()[0].name
         
         self.class_names = CLASS_NAMES_14
         self.max_entropy = np.log(len(self.class_names)) # ln(14) ≈ 2.639
+
+    def _segment_u2netp(self, img_bgr: np.ndarray) -> np.ndarray:
+        h, w = img_bgr.shape[:2]
+        resized_bgr = cv2.resize(img_bgr, (320, 320), interpolation=cv2.INTER_LINEAR)
+        resized_rgb = cv2.cvtColor(resized_bgr, cv2.COLOR_BGR2RGB)
+        img_norm = (resized_rgb.astype(np.float32) / 255.0 - [0.485, 0.456, 0.406]) / [0.229, 0.224, 0.225]
+        tensor = np.transpose(img_norm, (2, 0, 1))[np.newaxis, ...].astype(np.float32)
+        
+        outputs = self.seg_session.run(None, {self.seg_input_name: tensor})
+        d0 = outputs[0][0, 0]
+        
+        d_min, d_max = float(d0.min()), float(d0.max())
+        pred = (d0 - d_min) / (d_max - d_min + 1e-8)
+        mask_320 = (pred * 255.0).astype(np.uint8)
+        return cv2.resize(mask_320, (w, h), interpolation=cv2.INTER_LINEAR)
 
     def _preprocess(self, tight_leaf_bgr: np.ndarray, target_size: int = 320) -> np.ndarray:
         """
@@ -200,11 +214,8 @@ class ProductionPlantPipeline:
             
         t_prep = time.perf_counter()
         
-        # 3. Stage 1: Fast u2netp Mask
-        img_rgb = cv2.cvtColor(img_downscaled, cv2.COLOR_BGR2RGB)
-        pil_in = Image.fromarray(img_rgb)
-        mask_pil = rembg.remove(pil_in, session=self.seg_session, only_mask=True)
-        seg_mask = np.array(mask_pil)
+        # 3. Stage 1: Fast u2netp Mask (Pure ONNX, Zero-PyTorch)
+        seg_mask = self._segment_u2netp(img_downscaled)
         t_seg = time.perf_counter()
         
         # 4. Stage 1.5: Anti-aliased Soft Leaf Extraction

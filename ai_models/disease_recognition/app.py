@@ -1,5 +1,6 @@
 import io
 import os
+import gc
 import base64
 import threading
 import cv2
@@ -279,6 +280,12 @@ async def diagnose(request: Request, file: Optional[UploadFile] = File(None)):
         if img_bgr is None:
             raise HTTPException(status_code=400, detail="Invalid image content.")
             
+        # Immediate memory guard: downscale large camera images to max 640px
+        h_in, w_in = img_bgr.shape[:2]
+        if max(h_in, w_in) > 640:
+            scale = 640.0 / max(h_in, w_in)
+            img_bgr = cv2.resize(img_bgr, (int(w_in * scale), int(h_in * scale)), interpolation=cv2.INTER_AREA)
+
         result = pipeline.predict(img_bgr, use_tta=True)
         
         # Encode segmented leaf into base64 for frontend display
@@ -286,15 +293,20 @@ async def diagnose(request: Request, file: Optional[UploadFile] = File(None)):
         result.pop('segmentation_mask', None)
         
         if leaf_bgr is not None and leaf_bgr.size > 0:
-            _, buffer = cv2.imencode('.jpg', leaf_bgr, [int(cv2.IMWRITE_JPEG_QUALITY), 90])
+            _, buffer = cv2.imencode('.jpg', leaf_bgr, [int(cv2.IMWRITE_JPEG_QUALITY), 85])
             result['segmented_leaf_base64'] = base64.b64encode(buffer).decode('utf-8')
         else:
             result['segmented_leaf_base64'] = None
             
         return JSONResponse(content=result)
         
+    except HTTPException:
+        raise
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+    finally:
+        del contents
+        gc.collect()
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 8000))

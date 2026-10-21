@@ -14,6 +14,7 @@ export default function PlantDetailScreen() {
   const [plant, setPlant] = useState<any>(null);
   const [sensors, setSensors] = useState<any>(null);
   const [history, setHistory] = useState<any[]>([]);
+  const [wateringHistory, setWateringHistory] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
   const [activeTab, setActiveTab] = useState<'overview' | 'predictions' | 'chat' | 'history'>('overview');
@@ -24,13 +25,28 @@ export default function PlantDetailScreen() {
   const [selectedHistoryMetric, setSelectedHistoryMetric] = useState<'moisture' | 'temperature' | 'humidity' | 'light'>('moisture');
   const [schedules, setSchedules] = useState<any[]>([]);
 
+  const parseSensors = (data: any) => {
+    if (!data) return null;
+    return {
+      moisture: data.soil_moisture !== undefined ? data.soil_moisture : (data.moisture !== undefined ? data.moisture : null),
+      temperature: data.temperature !== undefined ? data.temperature : null,
+      humidity: data.air_humidity !== undefined ? data.air_humidity : (data.humidity !== undefined ? data.humidity : null),
+      light: data.light_intensity !== undefined ? data.light_intensity : (data.light !== undefined ? data.light : (data.light_level ?? null)),
+      battery: data.battery,
+    };
+  };
+
   // Load plant details and live sensors
   const loadPlantData = useCallback(async () => {
     try {
       const res: any = await api.plants.getById(targetPlantId);
-      const plantData = res?.data || res;
+      const plantData = res?.plant_id ? res : (res?.data?.plant_id ? res.data : (res?.data || res));
       if (plantData) {
         setPlant(plantData);
+      }
+      if (res?.data && (res.data.soil_moisture !== undefined || res.data.temperature !== undefined)) {
+        const parsed = parseSensors(res.data);
+        if (parsed) setSensors(parsed);
       }
     } catch (err) {
       console.log('[PLANT DETAIL] Using local fallback for details:', err);
@@ -39,14 +55,9 @@ export default function PlantDetailScreen() {
     try {
       const sensorRes: any = await api.plants.getSensorsCurrent(targetPlantId);
       const data = sensorRes?.data || sensorRes;
-      if (data) {
-        setSensors({
-          moisture: data.moisture !== undefined ? data.moisture : data.soil_moisture,
-          temperature: data.temperature,
-          humidity: data.humidity,
-          light: data.light !== undefined ? data.light : data.light_level,
-          battery: data.battery,
-        });
+      const parsed = parseSensors(data);
+      if (parsed) {
+        setSensors(parsed);
       }
     } catch {
       // keep fallback
@@ -70,6 +81,16 @@ export default function PlantDetailScreen() {
       }
     } catch {
       // ignore
+    }
+
+    try {
+      const wRes: any = await api.plants.getWateringHistory(targetPlantId);
+      const wData = wRes?.data || wRes;
+      if (Array.isArray(wData)) {
+        setWateringHistory(wData);
+      }
+    } catch {
+      // ignore
     } finally {
       setLoading(false);
     }
@@ -80,15 +101,8 @@ export default function PlantDetailScreen() {
     const interval = setInterval(() => {
       api.plants.getSensorsCurrent(targetPlantId).then((res: any) => {
         const data = res?.data || res;
-        if (data) {
-          setSensors({
-            moisture: data.moisture !== undefined ? data.moisture : data.soil_moisture,
-            temperature: data.temperature,
-            humidity: data.humidity,
-            light: data.light !== undefined ? data.light : data.light_level,
-            battery: data.battery,
-          });
-        }
+        const parsed = parseSensors(data);
+        if (parsed) setSensors(parsed);
       }).catch(() => {});
     }, 10000);
     return () => clearInterval(interval);
@@ -98,8 +112,8 @@ export default function PlantDetailScreen() {
   const [chatMessages, setChatMessages] = useState<Array<{ sender: 'user' | 'ai'; text: string; time: string }>>([
     {
       sender: 'ai',
-      text: `Hello! I am your PlantSmart AI assistant. I have connected to your ${params.plantName || 'Plant'} sensor stream. How can I help you today?`,
-      time: '12:45 PM',
+      text: `Hello! I am your PlantSmart AI assistant. I have connected to your live sensor stream. How can I help you care for your specimen?`,
+      time: 'Just now',
     },
   ]);
   const [chatInput, setChatInput] = useState('');
@@ -140,24 +154,106 @@ export default function PlantDetailScreen() {
     setChatMessages((prev) => [...prev, userMsg]);
     if (!customText) setChatInput('');
 
-    // Simulate AI response
+    // Context-aware AI response based on live telemetry
     setTimeout(() => {
-      let aiReply = "Basil thrives with consistently moist but well-drained soil. Since your sensor reads 8%, give it a thorough soaking until water drains freely, then let the top inch dry before watering again.";
-      if (textToSend.toLowerCase().includes('prun')) {
-        aiReply = "To encourage bushy growth, pinch off the top set of leaves just above a leaf pair. Also promptly remove flower buds to keep the leaves flavorful and sweet!";
-      } else if (textToSend.toLowerCase().includes('light') || textToSend.toLowerCase().includes('sun')) {
-        aiReply = "Basil loves lots of light! It needs at least 6 to 8 hours of direct sunshine per day. If kept indoors, place it on a south-facing windowsill or under a grow light.";
+      const pName = plant?.name || plant?.custom_name || params.plantName || 'Plant';
+      const m = sensors?.moisture !== null && sensors?.moisture !== undefined ? sensors.moisture : (plant?.soil_moisture ?? 0);
+      const t = sensors?.temperature !== null && sensors?.temperature !== undefined ? sensors.temperature : 28;
+      const thresh = plant?.moisture_threshold || 45;
+
+      let aiReply = `${pName} currently has ${m}% soil moisture and an ambient temperature of ${t}°C. `;
+      if (m < thresh) {
+        aiReply += `Moisture is below your ${thresh}% target. We recommend a 5-10s manual watering pulse now.`;
+      } else {
+        aiReply += `Soil hydration is optimal (target: ${thresh}%). Roots are thriving.`;
       }
+
+      if (textToSend.toLowerCase().includes('prun')) {
+        aiReply = `For ${pName}, prune the top stem nodes regularly above leaf junctions to promote bushier foliage and prevent early flowering.`;
+      } else if (textToSend.toLowerCase().includes('light') || textToSend.toLowerCase().includes('sun')) {
+        aiReply = `${pName} requires 6 to 8 hours of indirect sunlight daily. Place it near a well-lit south or east facing window.`;
+      }
+
       setChatMessages((prev) => [
         ...prev,
         {
           sender: 'ai',
           text: aiReply,
-          time: 'Just now',
+          time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
         },
       ]);
-    }, 900);
+    }, 600);
   };
+
+  // Process sensor history for selected metric
+  const trendData = React.useMemo(() => {
+    if (!history || history.length === 0) {
+      if (sensors) {
+        let currentVal = 0;
+        let unit = '%';
+        if (selectedHistoryMetric === 'moisture') {
+          currentVal = sensors.moisture ?? 0;
+          unit = '%';
+        } else if (selectedHistoryMetric === 'temperature') {
+          currentVal = sensors.temperature ?? 0;
+          unit = '°C';
+        } else if (selectedHistoryMetric === 'humidity') {
+          currentVal = sensors.humidity ?? 0;
+          unit = '%';
+        } else if (selectedHistoryMetric === 'light') {
+          currentVal = sensors.light ?? 0;
+          unit = '%';
+        }
+        return [{ time: 'Now', val: currentVal, unit }];
+      }
+      return [];
+    }
+
+    const slice = history.slice(0, 6).reverse();
+    return slice.map((item, idx) => {
+      let val = 0;
+      let unit = '%';
+      if (selectedHistoryMetric === 'moisture') {
+        val = item.soil_moisture !== undefined ? item.soil_moisture : (item.moisture ?? 0);
+        unit = '%';
+      } else if (selectedHistoryMetric === 'temperature') {
+        val = item.temperature !== undefined ? item.temperature : 0;
+        unit = '°C';
+      } else if (selectedHistoryMetric === 'humidity') {
+        val = item.air_humidity !== undefined ? item.air_humidity : (item.humidity ?? 0);
+        unit = '%';
+      } else if (selectedHistoryMetric === 'light') {
+        val = item.light_intensity !== undefined ? item.light_intensity : (item.light ?? 0);
+        unit = '%';
+      }
+
+      let timeLabel = `${idx + 1}`;
+      if (item.timestamp) {
+        try {
+          const d = new Date(item.timestamp);
+          timeLabel = d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        } catch {}
+      }
+
+      return {
+        time: timeLabel,
+        val: Math.round(Number(val) * 10) / 10,
+        unit,
+      };
+    });
+  }, [history, sensors, selectedHistoryMetric]);
+
+  const metricStats = React.useMemo(() => {
+    if (!trendData || trendData.length === 0) {
+      return { min: 0, avg: 0, max: 0, unit: selectedHistoryMetric === 'temperature' ? '°C' : '%' };
+    }
+    const vals = trendData.map((d) => d.val);
+    const min = Math.min(...vals);
+    const max = Math.max(...vals);
+    const avg = Math.round((vals.reduce((a, b) => a + b, 0) / vals.length) * 10) / 10;
+    const unit = trendData[0]?.unit || '%';
+    return { min, avg, max, unit };
+  }, [trendData, selectedHistoryMetric]);
 
   return (
     <SafeAreaView className="flex-1 bg-[#09121B]">
@@ -613,12 +709,12 @@ export default function PlantDetailScreen() {
               <View className="bg-[#0F172A] rounded-2xl p-4 mb-4 border border-[#334155]">
                 <Text className="text-gray-400 text-xs mb-1">Estimated Next Watering Required</Text>
                 <Text className="text-[#34D399] text-2xl font-bold mb-1">
-                  {sensors?.moisture !== undefined && sensors.moisture < (plant?.moisture_threshold || 25)
+                  {sensors?.moisture !== null && sensors?.moisture !== undefined && sensors.moisture < (plant?.moisture_threshold || 45)
                     ? 'Immediate Attention (Below Threshold)'
                     : 'In ~3.5 Hours'}
                 </Text>
                 <Text className="text-gray-400 text-[10px]">
-                  Based on ambient temperature ({sensors?.temperature ?? 28}°C) and current soil hydration ({sensors?.moisture ?? 40}%).
+                  Based on ambient temperature ({sensors?.temperature ?? plant?.temperature ?? 28}°C) and current soil hydration ({sensors?.moisture ?? plant?.moisture ?? 0}%).
                 </Text>
               </View>
 
@@ -626,8 +722,19 @@ export default function PlantDetailScreen() {
               <View className="flex-row justify-between pt-2">
                 <View className="items-center">
                   <Text className="text-gray-400 text-[10px] font-bold">HEALTH SCORE</Text>
-                  <Text className="text-[#34D399] text-xl font-bold mt-1">92 / 100</Text>
-                  <Text className="text-emerald-400 text-[9px]">Strong Rooting</Text>
+                  <Text className={`text-xl font-bold mt-1 ${
+                    (sensors?.moisture ?? 0) < (plant?.moisture_threshold || 45) ? 'text-amber-400' : 'text-[#34D399]'
+                  }`}>
+                    {Math.max(35, Math.min(100, Math.round(
+                      100 - ((sensors?.moisture ?? 0) < (plant?.moisture_threshold || 45) ? 45 : 0)
+                          - ((sensors?.temperature ?? 28) > 32 ? 20 : 0)
+                    )))} / 100
+                  </Text>
+                  <Text className={`text-[9px] ${
+                    (sensors?.moisture ?? 0) < (plant?.moisture_threshold || 45) ? 'text-amber-400' : 'text-emerald-400'
+                  }`}>
+                    {(sensors?.moisture ?? 0) < (plant?.moisture_threshold || 45) ? 'Needs Water' : 'Optimal Growth'}
+                  </Text>
                 </View>
                 <View className="w-[1px] bg-[#334155]" />
                 <View className="items-center">
@@ -812,54 +919,69 @@ export default function PlantDetailScreen() {
               })}
             </View>
 
-            {/* Simulated 24-Hour Trend Graph Card */}
+            {/* Real Dynamic 24-Hour Trend Graph Card */}
             <View className="bg-[#1E293B] border border-[#334155] rounded-3xl p-5 mb-5">
               <View className="flex-row justify-between items-center mb-4">
                 <View>
                   <Text className="text-white font-bold text-sm">24-Hour Trend Analysis</Text>
-                  <Text className="text-gray-400 text-[10px]">Hourly telemetry log</Text>
+                  <Text className="text-gray-400 text-[10px]">Hourly telemetry log ({selectedHistoryMetric})</Text>
                 </View>
                 <View className="flex-row items-center">
                   <View className="w-2 h-2 rounded-full bg-[#34D399] mr-1.5" />
-                  <Text className="text-gray-300 text-[10px]">Avg: 24.2%</Text>
+                  <Text className="text-gray-300 text-[10px]">Avg: {metricStats.avg}{metricStats.unit}</Text>
                 </View>
               </View>
 
               {/* Bar visualization */}
-              <View className="h-40 flex-row items-end justify-between pt-4 pb-2 border-b border-[#334155]">
-                {[
-                  { time: '02h', val: 45 },
-                  { time: '06h', val: 38 },
-                  { time: '10h', val: 28 },
-                  { time: '14h', val: 19 },
-                  { time: '18h', val: 14 },
-                  { time: '22h', val: 8 },
-                ].map((item, idx) => (
-                  <View key={idx} className="items-center flex-1">
-                    <Text className="text-gray-400 text-[9px] mb-1 font-bold">{item.val}%</Text>
-                    <View
-                      style={{ height: `${item.val * 1.8}%` }}
-                      className={`w-7 rounded-t-lg ${
-                        item.val <= 10 ? 'bg-red-400' : item.val < 30 ? 'bg-amber-400' : 'bg-[#34D399]'
-                      }`}
-                    />
-                    <Text className="text-gray-500 text-[9px] mt-2">{item.time}</Text>
-                  </View>
-                ))}
-              </View>
+              {trendData.length === 0 ? (
+                <View className="h-40 items-center justify-center border-b border-[#334155]">
+                  <Ionicons name="stats-chart-outline" size={28} color="#64748B" />
+                  <Text className="text-gray-400 text-xs mt-2">Waiting for telemetry log from device...</Text>
+                </View>
+              ) : (
+                <View className="h-40 flex-row items-end justify-between pt-4 pb-2 border-b border-[#334155]">
+                  {trendData.map((item, idx) => {
+                    const maxScale = selectedHistoryMetric === 'temperature' ? 50 : 100;
+                    const barHeight = Math.max(12, Math.min(100, (Math.max(0, item.val) / maxScale) * 100));
+                    let barColor = 'bg-[#34D399]';
+                    if (selectedHistoryMetric === 'moisture') {
+                      barColor = item.val < 25 ? 'bg-red-400' : item.val < 45 ? 'bg-amber-400' : 'bg-[#34D399]';
+                    } else if (selectedHistoryMetric === 'temperature') {
+                      barColor = item.val > 32 ? 'bg-red-400' : 'bg-emerald-400';
+                    } else if (selectedHistoryMetric === 'humidity') {
+                      barColor = 'bg-cyan-400';
+                    } else if (selectedHistoryMetric === 'light') {
+                      barColor = 'bg-amber-400';
+                    }
+
+                    return (
+                      <View key={idx} className="items-center flex-1">
+                        <Text className="text-gray-400 text-[9px] mb-1 font-bold">
+                          {item.val}{item.unit}
+                        </Text>
+                        <View
+                          style={{ height: `${barHeight}%` }}
+                          className={`w-7 rounded-t-lg ${barColor}`}
+                        />
+                        <Text className="text-gray-500 text-[9px] mt-2" numberOfLines={1}>{item.time}</Text>
+                      </View>
+                    );
+                  })}
+                </View>
+              )}
 
               <View className="flex-row justify-between mt-3 text-center">
                 <View>
                   <Text className="text-gray-500 text-[9px]">MINIMUM</Text>
-                  <Text className="text-red-400 text-xs font-bold">8%</Text>
+                  <Text className="text-red-400 text-xs font-bold">{metricStats.min}{metricStats.unit}</Text>
                 </View>
                 <View>
                   <Text className="text-gray-500 text-[9px]">AVERAGE</Text>
-                  <Text className="text-white text-xs font-bold">25.3%</Text>
+                  <Text className="text-white text-xs font-bold">{metricStats.avg}{metricStats.unit}</Text>
                 </View>
                 <View>
                   <Text className="text-gray-500 text-[9px]">PEAK</Text>
-                  <Text className="text-emerald-400 text-xs font-bold">48%</Text>
+                  <Text className="text-emerald-400 text-xs font-bold">{metricStats.max}{metricStats.unit}</Text>
                 </View>
               </View>
             </View>
@@ -868,21 +990,37 @@ export default function PlantDetailScreen() {
             <View className="bg-[#1E293B] border border-[#334155] rounded-2xl p-4">
               <Text className="text-white font-bold text-xs uppercase tracking-wider mb-3">Event Timeline</Text>
               
-              <View className="flex-row items-start mb-3 pb-3 border-b border-[#334155]/60">
-                <View className="w-2 h-2 rounded-full bg-blue-400 mt-1.5 mr-3" />
-                <View className="flex-1">
-                  <Text className="text-gray-200 text-xs font-medium">Automatic watering cycle triggered</Text>
-                  <Text className="text-gray-400 text-[10px]">Today at 08:30 AM • Dispensed 50ml</Text>
-                </View>
-              </View>
+              {wateringHistory.length > 0 ? (
+                wateringHistory.slice(0, 8).map((item, idx) => {
+                  const isAuto = item.trigger_type === 'auto' || item.trigger_type === 'scheduled';
+                  const dur = item.duration_seconds || item.duration || 5;
+                  const timeStr = item.timestamp
+                    ? new Date(item.timestamp).toLocaleString([], { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })
+                    : 'Recently';
 
-              <View className="flex-row items-start">
-                <View className="w-2 h-2 rounded-full bg-amber-400 mt-1.5 mr-3" />
-                <View className="flex-1">
-                  <Text className="text-gray-200 text-xs font-medium">Temperature threshold warning (33.5°C)</Text>
-                  <Text className="text-gray-400 text-[10px]">Today at 12:45 PM • Sun exposure peak</Text>
+                  return (
+                    <View key={item.history_id || idx} className="flex-row items-start mb-3 pb-3 border-b border-[#334155]/60">
+                      <View className={`w-2 h-2 rounded-full mt-1.5 mr-3 ${isAuto ? 'bg-blue-400' : 'bg-[#34D399]'}`} />
+                      <View className="flex-1">
+                        <Text className="text-gray-200 text-xs font-medium">
+                          {isAuto ? 'Automatic watering cycle triggered' : 'Manual watering pulse delivered'}
+                        </Text>
+                        <Text className="text-gray-400 text-[10px]">
+                          {timeStr} • Pulse: {dur}s {item.device_name ? `(${item.device_name})` : ''}
+                        </Text>
+                      </View>
+                    </View>
+                  );
+                })
+              ) : (
+                <View className="items-center py-5">
+                  <Ionicons name="water-outline" size={26} color="#64748B" />
+                  <Text className="text-gray-300 text-xs font-bold mt-2">No Watering Events Recorded</Text>
+                  <Text className="text-gray-500 text-[10px] mt-0.5 text-center">
+                    Dispatched watering pulses or scheduled cycles will appear here automatically.
+                  </Text>
                 </View>
-              </View>
+              )}
             </View>
           </View>
         )}

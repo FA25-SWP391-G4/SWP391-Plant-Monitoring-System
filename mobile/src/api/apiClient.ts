@@ -349,8 +349,20 @@ export const api = {
           clearTimeout(timeoutId);
 
           if (!response.ok) {
-            const errText = await response.text();
-            throw new Error(`AI Engine error (${response.status}): ${errText || response.statusText}`);
+            let detail = '';
+            if (response.status === 502) {
+              detail = 'Server is recovering or waking up on Render. Please retry in 15-30 seconds.';
+            } else if (response.status === 503) {
+              detail = 'AI Model is initializing neural network weights. Please retry in 10-15 seconds.';
+            } else {
+              try {
+                const text = await response.text();
+                if (text && !text.trim().startsWith('<')) {
+                  detail = text;
+                }
+              } catch (_) {}
+            }
+            throw new Error(`AI Engine error (${response.status})${detail ? `: ${detail}` : ''}`);
           }
 
           return await response.json();
