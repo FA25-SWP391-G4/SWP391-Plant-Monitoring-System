@@ -154,6 +154,11 @@ export default function DashboardPage() {
               {
                 ...value,
                   // normalize fields to what PlantCard expects
+                  moisture:
+                    value.moisture ??
+                    value.soil_moisture ??
+                    value.soilMoisture ??
+                    null,
                   soil_moisture:
                     value.soil_moisture ??
                     value.moisture ??

@@ -49,11 +49,23 @@ Thumbs.db
 /ai_models/**/*.bin
 /ai_models/**/*.json
 !/ai_models/config.json
-!/ai_models/**/README.md
+!/ai_models/**/*.md
 /uploads/images/*
 !/uploads/images/.gitkeep
 
-/certs
+# Large AI Model weights (provide separately)
+*.onnx
+/ai_models/**/models/*.onnx
+!/ai_models/**/models/.gitkeep
 
-/ai_models
+# AI Sample test images & demo CLI
+/ai_models/**/sample_images/
+/ai_models/**/demo.py
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+/certs
 /ai_service

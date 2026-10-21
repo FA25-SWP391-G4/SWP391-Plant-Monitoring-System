@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { useAuth } from '@/providers/AuthProvider';
 import { useRouter } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
-// import AIImageRecognition from '@/components/AIImageRecognition';
+import PlantImageDiagnosticCard from '@/components/ai/PlantImageDiagnosticCard';
 
 export default function AIImageAnalysisPage() {
   const { user, loading } = useAuth();
@@ -92,7 +92,7 @@ export default function AIImageAnalysisPage() {
 
         {/* Image Analysis Component */}
         <div className="bg-white rounded-xl shadow-sm border border-gray-100">
-          <AIImageRecognition />
+          <PlantImageDiagnosticCard />
         </div>
 
         {/* Tips Section */}
