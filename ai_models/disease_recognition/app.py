@@ -1,6 +1,7 @@
 import io
 import os
 import base64
+import threading
 import cv2
 import numpy as np
 from fastapi import FastAPI, File, UploadFile, HTTPException
@@ -24,15 +25,29 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Global pipeline instance
+# Global pipeline state
 pipeline: ProductionPlantPipeline = None
+pipeline_loading: bool = False
+pipeline_error: str = None
+
+def init_pipeline():
+    global pipeline, pipeline_loading, pipeline_error
+    try:
+        print("Starting background load of Plant Diagnostic Pipeline...")
+        pipeline = ProductionPlantPipeline(model_variant="mobilenetv3")
+        print("Pipeline ready on CPU (u2netp + MobileNetV3-Large).")
+    except Exception as e:
+        pipeline_error = str(e)
+        print(f"Error initializing pipeline: {e}")
+    finally:
+        pipeline_loading = False
 
 @app.on_event("startup")
-def load_pipeline():
-    global pipeline
-    print("Starting Plant Diagnostic Server...")
-    pipeline = ProductionPlantPipeline(model_variant="mobilenetv3")
-    print("Pipeline ready on CPU (u2netp + MobileNetV3-Large).")
+def startup_event():
+    global pipeline_loading
+    pipeline_loading = True
+    # Start loading models in background thread so HTTP port binds in <1s for Render/cloud port scanners
+    threading.Thread(target=init_pipeline, daemon=True).start()
 
 HTML_DASHBOARD = """
 <!DOCTYPE html>
@@ -220,14 +235,22 @@ def dashboard():
 @app.get("/health")
 def health():
     return {
-        "status": "online",
+        "status": "online" if pipeline else ("loading" if pipeline_loading else "initializing"),
+        "model_ready": pipeline is not None,
         "model": "MobileNetV3-Large FP32 ONNX (320x320)",
         "segmenter": "u2netp FP32 ONNX",
-        "classes_count": len(pipeline.class_names) if pipeline else 14
+        "classes_count": len(pipeline.class_names) if pipeline else 14,
+        "error": pipeline_error
     }
 
 @app.post("/diagnose")
 async def diagnose(file: UploadFile = File(...)):
+    global pipeline, pipeline_error, pipeline_loading
+    if pipeline is None:
+        if pipeline_error:
+            raise HTTPException(status_code=500, detail=f"AI Engine failed to initialize: {pipeline_error}")
+        raise HTTPException(status_code=503, detail="AI Model is still initializing weights. Please retry in 10-15 seconds.")
+
     if file.content_type and not file.content_type.startswith("image/"):
         raise HTTPException(status_code=400, detail="Uploaded file must be an image.")
         
@@ -257,4 +280,6 @@ async def diagnose(file: UploadFile = File(...)):
         raise HTTPException(status_code=500, detail=str(e))
 
 if __name__ == "__main__":
-    uvicorn.run("app:app", host="0.0.0.0", port=8000, reload=False)
+    port = int(os.environ.get("PORT", 8000))
+    print(f"Starting Plant Diagnostic Server on 0.0.0.0:{port}...")
+    uvicorn.run("app:app", host="0.0.0.0", port=port, reload=False)
