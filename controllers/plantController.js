@@ -81,11 +81,12 @@ async function waterPlant(req, res) {
         const { plantId } = req.params;
         const { duration = 10 } = req.body; // Default 10 seconds if not provided
 
-        // Validate duration
-        if (duration < 1 || duration > 300) { // Limit to 5 minutes max
+        // Validate duration (enforce 10 seconds maximum)
+        const wateringDuration = Math.min(10, Math.max(1, parseInt(duration) || 10));
+        if (duration < 1 || duration > 10) {
             return res.status(400).json({
                 success: false,
-                error: 'Duration must be between 1 and 300 seconds'
+                error: 'Duration must be between 1 and 10 seconds'
             });
         }
 
@@ -132,7 +133,7 @@ async function waterPlant(req, res) {
         const wateringCommand = {
             command: 'pump_on',
             parameters: {
-                duration: duration,
+                duration: wateringDuration,
                 state: 'ON'
             },
             plantId: plantId,

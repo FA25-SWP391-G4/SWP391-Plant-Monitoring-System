@@ -120,7 +120,7 @@ export default function DashboardPage() {
     [user], // Only re-fetch when user changes
     {
       cacheKey: user ? `dashboard_plants_${user.user_id}` : null,
-      cacheDuration: 5 * 60 * 1000, // 5 minutes
+      cacheDuration: 30 * 1000, // 30 seconds
       onSuccess: (data) => {
         if (data) setPlants(data);
       },
@@ -144,8 +144,8 @@ export default function DashboardPage() {
     },
     [user], // Only re-fetch when user changes
     {
-      cacheKey: user ? `dashboard_sensors_${user.user_id}` : null,
-      cacheDuration: 60 * 1000, // 1 minute
+      cacheKey: null, // Always get live sensor readings; never freeze in sessionStorage
+      cacheDuration: 0,
       onSuccess: (data) => {
         if (data?.data) {
           //normalize keys by trimming whitespace
@@ -190,11 +190,60 @@ export default function DashboardPage() {
       }
     }
   );
-  
-  // Update loading state based on authentication and data fetches
+
+  // Background auto-refresh for sensor data every 10 seconds while on dashboard
   useEffect(() => {
-    setIsLoading(loading || (user && (plantsLoading || sensorsLoading)));
-  }, [loading, user, plantsLoading, sensorsLoading]);
+    if (!user) return;
+    const refreshSensorsSilently = async () => {
+      try {
+        const response = await fetchSensorData();
+        if (response?.data) {
+          const normalized = Object.fromEntries(
+            Object.entries(response.data).map(([key, value]) => [key.trim(), 
+              {
+                ...value,
+                moisture:
+                  value.moisture ??
+                  value.soil_moisture ??
+                  value.soilMoisture ??
+                  null,
+                soil_moisture:
+                  value.soil_moisture ??
+                  value.moisture ??
+                  value.soilMoisture ??
+                  null,
+                temperature:
+                  value.temperature ??
+                  value.temp ??
+                  null,
+                light_intensity:
+                  value.light ??
+                  value.light_intensity ??
+                  value.lightLevel ??
+                  null,
+                air_humidity:
+                  value.air_humidity ??
+                  value.humidity ??
+                  null,
+              },
+            ])
+          );
+          setSensorData(normalized);
+        }
+      } catch (err) {
+        // Silent error handling for background polling
+      }
+    };
+
+    const interval = setInterval(refreshSensorsSilently, 10000);
+    return () => clearInterval(interval);
+  }, [user]);
+  
+  // Update loading state based on authentication and data fetches (avoid full-screen reload if plants are already loaded)
+  useEffect(() => {
+    const isInitialLoading = loading || (user && plantsLoading && (!plants || plants.length === 0));
+    setIsLoading(isInitialLoading);
+  }, [loading, user, plantsLoading, plants]);
   
   // Update error state if plants fetch fails
   useEffect(() => {

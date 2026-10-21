@@ -112,15 +112,29 @@ export default function PlantCard({ plant, sensorData = {} }) {
     try {
       setIsRefreshing(true);
       
-      // Use deviceApi if plant has a device_id, otherwise use plantApi as fallback
-      if (plant.device_id) {
+      // Use deviceApi if plant has a device_key or device_id, otherwise use plantApi as fallback
+      const devKey = plant.device_key || plant.device_id;
+      if (devKey) {
         // Get latest sensor data from device
         const response = await deviceApi.getLatestSensorData();
         if (response?.data) {
-          // Find sensor data for this plant's device
-          const deviceSensorData = response.data.find(d => d.device_id === plant.device_id);
+          // Find sensor data for this plant's device (handles both object map and array)
+          let deviceSensorData = null;
+          if (Array.isArray(response.data)) {
+            deviceSensorData = response.data.find(d => (d.device_key || d.device_id) === devKey);
+          } else if (typeof response.data === 'object') {
+            deviceSensorData = response.data[devKey.trim()] || response.data[devKey];
+          }
           if (deviceSensorData) {
-            setCurrentSensorData(deviceSensorData);
+            const normalized = {
+              ...deviceSensorData,
+              soil_moisture: deviceSensorData.soil_moisture ?? deviceSensorData.moisture ?? null,
+              moisture: deviceSensorData.moisture ?? deviceSensorData.soil_moisture ?? null,
+              temperature: deviceSensorData.temperature ?? deviceSensorData.temp ?? null,
+              light_intensity: deviceSensorData.light_intensity ?? deviceSensorData.light ?? null,
+              air_humidity: deviceSensorData.air_humidity ?? deviceSensorData.humidity ?? null,
+            };
+            setCurrentSensorData(normalized);
             setLastRefresh(new Date());
           }
         }
@@ -128,7 +142,16 @@ export default function PlantCard({ plant, sensorData = {} }) {
         // Fallback to plant-specific sensor data
         const response = await plantApi.getCurrentSensorData(plant.plant_id);
         if (response?.data) {
-          setCurrentSensorData(response.data);
+          const d = response.data;
+          const normalized = {
+            ...d,
+            soil_moisture: d.soil_moisture ?? d.moisture ?? null,
+            moisture: d.moisture ?? d.soil_moisture ?? null,
+            temperature: d.temperature ?? d.temp ?? null,
+            light_intensity: d.light_intensity ?? d.light ?? null,
+            air_humidity: d.air_humidity ?? d.humidity ?? null,
+          };
+          setCurrentSensorData(normalized);
           setLastRefresh(new Date());
         }
       }
@@ -190,8 +213,8 @@ export default function PlantCard({ plant, sensorData = {} }) {
     const now = new Date();
     const timeDiffSeconds = (now - lastUpdate) / 1000;
 
-    // Device is online if last data was received within 30 seconds
-    return timeDiffSeconds <= 30 ? 'online' : 'offline';
+    // Device is online if last data was received within 120 seconds (2 minutes)
+    return timeDiffSeconds <= 120 ? 'online' : 'offline';
   };
   
   const deviceStatus = getDeviceStatus();
@@ -528,14 +551,15 @@ export default function PlantCard({ plant, sensorData = {} }) {
           >
             {t('plants.log', 'Log Activity')}
           </button>
-        </div>        {/* Manual Watering Controls - conditionally shown */}
+        </div>
+        {/* Manual Watering Controls - conditionally shown */}
         {showWateringControls && (
-          <div className="mb-4 p-3 bg-blue-50 rounded-lg border border-blue-200">
+          <div className="mb-4 p-4 bg-blue-50/70 dark:bg-gray-800/90 rounded-xl border border-blue-200 dark:border-gray-700 shadow-sm">
             <div className="flex justify-between items-center mb-3">
-              <h4 className="text-sm font-medium text-blue-900">{t('watering.manualControl', 'Manual Watering')}</h4>
+              <h4 className="text-sm font-semibold text-blue-900 dark:text-blue-300">{t('watering.manualControl', 'Manual Watering')}</h4>
               <button 
                 onClick={() => setShowWateringControls(false)}
-                className="text-xs text-blue-600 hover:text-blue-800"
+                className="text-xs font-medium text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-200"
               >
                 {t('common.hide', 'Hide')}
               </button>
@@ -550,12 +574,12 @@ export default function PlantCard({ plant, sensorData = {} }) {
 
         {/* Watering History Log - conditionally shown */}
         {showWateringLog && (
-          <div className="mt-4 p-3 bg-gray-50 rounded-lg">
+          <div className="mt-4 p-4 bg-gray-50 dark:bg-gray-800/90 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm">
             <div className="flex justify-between items-center mb-3">
-              <h4 className="text-sm font-medium">{t('plants.wateringHistory', 'Watering History')}</h4>
+              <h4 className="text-sm font-semibold text-gray-900 dark:text-gray-100">{t('plants.wateringHistory', 'Watering History')}</h4>
               <button 
                 onClick={() => setShowWateringLog(false)}
-                className="text-xs text-gray-500 hover:text-gray-700"
+                className="text-xs font-medium text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
               >
                 {t('common.hide', 'Hide')}
               </button>
