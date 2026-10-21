@@ -551,14 +551,15 @@ export default function PlantCard({ plant, sensorData = {} }) {
           >
             {t('plants.log', 'Log Activity')}
           </button>
-        </div>        {/* Manual Watering Controls - conditionally shown */}
+        </div>
+        {/* Manual Watering Controls - conditionally shown */}
         {showWateringControls && (
-          <div className="mb-4 p-3 bg-blue-50 rounded-lg border border-blue-200">
+          <div className="mb-4 p-4 bg-blue-50/70 dark:bg-gray-800/90 rounded-xl border border-blue-200 dark:border-gray-700 shadow-sm">
             <div className="flex justify-between items-center mb-3">
-              <h4 className="text-sm font-medium text-blue-900">{t('watering.manualControl', 'Manual Watering')}</h4>
+              <h4 className="text-sm font-semibold text-blue-900 dark:text-blue-300">{t('watering.manualControl', 'Manual Watering')}</h4>
               <button 
                 onClick={() => setShowWateringControls(false)}
-                className="text-xs text-blue-600 hover:text-blue-800"
+                className="text-xs font-medium text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-200"
               >
                 {t('common.hide', 'Hide')}
               </button>
@@ -573,12 +574,12 @@ export default function PlantCard({ plant, sensorData = {} }) {
 
         {/* Watering History Log - conditionally shown */}
         {showWateringLog && (
-          <div className="mt-4 p-3 bg-gray-50 rounded-lg">
+          <div className="mt-4 p-4 bg-gray-50 dark:bg-gray-800/90 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm">
             <div className="flex justify-between items-center mb-3">
-              <h4 className="text-sm font-medium">{t('plants.wateringHistory', 'Watering History')}</h4>
+              <h4 className="text-sm font-semibold text-gray-900 dark:text-gray-100">{t('plants.wateringHistory', 'Watering History')}</h4>
               <button 
                 onClick={() => setShowWateringLog(false)}
-                className="text-xs text-gray-500 hover:text-gray-700"
+                className="text-xs font-medium text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
               >
                 {t('common.hide', 'Hide')}
               </button>
