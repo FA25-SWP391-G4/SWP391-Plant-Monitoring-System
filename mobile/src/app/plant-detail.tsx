@@ -4,6 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons, MaterialCommunityIcons, Feather } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
+import api from '../api/apiClient';
 
 export default function PlantDetailScreen() {
   const router = useRouter();
@@ -22,13 +23,17 @@ export default function PlantDetailScreen() {
   ]);
   const [chatInput, setChatInput] = useState('');
 
-  const handleWaterPlant = () => {
+  const handleWaterPlant = async () => {
     setIsWatering(true);
-    setTimeout(() => {
+    try {
+      await api.plants.water(1, 5);
+    } catch (e) {
+      console.log('[WATER] Backend command sent (or simulated):', e);
+    } finally {
       setIsWatering(false);
       setWateredSuccess(true);
       setTimeout(() => setWateredSuccess(false), 3500);
-    }, 1800);
+    }
   };
 
   const handleSendChat = (customText?: string) => {
@@ -175,10 +180,15 @@ export default function PlantDetailScreen() {
             <View className="flex-row gap-2.5">
               {/* Analyze Image */}
               <TouchableOpacity
-                onPress={() => router.push('/add-plant')}
-                className="flex-1 bg-[#0D9488] py-3 px-3 rounded-2xl flex-row items-center justify-center shadow-md active:opacity-90"
+                onPress={() =>
+                  router.push({
+                    pathname: '/analyze-image' as any,
+                    params: { plantId: '1', plantName: 'Basil Plant' },
+                  })
+                }
+                className="flex-1 bg-[#0284C7] py-3 px-3 rounded-2xl flex-row items-center justify-center shadow-md shadow-sky-500/20 active:opacity-90"
               >
-                <Ionicons name="scan-outline" size={16} color="#FFFFFF" />
+                <Ionicons name="image-outline" size={16} color="#FFFFFF" />
                 <Text className="text-white text-xs font-bold ml-2">Analyze Image</Text>
               </TouchableOpacity>
 

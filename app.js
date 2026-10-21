@@ -198,13 +198,36 @@ var app = express();
 // app.set('views', path.join(__dirname, 'views'));
 // app.set('view engine', 'jade');
 
-// Configure CORS
+// Configure CORS to allow Next.js (port 3000), Expo Web (port 8081), and local network mobile devices
+const allowedOrigins = [
+  'http://localhost:3000',
+  'http://localhost:8081',
+  'http://127.0.0.1:3000',
+  'http://127.0.0.1:8081',
+];
+
 app.use(cors({
-  origin: 'http://localhost:3000', // Allow requests from React frontend
+  origin: function (origin, callback) {
+    // Allow non-browser requests (mobile apps, curl, postman)
+    if (!origin) return callback(null, true);
+
+    if (
+      allowedOrigins.includes(origin) ||
+      origin.startsWith('http://localhost:') ||
+      origin.startsWith('http://127.0.0.1:') ||
+      origin.startsWith('http://192.168.') ||
+      origin.startsWith('http://10.') ||
+      process.env.NODE_ENV !== 'production'
+    ) {
+      return callback(null, true);
+    }
+    return callback(new Error('Not allowed by CORS'));
+  },
   credentials: true, // Allow credentials (cookies, authorization headers, etc)
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // Allowed HTTP methods
-  allowedHeaders: ['Content-Type', 'Authorization'] // Allowed headers
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept'] // Allowed headers
 }));
+app.options('*', cors());
 
 app.use(logger('dev'));
 app.use(express.json());

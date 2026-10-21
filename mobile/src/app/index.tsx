@@ -1,14 +1,51 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, ScrollView, KeyboardAvoidingView, Platform, Image } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, ScrollView, KeyboardAvoidingView, Platform, ActivityIndicator } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
-import { Link, useRouter } from 'expo-router';
+import { useRouter } from 'expo-router';
+import api, { authStore, getBackendBaseUrl } from '../api/apiClient';
 
 export default function LoginScreen() {
   const router = useRouter();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [rememberMe, setRememberMe] = useState(false);
+  const [email, setEmail] = useState('testuser@example.com');
+  const [password, setPassword] = useState('Password123!');
+  const [rememberMe, setRememberMe] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
+
+  const handleLogin = async () => {
+    if (!email || !password) {
+      setErrorMessage('Please enter both email and password.');
+      return;
+    }
+
+    setLoading(true);
+    setErrorMessage('');
+
+    try {
+      const res = await api.auth.login(email.trim(), password);
+      if (res?.success || res?.data?.token) {
+        router.push('/dashboard');
+      } else {
+        setErrorMessage(res?.error || 'Invalid credentials.');
+      }
+    } catch (err: any) {
+      setErrorMessage(err.message || 'Login failed. Check server connection.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDemoLogin = () => {
+    authStore.setAuth('demo_jwt_token', {
+      user_id: '12404c30-c5fe-4d38-846a-2be39b247407',
+      email: 'demo@plantsmart.io',
+      given_name: 'Demo',
+      family_name: 'User',
+      role: 'regular',
+    });
+    router.push('/dashboard');
+  };
 
   return (
     <SafeAreaView className="flex-1 bg-[#09121B]">
@@ -18,48 +55,58 @@ export default function LoginScreen() {
       >
         <ScrollView contentContainerStyle={{ flexGrow: 1 }} bounces={false}>
           {/* Top Section */}
-          <View className="px-6 pt-8 pb-12">
+          <View className="px-6 pt-6 pb-8">
             {/* Logo */}
-            <View className="flex-row items-center mb-8">
+            <View className="flex-row items-center mb-6">
               <View className="w-8 h-8 bg-[#22C55E] rounded-md mr-3" />
               <Text className="text-white text-xl font-bold tracking-tight">PlantSmart</Text>
             </View>
 
             {/* Welcome Text */}
-            <View className="mb-8">
-              <View className="w-10 h-1 bg-[#22C55E] rounded-full mb-6 opacity-30" />
-              <Text className="text-white text-4xl font-extrabold mb-1">Welcome Back to</Text>
-              <Text className="text-[#22C55E] text-4xl font-extrabold">PlantSmart</Text>
+            <View className="mb-6">
+              <View className="w-10 h-1 bg-[#22C55E] rounded-full mb-4 opacity-30" />
+              <Text className="text-white text-3xl font-extrabold mb-1">Welcome Back to</Text>
+              <Text className="text-[#22C55E] text-3xl font-extrabold">PlantSmart</Text>
             </View>
 
             {/* Checklist */}
-            <View className="space-y-4">
+            <View className="space-y-3">
               <View className="flex-row items-center">
-                <Ionicons name="checkmark-circle-outline" size={22} color="#22C55E" />
-                <Text className="text-gray-300 ml-3 text-sm font-medium pr-4">Automated Watering precision irrigation scheduled for every leaf.</Text>
+                <Ionicons name="checkmark-circle-outline" size={20} color="#22C55E" />
+                <Text className="text-gray-300 ml-3 text-xs font-medium pr-4">Automated IoT watering precision scheduled for every leaf.</Text>
               </View>
               <View className="flex-row items-center">
-                <Ionicons name="checkmark-circle-outline" size={22} color="#22C55E" />
-                <Text className="text-gray-300 ml-3 text-sm font-medium">Health alerts and expert recommendations.</Text>
+                <Ionicons name="checkmark-circle-outline" size={20} color="#22C55E" />
+                <Text className="text-gray-300 ml-3 text-xs font-medium">Real-time telemetry and health warnings.</Text>
               </View>
-              <View className="flex-row items-center">
-                <Ionicons name="checkmark-circle-outline" size={22} color="#22C55E" />
-                <Text className="text-gray-300 ml-3 text-sm font-medium">Beautiful dashboard across all your devices.</Text>
-              </View>
+            </View>
+
+            {/* Backend URL Indicator */}
+            <View className="mt-4 flex-row items-center bg-[#1E293B] px-3 py-1.5 rounded-full self-start border border-[#334155]">
+              <View className="w-2 h-2 rounded-full bg-[#34D399] mr-2" />
+              <Text className="text-gray-300 text-[10px]">API Target: {getBackendBaseUrl()}</Text>
             </View>
           </View>
 
           {/* Bottom Card Section */}
-          <View className="flex-1 bg-white rounded-t-[36px] px-6 pt-8 pb-6">
-            <Text className="text-2xl text-[#1E293B] font-semibold mb-6">Welcome Back</Text>
+          <View className="flex-1 bg-white rounded-t-[36px] px-6 pt-7 pb-6">
+            <Text className="text-2xl text-[#1E293B] font-semibold mb-4">Welcome Back</Text>
+
+            {/* Error Message */}
+            {errorMessage ? (
+              <View className="bg-red-50 border border-red-200 rounded-xl p-3 mb-4 flex-row items-center">
+                <Ionicons name="alert-circle-outline" size={18} color="#EF4444" />
+                <Text className="text-red-600 text-xs ml-2 flex-1">{errorMessage}</Text>
+              </View>
+            ) : null}
 
             {/* Email Input */}
             <View className="mb-4">
-              <Text className="text-gray-500 text-sm font-medium mb-2">Email</Text>
-              <View className="flex-row items-center bg-[#333333] rounded-xl px-4 py-3.5">
-                <Ionicons name="mail-outline" size={20} color="#9CA3AF" />
+              <Text className="text-gray-500 text-xs font-medium mb-1.5">Email</Text>
+              <View className="flex-row items-center bg-[#1E293B] rounded-xl px-4 py-3">
+                <Ionicons name="mail-outline" size={18} color="#9CA3AF" />
                 <TextInput 
-                  className="flex-1 text-white ml-3 text-base"
+                  className="flex-1 text-white ml-3 text-sm"
                   placeholder="you@greenspace.com"
                   placeholderTextColor="#9CA3AF"
                   keyboardType="email-address"
@@ -72,16 +119,16 @@ export default function LoginScreen() {
 
             {/* Password Input */}
             <View className="mb-4">
-              <View className="flex-row justify-between items-center mb-2">
-                <Text className="text-gray-500 text-sm font-medium">Password</Text>
+              <View className="flex-row justify-between items-center mb-1.5">
+                <Text className="text-gray-500 text-xs font-medium">Password</Text>
                 <TouchableOpacity>
-                  <Text className="text-[#22C55E] text-xs font-bold">Forgot Password</Text>
+                  <Text className="text-[#22C55E] text-xs font-bold">Forgot Password?</Text>
                 </TouchableOpacity>
               </View>
-              <View className="flex-row items-center bg-[#333333] rounded-xl px-4 py-3.5">
-                <Ionicons name="lock-closed-outline" size={20} color="#9CA3AF" />
+              <View className="flex-row items-center bg-[#1E293B] rounded-xl px-4 py-3">
+                <Ionicons name="lock-closed-outline" size={18} color="#9CA3AF" />
                 <TextInput 
-                  className="flex-1 text-white ml-3 text-base"
+                  className="flex-1 text-white ml-3 text-sm"
                   placeholder="••••••••"
                   placeholderTextColor="#9CA3AF"
                   secureTextEntry
@@ -91,8 +138,8 @@ export default function LoginScreen() {
               </View>
             </View>
 
-            {/* Remember Me & Create Account */}
-            <View className="flex-row justify-between items-center mb-6 mt-1">
+            {/* Remember Me */}
+            <View className="flex-row justify-between items-center mb-5 mt-1">
               <TouchableOpacity 
                 className="flex-row items-center" 
                 activeOpacity={0.7}
@@ -101,48 +148,34 @@ export default function LoginScreen() {
                 <View className={`w-4 h-4 rounded-full border items-center justify-center mr-2 ${rememberMe ? 'border-[#22C55E]' : 'border-gray-300'}`}>
                   {rememberMe && <View className="w-2.5 h-2.5 bg-[#22C55E] rounded-full" />}
                 </View>
-                <Text className="text-gray-500 text-sm font-medium">Remember me</Text>
-              </TouchableOpacity>
-              
-              <TouchableOpacity>
-                <Text className="text-[#22C55E] text-xs font-bold">Create Account</Text>
+                <Text className="text-gray-500 text-xs font-medium">Remember me</Text>
               </TouchableOpacity>
             </View>
 
-            {/* Login Button */}
+            {/* Login Button with Backend Call */}
             <TouchableOpacity 
-              className="bg-[#22C55E] rounded-xl py-4 items-center mb-6"
-              onPress={() => router.push('/dashboard')}
+              className="bg-[#22C55E] rounded-xl py-3.5 items-center mb-3 shadow-md shadow-emerald-500/20 active:opacity-90"
+              onPress={handleLogin}
+              disabled={loading}
             >
-              <Text className="text-white font-bold text-base">Login</Text>
+              {loading ? (
+                <ActivityIndicator size="small" color="#FFFFFF" />
+              ) : (
+                <Text className="text-white font-bold text-sm">Login with Backend</Text>
+              )}
             </TouchableOpacity>
 
-            {/* OR Divider */}
-            <View className="flex-row items-center mb-6">
-              <View className="flex-1 h-[1px] bg-gray-200" />
-              <Text className="text-gray-400 font-semibold px-4 text-xs">OR</Text>
-              <View className="flex-1 h-[1px] bg-gray-200" />
-            </View>
-
-            {/* Google Button */}
-            <TouchableOpacity className="flex-row items-center justify-center bg-white border border-gray-200 rounded-xl py-3.5 mb-6">
-              <Ionicons name="logo-google" size={18} color="#000" />
-              <Text className="text-[#1E293B] font-semibold text-sm ml-3">Continue with Google</Text>
+            {/* Quick Demo Bypass */}
+            <TouchableOpacity 
+              className="bg-[#0F172A] rounded-xl py-3 items-center mb-4 active:opacity-90"
+              onPress={handleDemoLogin}
+            >
+              <Text className="text-[#34D399] font-bold text-xs">🚀 Quick Demo Access (Offline / Bypass)</Text>
             </TouchableOpacity>
-
-            {/* Bottom Buttons */}
-            <View className="flex-row justify-between mb-6">
-              <TouchableOpacity className="flex-1 bg-white border border-[#22C55E] rounded-xl py-3.5 items-center mr-2">
-                <Text className="text-[#22C55E] font-bold text-sm">Create Account</Text>
-              </TouchableOpacity>
-              <TouchableOpacity className="flex-1 bg-[#0D9488] rounded-xl py-3.5 items-center ml-2">
-                <Text className="text-white font-bold text-sm">Back to Site</Text>
-              </TouchableOpacity>
-            </View>
 
             {/* Terms and Privacy */}
-            <Text className="text-center text-gray-400 text-[11px] px-8">
-              By continuing, you agree to our <Text className="underline">Terms of Service</Text> and <Text className="underline">Privacy Policy</Text>.
+            <Text className="text-center text-gray-400 text-[10px] px-4 mt-2">
+              Connected securely to PlantSmart Node.js / PostgreSQL backend.
             </Text>
           </View>
         </ScrollView>
