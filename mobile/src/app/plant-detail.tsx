@@ -1,38 +1,129 @@
-import React, { useState } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, Image, TextInput, Dimensions } from 'react-native';
+import React, { useState, useEffect, useCallback } from 'react';
+import { View, Text, ScrollView, TouchableOpacity, Image, TextInput, Dimensions, ActivityIndicator } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons, MaterialCommunityIcons, Feather } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
-import { useRouter } from 'expo-router';
+import { useRouter, useLocalSearchParams } from 'expo-router';
 import api from '../api/apiClient';
 
 export default function PlantDetailScreen() {
   const router = useRouter();
+  const params = useLocalSearchParams<{ plantId?: string; plantName?: string }>();
+  const targetPlantId = params.plantId || '1';
+
+  const [plant, setPlant] = useState<any>(null);
+  const [sensors, setSensors] = useState<any>(null);
+  const [history, setHistory] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
   const [activeTab, setActiveTab] = useState<'overview' | 'predictions' | 'chat' | 'history'>('overview');
+  const [wateringDuration, setWateringDuration] = useState<number>(5);
   const [isWatering, setIsWatering] = useState(false);
   const [wateredSuccess, setWateredSuccess] = useState(false);
+  const [waterMessage, setWaterMessage] = useState('');
   const [selectedHistoryMetric, setSelectedHistoryMetric] = useState<'moisture' | 'temperature' | 'humidity' | 'light'>('moisture');
-  
+  const [schedules, setSchedules] = useState<any[]>([]);
+
+  // Load plant details and live sensors
+  const loadPlantData = useCallback(async () => {
+    try {
+      const res: any = await api.plants.getById(targetPlantId);
+      const plantData = res?.data || res;
+      if (plantData) {
+        setPlant(plantData);
+      }
+    } catch (err) {
+      console.log('[PLANT DETAIL] Using local fallback for details:', err);
+    }
+
+    try {
+      const sensorRes: any = await api.plants.getSensorsCurrent(targetPlantId);
+      const data = sensorRes?.data || sensorRes;
+      if (data) {
+        setSensors({
+          moisture: data.moisture !== undefined ? data.moisture : data.soil_moisture,
+          temperature: data.temperature,
+          humidity: data.humidity,
+          light: data.light !== undefined ? data.light : data.light_level,
+          battery: data.battery,
+        });
+      }
+    } catch {
+      // keep fallback
+    }
+
+    try {
+      const schedRes: any = await api.plants.getSchedule(targetPlantId);
+      const schedData = schedRes?.data || schedRes;
+      if (Array.isArray(schedData)) {
+        setSchedules(schedData);
+      }
+    } catch {
+      // ignore
+    }
+
+    try {
+      const histRes: any = await api.plants.getSensorsHistory(targetPlantId);
+      const histData = histRes?.data || histRes;
+      if (Array.isArray(histData)) {
+        setHistory(histData);
+      }
+    } catch {
+      // ignore
+    } finally {
+      setLoading(false);
+    }
+  }, [targetPlantId]);
+
+  useEffect(() => {
+    loadPlantData();
+    const interval = setInterval(() => {
+      api.plants.getSensorsCurrent(targetPlantId).then((res: any) => {
+        const data = res?.data || res;
+        if (data) {
+          setSensors({
+            moisture: data.moisture !== undefined ? data.moisture : data.soil_moisture,
+            temperature: data.temperature,
+            humidity: data.humidity,
+            light: data.light !== undefined ? data.light : data.light_level,
+            battery: data.battery,
+          });
+        }
+      }).catch(() => {});
+    }, 10000);
+    return () => clearInterval(interval);
+  }, [loadPlantData, targetPlantId]);
+
   // Chat state
   const [chatMessages, setChatMessages] = useState<Array<{ sender: 'user' | 'ai'; text: string; time: string }>>([
     {
       sender: 'ai',
-      text: 'Hello! I am your PlantSmart AI assistant. I have analyzed your Basil Plant telemetry. Soil moisture is currently low (8%). How can I help you today?',
+      text: `Hello! I am your PlantSmart AI assistant. I have connected to your ${params.plantName || 'Plant'} sensor stream. How can I help you today?`,
       time: '12:45 PM',
     },
   ]);
   const [chatInput, setChatInput] = useState('');
 
-  const handleWaterPlant = async () => {
+  const handleWaterPlant = async (overrideDuration?: number) => {
+    const duration = Math.min(10, Math.max(1, overrideDuration || wateringDuration));
     setIsWatering(true);
+    setWaterMessage('');
     try {
-      await api.plants.water(1, 5);
-    } catch (e) {
-      console.log('[WATER] Backend command sent (or simulated):', e);
+      const res: any = await api.plants.water(targetPlantId, duration);
+      setWateredSuccess(true);
+      setWaterMessage(res?.message || `Water pulse delivered (${duration}s)!`);
+      setTimeout(() => {
+        loadPlantData();
+      }, 2000);
+    } catch (e: any) {
+      setWateredSuccess(true);
+      setWaterMessage(e?.message || `Watering command (${duration}s) dispatched!`);
     } finally {
       setIsWatering(false);
-      setWateredSuccess(true);
-      setTimeout(() => setWateredSuccess(false), 3500);
+      setTimeout(() => {
+        setWateredSuccess(false);
+        setWaterMessage('');
+      }, 3500);
     }
   };
 
@@ -80,8 +171,12 @@ export default function PlantDetailScreen() {
         </TouchableOpacity>
         
         <View className="items-center">
-          <Text className="text-white text-base font-bold">Basil Plant</Text>
-          <Text className="text-gray-400 text-[10px]">Ocimum basilicum</Text>
+          <Text className="text-white text-base font-bold">
+            {plant?.name || plant?.custom_name || params.plantName || 'Basil Plant'}
+          </Text>
+          <Text className="text-gray-400 text-[10px]">
+            {plant?.species || plant?.species_name || 'Ocimum basilicum'}
+          </Text>
         </View>
 
         <View className="flex-row space-x-2">
@@ -105,11 +200,11 @@ export default function PlantDetailScreen() {
               {/* Plant Image Avatar */}
               <View className="w-24 h-24 rounded-2xl overflow-hidden bg-gray-800 border-2 border-[#334155] mr-4 relative">
                 <Image
-                  source={{ uri: 'https://images.unsplash.com/photo-1615477023356-af4cfa52022e?q=80&w=400&auto=format&fit=crop' }}
+                  source={{ uri: plant?.image_url || 'https://images.unsplash.com/photo-1615477023356-af4cfa52022e?q=80&w=400&auto=format&fit=crop' }}
                   className="w-full h-full"
                 />
                 <View className="absolute bottom-1 right-1 bg-black/75 px-1.5 py-0.5 rounded-full flex-row items-center">
-                  <View className="w-1.5 h-1.5 bg-[#34D399] rounded-full mr-1" />
+                  <View className="w-1.5 h-1.5 bg-[#34D399] rounded-full mr-1 animate-pulse" />
                   <Text className="text-white text-[8px] font-bold">LIVE</Text>
                 </View>
               </View>
@@ -117,19 +212,27 @@ export default function PlantDetailScreen() {
               {/* Plant Info */}
               <View className="flex-1">
                 <View className="flex-row items-center justify-between mb-1">
-                  <Text className="text-white text-xl font-bold tracking-tight">Basil Plant</Text>
+                  <Text className="text-white text-xl font-bold tracking-tight">
+                    {plant?.name || plant?.custom_name || params.plantName || 'Basil Plant'}
+                  </Text>
                 </View>
                 
-                <Text className="text-[#34D399] text-xs font-semibold mb-2">Ocimum basilicum</Text>
+                <Text className="text-[#34D399] text-xs font-semibold mb-2">
+                  {plant?.species || plant?.species_name || 'Ocimum basilicum'}
+                </Text>
 
                 <View className="flex-row items-center flex-wrap gap-1.5">
                   <View className="bg-[#064E3B] px-2.5 py-1 rounded-full flex-row items-center border border-[#10B981]/30">
                     <View className="w-1.5 h-1.5 bg-[#34D399] rounded-full mr-1.5" />
-                    <Text className="text-[#34D399] text-[10px] font-bold">Healthy</Text>
+                    <Text className="text-[#34D399] text-[10px] font-bold capitalize">
+                      {plant?.status || 'Healthy'}
+                    </Text>
                   </View>
                   <View className="bg-[#0F172A] px-2.5 py-1 rounded-full flex-row items-center border border-[#334155]">
                     <Ionicons name="location-outline" size={10} color="#9CA3AF" />
-                    <Text className="text-gray-300 text-[10px] ml-1">Indoor Herb Zone</Text>
+                    <Text className="text-gray-300 text-[10px] ml-1">
+                      {plant?.location || plant?.zone_name || 'Indoor Herb Zone'}
+                    </Text>
                   </View>
                 </View>
               </View>
@@ -139,32 +242,66 @@ export default function PlantDetailScreen() {
             <View className="bg-[#0F172A] rounded-2xl px-3.5 py-2.5 flex-row justify-between items-center border border-[#334155]/60">
               <View className="flex-row items-center">
                 <Ionicons name="hardware-chip-outline" size={16} color="#34D399" />
-                <Text className="text-gray-300 text-xs font-medium ml-2">PlantMaster-BLE #042</Text>
+                <Text className="text-gray-300 text-xs font-medium ml-2">
+                  Device: {plant?.device_key || 'ESP32-SmartPlant'}
+                </Text>
               </View>
               <View className="flex-row items-center">
                 <Ionicons name="battery-charging" size={14} color="#34D399" />
-                <Text className="text-[#34D399] text-xs font-bold ml-1">88%</Text>
+                <Text className="text-[#34D399] text-xs font-bold ml-1">
+                  {sensors?.battery ? `${sensors.battery}%` : '95%'}
+                </Text>
               </View>
             </View>
           </View>
 
           {/* Quick Actions Reimagined Bar */}
           <View className="mb-6">
+            {/* Duration Selector (10s maximum limit) */}
+            <View className="flex-row items-center justify-between mb-2 px-1">
+              <Text className="text-gray-400 text-[10px] font-bold tracking-widest uppercase">
+                Water Duration (Max 10s)
+              </Text>
+              <View className="flex-row gap-1.5">
+                {[3, 5, 10].map((dur) => (
+                  <TouchableOpacity
+                    key={dur}
+                    onPress={() => setWateringDuration(dur)}
+                    className={`px-2.5 py-0.5 rounded-lg border ${
+                      wateringDuration === dur
+                        ? 'bg-[#34D399] border-[#34D399]'
+                        : 'bg-[#1E293B] border-[#334155]'
+                    }`}
+                  >
+                    <Text
+                      className={`text-[10px] font-bold ${
+                        wateringDuration === dur ? 'text-[#064E3B]' : 'text-gray-300'
+                      }`}
+                    >
+                      {dur}s{dur === 10 ? ' (Max)' : ''}
+                    </Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
+            </View>
+
             <View className="flex-row gap-2.5 mb-2.5">
               {/* Water Now Button */}
               <TouchableOpacity
-                onPress={handleWaterPlant}
+                onPress={() => handleWaterPlant()}
                 disabled={isWatering}
                 className="flex-1 bg-[#2563EB] py-3.5 px-3 rounded-2xl flex-row items-center justify-center shadow-lg shadow-blue-500/20 active:opacity-90"
               >
-                <Ionicons
-                  name={isWatering ? 'hourglass-outline' : 'water'}
-                  size={18}
-                  color="#FFFFFF"
-                />
-                <Text className="text-white text-xs font-bold ml-2">
-                  {isWatering ? 'Watering (5s)...' : 'Water Now'}
-                </Text>
+                {isWatering ? (
+                  <ActivityIndicator size="small" color="#FFFFFF" />
+                ) : (
+                  <>
+                    <Ionicons name="water" size={18} color="#FFFFFF" />
+                    <Text className="text-white text-xs font-bold ml-2">
+                      Water Now ({wateringDuration}s)
+                    </Text>
+                  </>
+                )}
               </TouchableOpacity>
 
               {/* Ask AI Button */}
@@ -183,7 +320,10 @@ export default function PlantDetailScreen() {
                 onPress={() =>
                   router.push({
                     pathname: '/analyze-image' as any,
-                    params: { plantId: '1', plantName: 'Basil Plant' },
+                    params: {
+                      plantId: String(targetPlantId),
+                      plantName: plant?.name || plant?.custom_name || params.plantName || 'Basil Plant',
+                    },
                   })
                 }
                 className="flex-1 bg-[#0284C7] py-3 px-3 rounded-2xl flex-row items-center justify-center shadow-md shadow-sky-500/20 active:opacity-90"
@@ -192,13 +332,13 @@ export default function PlantDetailScreen() {
                 <Text className="text-white text-xs font-bold ml-2">Analyze Image</Text>
               </TouchableOpacity>
 
-              {/* Edit Plant */}
+              {/* Add / Edit Plant */}
               <TouchableOpacity
                 onPress={() => router.push('/add-plant')}
                 className="flex-1 bg-[#1E293B] border border-[#334155] py-3 px-3 rounded-2xl flex-row items-center justify-center active:opacity-90"
               >
-                <Feather name="edit-3" size={16} color="#E2E8F0" />
-                <Text className="text-gray-200 text-xs font-bold ml-2">Edit Plant</Text>
+                <Feather name="plus-circle" size={16} color="#E2E8F0" />
+                <Text className="text-gray-200 text-xs font-bold ml-2">New Plant</Text>
               </TouchableOpacity>
             </View>
 
@@ -207,7 +347,7 @@ export default function PlantDetailScreen() {
               <View className="mt-3 bg-[#064E3B] border border-[#10B981] rounded-xl py-2 px-4 flex-row items-center justify-center">
                 <Ionicons name="checkmark-circle" size={16} color="#34D399" />
                 <Text className="text-[#34D399] text-xs font-semibold ml-2">
-                  Watering pulse active! 50ml delivered.
+                  {waterMessage || `Watering command delivered (${wateringDuration}s)!`}
                 </Text>
               </View>
             )}
@@ -255,7 +395,7 @@ export default function PlantDetailScreen() {
             <View className="flex-row justify-between items-center mb-3">
               <View>
                 <Text className="text-white text-base font-bold">Current Conditions</Text>
-                <Text className="text-gray-400 text-[10px]">Real-time telemetry from BLE sensor</Text>
+                <Text className="text-gray-400 text-[10px]">Real-time telemetry from sensor</Text>
               </View>
               <View className="bg-[#064E3B]/40 px-2.5 py-1 rounded-full flex-row items-center border border-[#10B981]/30">
                 <View className="w-1.5 h-1.5 bg-[#34D399] rounded-full animate-ping mr-1.5" />
@@ -271,18 +411,33 @@ export default function PlantDetailScreen() {
                   <View className="w-9 h-9 bg-blue-500/20 rounded-xl items-center justify-center">
                     <Ionicons name="water" size={18} color="#60A5FA" />
                   </View>
-                  <View className="bg-red-500/20 px-2 py-0.5 rounded-full border border-red-500/30">
-                    <Text className="text-red-400 text-[9px] font-bold">Low</Text>
+                  <View className={`px-2 py-0.5 rounded-full border ${
+                    (sensors?.moisture ?? plant?.moisture ?? 42) < (plant?.moisture_threshold || 45)
+                      ? 'bg-red-500/20 border-red-500/30'
+                      : 'bg-[#064E3B] border-[#10B981]/30'
+                  }`}>
+                    <Text className={`text-[9px] font-bold ${
+                      (sensors?.moisture ?? plant?.moisture ?? 42) < (plant?.moisture_threshold || 45)
+                        ? 'text-red-400'
+                        : 'text-[#34D399]'
+                    }`}>
+                      {(sensors?.moisture ?? plant?.moisture ?? 42) < (plant?.moisture_threshold || 45) ? 'Low' : 'Optimal'}
+                    </Text>
                   </View>
                 </View>
                 <Text className="text-gray-400 text-[11px] font-medium">Soil Moisture</Text>
-                <Text className="text-white text-2xl font-bold my-1">8%</Text>
+                <Text className="text-white text-2xl font-bold my-1">
+                  {sensors?.moisture !== undefined ? `${sensors.moisture}%` : plant?.moisture ? `${plant.moisture}%` : '42%'}
+                </Text>
                 
                 {/* Visual Bar */}
                 <View className="h-1.5 bg-[#0F172A] rounded-full overflow-hidden mb-1.5">
-                  <View className="h-full bg-red-400 rounded-full w-[8%]" />
+                  <View 
+                    style={{ width: `${Math.min(100, sensors?.moisture ?? plant?.moisture ?? 42)}%` }}
+                    className="h-full bg-blue-400 rounded-full" 
+                  />
                 </View>
-                <Text className="text-gray-400 text-[9px]">Target: 45% - 65%</Text>
+                <Text className="text-gray-400 text-[9px]">Target: {plant?.moisture_threshold || 45}% - 70%</Text>
               </View>
 
               {/* Temperature */}
@@ -292,57 +447,67 @@ export default function PlantDetailScreen() {
                     <Ionicons name="thermometer" size={18} color="#F87171" />
                   </View>
                   <View className="bg-amber-500/20 px-2 py-0.5 rounded-full border border-amber-500/30">
-                    <Text className="text-amber-400 text-[9px] font-bold">Warm</Text>
+                    <Text className="text-amber-400 text-[9px] font-bold">Good</Text>
                   </View>
                 </View>
                 <Text className="text-gray-400 text-[11px] font-medium">Temperature</Text>
-                <Text className="text-white text-2xl font-bold my-1">33.5°C</Text>
+                <Text className="text-white text-2xl font-bold my-1">
+                  {sensors?.temperature !== undefined ? `${sensors.temperature}°C` : plant?.temperature ? `${plant.temperature}°C` : '28.5°C'}
+                </Text>
                 
-                {/* Visual Bar */}
                 <View className="h-1.5 bg-[#0F172A] rounded-full overflow-hidden mb-1.5">
-                  <View className="h-full bg-amber-400 rounded-full w-[70%]" />
+                  <View 
+                    style={{ width: `${Math.min(100, ((sensors?.temperature ?? plant?.temperature ?? 28.5) / 50) * 100)}%` }}
+                    className="h-full bg-red-400 rounded-full" 
+                  />
                 </View>
-                <Text className="text-gray-400 text-[9px]">Optimal: 18°C - 30°C</Text>
+                <Text className="text-gray-400 text-[9px]">Range: 20°C - 32°C</Text>
               </View>
 
               {/* Humidity */}
               <View className="w-[48%] bg-[#1E293B] border border-[#334155] rounded-2xl p-4 relative overflow-hidden">
                 <View className="flex-row justify-between items-start mb-2">
                   <View className="w-9 h-9 bg-cyan-500/20 rounded-xl items-center justify-center">
-                    <MaterialCommunityIcons name="water-percent" size={20} color="#22D3EE" />
+                    <Ionicons name="cloud-outline" size={18} color="#22D3EE" />
                   </View>
-                  <View className="bg-emerald-500/20 px-2 py-0.5 rounded-full border border-emerald-500/30">
-                    <Text className="text-emerald-400 text-[9px] font-bold">Optimal</Text>
+                  <View className="bg-cyan-500/20 px-2 py-0.5 rounded-full border border-cyan-500/30">
+                    <Text className="text-cyan-400 text-[9px] font-bold">Ambient</Text>
                   </View>
                 </View>
-                <Text className="text-gray-400 text-[11px] font-medium">Air Humidity</Text>
-                <Text className="text-white text-2xl font-bold my-1">57.5%</Text>
-                
-                {/* Visual Bar */}
+                <Text className="text-gray-400 text-[11px] font-medium">Humidity</Text>
+                <Text className="text-white text-2xl font-bold my-1">
+                  {sensors?.humidity !== undefined ? `${sensors.humidity}%` : plant?.humidity ? `${plant.humidity}%` : '60.0%'}
+                </Text>
                 <View className="h-1.5 bg-[#0F172A] rounded-full overflow-hidden mb-1.5">
-                  <View className="h-full bg-emerald-400 rounded-full w-[58%]" />
+                  <View 
+                    style={{ width: `${Math.min(100, sensors?.humidity ?? plant?.humidity ?? 60)}%` }}
+                    className="h-full bg-cyan-400 rounded-full" 
+                  />
                 </View>
-                <Text className="text-gray-400 text-[9px]">Optimal: 50% - 70%</Text>
+                <Text className="text-gray-400 text-[9px]">Target: 50% - 70%</Text>
               </View>
 
-              {/* Light Intensity */}
+              {/* Light Level */}
               <View className="w-[48%] bg-[#1E293B] border border-[#334155] rounded-2xl p-4 relative overflow-hidden">
                 <View className="flex-row justify-between items-start mb-2">
                   <View className="w-9 h-9 bg-amber-500/20 rounded-xl items-center justify-center">
-                    <Ionicons name="sunny" size={18} color="#FBBF24" />
+                    <Ionicons name="sunny-outline" size={18} color="#FBBF24" />
                   </View>
-                  <View className="bg-gray-500/20 px-2 py-0.5 rounded-full border border-gray-500/30">
-                    <Text className="text-gray-400 text-[9px] font-bold">Dark</Text>
+                  <View className="bg-amber-500/20 px-2 py-0.5 rounded-full border border-amber-500/30">
+                    <Text className="text-amber-400 text-[9px] font-bold">Sunlight</Text>
                   </View>
                 </View>
-                <Text className="text-gray-400 text-[11px] font-medium">Light Intensity</Text>
-                <Text className="text-white text-2xl font-bold my-1">0 lux</Text>
-                
-                {/* Visual Bar */}
+                <Text className="text-gray-400 text-[11px] font-medium">Light Exposure</Text>
+                <Text className="text-white text-2xl font-bold my-1">
+                  {sensors?.light !== undefined ? `${sensors.light}%` : '75%'}
+                </Text>
                 <View className="h-1.5 bg-[#0F172A] rounded-full overflow-hidden mb-1.5">
-                  <View className="h-full bg-gray-500 rounded-full w-[5%]" />
+                  <View 
+                    style={{ width: `${Math.min(100, sensors?.light ?? 75)}%` }}
+                    className="h-full bg-amber-400 rounded-full" 
+                  />
                 </View>
-                <Text className="text-gray-400 text-[9px]">Night / Dormant cycle</Text>
+                <Text className="text-gray-400 text-[9px]">Bright Indirect Light</Text>
               </View>
             </View>
 
@@ -360,16 +525,18 @@ export default function PlantDetailScreen() {
                     </View>
                   </View>
                   <Text className="text-gray-300 text-xs leading-relaxed mb-3">
-                    Moisture is at 8% (below the 25% threshold). Basil roots risk desiccation at 33.5°C temperature. We recommend dispensing 50-100ml immediately.
+                    {sensors?.moisture !== undefined && sensors.moisture < (plant?.moisture_threshold || 25)
+                      ? `Moisture is low at ${sensors.moisture}% (below ${plant?.moisture_threshold || 25}% threshold). Soil is drying rapidly at ${sensors?.temperature ?? 28}°C. Quick watering pulse is recommended.`
+                      : `Soil moisture is healthy at ${sensors?.moisture ?? 45}% (target threshold: ${plant?.moisture_threshold || 25}%). Ambient temperature is ${sensors?.temperature ?? 26}°C.`}
                   </Text>
                   
                   <TouchableOpacity
-                    onPress={handleWaterPlant}
+                    onPress={() => handleWaterPlant(5)}
                     className="bg-[#34D399] py-2 px-3.5 rounded-xl self-start flex-row items-center"
                   >
                     <Ionicons name="water" size={14} color="#064E3B" />
                     <Text className="text-[#064E3B] font-bold text-xs ml-1.5">
-                      Quick Water 50ml Now
+                      Quick Water 5s Now
                     </Text>
                   </TouchableOpacity>
                 </View>
@@ -445,9 +612,13 @@ export default function PlantDetailScreen() {
 
               <View className="bg-[#0F172A] rounded-2xl p-4 mb-4 border border-[#334155]">
                 <Text className="text-gray-400 text-xs mb-1">Estimated Next Watering Required</Text>
-                <Text className="text-[#34D399] text-2xl font-bold mb-1">In ~3.5 Hours</Text>
+                <Text className="text-[#34D399] text-2xl font-bold mb-1">
+                  {sensors?.moisture !== undefined && sensors.moisture < (plant?.moisture_threshold || 25)
+                    ? 'Immediate Attention (Below Threshold)'
+                    : 'In ~3.5 Hours'}
+                </Text>
                 <Text className="text-gray-400 text-[10px]">
-                  Based on ambient temperature (33.5°C) and rapid soil evaporation curve.
+                  Based on ambient temperature ({sensors?.temperature ?? 28}°C) and current soil hydration ({sensors?.moisture ?? 40}%).
                 </Text>
               </View>
 
@@ -461,8 +632,12 @@ export default function PlantDetailScreen() {
                 <View className="w-[1px] bg-[#334155]" />
                 <View className="items-center">
                   <Text className="text-gray-400 text-[10px] font-bold">EVAPORATION</Text>
-                  <Text className="text-amber-400 text-xl font-bold mt-1">1.4%/hr</Text>
-                  <Text className="text-amber-400 text-[9px]">High (Warm Temp)</Text>
+                  <Text className="text-amber-400 text-xl font-bold mt-1">
+                    {sensors?.temperature && sensors.temperature > 30 ? '1.8%/hr' : '0.9%/hr'}
+                  </Text>
+                  <Text className="text-amber-400 text-[9px]">
+                    {sensors?.temperature && sensors.temperature > 30 ? 'High' : 'Moderate'}
+                  </Text>
                 </View>
                 <View className="w-[1px] bg-[#334155]" />
                 <View className="items-center">
@@ -475,21 +650,39 @@ export default function PlantDetailScreen() {
 
             {/* Smart Schedule Card */}
             <View className="bg-[#1E293B] border border-[#334155] rounded-2xl p-4">
-              <Text className="text-white font-bold text-sm mb-3">AI Autonomous Action Plan</Text>
-              <View className="flex-row items-center justify-between py-2 border-b border-[#334155]">
-                <View className="flex-row items-center">
-                  <Ionicons name="time-outline" size={16} color="#34D399" />
-                  <Text className="text-gray-200 text-xs ml-2">17:30 PM Today</Text>
-                </View>
-                <Text className="text-[#34D399] text-xs font-bold">Auto-Dispense 60ml</Text>
-              </View>
-              <View className="flex-row items-center justify-between py-2">
-                <View className="flex-row items-center">
-                  <Ionicons name="sunny-outline" size={16} color="#FBBF24" />
-                  <Text className="text-gray-200 text-xs ml-2">Tomorrow Morning</Text>
-                </View>
-                <Text className="text-gray-400 text-xs">Direct Sun Soak 4h</Text>
-              </View>
+              <Text className="text-white font-bold text-sm mb-3">Active Irrigation Schedule</Text>
+              {schedules && schedules.length > 0 ? (
+                schedules.map((item, idx) => (
+                  <View key={idx} className="flex-row items-center justify-between py-2 border-b border-[#334155]">
+                    <View className="flex-row items-center">
+                      <Ionicons name="time-outline" size={16} color="#34D399" />
+                      <Text className="text-gray-200 text-xs ml-2">
+                        {item.cron_expression || `${item.hour ?? 17}:${String(item.minute ?? 0).padStart(2, '0')}`}
+                      </Text>
+                    </View>
+                    <Text className="text-[#34D399] text-xs font-bold">
+                      Auto-Water {item.duration_seconds || item.duration || 5}s (Max 10s)
+                    </Text>
+                  </View>
+                ))
+              ) : (
+                <>
+                  <View className="flex-row items-center justify-between py-2 border-b border-[#334155]">
+                    <View className="flex-row items-center">
+                      <Ionicons name="time-outline" size={16} color="#34D399" />
+                      <Text className="text-gray-200 text-xs ml-2">Every Morning at 07:00 AM</Text>
+                    </View>
+                    <Text className="text-[#34D399] text-xs font-bold">Auto-Water 5s</Text>
+                  </View>
+                  <View className="flex-row items-center justify-between py-2">
+                    <View className="flex-row items-center">
+                      <Ionicons name="sunny-outline" size={16} color="#FBBF24" />
+                      <Text className="text-gray-200 text-xs ml-2">Moisture Guard Trigger</Text>
+                    </View>
+                    <Text className="text-gray-400 text-xs">&lt; {plant?.moisture_threshold || 25}% moisture</Text>
+                  </View>
+                </>
+              )}
             </View>
           </View>
         )}

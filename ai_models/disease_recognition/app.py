@@ -4,7 +4,8 @@ import base64
 import threading
 import cv2
 import numpy as np
-from fastapi import FastAPI, File, UploadFile, HTTPException
+from typing import Optional
+from fastapi import FastAPI, File, UploadFile, HTTPException, Request
 from fastapi.responses import JSONResponse, HTMLResponse
 from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
@@ -244,18 +245,34 @@ def health():
     }
 
 @app.post("/diagnose")
-async def diagnose(file: UploadFile = File(...)):
+async def diagnose(request: Request, file: Optional[UploadFile] = File(None)):
     global pipeline, pipeline_error, pipeline_loading
     if pipeline is None:
         if pipeline_error:
             raise HTTPException(status_code=500, detail=f"AI Engine failed to initialize: {pipeline_error}")
         raise HTTPException(status_code=503, detail="AI Model is still initializing weights. Please retry in 10-15 seconds.")
 
-    if file.content_type and not file.content_type.startswith("image/"):
-        raise HTTPException(status_code=400, detail="Uploaded file must be an image.")
+    contents = None
+    if file is not None:
+        if file.content_type and not file.content_type.startswith("image/"):
+            raise HTTPException(status_code=400, detail="Uploaded file must be an image.")
+        contents = await file.read()
+    else:
+        # Check for JSON payload with base64 encoded image
+        try:
+            body = await request.json()
+            b64_str = body.get("image") or body.get("file") or body.get("image_base64")
+            if b64_str:
+                if "," in b64_str:
+                    b64_str = b64_str.split(",", 1)[1]
+                contents = base64.b64decode(b64_str)
+        except Exception:
+            pass
+
+    if not contents:
+        raise HTTPException(status_code=400, detail="No image provided. Please send a file or base64 JSON payload.")
         
     try:
-        contents = await file.read()
         nparr = np.frombuffer(contents, np.uint8)
         img_bgr = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
         

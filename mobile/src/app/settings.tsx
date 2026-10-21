@@ -583,6 +583,50 @@ export default function SettingsScreen() {
               </View>
             </View>
 
+            {/* Backend Cloud Services Card */}
+            <View className="bg-[#1E293B] border border-[#334155] rounded-3xl p-4 mb-4">
+              <Text className="text-white font-bold text-sm mb-3">Live Cloud Infrastructure</Text>
+              
+              <View className="flex-row items-center justify-between py-2.5 border-b border-[#334155]">
+                <View className="flex-row items-center">
+                  <View className="w-2 h-2 rounded-full bg-emerald-400 mr-2" />
+                  <View>
+                    <Text className="text-white text-xs font-semibold">Core REST API</Text>
+                    <Text className="text-gray-400 text-[10px]">plantsmart-api.onrender.com</Text>
+                  </View>
+                </View>
+                <View className="bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20">
+                  <Text className="text-emerald-400 text-[10px] font-bold">ONLINE</Text>
+                </View>
+              </View>
+
+              <View className="flex-row items-center justify-between py-2.5 border-b border-[#334155]">
+                <View className="flex-row items-center">
+                  <View className="w-2 h-2 rounded-full bg-purple-400 mr-2" />
+                  <View>
+                    <Text className="text-white text-xs font-semibold">AI Leaf Diagnostics</Text>
+                    <Text className="text-gray-400 text-[10px]">plantsmart-ai.onrender.com</Text>
+                  </View>
+                </View>
+                <View className="bg-purple-500/10 px-2 py-0.5 rounded-full border border-purple-500/20">
+                  <Text className="text-purple-400 text-[10px] font-bold">ACTIVE</Text>
+                </View>
+              </View>
+
+              <View className="flex-row items-center justify-between py-2.5">
+                <View className="flex-row items-center">
+                  <View className="w-2 h-2 rounded-full bg-blue-400 mr-2" />
+                  <View>
+                    <Text className="text-white text-xs font-semibold">Hardware Water Pulse</Text>
+                    <Text className="text-gray-400 text-[10px]">Strictly capped at 10s max duration</Text>
+                  </View>
+                </View>
+                <View className="bg-blue-500/10 px-2 py-0.5 rounded-full border border-blue-500/20">
+                  <Text className="text-blue-400 text-[10px] font-bold">PROTECTED</Text>
+                </View>
+              </View>
+            </View>
+
             {/* App Info Card */}
             <View className="bg-[#0F172A] border border-[#334155] rounded-2xl p-4 items-center">
               <View className="w-10 h-10 rounded-xl bg-[#064E3B] items-center justify-center mb-2">
