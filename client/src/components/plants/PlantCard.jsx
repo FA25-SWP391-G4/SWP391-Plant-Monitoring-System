@@ -112,15 +112,29 @@ export default function PlantCard({ plant, sensorData = {} }) {
     try {
       setIsRefreshing(true);
       
-      // Use deviceApi if plant has a device_id, otherwise use plantApi as fallback
-      if (plant.device_id) {
+      // Use deviceApi if plant has a device_key or device_id, otherwise use plantApi as fallback
+      const devKey = plant.device_key || plant.device_id;
+      if (devKey) {
         // Get latest sensor data from device
         const response = await deviceApi.getLatestSensorData();
         if (response?.data) {
-          // Find sensor data for this plant's device
-          const deviceSensorData = response.data.find(d => d.device_id === plant.device_id);
+          // Find sensor data for this plant's device (handles both object map and array)
+          let deviceSensorData = null;
+          if (Array.isArray(response.data)) {
+            deviceSensorData = response.data.find(d => (d.device_key || d.device_id) === devKey);
+          } else if (typeof response.data === 'object') {
+            deviceSensorData = response.data[devKey.trim()] || response.data[devKey];
+          }
           if (deviceSensorData) {
-            setCurrentSensorData(deviceSensorData);
+            const normalized = {
+              ...deviceSensorData,
+              soil_moisture: deviceSensorData.soil_moisture ?? deviceSensorData.moisture ?? null,
+              moisture: deviceSensorData.moisture ?? deviceSensorData.soil_moisture ?? null,
+              temperature: deviceSensorData.temperature ?? deviceSensorData.temp ?? null,
+              light_intensity: deviceSensorData.light_intensity ?? deviceSensorData.light ?? null,
+              air_humidity: deviceSensorData.air_humidity ?? deviceSensorData.humidity ?? null,
+            };
+            setCurrentSensorData(normalized);
             setLastRefresh(new Date());
           }
         }
@@ -128,7 +142,16 @@ export default function PlantCard({ plant, sensorData = {} }) {
         // Fallback to plant-specific sensor data
         const response = await plantApi.getCurrentSensorData(plant.plant_id);
         if (response?.data) {
-          setCurrentSensorData(response.data);
+          const d = response.data;
+          const normalized = {
+            ...d,
+            soil_moisture: d.soil_moisture ?? d.moisture ?? null,
+            moisture: d.moisture ?? d.soil_moisture ?? null,
+            temperature: d.temperature ?? d.temp ?? null,
+            light_intensity: d.light_intensity ?? d.light ?? null,
+            air_humidity: d.air_humidity ?? d.humidity ?? null,
+          };
+          setCurrentSensorData(normalized);
           setLastRefresh(new Date());
         }
       }
@@ -190,8 +213,8 @@ export default function PlantCard({ plant, sensorData = {} }) {
     const now = new Date();
     const timeDiffSeconds = (now - lastUpdate) / 1000;
 
-    // Device is online if last data was received within 30 seconds
-    return timeDiffSeconds <= 30 ? 'online' : 'offline';
+    // Device is online if last data was received within 120 seconds (2 minutes)
+    return timeDiffSeconds <= 120 ? 'online' : 'offline';
   };
   
   const deviceStatus = getDeviceStatus();
