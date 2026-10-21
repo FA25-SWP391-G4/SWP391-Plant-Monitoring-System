@@ -228,7 +228,7 @@ def health():
 
 @app.post("/diagnose")
 async def diagnose(file: UploadFile = File(...)):
-    if not file.content_type.startswith("image/"):
+    if file.content_type and not file.content_type.startswith("image/"):
         raise HTTPException(status_code=400, detail="Uploaded file must be an image.")
         
     try:

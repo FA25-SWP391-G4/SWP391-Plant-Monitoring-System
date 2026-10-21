@@ -180,10 +180,15 @@ export default function PlantDetailScreen() {
             <View className="flex-row gap-2.5">
               {/* Analyze Image */}
               <TouchableOpacity
-                onPress={() => router.push('/add-plant')}
-                className="flex-1 bg-[#0D9488] py-3 px-3 rounded-2xl flex-row items-center justify-center shadow-md active:opacity-90"
+                onPress={() =>
+                  router.push({
+                    pathname: '/analyze-image' as any,
+                    params: { plantId: '1', plantName: 'Basil Plant' },
+                  })
+                }
+                className="flex-1 bg-[#0284C7] py-3 px-3 rounded-2xl flex-row items-center justify-center shadow-md shadow-sky-500/20 active:opacity-90"
               >
-                <Ionicons name="scan-outline" size={16} color="#FFFFFF" />
+                <Ionicons name="image-outline" size={16} color="#FFFFFF" />
                 <Text className="text-white text-xs font-bold ml-2">Analyze Image</Text>
               </TouchableOpacity>
 

@@ -197,6 +197,20 @@ export default function DashboardScreen() {
             </TouchableOpacity>
 
             <TouchableOpacity 
+              className="bg-[#0284C7] rounded-xl py-2.5 px-3 items-center flex-1 flex-row justify-center active:opacity-90 shadow-sm"
+              onPress={() => router.push({
+                pathname: '/analyze-image' as any,
+                params: {
+                  plantId: String(activePlant.plant_id || '1'),
+                  plantName: activePlant.name || activePlant.custom_name || 'Basil Plant',
+                },
+              })}
+            >
+              <Ionicons name="image-outline" size={14} color="#FFFFFF" />
+              <Text className="text-white font-bold text-xs ml-1">Analyze</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity 
               className="bg-[#7C3AED] rounded-xl py-2.5 px-3 items-center flex-1 flex-row justify-center active:opacity-90"
               onPress={() => router.push('/plant-detail')}
             >

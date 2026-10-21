@@ -19,6 +19,20 @@ export const getBackendBaseUrl = (): string => {
   return 'http://localhost:3010';
 };
 
+export const getAiDiagnosticBaseUrl = (): string => {
+  const hostUri = Constants.expoConfig?.hostUri;
+  if (hostUri) {
+    const host = hostUri.split(':')[0];
+    return `http://${host}:8000`;
+  }
+
+  if (Platform.OS === 'android') {
+    return 'http://10.0.2.2:8000';
+  }
+
+  return 'http://localhost:8000';
+};
+
 // In-memory session store for Mobile
 class AuthStore {
   private token: string | null = null;
@@ -200,6 +214,57 @@ export const api = {
         method: 'PUT',
         body: JSON.stringify(data),
       });
+    },
+  },
+
+  ai: {
+    diagnoseImage: async (imageUri: string, mimeType?: string, fileName?: string) => {
+      const baseUrl = getAiDiagnosticBaseUrl();
+      const url = `${baseUrl}/diagnose`;
+
+      const formData = new FormData();
+      if (Platform.OS === 'web') {
+        const response = await fetch(imageUri);
+        const blob = await response.blob();
+        formData.append('file', blob, fileName || 'plant_leaf.jpg');
+      } else {
+        formData.append('file', {
+          uri: imageUri,
+          name: fileName || 'plant_leaf.jpg',
+          type: mimeType || 'image/jpeg',
+        } as any);
+      }
+
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 30000); // 30s timeout for ML model
+
+      try {
+        const response = await fetch(url, {
+          method: 'POST',
+          body: formData,
+          signal: controller.signal,
+        });
+        clearTimeout(timeoutId);
+
+        if (!response.ok) {
+          const errText = await response.text();
+          throw new Error(`AI Engine error (${response.status}): ${errText || response.statusText}`);
+        }
+
+        return await response.json();
+      } catch (err: any) {
+        clearTimeout(timeoutId);
+        if (err.name === 'AbortError') {
+          throw new Error(`Connection timeout reaching AI Diagnostic server at ${baseUrl}`);
+        }
+        throw err;
+      }
+    },
+
+    checkHealth: async () => {
+      const baseUrl = getAiDiagnosticBaseUrl();
+      const response = await fetch(`${baseUrl}/health`);
+      return response.json();
     },
   },
 };
